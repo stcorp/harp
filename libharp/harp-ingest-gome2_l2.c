@@ -54,13 +54,14 @@ typedef struct ingest_info_struct
     coda_product *product;
     int product_version;
     int window_for_species[7];
+    int detailed_results_type;
     harp_array amf_buffer;
     harp_array amf_error_buffer;
     harp_array index_in_scan_buffer;
     harp_array quality_flags_buffer;
     long num_main;
     long num_windows;
-    int corrected_no2;
+    long num_vertical;
     int revision;
 } ingest_info;
 
@@ -97,9 +98,63 @@ static int init_num_main(ingest_info *info)
     return 0;
 }
 
+static int init_num_vertical(ingest_info *info)
+{
+    char *path;
+    coda_cursor cursor;
+    long dim[CODA_MAX_NUM_DIMS];
+    int num_dims;
+
+    if (info->detailed_results_type == species_type_hcho && info->product_version >= 3)
+    {
+        path = "/DETAILED_RESULTS/HCHO/AveragingKernelPressureLevel";
+    }
+    else if (info->detailed_results_type == species_type_no2 && info->product_version >= 3)
+    {
+        path = "/DETAILED_RESULTS/NO2/AveragingKernelPressureLevel";
+    }
+    else
+    {
+        info->num_vertical = 0;
+        return 0;
+    }
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_array_dim(&cursor, &num_dims, dim) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (num_dims != 2)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '%s' has %d dimensions, expected 2)", path, num_dims);
+        return -1;
+    }
+    if (dim[0] != info->num_main)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '%s' has %ld elements for the first dimension, expected %ld)",
+                       path, dim[0], info->num_main);
+        return -1;
+    }
+
+    info->num_vertical = dim[1];
+
+    return 0;
+}
+
 static int init_window_info(ingest_info *info)
 {
     const char *species_name[] = { "BrO", "H2O", "HCHO", "NO2", "O3", "OClO", "SO2" };
+    char product_contents[100];
     coda_cursor cursor;
     long dim[CODA_MAX_NUM_DIMS];
     int num_dims;
@@ -165,6 +220,27 @@ static int init_window_info(ingest_info *info)
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
                 }
+            }
+        }
+    }
+
+    if (coda_cursor_goto(&cursor, "/META_DATA@ProductContents[0]") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, product_contents, 100) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    for (i = 0; i < 7; i++)
+    {
+        if (info->window_for_species[i] >= 0)
+        {
+            if (strstr(product_contents, species_name[i]) == NULL)
+            {
+                info->window_for_species[i] = -1;
             }
         }
     }
@@ -518,6 +594,10 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     ingest_info *info = (ingest_info *)user_data;
 
     dimension[harp_dimension_time] = info->num_main;
+    if (info->num_vertical > 0)
+    {
+        dimension[harp_dimension_vertical] = info->num_vertical;
+    }
 
     return 0;
 }
@@ -784,19 +864,12 @@ static int read_no2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_no2)
-    {
-        return read_dataset(info, "TOTAL_COLUMNS/NO2_Corr", harp_type_double, info->num_main, data);
-    }
-
     return read_dataset(info, "TOTAL_COLUMNS/NO2", harp_type_double, info->num_main, data);
 }
 
 static int read_no2_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-
-    assert(!info->corrected_no2);
 
     if (info->product_version < 3)
     {
@@ -816,6 +889,19 @@ static int read_no2_column_tropospheric(void *user_data, harp_array data)
     }
 
     return read_dataset(info, "TOTAL_COLUMNS/NO2Tropo", harp_type_double, info->num_main, data);
+}
+
+static int read_no2_column_tropospheric_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->product_version < 3)
+    {
+        return read_relative_uncertainty(info, "TOTAL_COLUMNS/NO2Tropo", "TOTAL_COLUMNS/NO2Tropo_Error", info->num_main,
+                                         data);
+    }
+
+    return read_dataset(info, "TOTAL_COLUMNS/NO2Tropo_Error", harp_type_double, info->num_main, data);
 }
 
 static int read_o3_column(void *user_data, harp_array data)
@@ -1035,6 +1121,149 @@ static int read_quality_flags_so2(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_quality_flags(info, species_type_so2, data);
+}
+
+static int read_o3_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DETAILED_RESULTS/O3/O3Temperature", harp_type_double, info->num_main, data);
+}
+
+static int read_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (info->detailed_results_type == species_type_hcho)
+    {
+        if (read_dataset(info, "DETAILED_RESULTS/HCHO/AveragingKernelPressureLevel", harp_type_double,
+                         info->num_main * info->num_vertical, data) != 0)
+        {
+            return -1;
+        }
+    }
+    else if (info->detailed_results_type == species_type_no2)
+    {
+        if (read_dataset(info, "DETAILED_RESULTS/NO2/AveragingKernelPressureLevel", harp_type_double,
+                         info->num_main * info->num_vertical, data) != 0)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        assert(0);
+        exit(1);
+    }
+
+    dimension[0] = info->num_main;
+    dimension[1] = info->num_vertical;
+    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+}
+
+static int read_hcho_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info, "DETAILED_RESULTS/HCHO/AprioriHCHOProfile", harp_type_double,
+                     info->num_main * info->num_vertical, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_main;
+    dimension[1] = info->num_vertical;
+    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+}
+
+static int read_hcho_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info, "DETAILED_RESULTS/HCHO/AveragingKernel", harp_type_double,
+                     info->num_main * info->num_vertical, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_main;
+    dimension[1] = info->num_vertical;
+    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+}
+
+static int read_no2_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info, "DETAILED_RESULTS/NO2/AprioriNO2Profile", harp_type_double,
+                     info->num_main * info->num_vertical, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_main;
+    dimension[1] = info->num_vertical;
+    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+}
+
+static int read_no2_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info, "DETAILED_RESULTS/NO2/AveragingKernel", harp_type_double,
+                     info->num_main * info->num_vertical, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_main;
+    dimension[1] = info->num_vertical;
+    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+}
+
+static int read_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array buffer;
+    long dimension[2];
+    long num_elements;
+    long offset;
+    long i;
+
+    assert(info->detailed_results_type >= 0);
+    offset = info->window_for_species[info->detailed_results_type];
+
+    dimension[0] = info->num_main;
+    dimension[1] = info->num_windows;
+    num_elements = harp_get_num_elements(2, dimension);
+
+    buffer.ptr = malloc(num_elements * sizeof(double));
+    if (buffer.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DETAILED_RESULTS/SurfaceAlbedo", harp_type_double, num_elements, buffer) != 0)
+    {
+        free(buffer.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        data.double_data[i] = buffer.double_data[i * info->num_windows + offset];
+    }
+
+    free(buffer.ptr);
+
+    return 0;
 }
 
 static int read_cloud_fraction(void *user_data, harp_array data)
@@ -1273,13 +1502,61 @@ static int read_scan_direction_type(void *user_data, long index, harp_array data
     return 0;
 }
 
-static int parse_option_corrected_no2_columnn(ingest_info *info, const harp_ingestion_options *options)
+static int parse_option_detailed_results(ingest_info *info, const harp_ingestion_options *options)
 {
     const char *value;
 
-    if (harp_ingestion_options_get_option(options, "corrected_no2_column", &value) == 0)
+    if (harp_ingestion_options_get_option(options, "detailed_results", &value) == 0)
     {
-        info->corrected_no2 = 1;
+        if (strcmp(value, "BrO") == 0)
+        {
+            if (info->window_for_species[species_type_bro] >= 0)
+            {
+                info->detailed_results_type = species_type_bro;
+            }
+        }
+        else if (strcmp(value, "H2O") == 0)
+        {
+            if (info->window_for_species[species_type_h2o] >= 0)
+            {
+                info->detailed_results_type = species_type_h2o;
+            }
+        }
+        else if (strcmp(value, "HCHO") == 0)
+        {
+            if (info->window_for_species[species_type_hcho] >= 0)
+            {
+                info->detailed_results_type = species_type_hcho;
+            }
+        }
+        else if (strcmp(value, "NO2") == 0)
+        {
+            if (info->window_for_species[species_type_no2] >= 0)
+            {
+                info->detailed_results_type = species_type_no2;
+            }
+        }
+        else if (strcmp(value, "O3") == 0)
+        {
+            if (info->window_for_species[species_type_o3] >= 0)
+            {
+                info->detailed_results_type = species_type_o3;
+            }
+        }
+        else if (strcmp(value, "OClO") == 0)
+        {
+            if (info->window_for_species[species_type_oclo] >= 0)
+            {
+                info->detailed_results_type = species_type_oclo;
+            }
+        }
+        else if (strcmp(value, "SO2") == 0)
+        {
+            if (info->window_for_species[species_type_so2] >= 0)
+            {
+                info->detailed_results_type = species_type_so2;
+            }
+        }
     }
 
     return 0;
@@ -1329,11 +1606,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     info->product = product;
     info->product_version = -1;
+    info->detailed_results_type = -1;
     info->amf_buffer.ptr = NULL;
     info->amf_error_buffer.ptr = NULL;
     info->index_in_scan_buffer.ptr = NULL;
     info->quality_flags_buffer.ptr = NULL;
-    info->corrected_no2 = 0;
     info->revision = 0;
 
     if (coda_get_product_version(info->product, &info->product_version) != 0)
@@ -1358,7 +1635,12 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         ingestion_done(info);
         return -1;
     }
-    if (parse_option_corrected_no2_columnn(info, options) != 0)
+    if (parse_option_detailed_results(info, options) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+    if (init_num_vertical(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -1386,361 +1668,129 @@ static int dataset_unavailable(ingest_info *info, const char *path)
     return 0;
 }
 
-static int exclude_bro_column(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/BrO");
-}
-
-static int exclude_bro_column_error(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/BrO_Error");
-}
-
-static int exclude_h2o_column(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/H2O");
-}
-
-static int exclude_h2o_column_error(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/H2O_Error");
-}
-
-static int exclude_hcho_column(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/HCHO");
-}
-
-static int exclude_hcho_column_error(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/HCHO_Error");
-}
-
-static int exclude_no2_column(void *user_data)
-{
-    if (((ingest_info *)user_data)->corrected_no2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2_Corr");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2");
-}
-
-static int exclude_no2_column_error(void *user_data)
-{
-    if (((ingest_info *)user_data)->corrected_no2)
-    {
-        return 1;
-    }
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2_Error");
-}
-
 static int exclude_no2_column_tropospheric(void *user_data)
 {
     if (((ingest_info *)user_data)->product_version < 2)
     {
         return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2_Trop");
     }
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2Tropo");
+    if (((ingest_info *)user_data)->product_version < 3)
+    {
+        return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2Tropo");
+    }
+
+    return 0;
 }
 
-static int exclude_o3_column(void *user_data)
+static int exclude_no2_column_tropospheric_error(void *user_data)
 {
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/O3");
+    if (((ingest_info *)user_data)->product_version < 2)
+    {
+        return 1;
+    }
+    if (((ingest_info *)user_data)->product_version < 3)
+    {
+        return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/NO2Tropo_Error");
+    }
+    return 0;
 }
 
-static int exclude_o3_column_error(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/O3_Error");
-}
-
-static int exclude_oclo_column(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/OClO");
-}
-
-static int exclude_oclo_column_error(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/OClO_Error");
-}
-
-static int exclude_so2_column(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/SO2");
-}
-
-static int exclude_so2_column_error(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "TOTAL_COLUMNS/SO2_Error");
-}
-
-static int exclude_quality_flags_bro(void *user_data)
+static int exclude_bro(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->window_for_species[species_type_bro] == -1;
 }
 
-static int exclude_quality_flags_h2o(void *user_data)
+static int exclude_h2o(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->window_for_species[species_type_h2o] == -1;
 }
 
-static int exclude_quality_flags_hcho(void *user_data)
+static int exclude_hcho(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->window_for_species[species_type_hcho] == -1;
 }
 
-static int exclude_quality_flags_no2(void *user_data)
+static int exclude_no2(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->window_for_species[species_type_no2] == -1;
 }
 
-static int exclude_quality_flags_o3(void *user_data)
+static int exclude_no2_v2(void *user_data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return info->product_version < 2 || info->window_for_species[species_type_no2] == -1;
+}
+
+static int exclude_o3(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->window_for_species[species_type_o3] == -1;
 }
 
-static int exclude_quality_flags_oclo(void *user_data)
+static int exclude_oclo(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->window_for_species[species_type_oclo] == -1;
 }
 
-static int exclude_quality_flags_so2(void *user_data)
+static int exclude_so2(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->window_for_species[species_type_so2] == -1;
 }
 
-static int exclude_amf_bro(void *user_data)
+static int exclude_hcho_details(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return info->window_for_species[species_type_bro] == -1 || dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal");
+    return info->product_version < 3 || info->detailed_results_type != species_type_hcho;
 }
 
-static int exclude_amf_bro_error(void *user_data)
+static int exclude_no2_details(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return info->window_for_species[species_type_bro] == -1 ||
-        dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal_Error");
+    return info->product_version < 3 || info->detailed_results_type != species_type_no2;
 }
 
-static int exclude_amf_h2o(void *user_data)
+static int exclude_o3_details(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return info->window_for_species[species_type_h2o] == -1 || dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal");
+    return info->product_version < 2 || info->detailed_results_type != species_type_o3;
 }
 
-static int exclude_amf_h2o_error(void *user_data)
+static int exclude_pressure(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return info->window_for_species[species_type_h2o] == -1 ||
-        dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal_Error");
+    return info->product_version < 3 ||
+        !(info->detailed_results_type == species_type_no2 || info->detailed_results_type == species_type_hcho);
 }
 
-static int exclude_amf_hcho(void *user_data)
+static int exclude_surface_albedo(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return info->window_for_species[species_type_hcho] == -1 || dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal");
-}
-
-static int exclude_amf_hcho_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_hcho] == -1 ||
-        dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal_Error");
-}
-
-static int exclude_amf_no2(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_no2] == -1 || dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal");
-}
-
-static int exclude_amf_no2_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_no2] == -1 ||
-        dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal_Error");
-}
-
-static int exclude_amf_no2_tropospheric(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return dataset_unavailable(info, "DETAILED_RESULTS/NO2/AMFTropo");
-}
-
-static int exclude_amf_no2_tropospheric_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return dataset_unavailable(info, "DETAILED_RESULTS/NO2/AMFTropo_Error");
-}
-
-static int exclude_amf_o3(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_o3] == -1 || dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal");
-}
-
-static int exclude_amf_o3_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_o3] == -1 ||
-        dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal_Error");
-}
-
-static int exclude_amf_oclo(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_oclo] == -1 || dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal");
-}
-
-static int exclude_amf_oclo_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_oclo] == -1 ||
-        dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal_Error");
-}
-
-static int exclude_amf_so2(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_so2] == -1 || dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal");
-}
-
-static int exclude_amf_so2_error(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->window_for_species[species_type_so2] == -1 ||
-        dataset_unavailable(info, "DETAILED_RESULTS/AMFTotal_Error");
-}
-
-static int exclude_cloud_fraction(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudFraction");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudFraction");
-}
-
-static int exclude_cloud_fraction_error(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudFraction_Error");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudFraction_Error");
-}
-
-static int exclude_pressure_cloud_top(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopPressure");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudTopPressure");
-}
-
-static int exclude_pressure_cloud_top_error(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopPressure_Error");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudTopPressure_Error");
-}
-
-static int exclude_height_cloud_top(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopHeight");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudTopHeight");
-}
-
-static int exclude_height_cloud_top_error(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopHeight_Error");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudTopHeight_Error");
-}
-
-static int exclude_albedo_cloud_top(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopAlbedo");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudTopAlbedo");
-}
-
-static int exclude_albedo_cloud_top_error(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudTopAlbedo_Error");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudTopAlbedo_Error");
-}
-
-static int exclude_cloud_optical_thickness(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudOpticalThickness");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudOpticalThickness");
-}
-
-static int exclude_cloud_optical_thickness_error(void *user_data)
-{
-    if (((ingest_info *)user_data)->product_version < 2)
-    {
-        return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/CloudOpticalThickness_Error");
-    }
-    return dataset_unavailable((ingest_info *)user_data, "CLOUD_PROPERTIES/CloudOpticalThickness_Error");
-}
-
-static int exclude_absorbing_aerosol_index(void *user_data)
-{
-    return dataset_unavailable((ingest_info *)user_data, "DETAILED_RESULTS/AAI");
+    return info->product_version < 2 || info->detailed_results_type == -1;
 }
 
 static void register_common_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    harp_dimension_type dimension_type_bounds[2] = { harp_dimension_time, harp_dimension_independent };
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
     long dimension_bounds[2] = { -1, 4 };
     const char *description;
     const char *path;
@@ -1777,8 +1827,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "corner longitudes of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
-                                                   dimension_type_bounds, dimension_bounds, description, "degree_east",
-                                                   NULL, read_longitude_bounds);
+                                                   dimension_type, dimension_bounds, description, "degree_east", NULL,
+                                                   read_longitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/LongitudeA[], /GEOLOCATION/LongitudeB[], /GEOLOCATION/LongitudeC[], /GEOLOCATION/LongitudeD[]";
     description = "the corner coordinates are re-arranged in the order B-D-C-A";
@@ -1788,8 +1838,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "corner latitudes of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
-                                                   dimension_type_bounds, dimension_bounds, description, "degree_north",
-                                                   NULL, read_latitude_bounds);
+                                                   dimension_type, dimension_bounds, description, "degree_north", NULL,
+                                                   read_latitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/GEOLOCATION/LatitudeA[], /GEOLOCATION/LatitudeB[], /GEOLOCATION/LatitudeC[], /GEOLOCATION/LatitudeD[]";
     description = "the corner coordinates are re-arranged in the order B-D-C-A";
@@ -1839,7 +1889,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "BrO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "mol/cm^2", exclude_bro_column,
+                                                   dimension_type, NULL, description, "mol/cm^2", exclude_bro,
                                                    read_bro_column);
     path = "/TOTAL_COLUMNS/BrO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1849,7 +1899,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_bro_column_error, read_bro_column_error);
+                                                   exclude_bro, read_bro_column_error);
     path = "/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]";
     description = "derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -1861,8 +1911,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_quality_flags_bro,
-                                                   read_quality_flags_bro);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_bro, read_quality_flags_bro);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'BrO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1871,7 +1920,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "H2O column mass density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "kg/m^2", exclude_h2o_column,
+                                                   dimension_type, NULL, description, "kg/m^2", exclude_h2o,
                                                    read_h2o_column);
     path = "/TOTAL_COLUMNS/H2O[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1881,7 +1930,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "kg/m^2",
-                                                   exclude_h2o_column_error, read_h2o_column_error);
+                                                   exclude_h2o, read_h2o_column_error);
     path = "/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]";
     description = "derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -1893,8 +1942,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_quality_flags_h2o,
-                                                   read_quality_flags_h2o);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_h2o, read_quality_flags_h2o);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'H2O'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1903,8 +1951,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density", harp_type_double,
-                                                   1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_hcho_column, read_hcho_column);
+                                                   1, dimension_type, NULL, description, "mol/cm^2", exclude_hcho,
+                                                   read_hcho_column);
     path = "/TOTAL_COLUMNS/HCHO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1913,7 +1961,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_hcho_column_error, read_hcho_column_error);
+                                                   exclude_hcho, read_hcho_column_error);
     path = "/TOTAL_COLUMNS/HCHO_Error[], /TOTAL_COLUMNS/HCHO[]";
     description = "derived from the relative error in percent as: HCHO_Error[] * 0.01 * HCHO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -1925,8 +1973,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_quality_flags_hcho,
-                                                   read_quality_flags_hcho);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_hcho, read_quality_flags_hcho);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'HCHO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1935,36 +1982,29 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "NO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "mol/cm^2", exclude_no2_column,
+                                                   dimension_type, NULL, description, "mol/cm^2", exclude_no2,
                                                    read_no2_column);
-    path = "/TOTAL_COLUMNS/NO2_Corr[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=true", NULL, path, NULL);
     path = "/TOTAL_COLUMNS/NO2[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* NO2_column_number_density_uncertainty */
     description = "uncertainty of the NO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_no2_column_error, read_no2_column_error);
-    description = "uncertainty information unavailable; this variable will not be present in the ingested product";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column=true", NULL, NULL, description);
+                                                   exclude_no2, read_no2_column_error);
     path = "/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]";
     description = "derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)",
-                                         "CODA product version < 3", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/NO2_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, "corrected_no2_column unset (default)",
-                                         "CODA product version >= 3", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, NULL);
 
     /* NO2_column_number_density_validity */
     description = "quality flags for NO2 retrieval";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_quality_flags_no2,
-                                                   read_quality_flags_no2);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_no2, read_quality_flags_no2);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'NO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -1980,12 +2020,22 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/TOTAL_COLUMNS/NO2Tropo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
+    /* tropospheric_NO2_column_number_density_uncertainty */
+    description = "uncertainty of the tropospheric NO2 column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_NO2_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   exclude_no2_column_tropospheric_error,
+                                                   read_no2_column_tropospheric_error);
+    path = "/TOTAL_COLUMNS/NO2Tropo_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
+
     /* O3_column_number_density */
     description = "O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "DU", exclude_o3_column,
-                                                   read_o3_column);
+                                                   dimension_type, NULL, description, "DU", exclude_o3, read_o3_column);
     path = "/TOTAL_COLUMNS/O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1994,7 +2044,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "DU",
-                                                   exclude_o3_column_error, read_o3_column_error);
+                                                   exclude_o3, read_o3_column_error);
     path = "/TOTAL_COLUMNS/O3_Error[], /TOTAL_COLUMNS/O3[]";
     description = "derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -2006,8 +2056,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_quality_flags_o3,
-                                                   read_quality_flags_o3);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_o3, read_quality_flags_o3);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'O3'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2016,8 +2065,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "OClO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density", harp_type_double,
-                                                   1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_oclo_column, read_oclo_column);
+                                                   1, dimension_type, NULL, description, "mol/cm^2", exclude_oclo,
+                                                   read_oclo_column);
     path = "/TOTAL_COLUMNS/OClO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2026,7 +2075,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_oclo_column_error, read_oclo_column_error);
+                                                   exclude_oclo, read_oclo_column_error);
     path = "/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]";
     description = "derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -2038,8 +2087,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_quality_flags_oclo,
-                                                   read_quality_flags_oclo);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_oclo, read_quality_flags_oclo);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'OClO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2048,7 +2096,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "SO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "DU", exclude_so2_column,
+                                                   dimension_type, NULL, description, "DU", exclude_so2,
                                                    read_so2_column);
     path = "/TOTAL_COLUMNS/SO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2058,7 +2106,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "DU",
-                                                   exclude_so2_column_error, read_so2_column_error);
+                                                   exclude_so2, read_so2_column_error);
     path = "/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]";
     description = "derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -2070,8 +2118,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_quality_flags_so2,
-                                                   read_quality_flags_so2);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_so2, read_quality_flags_so2);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2081,7 +2128,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_bro, read_amf_bro);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_bro, read_amf_bro);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'BrO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2091,7 +2138,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_bro_error, read_amf_bro_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_bro, read_amf_bro_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'BrO'";
@@ -2102,7 +2149,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_h2o, read_amf_h2o);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_h2o, read_amf_h2o);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'H2O'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2112,7 +2159,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_h2o_error, read_amf_h2o_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_h2o, read_amf_h2o_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'H2O'";
@@ -2123,7 +2170,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_hcho, read_amf_hcho);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_hcho, read_amf_hcho);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'HCHO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2133,8 +2180,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_hcho_error,
-                                                   read_amf_hcho_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_hcho, read_amf_hcho_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'HCHO'";
@@ -2145,7 +2191,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2, read_amf_no2);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_no2, read_amf_no2);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'NO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2155,7 +2201,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2_error, read_amf_no2_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_no2, read_amf_no2_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'NO2'";
@@ -2166,10 +2212,9 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2_tropospheric,
-                                                   read_amf_no2_tropospheric);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_no2_v2, read_amf_no2_tropospheric);
     path = "/DETAILED_RESULTS/NO2/AMFTropo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
 
     /* tropospheric_NO2_column_number_density_amf_uncertainty */
     description = "uncertainty of the tropospheric NO2 air mass factor";
@@ -2177,18 +2222,18 @@ static void register_common_variables(harp_product_definition *product_definitio
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_no2_tropospheric_error,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_no2_v2,
                                                    read_amf_no2_tropospheric_error);
     path = "/DETAILED_RESULTS/NO2/AMFTropo_Error[], /DETAILED_RESULTS/NO2/AMFTropo[]";
     description = "derived from the relative error in percent as: AMFTropo_Error[] * 0.01 * AMFTropo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "CODA product version >= 2", description);
 
     /* O3_column_number_density_amf */
     description = "O3 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_double,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_amf_o3, read_amf_o3);
+                                                   exclude_o3, read_amf_o3);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'O3'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2198,7 +2243,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_o3_error, read_amf_o3_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_o3, read_amf_o3_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'O3'";
@@ -2209,7 +2254,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_oclo, read_amf_oclo);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_oclo, read_amf_oclo);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'OClO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2219,8 +2264,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_oclo_error,
-                                                   read_amf_oclo_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_oclo, read_amf_oclo_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'OClO'";
@@ -2231,7 +2275,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_so2, read_amf_so2);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_so2, read_amf_so2);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2241,18 +2285,99 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_amf_so2_error, read_amf_so2_error);
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_so2, read_amf_so2_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'SO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* O3_effective_temperature */
+    description = "fitted ozone temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_effective_temperature",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_o3_details, read_o3_temperature);
+    path = "/DETAILED_RESULTS/O3/O3Temperature";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results=O3", "CODA product version >= 2", path,
+                                         NULL);
+
+    /* pressure */
+    dimension_type[1] = harp_dimension_vertical;
+    description = "pressure levels";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
+                                                   NULL, description, "hPa", exclude_pressure, read_pressure);
+    path = "/DETAILED_RESULTS/HCHO/AveragingKernelPressureLevel";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results=HCHO", "CODA product version >= 3",
+                                         path, description);
+    path = "/DETAILED_RESULTS/NO2/AveragingKernelPressureLevel";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results=NO2", "CODA product version >= 3", path,
+                                         description);
+
+    /* HCHO_volume_mixing_ratio_apriori */
+    description = "a priori HCHO volume mixing ratio profile";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_apriori",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_VOLUME_MIXING_RATIO, exclude_hcho_details,
+                                                   read_hcho_apriori);
+    path = "/DETAILED_RESULTS/HCHO/AprioriHCHOProfile";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results=HCHO", "CODA product version >= 3",
+                                         path, description);
+
+    /* HCHO_column_number_density_avk */
+    description = "HCHO column averaging kernel";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_hcho_details, read_hcho_avk);
+    path = "/DETAILED_RESULTS/HCHO/AveragingKernel";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results=HCHO", "CODA product version >= 3",
+                                         path, description);
+
+    /* NO2_volume_mixing_ratio_apriori */
+    description = "a priori NO2 volume mixing ratio profile";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_volume_mixing_ratio_apriori",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_VOLUME_MIXING_RATIO, exclude_no2_details,
+                                                   read_no2_apriori);
+    path = "/DETAILED_RESULTS/HCHO/AprioriNO2Profile";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results=NO2", "CODA product version >= 3",
+                                         path, description);
+
+    /* NO2_column_number_density_avk */
+    description = "NO2 column averaging kernel";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_avk",
+                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_no2_details, read_no2_avk);
+    path = "/DETAILED_RESULTS/NO2/AveragingKernel";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results=NO2", "CODA product version >= 3",
+                                         path, description);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_double, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_surface_albedo, read_surface_albedo);
+    path = "/DETAILED_RESULTS/SurfaceAlbedo[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value for wich the detailed_restults opion is set";
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results set", "CODA product version >= 2", path,
+                                         description);
+
     /* cloud_fraction */
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_cloud_fraction, read_cloud_fraction);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_fraction);
     path = "/DETAILED_RESULTS/CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudFraction[]";
@@ -2262,8 +2387,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_double,
-                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_cloud_fraction_error, read_cloud_fraction_error);
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_fraction_error);
     description = "derived from the relative error in percent as: CloudFraction_Error[] * 0.01 * CloudFraction[]";
     path = "/DETAILED_RESULTS/CloudFraction_Error[], /DETAILED_RESULTS/CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
@@ -2274,8 +2399,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "hPa",
-                                                   exclude_pressure_cloud_top, read_pressure_cloud_top);
+                                                   dimension_type, NULL, description, "hPa", NULL,
+                                                   read_pressure_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopPressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudTopPressure[]";
@@ -2286,7 +2411,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "hPa",
-                                                   exclude_pressure_cloud_top_error, read_pressure_cloud_top_error);
+                                                   NULL, read_pressure_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopPressure_Error[] * 0.01 * CloudTopPressure[]";
     path = "/DETAILED_RESULTS/CloudTopPressure_Error[], /DETAILED_RESULTS/CloudTopPressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
@@ -2297,7 +2422,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "cloud top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "km", exclude_height_cloud_top,
+                                                   dimension_type, NULL, description, "km", NULL,
                                                    read_height_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopHeight[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
@@ -2308,8 +2433,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the cloud top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_double,
-                                                   1, dimension_type, NULL, description, "km",
-                                                   exclude_height_cloud_top_error, read_height_cloud_top_error);
+                                                   1, dimension_type, NULL, description, "km", NULL,
+                                                   read_height_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopHeight_Error[] * 0.01 * CloudTopHeight[]";
     path = "/DETAILED_RESULTS/CloudTopHeight_Error[], /DETAILED_RESULTS/CloudTopHeight[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
@@ -2320,8 +2445,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "cloud top albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo", harp_type_double, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_albedo_cloud_top, read_albedo_cloud_top);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_albedo_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopAlbedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudTopAlbedo[]";
@@ -2332,7 +2457,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo_uncertainty", harp_type_double,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_albedo_cloud_top_error, read_albedo_cloud_top_error);
+                                                   NULL, read_albedo_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]";
     path = "/DETAILED_RESULTS/CloudTopAlbedo_Error[], /DETAILED_RESULTS/CloudTopAlbedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, description);
@@ -2343,8 +2468,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_cloud_optical_thickness, read_cloud_optical_thickness);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_optical_thickness);
     path = "/DETAILED_RESULTS/CloudOpticalThickness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
     path = "/CLOUD_PROPERTIES/CloudOpticalThickness[]";
@@ -2355,8 +2480,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, exclude_cloud_optical_thickness_error,
-                                                   read_cloud_optical_thickness_error);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_optical_thickness_error);
     description = "derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * "
         "CloudOpticalThickness[]";
     path = "/DETAILED_RESULTS/CloudOpticalThickness_Error[], /DETAILED_RESULTS/CloudOpticalThickness[]";
@@ -2368,8 +2492,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "absorbing aerosol index";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   exclude_absorbing_aerosol_index, read_absorbing_aerosol_index);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_absorbing_aerosol_index);
     path = "/DETAILED_RESULTS/AAI[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2438,13 +2562,12 @@ static void register_scan_variables(harp_product_definition *product_definition,
 
 static void register_common_options(harp_ingestion_module *module)
 {
-    const char *corrected_no2_column_option_values[2] = { "true" };
+    const char *detailed_results_option_values[7] = { "BrO", "H2O", "HCHO", "NO2", "O3", "OClO", "SO2" };
     const char *description;
 
-    /* clipped_cloud_fraction ingestion option */
-    description = "ingest the NO2 total vertical column density corrected for tropospheric contribution (instead of "
-        "the uncorrected NO2 total vertical column density)";
-    harp_ingestion_register_option(module, "corrected_no2_column", description, 1, corrected_no2_column_option_values);
+    /* detailed results ingestion option */
+    description = "include additional detailed results for the given species";
+    harp_ingestion_register_option(module, "detailed_results", description, 7, detailed_results_option_values);
 }
 
 static void register_o3mnto_product(void)
