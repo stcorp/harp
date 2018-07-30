@@ -173,7 +173,7 @@ static int get_spectra_sample_data(ingest_info *info, long row, float *float_dat
         {
             /* Because this data has limited precision (it was stored in */
             /* an int16), we store the radiance in a float.              */
-            *float_data = (float)(*spectrum_data) * pow(10.0, -(info->scale_factors[scale_nr]));
+            *float_data = (float)((*spectrum_data) * pow(10.0, -(info->scale_factors[scale_nr])));
             float_data++;
             spectrum_data++;
         }

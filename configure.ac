@@ -118,11 +118,13 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 /* redefines for file handling functions */
 #define open(arg1,arg2) _open(arg1,arg2)
 #define close(arg1) _close(arg1)
-#define read(arg1,arg2,arg3) _read(arg1,arg2,arg3)
+/* WARNING: On Windows we can't read blocks larger than 4GB with the read() function */
+#define read(arg1,arg2,arg3) _read(arg1,arg2,(unsigned int)arg3)
 #define lseek(arg1,arg2,arg3) _lseeki64(arg1,arg2,arg3)
 #define off_t __int64
 #define stat _stati64
 #define S_IFREG _S_IFREG
+#define getcwd(arg1,arg2) _getcwd(arg1,arg2)
 
 /* define ssize_t */
 #ifdef _WIN64

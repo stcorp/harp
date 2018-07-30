@@ -89,7 +89,7 @@ static binning_type get_binning_type(harp_variable *variable)
     /* we can't bin values that have no unit */
     if (variable->unit == NULL)
     {
-        long variable_name_length = strlen(variable->name);
+        long variable_name_length = (long)strlen(variable->name);
 
         /* '...count' variables are just summed up, but only if they are unitless and use an int32 data type */
         if (variable->data_type == harp_type_int32 && variable_name_length >= 5 &&

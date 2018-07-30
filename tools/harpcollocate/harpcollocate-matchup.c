@@ -162,12 +162,12 @@ static int collocation_criterium_new(int variable_name_length, const char *varia
         if (strcmp(criterium->variable_name, "datetime") == 0)
         {
             /* use the default unit for a datetime _distance_ */
-            unit_length = strlen(HARP_UNIT_TIME);
+            unit_length = (int)strlen(HARP_UNIT_TIME);
             unit = HARP_UNIT_TIME;
         }
         else if (strcmp(criterium->variable_name, "point_distance") == 0)
         {
-            unit_length = strlen(HARP_UNIT_LENGTH);
+            unit_length = (int)strlen(HARP_UNIT_LENGTH);
             unit = HARP_UNIT_LENGTH;
         }
     }
@@ -463,7 +463,7 @@ static int collocation_info_add_criterium_from_string(collocation_info *info, ch
     {
         cursor++;
     }
-    variable_name_length = cursor - variable_name;
+    variable_name_length = (int)(cursor - variable_name);
     if (variable_name_length == 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid criterium '%s'", argument);
@@ -499,7 +499,7 @@ static int collocation_info_add_criterium_from_string(collocation_info *info, ch
         {
             cursor++;
         }
-        unit_length = cursor - unit;
+        unit_length = (int)(cursor - unit);
         if (unit_length == 0)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid unit in criterium '%s'", argument);
@@ -542,7 +542,7 @@ static int collocation_info_update(collocation_info *info)
         }
         if (i == info->num_criteria)
         {
-            if (collocation_info_add_criterium(info, strlen(info->nearest_neighbour_x_variable_name),
+            if (collocation_info_add_criterium(info, (int)strlen(info->nearest_neighbour_x_variable_name),
                                                info->nearest_neighbour_x_variable_name, harp_plusinf(), 0, NULL) != 0)
             {
                 return -1;
@@ -563,7 +563,7 @@ static int collocation_info_update(collocation_info *info)
         }
         if (i == info->num_criteria)
         {
-            if (collocation_info_add_criterium(info, strlen(info->nearest_neighbour_y_variable_name),
+            if (collocation_info_add_criterium(info, (int)strlen(info->nearest_neighbour_y_variable_name),
                                                info->nearest_neighbour_y_variable_name, harp_plusinf(), 0, NULL) != 0)
             {
                 return -1;

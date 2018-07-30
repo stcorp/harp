@@ -2489,11 +2489,11 @@ static int read_results_pressure_levels_as_bounds_inverted(void *user_data, harp
 
         if (harp_isnan(pressure[info->num_layers - 1]))
         {
-            pressure_bounds[info->num_layers * 2 - 1] = harp_nan();
+            pressure_bounds[info->num_layers * 2 - 1] = (float)harp_nan();
         }
         else
         {
-            pressure_bounds[info->num_layers * 2 - 1] = 1e-3;
+            pressure_bounds[info->num_layers * 2 - 1] = (float)1e-3;
         }
         for (j = info->num_layers - 1; j > 0; j--)
         {

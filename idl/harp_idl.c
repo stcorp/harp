@@ -407,7 +407,7 @@ static int harp_idl_get_struct_def_for_product(harp_product *product, IDL_Struct
         int field_name_length;
 
         variable = product->variable[index];
-        field_name_length = strlen(variable->name);
+        field_name_length = (int)strlen(variable->name);
         record_tags[index].name = (char *)malloc(field_name_length + 1);
         if (record_tags[index].name == NULL)
         {
@@ -796,7 +796,7 @@ static int harp_idl_get_variable(IDL_VPTR idl_record, char *data, harp_variable 
                 }
                 for (i = 0; i < num_dims; i++)
                 {
-                    dim[num_dims - i - 1] = field_info->value.arr->dim[i];
+                    dim[num_dims - i - 1] = (long)field_info->value.arr->dim[i];
                 }
             }
         }
@@ -1078,7 +1078,7 @@ static int harp_idl_get_variable(IDL_VPTR idl_record, char *data, harp_variable 
                 harp_variable_delete(*variable);
                 return -1;
             }
-            num_enum_values = field_info->value.arr->dim[0];
+            num_enum_values = (long)field_info->value.arr->dim[0];
         }
         enum_name = malloc(num_enum_values * sizeof(char *));
         if (enum_name == NULL)

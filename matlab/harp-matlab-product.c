@@ -346,7 +346,7 @@ static char *get_matlab_string_value(mxArray *mx_data)
     char *string_data;
     int buflen;
 
-    buflen = (mxGetNumberOfElements(mx_data) * sizeof(mxChar)) + 1;
+    buflen = (int)((mxGetNumberOfElements(mx_data) * sizeof(mxChar)) + 1);
     string_data = mxCalloc(buflen, 1);
     mxGetString(mx_data, string_data, buflen);
 
@@ -405,13 +405,13 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
     }
 
     /*set value to variables after the meta data is ready */
-    matlab_num_dims = mxGetNumberOfDimensions(datastructure);
+    matlab_num_dims = (int)mxGetNumberOfDimensions(datastructure);
     for (i = 0; i < matlab_num_dims; i++)
     {
         dim[i] = (long)mxGetDimensions(datastructure)[i];
     }
 
-    num_elements = mxGetNumberOfElements(datastructure);
+    num_elements = (long)mxGetNumberOfElements(datastructure);
 
     if (num_elements == 0)
     {
@@ -425,7 +425,7 @@ static void harp_matlab_add_matlab_product_variable(harp_product **product, cons
     harp_num_dims = 0;
     if (meta_variable_dim_type != NULL)
     {
-        int num_ele = mxGetNumberOfElements(meta_variable_dim_type);
+        int num_ele = (int)mxGetNumberOfElements(meta_variable_dim_type);
         char *dimtypevalue = NULL;
 
         for (i = 0; i < num_ele; i++)

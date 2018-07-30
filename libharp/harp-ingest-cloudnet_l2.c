@@ -56,7 +56,7 @@ typedef struct ingest_info_struct
 
 /* -------------- Global variables --------------- */
 
-static double nan;
+static float nan;
 
 /* -------------------- Code -------------------- */
 
@@ -307,7 +307,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
     (void)options;
 
-    nan = coda_NaN();
+    nan = (float)coda_NaN();
     info = malloc(sizeof(ingest_info));
     if (info == NULL)
     {

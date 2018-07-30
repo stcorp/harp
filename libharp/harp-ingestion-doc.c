@@ -133,7 +133,7 @@ static int generate_product_definition(const char *filename, const harp_ingestio
     fputs(":orphan: true\n\n", fout);
     fputs(product_definition->name, fout);
     fputc('\n', fout);
-    fnputc(strlen(product_definition->name), '=', fout);
+    fnputc((long)strlen(product_definition->name), '=', fout);
     fnputc(2, '\n', fout);
 
     fputs("Variables\n", fout);
@@ -303,8 +303,8 @@ static int generate_product_definition(const char *filename, const harp_ingestio
 
             if (variable_definition->exclude != NULL)
             {
-                column_width[1] = max(column_width[1], strlen("*available*"));
-                column_width[2] = max(column_width[2], strlen("optional"));
+                column_width[1] = max(column_width[1], (int)strlen("*available*"));
+                column_width[2] = max(column_width[2], (int)strlen("optional"));
             }
 
             for (j = 0; j < variable_definition->num_mappings; j++)
@@ -313,7 +313,7 @@ static int generate_product_definition(const char *filename, const harp_ingestio
 
                 if (mapping->ingestion_option != NULL || mapping->condition != NULL)
                 {
-                    column_width[1] = max(column_width[1], strlen("*condition*"));
+                    column_width[1] = max(column_width[1], (int)strlen("*condition*"));
 
                     if (mapping->ingestion_option != NULL && mapping->condition != NULL)
                     {
@@ -322,22 +322,22 @@ static int generate_product_definition(const char *filename, const harp_ingestio
                     }
                     else if (mapping->ingestion_option != NULL)
                     {
-                        column_width[2] = max(column_width[2], strlen(mapping->ingestion_option));
+                        column_width[2] = max(column_width[2], (int)strlen(mapping->ingestion_option));
                     }
                     else
                     {
-                        column_width[2] = max(column_width[2], strlen(mapping->condition));
+                        column_width[2] = max(column_width[2], (int)strlen(mapping->condition));
                     }
                 }
                 if (mapping->path != NULL)
                 {
-                    column_width[1] = max(column_width[1], strlen("*path*"));
+                    column_width[1] = max(column_width[1], (int)strlen("*path*"));
                     column_width[2] = max(column_width[2], scprintf("**%s**", mapping->path));
                 }
                 if (mapping->description != NULL)
                 {
-                    column_width[1] = max(column_width[1], strlen("*description*"));
-                    column_width[2] = max(column_width[2], strlen(mapping->description));
+                    column_width[1] = max(column_width[1], (int)strlen("*description*"));
+                    column_width[2] = max(column_width[2], (int)strlen(mapping->description));
                 }
             }
         }
@@ -347,8 +347,8 @@ static int generate_product_definition(const char *filename, const harp_ingestio
          * the width of the last column is increased such that the combined width matches the length of the second
          * header field.
          */
-        column_width[0] = max(column_width[0], strlen("field name"));
-        span_width = max(strlen("mapping description"), column_width[1] + 3 + column_width[2]);
+        column_width[0] = max(column_width[0], (int)strlen("field name"));
+        span_width = max((int)strlen("mapping description"), column_width[1] + 3 + column_width[2]);
         if (span_width > column_width[1] + 3 + column_width[2])
         {
             column_width[2] = span_width - (column_width[1] + 3);
@@ -521,7 +521,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
 
     fprintf(fout, ".. _%s:\n\n", product_group);
     fprintf(fout, "%s products\n", product_group);
-    fnputc(strlen(product_group) + 9, '-', fout);
+    fnputc((long)strlen(product_group) + 9, '-', fout);
     fputc('\n', fout);
     fputc('\n', fout);
 
@@ -582,7 +582,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
 
         fprintf(fout, ".. _%s:\n\n", module->name);
         fprintf(fout, "%s\n", module->name);
-        fnputc(strlen(module->name), '^', fout);
+        fnputc((long)strlen(module->name), '^', fout);
         fputc('\n', fout);
 
         if (module->description != NULL)

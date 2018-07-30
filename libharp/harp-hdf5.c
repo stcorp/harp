@@ -394,11 +394,11 @@ static int set_compression(hid_t plist_id, harp_variable *variable)
 
             while (i < variable->num_dimensions - 1)
             {
-                num_elements /= dimension[i];
+                num_elements /= (long)dimension[i];
                 if (num_elements <= max_length)
                 {
                     dimension[i] = max_length / num_elements;
-                    num_elements *= dimension[i];
+                    num_elements *= (long)dimension[i];
                     break;
                 }
                 dimension[i] = 1;
@@ -1113,7 +1113,7 @@ static herr_t hdf5_find_dimensions_func(hid_t group_id, const char *name, const 
         dimension_ids->is_valid[dimension_type] = 1;
         dimension_ids->object_id[dimension_type].fileno = object_info.fileno;
         dimension_ids->object_id[dimension_type].addr = object_info.addr;
-        dimension_ids->length[dimension_type] = length;
+        dimension_ids->length[dimension_type] = (long)length;
     }
 
     return 0;

@@ -1002,7 +1002,7 @@ int harp_import_global_attributes_hdf4(const char *filename, double *datetime_st
 
 static int write_string_attribute(int32 obj_id, const char *name, const char *data)
 {
-    if (SDsetattr(obj_id, name, DFNT_CHAR, strlen(data), data) != 0)
+    if (SDsetattr(obj_id, name, DFNT_CHAR, (int32_t)strlen(data), data) != 0)
     {
         harp_set_error(HARP_ERROR_HDF4, NULL);
         return -1;
@@ -1060,7 +1060,7 @@ static int write_dimensions(int32 sds_id, int num_dimensions, const hdf4_dimensi
     length = 0;
     for (i = 0; i < num_dimensions; i++)
     {
-        length += strlen(get_dimension_type_name(dimension_type[i]));
+        length += (int)strlen(get_dimension_type_name(dimension_type[i]));
 
         /* Reserve additional space for the ',' separator. */
         if (i < num_dimensions - 1)

@@ -309,7 +309,7 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     info->num_latitudes = 0;
     info->latitude_min = 0.0;
     info->latitude_max = 0.0;
-    info->num_longitudes = 0.0;
+    info->num_longitudes = 0;
     info->longitude_min = 0.0;
     info->longitude_max = 0.0;
 

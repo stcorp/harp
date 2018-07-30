@@ -94,12 +94,12 @@ static int resample_info_new(resample_info **new_info)
 static int get_criterium_index_for_variable_name(harp_collocation_result *collocation_result, const char *variable_name,
                                                  long *index)
 {
-    long variable_name_length = strlen(variable_name);
+    long variable_name_length = (long)strlen(variable_name);
     int i;
 
     for (i = 0; i < collocation_result->num_differences; i++)
     {
-        long difference_name_length = strlen(collocation_result->difference_variable_name[i]);
+        long difference_name_length = (long)strlen(collocation_result->difference_variable_name[i]);
 
         if (variable_name_length == difference_name_length)
         {

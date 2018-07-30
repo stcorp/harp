@@ -748,7 +748,7 @@ static int read_product(int ncid, harp_product *product, netcdf_dimensions *dime
             return -1;
         }
 
-        if (dimensions_add(dimensions, dimension_type, length) != i)
+        if (dimensions_add(dimensions, dimension_type, (long)length) != i)
         {
             harp_set_error(HARP_ERROR_IMPORT, "duplicate dimensions with name '%s'", name);
             return -1;
@@ -971,7 +971,7 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
                 {
                     return -1;
                 }
-                attr_dimension[harp_dim_type] = length;
+                attr_dimension[harp_dim_type] = (long)length;
             }
         }
     }

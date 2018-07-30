@@ -205,7 +205,7 @@ int harp_variable_get_flag_meanings_string(const harp_variable *variable, char *
                            __FILE__, __LINE__);
             return -1;
         }
-        length += strlen(variable->enum_name[i]);
+        length += (int)strlen(variable->enum_name[i]);
     }
     /* add room for spaces + terminating zero */
     length += variable->num_enum_values;
@@ -220,7 +220,7 @@ int harp_variable_get_flag_meanings_string(const harp_variable *variable, char *
     for (i = 0; i < variable->num_enum_values; i++)
     {
         strcpy(&(*flag_meanings)[pos], variable->enum_name[i]);
-        pos += strlen(variable->enum_name[i]);
+        pos += (int)strlen(variable->enum_name[i]);
         if (i < variable->num_enum_values - 1)
         {
             (*flag_meanings)[pos] = ' ';

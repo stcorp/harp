@@ -100,7 +100,7 @@ static int add_path_file(harp_dataset *dataset, const char *filename, const char
 
     while (fgets(line, HARP_MAX_PATH_LENGTH, stream) != NULL)
     {
-        long length = strlen(line);
+        long length = (long)strlen(line);
 
         /* Trim the line */
         while (length > 0 && (line[length - 1] == '\r' || line[length - 1] == '\n'))
@@ -383,7 +383,7 @@ LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path, con
     else
     {
         harp_product_metadata *metadata = NULL;
-        long length = strlen(path);
+        long length = (long)strlen(path);
 
         if (length > 4 && strcmp(&path[length - 4], ".pth") == 0)
         {

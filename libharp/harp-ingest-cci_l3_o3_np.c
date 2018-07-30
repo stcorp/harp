@@ -369,7 +369,7 @@ static int read_pressure_bounds(void *user_data, harp_array data)
         for (j = info->num_vertical - 1; j > 0; j--)
         {
             /* Log-linear interpolation. */
-            bounds[j * 2] = (float)(bounds[(j - 1) * 2 + 1] = sqrt(levels[j] * levels[j - 1]));
+            bounds[j * 2] = bounds[(j - 1) * 2 + 1] = (float)sqrt(levels[j] * levels[j - 1]);
         }
 
         bounds[0] = levels[0];

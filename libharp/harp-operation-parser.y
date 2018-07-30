@@ -313,7 +313,7 @@ identifier:
 
 double_value:
       DOUBLE_VALUE {
-            long length = strlen($1);
+            long length = (long)strlen($1);
             if (harp_parse_double($1, length, &$$, 0) != length)
             {
                 free($1);
@@ -322,7 +322,7 @@ double_value:
             free($1);
         }
     | '+' DOUBLE_VALUE {
-            long length = strlen($2);
+            long length = (long)strlen($2);
             if (harp_parse_double($2, length, &$$, 0) != length)
             {
                 free($2);
@@ -331,7 +331,7 @@ double_value:
             free($2);
         }
     | '-' DOUBLE_VALUE {
-            long length = strlen($2);
+            long length = (long)strlen($2);
             if (harp_parse_double($2, length, &$$, 0) != length)
             {
                 free($2);

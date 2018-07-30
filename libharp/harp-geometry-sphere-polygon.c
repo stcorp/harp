@@ -1058,7 +1058,7 @@ int harp_spherical_polygon_new(int32_t numberofpoints, harp_spherical_polygon **
                        __FILE__, __LINE__);
         return -1;
     }
-    (*polygon)->size = size;
+    (*polygon)->size = (int)size;
     (*polygon)->numberofpoints = numberofpoints;
 
     return 0;

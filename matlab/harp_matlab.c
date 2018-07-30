@@ -54,7 +54,7 @@ static void harp_matlab_set_paths(void)
         }
         mxDestroyArray(arg);
 
-        path_length = mxGetN(mxpath) * mxGetM(mxpath) + 1;
+        path_length = (int)(mxGetN(mxpath) * mxGetM(mxpath) + 1);
         path = mxCalloc(path_length + 1, 1);
         if (mxGetString(mxpath, path, path_length + 1) != 0)
         {
@@ -148,14 +148,14 @@ static void harp_matlab_export(int nlhs, mxArray *plhs[], int nrhs, const mxArra
         mexErrMsgTxt("Third argument should be a string.");
     }
 
-    buflen = mxGetN(prhs[1]) + 1;
+    buflen = (int)(mxGetN(prhs[1]) + 1);
     filename = (char *)mxCalloc(buflen, sizeof(char));
     if (mxGetString(prhs[1], filename, buflen) != 0)
     {
         mexErrMsgTxt("Unable to copy filepath string.");
     }
 
-    buflen = mxGetN(prhs[2]) + 1;
+    buflen = (int)(mxGetN(prhs[2]) + 1);
     format = (char *)mxCalloc(buflen, sizeof(char));
     if (mxGetString(prhs[2], format, buflen) != 0)
     {
@@ -211,8 +211,8 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
         {
             mexErrMsgTxt("First argument should not be a char array with more than 2 dimensions.");
         }
-        buflen = mxGetN(prhs[0]) + 1;
-        num_files = mxGetM(prhs[0]);
+        buflen = (int)(mxGetN(prhs[0]) + 1);
+        num_files = (int)mxGetM(prhs[0]);
         if (num_files == 0 || buflen == 1)
         {
             mexErrMsgTxt("First argument contains an empty filelist.");
@@ -239,7 +239,7 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
     }
     else if (mxIsCell(prhs[0]))
     {
-        num_files = mxGetNumberOfElements(prhs[0]);
+        num_files = (int)mxGetNumberOfElements(prhs[0]);
         if (num_files == 0)
         {
             mexErrMsgTxt("First argument contains an empty filelist.");
@@ -258,7 +258,7 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
             {
                 mexErrMsgTxt("Cell array elements of first argument should be row vectors.");
             }
-            buflen = mxGetN(mx_filename) + 1;
+            buflen = (int)(mxGetN(mx_filename) + 1);
             if (buflen == 1)
             {
                 mexErrMsgTxt("Cell array elements of first argument should not be empty.");
@@ -284,7 +284,7 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
             mexErrMsgTxt("Second argument should be a string.");
         }
 
-        buflen = mxGetN(prhs[1]) + 1;
+        buflen = (int)(mxGetN(prhs[1]) + 1);
         script = (char *)mxCalloc(buflen, sizeof(char));
         if (mxGetString(prhs[1], script, buflen) != 0)
         {
@@ -298,7 +298,7 @@ static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArra
         {
             mexErrMsgTxt("Third argument should be a string.");
         }
-        buflen = mxGetN(prhs[2]) + 1;
+        buflen = (int)(mxGetN(prhs[2]) + 1);
         option = (char *)mxCalloc(buflen, sizeof(char));
         if (mxGetString(prhs[2], option, buflen) != 0)
         {
