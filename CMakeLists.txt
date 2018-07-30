@@ -23,6 +23,7 @@ set(CMAKE_MODULE_PATH
   ${HARP_SOURCE_DIR}/CMakeModules
   ${CMAKE_MODULE_PATH}
   CACHE INTERNAL "Local CMake modules")
+set(CMAKE_MACOSX_RPATH ON)
 
 include(CheckFunctionExists)
 include(CheckLibraryExists)
@@ -533,8 +534,8 @@ if(HARP_BUILD_IDL)
     message(FATAL_ERROR "IDL installation not found.")
   endif(NOT IDL_FOUND)
   include_directories(AFTER ${IDL_INCLUDE_DIRS})
-  set(HARP_IDL_SOURCE_FILES idl/harp_idl.c idl/harp_idl.def)
-  add_library(harp_idl MODULE ${HARP_IDL_SOURCE_FILES})
+  set(HARP_IDL_SOURCES idl/harp_idl.c idl/harp_idl.def)
+  add_library(harp_idl MODULE ${HARP_IDL_SOURCES})
   set_target_properties(harp_idl PROPERTIES
     PREFIX ""
     COMPILE_FLAGS "-DLIBHARPDLL")
@@ -559,12 +560,12 @@ if(HARP_BUILD_MATLAB)
     message(FATAL_ERROR "MATLAB installation not found.")
   endif(NOT MATLAB_FOUND)
   include_directories(AFTER ${Matlab_INCLUDE_DIRS})
-  set(HARP_MATLAB_SOURCE_FILES
+  set(HARP_MATLAB_SOURCES
     matlab/harp-matlab-product.c
     matlab/harp-matlab.h
     matlab/harp_matlab.c
     matlab/harp_matlab.def)
-  add_library(harp_matlab MODULE ${HARP_MATLAB_SOURCE_FILES})
+  add_library(harp_matlab MODULE ${HARP_MATLAB_SOURCES})
   set_target_properties(harp_matlab PROPERTIES
     PREFIX ""
     SUFFIX ".${Matlab_MEX_EXTENSION}"
@@ -671,15 +672,15 @@ install(FILES
 SET(CPACK_PACKAGE_NAME "harp")
 set(CPACK_PACKAGE_VENDOR "S&T")
 if(WIN32)
-install(FILES ${CODA_DLLS} ${HDF4_DLLS} ${HDF5_DLLS} DESTINATION bin)
-set(CPACK_GENERATOR "WIX")
-configure_file(COPYING copying.txt COPYONLY)
-set(CPACK_RESOURCE_FILE_LICENSE copying.txt)
-configure_file(README readme.txt COPYONLY)
-set(CPACK_RESOURCE_FILE_README readme.txt)
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "HARP")
-set(CPACK_WIX_UPGRADE_GUID "9CF2DA32-201D-4557-BC59-B655216EAD6D")
-set(CPACK_WIX_PRODUCT_GUID "FA7592A4-D91C-4401-863D-CE52DA95EB11")
+  install(FILES ${CODA_DLLS} ${HDF4_DLLS} ${HDF5_DLLS} DESTINATION bin)
+  set(CPACK_GENERATOR "WIX")
+  configure_file(COPYING copying.txt COPYONLY)
+  set(CPACK_RESOURCE_FILE_LICENSE copying.txt)
+  configure_file(README readme.txt COPYONLY)
+  set(CPACK_RESOURCE_FILE_README readme.txt)
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "HARP")
+  set(CPACK_WIX_UPGRADE_GUID "9CF2DA32-201D-4557-BC59-B655216EAD6D")
+  set(CPACK_WIX_PRODUCT_GUID "FA7592A4-D91C-4401-863D-CE52DA95EB11")
 endif(WIN32)
 
 include(CPack)
