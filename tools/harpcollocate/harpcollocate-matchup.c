@@ -1553,11 +1553,24 @@ int matchup(int argc, char *argv[])
         /* perform the second nearest neighbour filtering using a filter on the collocation results */
         if (info->perform_nearest_neighbour_x_first)
         {
-            resample_nearest_b(info->collocation_result, info->nearest_neighbour_y_criterium_index);
+            if (resample_nearest_b(info->collocation_result, info->nearest_neighbour_y_criterium_index) != 0)
+            {
+                collocation_info_delete(info);
+                return -1;
+            }
         }
         else
         {
-            resample_nearest_a(info->collocation_result, info->nearest_neighbour_x_criterium_index);
+            if (resample_nearest_a(info->collocation_result, info->nearest_neighbour_x_criterium_index) != 0)
+            {
+                collocation_info_delete(info);
+                return -1;
+            }
+        }
+        if (harp_collocation_result_sort_by_collocation_index(info->collocation_result) != 0)
+        {
+            collocation_info_delete(info);
+            return -1;
         }
     }
 
