@@ -195,7 +195,6 @@ BUILT_SOURCES += libharp/harp-operation-parser.h
 
 harpcheck_SOURCES = tools/harpcheck/harpcheck.c
 harpcheck_LDADD = libharp.la
-harpcheck_DEPENDENCIES = libharp.la
 INDENTFILES += $(harpcheck_SOURCES)
 
 # harpcollocate
