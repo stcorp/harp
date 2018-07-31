@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "export.h"
+#include "idl_export.h"
 
 #include "coda.h"
 #include "harp.h"

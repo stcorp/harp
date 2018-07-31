@@ -467,7 +467,7 @@ endif()
 
 
 
-set(IDL_INCLUDE_DIR_TO_LOOK ${IDL_ROOT_DIR}/external)
+set(IDL_INCLUDE_DIR_TO_LOOK ${IDL_ROOT_DIR}/external/include)
 if(_IDL_64Build)
   set(_IDL_current_suffix ${_IDL_bin_suffix_64bits})
 else()
@@ -509,7 +509,7 @@ list(APPEND _IDL_required_variables IDL_ROOT_DIR)
 # the idl library and export.h header file are required
 find_path(
   IDL_INCLUDE_DIRS
-  export.h
+  idl_export.h
   PATHS ${IDL_INCLUDE_DIR_TO_LOOK}
   NO_DEFAULT_PATH
   )
