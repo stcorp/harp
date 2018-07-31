@@ -32,23 +32,10 @@ include(CheckSymbolExists)
 include(CheckTypeSize)
 include(TestBigEndian)
 
-# Use RelWithDebInfo as default target 
-#
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-      FORCE)
-ENDIF(NOT CMAKE_BUILD_TYPE)
-
-# -DNDEBUG purposely omitted because we want assertions in RelWithDebInfo mode
-#
-if(CMAKE_COMPILER_IS_GNUCC)
-  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-Og -g"
-	  CACHE STRING "Flags used by the compiler during release builds with debug info.")
-else()
-  set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g"
-	  CACHE STRING "Flags used by the compiler during release builds with debug info.")
-endif()
+if(NOT MSVC AND NOT CMAKE_BUILD_TYPE AND NOT CMAKE_C_FLAGS)
+  set(CMAKE_C_FLAGS "-O2 -g"
+      CACHE STRING "Flags used by the C compiler during all build types." FORCE)
+endif(NOT MSVC AND NOT CMAKE_BUILD_TYPE AND NOT CMAKE_C_FLAGS)
 
 # Option handling
 #
