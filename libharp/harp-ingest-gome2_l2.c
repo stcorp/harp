@@ -2607,7 +2607,7 @@ static void register_ersnto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module = harp_ingestion_register_module_coda("GOME_L2_ERSNTO", "GOME", "O3MSAF", "ERSNTO",
+    module = harp_ingestion_register_module_coda("GOME_L2_ERSNTO", "GOME", "ACSAF", "ERSNTO",
                                                  "GOME near-real-time total column trace gas product", ingestion_init,
                                                  ingestion_done);
     register_common_options(module);
@@ -2623,7 +2623,7 @@ static void register_ersoto_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module = harp_ingestion_register_module_coda("GOME_L2_ERSOTO", "GOME", "O3MSAF", "ERSOTO",
+    module = harp_ingestion_register_module_coda("GOME_L2_ERSOTO", "GOME", "ACSAF", "ERSOTO",
                                                  "GOME offline total column trace gas product", ingestion_init,
                                                  ingestion_done);
     register_common_options(module);
