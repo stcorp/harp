@@ -233,7 +233,6 @@ typedef struct ingest_info_struct
     /* GRIB1 grid_data_parameter_ref = (1 * 256 * 256 + table2Version) * 256 + indicatorOfParameter
      * GRIB2 grid_data_parameter_ref = ((2 * 256 + discipline) * 256 + parameterCategory) * 256 + parameterNumber */
     long *grid_data_parameter_ref;      /* [num_grid_data] */
-    int ignore_duplicates;
     coda_cursor *parameter_cursor;      /* [num_grid_data], array of cursors to /[]/data([])/values for each param */
     double *level;      /* [num_grid_data] */
     double wavelength;
@@ -241,7 +240,6 @@ typedef struct ingest_info_struct
     double datetime;
     double reference_datetime;
     int is_forecast_datetime;
-    int ignore_time_for_z;
 
     /* original grid definition */
     uint32_t Ni;        /* num_longitudes */
@@ -2134,11 +2132,8 @@ static int init_cursors_and_grid(ingest_info *info)
                 }
                 if (!datetime_initialised)
                 {
-                    if (!(info->ignore_time_for_z && parameter == grib_param_z))
-                    {
-                        info->datetime = datetime;
-                        datetime_initialised = 1;
-                    }
+                    info->datetime = datetime;
+                    datetime_initialised = 1;
                 }
                 else if (info->datetime != datetime)
                 {
@@ -2279,11 +2274,8 @@ static int init_cursors_and_grid(ingest_info *info)
 
             if (!datetime_initialised)
             {
-                if (!(info->ignore_time_for_z && parameter == grib_param_z))
-                {
-                    info->datetime = info->reference_datetime;
-                    datetime_initialised = 1;
-                }
+                info->datetime = info->reference_datetime;
+                datetime_initialised = 1;
             }
             else if (info->datetime != info->reference_datetime)
             {
@@ -2458,12 +2450,9 @@ static int init_cursors_and_grid(ingest_info *info)
             info->has_parameter[param] = 1;
             if (info->grid_data_index[param * info->num_levels + level - 1] != -1)
             {
-                if (!info->ignore_duplicates)
-                {
-                    harp_set_error(HARP_ERROR_INGESTION, "parameter %s and level (%lf) occur more than once in file",
-                                   param_name[param], info->level[i]);
-                    return -1;
-                }
+                harp_set_error(HARP_ERROR_INGESTION, "parameter %s and level (%lf) occur more than once in file",
+                               param_name[param], info->level[i]);
+                return -1;
             }
             else
             {
@@ -2528,14 +2517,12 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     info->num_messages = 0;
     info->num_grid_data = 0;
     info->grid_data_parameter_ref = NULL;
-    info->ignore_duplicates = 0;
     info->parameter_cursor = NULL;
     info->level = NULL;
     info->wavelength = harp_nan();
     info->datetime = 0;
     info->reference_datetime = 0;
     info->is_forecast_datetime = 0;
-    info->ignore_time_for_z = 0;
     info->Ni = 0;
     info->Nj = 0;
     info->latitudeOfFirstGridPoint = 0;
@@ -2575,22 +2562,12 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
     ingest_info *info;
-    const char *value;
     coda_format format;
 
     (void)options;
     if (ingest_info_new(product, &info) != 0)
     {
         return -1;
-    }
-
-    if (harp_ingestion_options_get_option(options, "ignore_time_for_z", &value) == 0)
-    {
-        info->ignore_time_for_z = 1;
-    }
-    if (harp_ingestion_options_get_option(options, "ignore_duplicates", &value) == 0)
-    {
-        info->ignore_duplicates = 1;
     }
 
     if (coda_get_product_format(product, &format) != 0)
@@ -2931,21 +2908,11 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-    const char *ignore_option_values[] = { "true" };
     const char *description;
     const char *path;
 
     module = harp_ingestion_register_module_coda("ECMWF_GRIB", "ECMWF GRIB", "ECMWF", "GRIB",
                                                  "ECMWF model data in GRIB format", ingestion_init, ingestion_done);
-
-    /* option to ignore the time value of the geopotential parameter */
-    description = "ignore time for the geopotential parameter";
-    harp_ingestion_register_option(module, "ignore_time_for_z", description, 1, ignore_option_values);
-
-    /* option to ignore any duplicates  time check of geopotential parameter */
-    description = "ignore duplicate GRIB messages (only first message occurence will be used)";
-    harp_ingestion_register_option(module, "ignore_duplicates", description, 1, ignore_option_values);
-
 
     /* ECMWF GRIB product */
     description = "The file can use either the GRIB1 or GRIB2 format. "
