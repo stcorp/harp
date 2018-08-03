@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8.8)
+cmake_policy(SET CMP0075 NEW)
 
 project(HARP)
 
@@ -181,26 +182,7 @@ include_directories(${CODA_INCLUDE_DIR})
 
 include_directories(BEFORE ${HARP_BINARY_DIR} ${HARP_SOURCE_DIR}/libharp)
 
-# Some autoconf variables that CMake does not use itself, but
-# that are used in the config file substitutions.
-#
-set(PACKAGE_NAME \"${CMAKE_PROJECT_NAME}\")
-string(TOLOWER ${PACKAGE_NAME} PACKAGE)
-set(PACKAGE_VERSION ${HARP_VERSION})
-string(REPLACE "\"" "" PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
-set(PACKAGE_STRING \"${PACKAGE_STRING}\")
-set(VERSION \"${VERSION}\")
-set(PACKAGE_TARNAME ${PACKAGE})
-set(PACKAGE_BUGREPORT \"\")
-
 add_definitions(-DHAVE_CONFIG_H)
-
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/libharp/harp.h.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/harp.h)
 
 # The Doxyfile uses some autoconf variables CMake does not have.
 # We set them here manually, so that we can use the same .in
@@ -671,3 +653,22 @@ if(WIN32)
 endif(WIN32)
 
 include(CPack)
+
+# Some autoconf variables that CMake does not use itself, but that are used in the config file substitutions.
+# (leave this section at the end so other rules will use the unquoted VERSION value)
+#
+set(PACKAGE_NAME \"${CMAKE_PROJECT_NAME}\")
+string(TOLOWER ${PACKAGE_NAME} PACKAGE)
+set(PACKAGE_VERSION ${HARP_VERSION})
+string(REPLACE "\"" "" PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
+set(PACKAGE_STRING \"${PACKAGE_STRING}\")
+set(VERSION \"${VERSION}\")
+set(PACKAGE_TARNAME ${PACKAGE})
+set(PACKAGE_BUGREPORT \"\")
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/libharp/harp.h.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/harp.h)
