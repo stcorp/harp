@@ -512,10 +512,9 @@ You do this by setting an <code class="docutils literal"><span class="pre">IDL_D
 On Windows open the &#8216;System&#8217; control panel of your Windows operating system
 and goto the &#8216;Advanced&#8217; tab. Then click on &#8216;Environment Variables&#8217; and create a
 new system variable with the name <code class="docutils literal"><span class="pre">IDL_DLM_PATH</span></code> and value
-<code class="docutils literal"><span class="pre">&lt;IDL_DEFAULT&gt;;C:\HARP\lib</span></code>.
-If you have installed HARP in a location different from <code class="docutils literal"><span class="pre">C:\HARP</span></code> then
-replace this part in the value by the installation directory you chose when
-installing HARP.
+<code class="docutils literal"><span class="pre">&lt;IDL_DEFAULT&gt;;C:\Program</span> <span class="pre">Files\HARP\lib</span></code>. If you have installed HARP in a
+location different from <code class="docutils literal"><span class="pre">C:\Program</span> <span class="pre">Files\HARP</span></code> then replace this part in the
+value by the installation directory you chose when installing HARP.
 Note that you should ideally not use the IDL <code class="docutils literal"><span class="pre">pref_set</span></code> function to set the
 <code class="docutils literal"><span class="pre">IDL_DLM_PATH</span></code>. The HARP DLM file will still load, but HARP will not be able
 to find the coda format definition files or udunits2 xml files this way.
@@ -531,10 +530,10 @@ or CODA functions using:</p>
 </pre></div>
 </div>
 <p>For MATLAB you will have to start MATLAB and goto the &#8216;Set Path...&#8217; menu item
-in the &#8216;File&#8217; menu. Here you should add the directory <code class="docutils literal"><span class="pre">C:\HARP\matlab</span></code>. If
-you have installed HARP in a location different from <code class="docutils literal"><span class="pre">C:\HARP</span></code> then replace
-this part of the directory by the installation directory you had chosen when
-you installed HARP.</p>
+in the &#8216;File&#8217; menu. Here you should add the directory
+<code class="docutils literal"><span class="pre">C:\Program</span> <span class="pre">Files\HARP\matlab</span></code>. If you have installed HARP in a location
+different from <code class="docutils literal"><span class="pre">C:\Program</span> <span class="pre">Files\HARP</span></code> then replace this part of the
+directory by the installation directory you had chosen when you installed HARP.</p>
 <p>Note: The binary installer for Windows comes with DLLs for all dependencies,
 which are CODA, HDF4, HDF5, and their dependencies.</p>
 </div>

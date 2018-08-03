@@ -343,10 +343,9 @@ You do this by setting an ``IDL_DLM_PATH`` environment variable.
 On Windows open the 'System' control panel of your Windows operating system
 and goto the 'Advanced' tab. Then click on 'Environment Variables' and create a
 new system variable with the name ``IDL_DLM_PATH`` and value
-``<IDL_DEFAULT>;C:\HARP\lib``.
-If you have installed HARP in a location different from ``C:\HARP`` then
-replace this part in the value by the installation directory you chose when
-installing HARP.
+``<IDL_DEFAULT>;C:\Program Files\HARP\lib``. If you have installed HARP in a
+location different from ``C:\Program Files\HARP`` then replace this part in the
+value by the installation directory you chose when installing HARP.
 Note that you should ideally not use the IDL ``pref_set`` function to set the
 ``IDL_DLM_PATH``. The HARP DLM file will still load, but HARP will not be able
 to find the coda format definition files or udunits2 xml files this way.
@@ -362,10 +361,10 @@ or CODA functions using::
     IDL> SETENV, 'UDUNITS2_XML_PATH=/path/to/udunits2.xml'
 
 For MATLAB you will have to start MATLAB and goto the 'Set Path...' menu item
-in the 'File' menu. Here you should add the directory ``C:\HARP\matlab``. If
-you have installed HARP in a location different from ``C:\HARP`` then replace
-this part of the directory by the installation directory you had chosen when
-you installed HARP.
+in the 'File' menu. Here you should add the directory
+``C:\Program Files\HARP\matlab``. If you have installed HARP in a location
+different from ``C:\Program Files\HARP`` then replace this part of the
+directory by the installation directory you had chosen when you installed HARP.
 
 Note: The binary installer for Windows comes with DLLs for all dependencies,
 which are CODA, HDF4, HDF5, and their dependencies.
