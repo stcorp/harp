@@ -18,16 +18,23 @@ fi
 AC_CHECK_HEADERS(hdf.h)
 AC_CHECK_HEADERS(netcdf.h)
 AC_CHECK_HEADERS(mfhdf.h)
+HDF4DFLIB=-ldf
 AC_CHECK_LIB(df, Hopen, ac_cv_lib_df=yes, ac_cv_lib_df=no, [ $ZLIB $JPEGLIB $SZLIB])
-AC_CHECK_LIB(mfhdf, SDstart, ac_cv_lib_mfhdf=yes, ac_cv_lib_mfhdf=no, [ -ldf $ZLIB $JPEGLIB $SZLIB])
+if test $ac_cv_lib_df = no ; then
+  AC_CHECK_LIB(hdf, Hopen, ac_cv_lib_hdf=yes, ac_cv_lib_hdf=no, [ $ZLIB $JPEGLIB $SZLIB])
+  if test $ac_cv_lib_hdf = yes ; then
+    HDF4DFLIB=-lhdf
+  fi
+fi
+AC_CHECK_LIB(mfhdf, SDstart, ac_cv_lib_mfhdf=yes, ac_cv_lib_mfhdf=no, [ $HDF4DFLIB $ZLIB $JPEGLIB $SZLIB])
 if test $ac_cv_header_hdf_h = no || test $ac_cv_header_mfhdf_h = no ||
-   test $ac_cv_lib_df = no || test $ac_cv_lib_mfhdf = no ; then
+   (test $ac_cv_lib_df = no && test $ac_cv_lib_hdf = no) || test $ac_cv_lib_mfhdf = no ; then
   st_cv_have_hdf4=no
   CPPFLAGS=$old_CPPFLAGS
   LDFLAGS=$old_LDFLAGS
 else
   st_cv_have_hdf4=yes
-  HDF4LIBS="-lmfhdf -ldf $ZLIB $JPEGLIB $SZLIB"
+  HDF4LIBS="-lmfhdf $HDF4DFLIB $ZLIB $JPEGLIB $SZLIB"
 fi
 AC_MSG_CHECKING(for HDF4 installation)
 AC_MSG_RESULT($st_cv_have_hdf4)
