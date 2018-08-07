@@ -400,7 +400,7 @@ static int add_count_variable(harp_product *product, binning_type *bintype, binn
             }
             bintype[index] = target_bintype;
         }
-        assert(bintype[index] = target_bintype);
+        assert(bintype[index] == target_bintype);
         /* if the count variable already exists and does not get removed then we assume it is correct/consistent
          * (i.e. existing count=0 <-> variable=NaN) */
     }
