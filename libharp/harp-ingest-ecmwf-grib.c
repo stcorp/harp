@@ -2242,7 +2242,6 @@ static int init_cursors_and_grid(ingest_info *info)
             uint8_t table2Version;
             uint8_t indicatorOfParameter;
             uint8_t indicatorOfTypeOfLevel;
-            grib_parameter parameter;
             uint16_t level;
 
             if (coda_cursor_goto(&cursor, "table2Version") != 0)
@@ -2270,7 +2269,6 @@ static int init_cursors_and_grid(ingest_info *info)
             coda_cursor_goto_parent(&cursor);
             parameter_ref += indicatorOfParameter;
             info->grid_data_parameter_ref[parameter_index] = parameter_ref;
-            parameter = get_grib_parameter(parameter_ref);
 
             if (!datetime_initialised)
             {
