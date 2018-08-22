@@ -981,12 +981,14 @@ int harp_variable_conversion_set_source_description(harp_variable_conversion *co
  * harp_doc_list_conversions(product, printf);
  * \endcode
  * \param product Pointer to a HARP product (can be NULL).
+ * \param variable_name Name of the target variable for which to show conversions (can be NULL).
  * \param print Reference to a printf compatible function.
  * \return
  *   \arg \c  0, Succes.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*print) (const char *, ...))
+LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const char *variable_name,
+                                          int (*print) (const char *, ...))
 {
     conversion_info info;
     int i, j;
@@ -1011,6 +1013,11 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
             for (j = 0; j < conversion_list->num_conversions; j++)
             {
                 harp_variable_conversion *conversion = conversion_list->conversion[j];
+
+                if (variable_name != NULL && strcmp(conversion->variable_name, variable_name) != 0)
+                {
+                    continue;
+                }
 
                 if (first)
                 {
@@ -1056,6 +1063,11 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*pri
             harp_variable_conversion *conversion = conversion_list->conversion[j];
             harp_variable *variable;
             int k;
+
+            if (variable_name != NULL && strcmp(conversion->variable_name, variable_name) != 0)
+            {
+                continue;
+            }
 
             if (conversion->enabled != NULL && !conversion->enabled())
             {

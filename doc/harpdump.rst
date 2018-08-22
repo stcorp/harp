@@ -59,6 +59,9 @@ Inspect the contents of a file that can be imported by HARP.
                   of an <option name>=<value> pair. An option list needs to be
                   provided as a single expression.
 
+               -t, --target <variable_name>
+                  Only show derivations that produce the given variable.
+
       harpdump -h, --help
           Show help (this text).
 

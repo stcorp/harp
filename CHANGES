@@ -1,3 +1,7 @@
+* Added -t/--target option to harpdump --list-derivations.
+
+* Added variable_name parameter to harp_doc_list_conversions().
+
 * Added support for meridional/zonal wind speed, and planetary boundary layer
   height variables.
 

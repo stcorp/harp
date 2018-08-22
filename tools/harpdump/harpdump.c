@@ -113,6 +113,10 @@ static void print_help()
     printf("                of an <option name>=<value> pair. An option list needs to be\n");
     printf("                provided as a single expression.\n");
     printf("\n");
+    printf("            -t, --target <variable_name>\n");
+    printf("                Only show derivations that produce the given variable.\n");
+    printf("\n");
+    printf("\n");
     printf("    harpdump -h, --help\n");
     printf("        Show help (this text).\n");
     printf("\n");
@@ -125,14 +129,10 @@ static int list_derivations(int argc, char *argv[])
 {
     const char *operations = NULL;
     const char *options = NULL;
+    const char *variable_name = NULL;
     harp_product *product = NULL;
     const char *input_filename = NULL;
     int i;
-
-    if (argc == 2)
-    {
-        return harp_doc_list_conversions(NULL, printf);
-    }
 
     for (i = 2; i < argc; i++)
     {
@@ -146,6 +146,12 @@ static int list_derivations(int argc, char *argv[])
                  argv[i + 1][0] != '-')
         {
             options = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--target") == 0) && i + 1 < argc &&
+                 argv[i + 1][0] != '-')
+        {
+            variable_name = argv[i + 1];
             i++;
         }
         else if (argv[i][0] != '-' && i == argc - 1)
@@ -162,9 +168,13 @@ static int list_derivations(int argc, char *argv[])
 
     if (input_filename == NULL)
     {
-        fprintf(stderr, "ERROR: input product file not specified\n");
-        print_help();
-        exit(1);
+        if (operations != NULL || options != NULL)
+        {
+            fprintf(stderr, "ERROR: invalid arguments\n");
+            print_help();
+            exit(1);
+        }
+        return harp_doc_list_conversions(NULL, variable_name, printf);
     }
 
     /* Import the product */
@@ -174,7 +184,7 @@ static int list_derivations(int argc, char *argv[])
     }
 
     /* List possible conversions */
-    if (harp_doc_list_conversions(product, printf) != 0)
+    if (harp_doc_list_conversions(product, variable_name, printf) != 0)
     {
         harp_product_delete(product);
         return -1;

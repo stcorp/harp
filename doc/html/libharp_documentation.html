@@ -182,8 +182,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="_CPPv225harp_doc_list_conversionsPK12harp_productPFiPKczE">
-<span class="target" id="libharpgroup__harp__documentation_1gaac6407ef298dd689b377066ff0c2b6d3"></span>int <code class="descname">harp_doc_list_conversions</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv225harp_doc_list_conversionsPK12harp_productPKcPFiPKczE">
+<span class="target" id="libharpgroup__harp__documentation_1gaf5c68c3e7dbef9fea9b5ef94fda8451b"></span>int <code class="descname">harp_doc_list_conversions</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="libharp_product.html#_CPPv212harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>variable_name</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print the full listing of available variable conversions.</p>
 <p>If product is NULL then all possible conversions will be printed. If a product is provided then only conversions that can be made using the content of that product will be shown. The <em>print</em> function parameter should be a function that resembles printf(). The most common case use is to just use printf() itself. For example: <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">harp_doc_list_conversions</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">printf</span><span class="p">);</span>
 </pre></div>
@@ -198,6 +198,7 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">product</span></code>: Pointer to a HARP product (can be NULL). </li>
+<li><code class="docutils literal"><span class="pre">variable_name</span></code>: Name of the target variable for which to show conversions (can be NULL). </li>
 <li><code class="docutils literal"><span class="pre">print</span></code>: Reference to a printf compatible function. </li>
 </ul>
 </dd>

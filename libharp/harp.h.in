@@ -428,7 +428,8 @@ LIBHARP_API int harp_get_option_regrid_out_of_bounds(void);
 LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value);
 
 /* Generated documentation */
-LIBHARP_API int harp_doc_list_conversions(const harp_product *product, int (*print) (const char *, ...));
+LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const char *variable_name,
+                                          int (*print) (const char *, ...));
 LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path);
 
 /* Geometry */
