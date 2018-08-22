@@ -1265,7 +1265,7 @@ void harp_array_null(harp_data_type data_type, long num_elements, harp_array dat
     }
 }
 
-/** Replace each occurence of a specific (fill) value in an array with the default HARP fill value for the specified
+/** Replace each occurrence of a specific (fill) value in an array with the default HARP fill value for the specified
  *  data type.
  * \param data_type Data type of the array.
  * \param num_elements Number of elements in the array.
@@ -1336,7 +1336,7 @@ void harp_array_replace_fill_value(harp_data_type data_type, long num_elements, 
     }
 }
 
-/** Invert the array accross a given dimension
+/** Invert the array across a given dimension
  * \param data_type Data type of the array.
  * \param dim_id Index of the dimension that should be inverted.
  * \param num_dimensions Number of dimensions in the array.

@@ -1511,7 +1511,7 @@ static int read_altitude_bounds(void *user_data, long index, harp_array data)
             data.double_data[2 * i + 1] = data.double_data[i + 1];
         }
     }
-    /* set remaing values to NaN */
+    /* set remaining values to NaN */
     for (i = info->num_vertical[index]; i < info->max_num_vertical; i++)
     {
         data.double_data[2 * i] = coda_NaN();
@@ -1557,7 +1557,7 @@ static int read_pressure_bounds(void *user_data, long index, harp_array data)
             data.double_data[2 * i + 1] = data.double_data[i + 1];
         }
     }
-    /* set remaing values to NaN */
+    /* set remaining values to NaN */
     for (i = info->num_vertical[index]; i < info->max_num_vertical; i++)
     {
         data.double_data[2 * i] = coda_NaN();

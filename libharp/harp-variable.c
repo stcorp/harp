@@ -1723,7 +1723,7 @@ LIBHARP_API int harp_variable_set_enumeration_values(harp_variable *variable, in
 
     if (num_enum_values == 0)
     {
-        /* nothing futher to do -> return */
+        /* nothing further to do -> return */
         return 0;
     }
 

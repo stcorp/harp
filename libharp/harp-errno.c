@@ -131,7 +131,7 @@ static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
  */
 
 /** \def HARP_ERROR_UNIT_CONVERSION
- * An error occured in the unit conversion.
+ * An error occurred in the unit conversion.
  */
 
 /** \def HARP_ERROR_OPERATION
@@ -142,11 +142,11 @@ static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
  */
 
 /** \def HARP_ERROR_IMPORT
- * An error occured during product import.
+ * An error occurred during product import.
  */
 
 /** \def HARP_ERROR_EXPORT
- * An error occured during product export.
+ * An error occurred during product export.
  */
 
 /** \def HARP_ERROR_INGESTION

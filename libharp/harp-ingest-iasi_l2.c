@@ -685,7 +685,7 @@ int harp_ingestion_module_iasi_l2_init(void)
     path = "/MDR[]/MDR/EARTH_LOCATION[]";
     description = "the corner coordinates are rough estimates of the circle areas for the scan elements; the size of "
         "a scan element (in a certain direction) is taken to be half the distance, from center to center, "
-        "from a scan element to its nearest neigbouring scan element";
+        "from a scan element to its nearest neighboring scan element";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* latitude_bounds */
@@ -698,7 +698,7 @@ int harp_ingestion_module_iasi_l2_init(void)
     path = "/MDR[]/MDR/EARTH_LOCATION[]";
     description = "the corner coordinates are rough estimates of the circle areas for the scan elements; the size of "
         "a scan element (in a certain direction) is taken to be half the distance, from center to center, "
-        "from a scan element to its nearest neigbouring scan element";
+        "from a scan element to its nearest neighboring scan element";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_azimuth_angle */
