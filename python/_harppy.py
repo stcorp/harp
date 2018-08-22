@@ -393,7 +393,7 @@ def _init():
     # Set default encoding.
     _encoding = "ascii"
 
-    # Initialize various look-up tables used thoughout the HARP Python interface (i.e. this module).
+    # Initialize various look-up tables used throughout the HARP Python interface (i.e. this module).
     _py_dimension_type = \
         {
             _lib.harp_dimension_independent: None,

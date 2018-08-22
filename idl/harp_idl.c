@@ -127,7 +127,7 @@ static void harp_idl_fill_error_struct(harp_IDLError *fill, const short err)
                 message = "unknown option";
                 break;
             default:
-                message = "unkown error";
+                message = "unknown error";
                 break;
         }
     }

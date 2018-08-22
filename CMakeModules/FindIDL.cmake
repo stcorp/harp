@@ -363,7 +363,7 @@ if(_numbers_of_IDL_roots EQUAL 0)
     # if we have not found anything, we fall back on the PATH
 
     # At this point, we have no other choice than trying to find it from PATH.
-    # If set by the user, this wont change
+    # If set by the user, this will not change
     find_program(_IDL_main_tmp NAMES idl)
 
     if(_IDL_main_tmp)

@@ -41,7 +41,7 @@
 
 /** \defgroup harp_collocation HARP Collocation
  * The HARP Collocation module contains the functionality that deals with collocation two datasets
- * of products. The two datasets are refered to as dataset A (primary) and dataset B (secondary).
+ * of products. The two datasets are referred to as dataset A (primary) and dataset B (secondary).
  * The result of a collocation is a list of pairs. Each pair references a measurement from dataset A
  * (using the source product name and measurement index within that product) and a measurement from dataset B.
  * Each collocation pair also gets a unique collocation_index sequence number.

@@ -515,7 +515,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
         return -1;
     }
-    /* truncate data_source at first '_' occurence */
+    /* truncate data_source at first '_' occurrence */
     i = 4;
     while (data_source[i] != '\0')
     {

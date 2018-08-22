@@ -567,7 +567,7 @@ mapUnitToId(
  *
  * Arguments:
  *      unit            Pointer to the unit.
- *      id              Pointer to the identifier upon wich to base all
+ *      id              Pointer to the identifier upon which to base all
  *                      derived identifiers.
  *      encoding        The encoding of "id".
  *      isName          Whether or not "id" is a name.
@@ -610,7 +610,7 @@ mapUnitToIds(
  *
  * Arguments:
  *      unit            Pointer to the unit.
- *      name            Pointer to the name upon wich to base all derived names.
+ *      name            Pointer to the name upon which to base all derived names.
  *      encoding        The encoding of "name".
  * Returns:
  *      0               Failure.
@@ -631,7 +631,7 @@ mapUnitToNames(
  *
  * Arguments:
  *      unit            Pointer to the unit.
- *      symbol          Pointer to the symbol upon wich to base all derived
+ *      symbol          Pointer to the symbol upon which to base all derived
  *                      symbols.
  *      encoding        The encoding of "symbol".
  * Returns:

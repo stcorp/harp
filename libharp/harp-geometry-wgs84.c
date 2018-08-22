@@ -166,7 +166,7 @@ int harp_wgs84_ellipsoid_point_distance_from_latitude_and_longitude(double latit
     lambda = L;
     lambda_previous = 2.0 * pi;
 
-    /* Iterate until change in lambda is neglible */
+    /* Iterate until change in lambda is negligible */
     while (fabs(lambda - lambda_previous) > lambda_difference_limit && iteration <= iteration_limit)
     {
         sin_lambda = sin(lambda);

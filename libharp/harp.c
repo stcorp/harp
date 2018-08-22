@@ -459,7 +459,7 @@ LIBHARP_API int harp_get_option_regrid_out_of_bounds(void)
  * for the first time.
  *
  * If you use CODA functions directly in combination with HARP functions you should call coda_init() and coda_done()
- * explictly yourself and not rely on HARP having performed the coda_init() for you.
+ * explicitly yourself and not rely on HARP having performed the coda_init() for you.
  *
  * It is valid to perform multiple calls to harp_init() after each other. Only the first call to harp_init() will do
  * the actual initialization and all following calls to harp_init() will only increase an initialization counter. Each

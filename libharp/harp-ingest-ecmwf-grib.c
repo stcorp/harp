@@ -2404,7 +2404,7 @@ static int init_cursors_and_grid(ingest_info *info)
                     break;
                 }
             }
-            /* only report the warning for the first occurence */
+            /* only report the warning for the first occurrence */
             if (i == j)
             {
                 if (info->grid_data_parameter_ref[i] >> 24 == 1)
@@ -2914,7 +2914,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
 
     /* ECMWF GRIB product */
     description = "The file can use either the GRIB1 or GRIB2 format. "
-        "Only GRIB files that use a 'centre' value refering to ECMWF are supported. "
+        "Only GRIB files that use a 'centre' value referring to ECMWF are supported. "
         "The parameters in the file should have the same time value, the same lat/lon grid and the same vertical grid.";
     product_definition = harp_ingestion_register_product(module, "ECMWF_GRIB", description, read_dimensions);
 

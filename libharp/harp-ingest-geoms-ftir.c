@@ -731,7 +731,7 @@ static int read_altitude_bounds(void *user_data, harp_array data)
         {
             return -1;
         }
-        /* replicate accross time dimension */
+        /* replicate across time dimension */
         for (i = 1; i < info->num_time; i++)
         {
             memcpy(&data.double_data[i * info->num_vertical * 2], data.double_data,
@@ -870,7 +870,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
         return -1;
     }
-    /* truncate data_source at first '_' occurence */
+    /* truncate data_source at first '_' occurrence */
     i = 5;
     while (data_source[i] != '\0')
     {

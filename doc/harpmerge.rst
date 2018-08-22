@@ -1,7 +1,7 @@
 harpmerge
 ==========
 
-Combine multiple products from files or directories by appending them accross
+Combine multiple products from files or directories by appending them across
 the time dimension and storing the result into a single output file.
 
 ::

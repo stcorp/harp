@@ -2391,7 +2391,7 @@ static void register_omcldo2_product(void)
     const char *path;
 
     module = harp_ingestion_register_module_coda("OMI_L2_OMCLDO2", "OMI", "AURA_OMI", "OMCLDO2",
-                                                 "OMI L2 cloud pressure and cloud fraction (O2-O2 absorbtion)",
+                                                 "OMI L2 cloud pressure and cloud fraction (O2-O2 absorption)",
                                                  ingestion_init_omcldo2, ingestion_done);
 
     /* clipped_cloud_fraction ingestion option */
