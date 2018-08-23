@@ -79,7 +79,6 @@ int main(int argc, char *argv[])
 {
     int result = 0;
     int i;
-    int k;
 
     if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
     {
@@ -93,21 +92,13 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    /* parse argumenst */
-    for (i = 1; i < argc; i++)
+    if (argv[1][0] == '-')
     {
-        if (argv[i][0] != '-')
-        {
-            /* assume all arguments from here on are files */
-            break;
-        }
-        else
-        {
-            fprintf(stderr, "ERROR: invalid arguments\n");
-            print_help();
-            exit(1);
-        }
+        fprintf(stderr, "ERROR: invalid arguments\n");
+        print_help();
+        exit(1);
     }
+    /* assume all arguments from here on are files */
 
     if (harp_set_coda_definition_path_conditional(argv[0], NULL, "../share/coda/definitions") != 0)
     {
@@ -128,9 +119,9 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    for (k = i; k < argc; k++)
+    for (i = 1; i < argc; i++)
     {
-        const char *filename = argv[k];
+        const char *filename = argv[i];
         int status;
 
         status = harp_import_test(filename, printf);
