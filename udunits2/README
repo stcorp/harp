@@ -43,3 +43,5 @@ build system. The changes that were made are:
 
  - use '_XOPEN_SOURCE 600' instead of '_XOPEN_SOURCE 500' to prevent
    warnings on Mac OS X.
+
+ - Fixed spelling errors conform https://github.com/Unidata/UDUNITS-2/commit/8ecf9f48281eb86ec324ba339dc7a5d4c42b52e7
