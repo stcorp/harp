@@ -572,7 +572,7 @@ static void interpolate_loglinear(long source_length, const double *source_grid,
         }
         else if (out_of_bound_flag == 2)
         {
-            v = (log(target_grid_point) - log(source_grid[0])) / (log(source_grid[0]) - log(source_grid[1]));
+            v = (log(target_grid_point / source_grid[0])) / (log(source_grid[0] / source_grid[1]));
             *target_value = source_array[0] + v * (source_array[0] - source_array[1]);
         }
         else
@@ -589,8 +589,8 @@ static void interpolate_loglinear(long source_length, const double *source_grid,
         }
         else if (out_of_bound_flag == 2)
         {
-            v = (log(target_grid_point) - log(source_grid[source_length - 1])) /
-                (log(source_grid[source_length - 1]) - log(source_grid[source_length - 2]));
+            v = (log(target_grid_point / source_grid[source_length - 1])) /
+                (log(source_grid[source_length - 1] / source_grid[source_length - 2]));
             *target_value = source_array[source_length - 1] +
                 v * (source_array[source_length - 1] - source_array[source_length - 2]);
         }
@@ -612,13 +612,14 @@ static void interpolate_loglinear(long source_length, const double *source_grid,
     else
     {
         /* grid point is between source_grid[pos] and source_grid[pos + 1] */
-        v = (log(target_grid_point) - log(source_grid[*pos])) / (log(source_grid[(*pos) + 1]) - log(source_grid[*pos]));
+        v = (log(target_grid_point / source_grid[*pos])) / (log(source_grid[(*pos) + 1] / source_grid[*pos]));
         *target_value = (1 - v) * source_array[*pos] + v * source_array[(*pos) + 1];
     }
 }
 
-/* Interpolate single value from source grid to target point using log linear interpolation of the axis
- * source_grid needs to be strict monotonic.
+/* Interpolate single value from source grid to target point using log linear interpolation of the axis.
+ * A log linear interpolation is a linear interpolation using log(source_grid) and log(target_grid_point).
+ * source_grid needs to be strict monotonic with values > 0. target_grid_point needs to be > 0.
  * out_of_bound_flag:
  *  0: set value outside source_grid to NaN
  *  1: set value outside source_grid to edge value (i.e. source_array[0] or source_array[source_length - 1])
@@ -633,8 +634,9 @@ void harp_interpolate_value_loglinear(long source_length, const double *source_g
                           target_value);
 }
 
-/* Interpolate array from source grid to target grid using log linear interpolation of the axis
- * Both source_grid and target_grid need to be strict monotonic.
+/* Interpolate array from source grid to target grid using log linear interpolation of the axis.
+ * A log linear interpolation is a linear interpolation using log(source_grid) and log(target_grid).
+ * Both source_grid and target_grid need to be strict monotonic with values > 0.
  * This function will do 'the right thing' depending on whether a grid is increasing or decreasing.
  * out_of_bound_flag:
  *  0: set values outside source_grid to NaN
@@ -652,6 +654,112 @@ void harp_interpolate_array_loglinear(long source_length, const double *source_g
     {
         interpolate_loglinear(source_length, source_grid, source_array, target_grid[i], out_of_bound_flag, &pos,
                               &target_array[i]);
+    }
+}
+
+static void interpolate_logloglinear(long source_length, const double *source_grid, const double *source_array,
+                                     double target_grid_point, int out_of_bound_flag, long *pos, double *target_value)
+{
+    double v;
+
+    assert(source_length > 1);
+    assert(out_of_bound_flag == 0 || out_of_bound_flag == 1 || out_of_bound_flag == 2);
+
+    harp_interpolate_find_index(source_length, source_grid, target_grid_point, pos);
+
+    if (*pos == -1)
+    {
+        /* grid point is before source_grid[0] */
+        if (out_of_bound_flag == 1)
+        {
+            *target_value = source_array[0];
+        }
+        else if (out_of_bound_flag == 2)
+        {
+            v = log(target_grid_point / source_grid[0]) / log(source_grid[0] / source_grid[1]);
+            *target_value = exp((1 + v) * log(source_array[0]) - v * log(source_array[1]));
+        }
+        else
+        {
+            *target_value = harp_nan();
+        }
+    }
+    else if (*pos == source_length)
+    {
+        /* grid point is after source_grid[source_length - 1] */
+        if (out_of_bound_flag == 1)
+        {
+            *target_value = source_array[source_length - 1];
+        }
+        else if (out_of_bound_flag == 2)
+        {
+            v = log(target_grid_point / source_grid[source_length - 1]) /
+                log(source_grid[source_length - 1] / source_grid[source_length - 2]);
+            *target_value = exp((1 + v) * log(source_array[source_length - 1]) -
+                                v * log(source_array[source_length - 2]));
+        }
+        else
+        {
+            *target_value = harp_nan();
+        }
+    }
+    else if (target_grid_point == source_grid[*pos])
+    {
+        /* don't interpolate, but take exact point */
+        *target_value = source_array[*pos];
+    }
+    else if (target_grid_point == source_grid[*pos + 1])
+    {
+        /* don't interpolate, but take exact point */
+        *target_value = source_array[*pos + 1];
+    }
+    else
+    {
+        /* grid point is between source_grid[pos] and source_grid[pos + 1] */
+        v = log(target_grid_point / source_grid[*pos]) / log(source_grid[(*pos) + 1] / source_grid[*pos]);
+        *target_value = exp((1 - v) * log(source_array[*pos]) + v * log(source_array[(*pos) + 1]));
+    }
+}
+
+/* Interpolate single value from source grid to target point using log/log linear interpolation of the axis.
+ * A log/log linear interpolation is a linear interpolation using log(source_grid), log(target_grid_point) and
+ * log(source_array).
+ * source_grid needs to be strict monotonic with values > 0. source_array and target_grid_point need to be > 0.
+ * out_of_bound_flag:
+ *  0: set value outside source_grid to NaN
+ *  1: set value outside source_grid to edge value (i.e. source_array[0] or source_array[source_length - 1])
+ *  2: extrapolate based on nearest two edge values
+ */
+void harp_interpolate_value_logloglinear(long source_length, const double *source_grid, const double *source_array,
+                                         double target_grid_point, int out_of_bound_flag, double *target_value)
+{
+    long pos = 0;
+
+    interpolate_logloglinear(source_length, source_grid, source_array, target_grid_point, out_of_bound_flag, &pos,
+                             target_value);
+}
+
+/* Interpolate single value from source grid to target point using log/log linear interpolation of the axis.
+ * A log/log linear interpolation is a linear interpolation on the arrays log(source_grid), log(target_grid) and
+ * log(source_array).
+ * Both source_grid and target_grid need to be strict monotonic with values > 0. source_array needs to be > 0.
+ * This function will do 'the right thing' depending on whether a grid is increasing or decreasing.
+ * out_of_bound_flag:
+ *  0: set values outside source_grid to NaN
+ *  1: set values outside source_grid to edge value (i.e. source_array[0] or source_array[source_length - 1])
+ *  2: extrapolate based on nearest two edge values
+ */
+void harp_interpolate_array_logloglinear(long source_length, const double *source_grid, const double *source_array,
+                                         long target_length, const double *target_grid, int out_of_bound_flag,
+                                         double *target_array)
+{
+    long pos = 0;
+    long i;
+
+    for (i = 0; i < target_length; i++)
+    {
+        interpolate_logloglinear(source_length, source_grid, source_array, target_grid[i], out_of_bound_flag, &pos,
+                                 &target_array[i]);
     }
 }
 

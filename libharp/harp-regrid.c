@@ -44,7 +44,8 @@ typedef enum resample_type_enum
     resample_skip,
     resample_remove,
     resample_linear,
-    resample_log,
+    resample_log,       /* interpolate linear using coordinates [x,log(y)] */
+    resample_loglog,    /* interpolate linear using coordinates [log(x),log(y)] */
     resample_interval
 } resample_type;
 
@@ -82,6 +83,15 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
         if (strcmp(variable->name, "datetime_length") == 0)
         {
             return resample_remove;
+        }
+    }
+
+    if (dimension_type == harp_dimension_spectral)
+    {
+        if (strstr(variable->name, "aerosol_optical_depth") != NULL ||
+            strstr(variable->name, "aerosol_extinction_coefficient") != NULL)
+        {
+            return resample_loglog;
         }
     }
 
@@ -639,6 +649,15 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 if (type == resample_linear)
                 {
                     harp_interpolate_array_linear
+                        (source_grid_num_dim_elements,
+                         &source_grid->data.double_data[source_time_index * source_grid_max_dim_elements],
+                         source_buffer, target_grid_num_dim_elements,
+                         &local_target_grid->data.double_data[target_time_index * target_grid_max_dim_elements],
+                         out_of_bound_flag, target_buffer);
+                }
+                else if (type == resample_loglog)
+                {
+                    harp_interpolate_array_logloglinear
                         (source_grid_num_dim_elements,
                          &source_grid->data.double_data[source_time_index * source_grid_max_dim_elements],
                          source_buffer, target_grid_num_dim_elements,

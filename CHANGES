@@ -5,6 +5,10 @@
 * Added support for meridional/zonal wind speed, and planetary boundary layer
   height variables.
 
+* Aerosol optical depth and extinction coefficient variables will now
+  automatically use a log/log regridding in the spectral dimension.
+  This is equivalent to using the Angstrom Exponent approach.
+
 * Add derivations between wind speed/direction and zonal/meridional velocity.
 
 * Updates to S5P L2, GOME/GOME-2 L2, and ECMWF GRIB product ingestions.
