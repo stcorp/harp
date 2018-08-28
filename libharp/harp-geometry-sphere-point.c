@@ -205,9 +205,20 @@ void harp_spherical_point_deg_from_rad(harp_spherical_point *point)
  * on the surface of a sphere */
 double harp_spherical_point_distance(const harp_spherical_point *pointp, const harp_spherical_point *pointq)
 {
-    double distance = acos(sin(pointp->lat) * sin(pointq->lat) + cos(pointp->lat) * cos(pointq->lat) *
-                           cos(pointp->lon - pointq->lon));
+    double cosdist = sin(pointp->lat) * sin(pointq->lat) +
+        cos(pointp->lat) * cos(pointq->lat) * cos(pointp->lon - pointq->lon);
+    double distance;
 
+    /* handle possible rounding errors */
+    if (cosdist > 1.0)
+    {
+        cosdist = 1.0;
+    }
+    else if (cosdist < -1.0)
+    {
+        cosdist = -1.0;
+    }
+    distance = acos(cosdist);
     if (HARP_GEOMETRY_FPzero(distance))
     {
         return 0.0;
