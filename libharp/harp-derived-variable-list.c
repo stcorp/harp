@@ -575,14 +575,7 @@ static int get_latitude_bounds_from_midpoints(harp_variable *variable, const har
     /* clamp values to [-90,90] */
     for (i = 0; i < variable->num_elements; i++)
     {
-        if (variable->data.double_data[i] > 90)
-        {
-            variable->data.double_data[i] = 90;
-        }
-        if (variable->data.double_data[i] < -90)
-        {
-            variable->data.double_data[i] = -90;
-        }
+        HARP_CLAMP(variable->data.double_data[i], -90, 90);
     }
 
     return 0;

@@ -209,15 +209,7 @@ double harp_spherical_point_distance(const harp_spherical_point *pointp, const h
         cos(pointp->lat) * cos(pointq->lat) * cos(pointp->lon - pointq->lon);
     double distance;
 
-    /* handle possible rounding errors */
-    if (cosdist > 1.0)
-    {
-        cosdist = 1.0;
-    }
-    else if (cosdist < -1.0)
-    {
-        cosdist = -1.0;
-    }
+    HARP_CLAMP(cosdist, -1.0, 1.0);
     distance = acos(cosdist);
     if (HARP_GEOMETRY_FPzero(distance))
     {

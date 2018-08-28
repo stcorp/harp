@@ -62,6 +62,9 @@
 /* maximum length for file paths */
 #define HARP_MAX_PATH_LENGTH 4096
 
+/* clamp function */
+#define HARP_CLAMP(var, min, max) if (var < min) var = min; if (var > max) var = max;
+
 extern int harp_option_enable_aux_afgl86;
 extern int harp_option_enable_aux_usstd76;
 

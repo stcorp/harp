@@ -1016,11 +1016,14 @@ int harp_spherical_polygon_get_surface_area(const harp_spherical_polygon *polygo
 
         if (lonA != lonC)
         {
+            double sinangle;
             double E;
 
             a = M_PI_2 - latC;
             c = M_PI_2 - latA;
-            b = 2 * asin(sqrt(hav(a - c) + sin(a) * sin(c) * hav(lonC - lonA)));
+            sinangle = sqrt(hav(a - c) + sin(a) * sin(c) * hav(lonC - lonA));
+            HARP_CLAMP(sinangle, -1.0, 1.0);
+            b = 2 * asin(sinangle);
             s = 0.5 * (a + b + c);
             E = 4 * atan(sqrt(fabs(tan(s / 2) * tan((s - a) / 2) * tan((s - b) / 2) * tan((s - c) / 2))));
             if (lonC < lonA)

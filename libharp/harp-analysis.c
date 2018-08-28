@@ -246,9 +246,11 @@ double harp_reflectance_from_normalized_radiance_and_solar_zenith_angle(double n
 double harp_scattering_angle_from_sensor_and_solar_angles(double sensor_zenith_angle, double solar_zenith_angle,
                                                           double relative_azimuth_angle)
 {
-    return CONST_RAD2DEG * acos(-cos(sensor_zenith_angle * CONST_DEG2RAD) * cos(solar_zenith_angle * CONST_DEG2RAD) -
-                                sin(sensor_zenith_angle * CONST_DEG2RAD) * sin(solar_zenith_angle * CONST_DEG2RAD) *
-                                cos(relative_azimuth_angle * CONST_DEG2RAD));
+    double cosangle = -cos(sensor_zenith_angle * CONST_DEG2RAD) * cos(solar_zenith_angle * CONST_DEG2RAD) -
+        sin(sensor_zenith_angle * CONST_DEG2RAD) * sin(solar_zenith_angle * CONST_DEG2RAD) *
+        cos(relative_azimuth_angle * CONST_DEG2RAD);
+    HARP_CLAMP(cosangle, -1.0, 1.0);
+    return CONST_RAD2DEG * acos(cosangle);
 }
 
 /** Calculate the solar azimuth angle for the given time and location
@@ -261,6 +263,7 @@ double harp_scattering_angle_from_sensor_and_solar_angles(double sensor_zenith_a
 double harp_solar_azimuth_angle_from_latitude_and_solar_angles(double latitude, double solar_declination_angle,
                                                                double solar_hour_angle, double solar_zenith_angle)
 {
+    double cosangle;
     double angle;
     double sin_sza;
 
@@ -276,8 +279,10 @@ double harp_solar_azimuth_angle_from_latitude_and_solar_angles(double latitude, 
         return 0;
     }
 
-    angle = CONST_RAD2DEG * acos((sin(solar_declination_angle) * cos(latitude) -
-                                  cos(solar_hour_angle) * cos(solar_declination_angle) * sin(latitude)) / sin_sza);
+    cosangle = (sin(solar_declination_angle) * cos(latitude) -
+                cos(solar_hour_angle) * cos(solar_declination_angle) * sin(latitude)) / sin_sza;
+    HARP_CLAMP(cosangle, -1.0, 1.0);
+    angle = CONST_RAD2DEG * acos(cosangle);
     if (solar_hour_angle > 0)
     {
         /* afternoon */
@@ -294,6 +299,7 @@ double harp_solar_azimuth_angle_from_latitude_and_solar_angles(double latitude, 
 double harp_solar_declination_angle_from_datetime(double datetime)
 {
     double mean_angle, corrected_angle;
+    double sinangle;
 
     /* calculate Earths orbit angle at date (relative to solstice) */
     /* add 10 days due to difference between December solstice and Jan 1st */
@@ -305,7 +311,9 @@ double harp_solar_declination_angle_from_datetime(double datetime)
         mean_angle + 2 * 0.0167 * sin(2 * M_PI * harp_fraction_of_year_from_datetime(datetime - 2 * 86400));
 
     /* 23.44 [deg] is the obliquity (tilt) of the Earth's axis */
-    return CONST_RAD2DEG * -asin(sin(CONST_DEG2RAD * 23.44) * cos(corrected_angle));
+    sinangle = sin(CONST_DEG2RAD * 23.44) * cos(corrected_angle);
+    HARP_CLAMP(sinangle, -1.0, 1.0);
+    return CONST_RAD2DEG * -asin(sinangle);
 }
 
 /** Calculate the solar hour angle for the given time and location
@@ -332,13 +340,17 @@ double harp_solar_hour_angle_from_datetime_and_longitude(double datetime, double
 double harp_solar_zenith_angle_from_latitude_and_solar_angles(double latitude, double solar_declination_angle,
                                                               double solar_hour_angle)
 {
-    /* Conver angles to [rad] */
+    double cosangle;
+
+    /* Convert angles to [rad] */
     latitude *= CONST_DEG2RAD;
     solar_declination_angle *= CONST_DEG2RAD;
     solar_hour_angle *= CONST_DEG2RAD;
 
-    return CONST_RAD2DEG * acos(sin(solar_declination_angle) * sin(latitude) +
-                                cos(solar_hour_angle) * cos(solar_declination_angle) * cos(latitude));
+    cosangle = sin(solar_declination_angle) * sin(latitude) +
+        cos(solar_hour_angle) * cos(solar_declination_angle) * cos(latitude);
+    HARP_CLAMP(cosangle, -1.0, 1.0);
+    return CONST_RAD2DEG * acos(cosangle);
 }
 
 /** Convert sensor and solar azimuth angles to relative azimuth angle
@@ -469,6 +481,7 @@ int harp_sensor_geometry_angles_at_altitude_from_other_altitude(double source_al
         /* Calculate the sensor zenith angles */
         fk = (Earth_radius + source_altitude) / (Earth_radius + target_altitude);
         sinthetaVk = fk * sinthetaV;
+        HARP_CLAMP(sinthetaVk, -1.0, 1.0);
         thetaVk = asin(sinthetaVk);
 
         /* Calculate the polar angle beta between the lines
@@ -478,6 +491,7 @@ int harp_sensor_geometry_angles_at_altitude_from_other_altitude(double source_al
 
         /* Calculate the solar zenith angles */
         costheta0k = costheta0 * cosbeta + sintheta0 * sinbeta * cosdeltaphi;
+        HARP_CLAMP(costheta0k, -1.0, 1.0);
         theta0k = acos(costheta0k);
         sintheta0k = sqrt(1.0 - costheta0k * costheta0k);
 
@@ -490,6 +504,7 @@ int harp_sensor_geometry_angles_at_altitude_from_other_altitude(double source_al
         else
         {
             cosdeltaphik = (costheta0 - costheta0k * cosbeta) / (sintheta0k * sinbeta);
+            HARP_CLAMP(cosdeltaphik, -1.0, 1.0);
             deltaphik = M_PI - acos(cosdeltaphik);
             if (deltaphik > M_PI)
             {
