@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="ODIN_OSIRIS" last-modified="2016-12-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ODIN_OSIRIS" last-modified="2016-12-19">
   <cd:Description>Odin OSIRIS products</cd:Description>
   <cd:ProductType name="L2_Aerosol_MART">
     <cd:Description>OSIRIS Odin L2 Aerosol Limb Saskatoon MART</cd:Description>

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="ACSAF" last-modified="2018-07-24" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ACSAF" last-modified="2018-07-24">
   <cd:Description>Products from EUMETSAT SAF for Atmospheric Composition and UV Radiation</cd:Description>
   <cd:ProductType name="O3MNTO">
     <cd:Description>GOME2 near-real-time total column trace gas product</cd:Description>

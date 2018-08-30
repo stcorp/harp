@@ -1,12 +1,9 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="ESACCI_AEROSOL" last-modified="2017-02-15" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ESACCI_AEROSOL" last-modified="2017-02-15">
   <cd:Description>ESA Aerosol CCI products</cd:Description>
-
   <!-- AATSR products -->
-
   <cd:ProductType name="AATSR_L2">
     <cd:Description>CCI Aerosol AATSR L2 profile</cd:Description>
-
     <cd:ProductDefinition id="AATSR_L2_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -43,12 +40,9 @@
         <cd:MatchExpression>substr(47, 16, filename()) == "AATSR_ENVISAT-SU"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <cd:ProductType name="AATSR_L3">
-  <cd:Description>CCI Aerosol AATSR L3 profile</cd:Description>
-
+    <cd:Description>CCI Aerosol AATSR L3 profile</cd:Description>
     <cd:ProductDefinition id="AATSR_L3_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -117,14 +111,10 @@
         <cd:MatchExpression>substr(39, 24, filename()) == "AATSR_ENVISAT-SU_MONTHLY"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <!-- ATSR2 products -->
-
   <cd:ProductType name="ATSR2_L2">
     <cd:Description>CCI Aerosol ATSR-2 L2 profile</cd:Description>
-
     <cd:ProductDefinition id="ATSR2_L2_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -161,12 +151,9 @@
         <cd:MatchExpression>substr(47, 13, filename()) == "ATSR2_ERS2-SU"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <cd:ProductType name="ATSR2_L3">
     <cd:Description>CCI Aerosol ATSR-2 L3 profile</cd:Description>
-
     <cd:ProductDefinition id="ATSR2_L3_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -233,14 +220,10 @@
         <cd:MatchExpression>substr(39, 21, filename()) == "ATSR2_ERS2-SU_MONTHLY"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <!-- GOMOS products -->
-
   <cd:ProductType name="GOMOS_AERGOM_L3">
     <cd:Description>CCI GOMOS AERGOM L3 profile</cd:Description>
-
     <cd:ProductDefinition id="GOMOS_AERGOM_L3_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -255,14 +238,10 @@
         <cd:MatchExpression>substr(41, 20, filename()) == "GOMOS_ENVISAT-AERGOM"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <!-- IASI products -->
-
   <cd:ProductType name="IASI_L2">
     <cd:Description>CCI Aerosol IASI L2 profile</cd:Description>
-
     <cd:ProductDefinition id="IASI_L2_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -299,12 +278,9 @@
         <cd:MatchExpression>substr(34, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <cd:ProductType name="IASI_L3">
     <cd:Description>CCI Aerosol IASI L3 profile</cd:Description>
-
     <cd:ProductDefinition id="IASI_L3_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -371,11 +347,8 @@
         <cd:MatchExpression>substr(31, 15, filename()) == "IASI-METOPA-ULB"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <!-- MERIS ALAMO products -->
-
   <cd:ProductType name="MERIS_ALAMO_L2">
     <cd:Description>CCI Aerosol Load and Altitude from MERIS over Ocean (ALAMO) L2 profile</cd:Description>
     <cd:ProductDefinition id="MERIS_ALAMO_L2_nc3" format="netcdf" version="3">
@@ -395,7 +368,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="MERIS_ALAMO_L3">
     <cd:Description>CCI Aerosol Load and Altitude from MERIS over Ocean (ALAMO) L3 profile</cd:Description>
     <cd:ProductDefinition id="MERIS_ALAMO_L3_nc3" format="netcdf" version="3">
@@ -425,7 +397,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="Multi_Sensor_AAI_L3">
     <cd:Description>CCI Absorbing Aerosol Index from Multi Sensor L3 profile</cd:Description>
     <cd:ProductDefinition id="Multi_Sensor_AAI_L3_nc3" format="netcdf" version="3">
@@ -441,5 +412,4 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
 </cd:ProductClass>

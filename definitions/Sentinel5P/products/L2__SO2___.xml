@@ -1,2 +1,3 @@
-<cd:ProductDefinition id="L2__SO2___" format="hdf5" last-modified="2016-08-12" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<?xml version="1.0"?>
+<cd:ProductDefinition xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" id="L2__SO2___" format="hdf5" last-modified="2016-08-12">
 </cd:ProductDefinition>

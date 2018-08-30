@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="GEOMS" last-modified="2018-01-24" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="GEOMS" last-modified="2018-01-24">
   <cd:Description>Products using the Generic Earth Observation Metadata Standard (GEOMS)</cd:Description>
   <!-- version numbers are a combination of base format and template version: <format> + <version>
        format: hdf4=1000, hdf5=2000, netcdf3=3000 (netcdf4 is treated as hdf5) -->
@@ -212,11 +212,11 @@
         <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-006"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-  <cd:ProductDefinition id="UVVIS_DOAS_OFFAXIS_AEROSOL_007_hdf4" format="hdf4" version="1007">
-    <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
-    <cd:DetectionRule>
-      <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007"</cd:MatchExpression>
-    </cd:DetectionRule>
-  </cd:ProductDefinition>
+    <cd:ProductDefinition id="UVVIS_DOAS_OFFAXIS_AEROSOL_007_hdf4" format="hdf4" version="1007">
+      <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL-007"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
   </cd:ProductType>
 </cd:ProductClass>

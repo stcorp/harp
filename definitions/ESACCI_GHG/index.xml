@@ -1,12 +1,9 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="ESACCI_GHG" last-modified="2017-03-13" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ESACCI_GHG" last-modified="2017-03-13">
   <cd:Description>ESA Green House Gases CCI products</cd:Description>
-
   <!-- EMMA L2 products -->
-
   <cd:ProductType name="EMMA_L2">
     <cd:Description>CCI Green House Gases EMMA L2 profile</cd:Description>
-
     <cd:ProductDefinition id="EMMA_L2_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -31,14 +28,10 @@
         <cd:MatchExpression>substr(0, 9, filename()) == "l2db_emma"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <!-- GOSAT L2 products -->
-
   <cd:ProductType name="GOSAT_L2">
     <cd:Description>CCI Green House Gases GOSAT L2 profile</cd:Description>
-
     <cd:ProductDefinition id="GOSAT_L2_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -55,14 +48,10 @@
         <cd:MatchExpression>substr(18, 5, filename()) == "GOSAT"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <!-- SCIAMACHY L2 products -->
-
   <cd:ProductType name="SCIAMACHY_L2">
     <cd:Description>CCI Green House Gases SCIAMACHY L2 profile</cd:Description>
-
     <cd:ProductDefinition id="SCIAMACHY_L2_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -131,14 +120,10 @@
         <cd:MatchExpression>substr(0, 12, filename()) == "CO2_SCI_WFMD"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <!-- L3 products -->
-
   <cd:ProductType name="Obs4MIPs_L3">
     <cd:Description>CCI Green House Gases EMMA L2 profile</cd:Description>
-
     <cd:ProductDefinition id="Obs4MIPs_L3_nc3" format="netcdf" version="3">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -153,7 +138,5 @@
         <cd:MatchExpression>substr(5, 9, filename()) == "ghgcci_l3"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
 </cd:ProductClass>

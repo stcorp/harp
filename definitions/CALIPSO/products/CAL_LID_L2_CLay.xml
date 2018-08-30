@@ -1,2 +1,3 @@
-<cd:ProductDefinition id="CAL_LID_L2_CLay" format="hdf4" last-modified="2017-06-20" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<?xml version="1.0"?>
+<cd:ProductDefinition xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" id="CAL_LID_L2_CLay" format="hdf4" last-modified="2017-06-20">
 </cd:ProductDefinition>

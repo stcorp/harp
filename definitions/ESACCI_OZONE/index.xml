@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="ESACCI_OZONE" last-modified="2016-09-19" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ESACCI_OZONE" last-modified="2016-09-19">
   <cd:Description>ESA Ozone CCI products</cd:Description>
-
   <cd:ProductType name="L2_LP">
     <cd:Description>CCI L2 O3 limb profile</cd:Description>
     <cd:ProductDefinition id="L2_LP_nc3" format="netcdf" version="3">
@@ -21,7 +20,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L2_NP">
     <cd:Description>CCI L2 O3 nadir profile</cd:Description>
     <cd:ProductDefinition id="L2_NP_nc3" format="netcdf" version="3">
@@ -41,7 +39,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L2_TC">
     <cd:Description>CCI L2 O3 total column</cd:Description>
     <cd:ProductDefinition id="L2_TC_nc3" format="netcdf" version="3">
@@ -61,7 +58,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L3_LP_MMZM">
     <cd:Description>CCI O3 merged monthly zonal mean limb profile on a 10 degree latitude grid</cd:Description>
     <cd:ProductDefinition id="L3_LP_MMZM_nc3" format="netcdf" version="3">
@@ -85,7 +81,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L3_LP_MSMM">
     <cd:Description>CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 degree grid</cd:Description>
     <cd:ProductDefinition id="L3_LP_MSMM_nc3" format="netcdf" version="3">
@@ -107,7 +102,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L3_LP_MZM">
     <cd:Description>CCI O3 monthly zonal mean limb profile on a 10 degree latitude grid</cd:Description>
     <cd:ProductDefinition id="L3_LP_MZM_nc3" format="netcdf" version="3">
@@ -129,7 +123,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L3_NP">
     <cd:Description>CCI L3 O3 nadir profile products</cd:Description>
     <cd:ProductDefinition id="L3_NP_nc3" format="netcdf" version="3">
@@ -149,7 +142,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L3_TC">
     <cd:Description>CCI L3 O3 total column</cd:Description>
     <cd:ProductDefinition id="L3_TC_nc3" format="netcdf" version="3">
@@ -169,7 +161,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L3_LNTOC">
     <cd:Description>CCI L3 O3 limb nadir tropospheric columns</cd:Description>
     <cd:ProductDefinition id="L3_LNTOC_nc3" format="netcdf" version="3">
@@ -189,7 +180,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L3_TTOC">
     <cd:Description>CCI L3 O3 tropical tropospheric ozone column</cd:Description>
     <cd:ProductDefinition id="L3_TTOC_nc3" format="netcdf" version="3">
@@ -209,7 +199,6 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
   <cd:ProductType name="L4_NP">
     <cd:Description>CCI L4 O3 nadir profile</cd:Description>
     <cd:ProductDefinition id="L4_NP_nc3" format="netcdf" version="3">

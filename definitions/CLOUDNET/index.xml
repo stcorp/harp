@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="CLOUDNET" last-modified="2017-06-20" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="CLOUDNET" last-modified="2017-06-20">
   <cd:Description>Cloudnet products</cd:Description>
-
   <cd:ProductType name="classification">
     <cd:Description>Level 2a target classification and cloud boundaries</cd:Description>
     <cd:ProductDefinition id="classification" format="netcdf" version="0">
@@ -11,5 +10,4 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
-
 </cd:ProductClass>

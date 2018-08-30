@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="ESACCI_CLOUD" last-modified="2017-04-03" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ESACCI_CLOUD" last-modified="2017-04-03">
   <cd:Description>ESA Cloud CCI products</cd:Description>
-
   <cd:ProductType name="L3_DAILY">
-  <cd:Description>CCI Cloud L3 daily profile</cd:Description>
-
+    <cd:Description>CCI Cloud L3 daily profile</cd:Description>
     <cd:ProductDefinition id="L3_DAILY_nc4" format="hdf5" version="4">
       <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
       <cd:DetectionRule>
@@ -12,19 +10,14 @@
         <cd:MatchExpression>substr(9, 16, filename()) == "ESACCI-L3U_CLOUD"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
   <cd:ProductType name="L3_MONTHLY">
-  <cd:Description>CCI Cloud L3 daily profile</cd:Description>
-
+    <cd:Description>CCI Cloud L3 daily profile</cd:Description>
     <cd:ProductDefinition id="L3_MONTHLY_nc4" format="hdf5" version="4">
       <cd:DetectionRule>
         <!-- CCI Cloud all monthly profiles -->
         <cd:MatchExpression>substr(7, 16, filename()) == "ESACCI-L3C_CLOUD"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
-
   </cd:ProductType>
-
 </cd:ProductClass>

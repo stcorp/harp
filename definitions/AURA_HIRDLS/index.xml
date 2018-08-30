@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass name="AURA_HIRDLS" last-modified="2016-09-22" xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="AURA_HIRDLS" last-modified="2016-09-22">
   <cd:Description>Aura HIRDLS products</cd:Description>
   <cd:ProductType name="HIRDLS2">
     <cd:Description>HIRDLS L2</cd:Description>
