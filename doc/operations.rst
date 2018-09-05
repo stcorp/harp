@@ -101,7 +101,7 @@ Supported functions:
     ``bin()``
         For all variables in a product perform an averaging in the time
         dimension such that all samples end up in a single bin.
-    
+
     ``bin(variable)``
         For all variables in a product perform an averaging in the time
         dimension such that all samples in the same bin get averaged.
@@ -227,11 +227,12 @@ Supported functions:
         given dimension into the time dimension. The time dimension
         will thus grow by a factor equal to the length of the given
         dimension and none of the variables in the product will
-        depend on the given dimension anymore. Variables that depend
-        more than once on the given dimension will be removed. The
-        index and collocation_index variables will be removed if the
-        length of the flattened dimension did not equal 1.
-        Independent dimensions cannot be flattened.
+        depend on the given dimension anymore. If the length of the
+        flattened dimension does not equal 1 then: variables that
+        depend more than once on the given dimension will be removed,
+        the index and collocation_index variables will be removed,
+        and time independent variables are made time dependent.
+        Independent dimensions and the time dimension cannot be flattened.
         Example:
 
             | ``flatten(latitude);flatten(longitude)``
