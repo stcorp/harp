@@ -826,18 +826,22 @@ static int product_has_empty_dimensions(ingest_info *info)
 
     for (i = 0; i < info->product_definition->num_variable_definitions; i++)
     {
-        const harp_variable_definition *variable_def;
-        int j;
-
-        variable_def = info->product_definition->variable_definition[i];
-        for (j = 0; j < variable_def->num_dimensions; j++)
+        /* only check dimensions of variables that we actually ingest */
+        if (info->variable_mask[i])
         {
-            harp_dimension_type dimension_type;
+            const harp_variable_definition *variable_def;
+            int j;
 
-            dimension_type = variable_def->dimension_type[j];
-            if (dimension_type != harp_dimension_independent && info->dimension[dimension_type] == 0)
+            variable_def = info->product_definition->variable_definition[i];
+            for (j = 0; j < variable_def->num_dimensions; j++)
             {
-                return 1;
+                harp_dimension_type dimension_type;
+
+                dimension_type = variable_def->dimension_type[j];
+                if (dimension_type != harp_dimension_independent && info->dimension[dimension_type] == 0)
+                {
+                    return 1;
+                }
             }
         }
     }
@@ -1759,6 +1763,11 @@ static int get_product(ingest_info *info, harp_program *program)
     {
         return -1;
     }
+    if (init_variable_mask(info) != 0)
+    {
+        return -1;
+    }
+
     if (product_has_empty_dimensions(info))
     {
         /* empty product is not considered an error */
@@ -1766,10 +1775,6 @@ static int get_product(ingest_info *info, harp_program *program)
         return 0;
     }
 
-    if (init_variable_mask(info) != 0)
-    {
-        return -1;
-    }
     if (!product_has_variables(info))
     {
         /* empty product is not considered an error */
