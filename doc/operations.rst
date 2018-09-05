@@ -237,6 +237,8 @@ Supported functions:
 
             | ``flatten(latitude);flatten(longitude)``
             | (turn a 2D lat/lon grid into a a series of individual points)
+            | ``regrid(vertical, altitude [km], (20));flatten(vertical)``
+            | (vertically slice the product at 20 km altitude)
 
     ``keep(variable, ...)``
         Mark the specified variable(s) for inclusion in the
