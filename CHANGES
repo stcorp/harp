@@ -11,6 +11,9 @@
 
 * Add derivations between wind speed/direction and zonal/meridional velocity.
 
+* Flattening a dimension now special cases a dimension length 1 (with less
+  modifications to variables/product).
+
 * Fixed issue where a point distance of 0 could sometimes result in NaN.
 
 * Updates to S5P L2, GOME/GOME-2 L2, and ECMWF GRIB product ingestions.
