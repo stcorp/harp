@@ -2279,6 +2279,14 @@ static int read_results_column_averaging_kernel_inverted(void *user_data, harp_a
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
+static int read_results_degrees_of_freedom(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "degrees_of_freedom", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_formaldehyde_slant_column_corrected(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -4664,6 +4672,16 @@ static void register_o3_product(void)
                                                    read_results_ozone_total_air_mass_factor_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_air_mass_factor_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+
+    /* O3_column_number_density_dfs */
+    description = "degrees of freedom of the O3 column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_dfs",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_nrti,
+                                                   read_results_degrees_of_freedom);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/degrees_of_freedom[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
     /* O3_slant_column_number_density */
     description = "O3 ring corrected slant column number density";
