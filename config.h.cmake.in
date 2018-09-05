@@ -47,9 +47,6 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #cmakedefine HAVE_DLFCN_H ${HAVE_DLFCN_H}
 
-/* Define to 1 if you have the <export.h> header file. */
-#cmakedefine HAVE_EXPORT_H ${HAVE_EXPORT_H}
-
 /* Define to 1 if you have the `floor' function. */
 #cmakedefine HAVE_FLOOR ${HAVE_FLOOR}
 
@@ -67,6 +64,9 @@
 
 /* Define to 1 if you have the <hdf.h> header file. */
 #cmakedefine HAVE_HDF_H ${HAVE_HDF_H}
+
+/* Define to 1 if you have the <idl_export.h> header file. */
+#cmakedefine HAVE_IDL_EXPORT_H ${HAVE_IDL_EXPORT_H}
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H ${HAVE_INTTYPES_H}
