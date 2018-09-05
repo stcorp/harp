@@ -58,14 +58,14 @@ nadir looking spectral instrument on a satellite will generally only have the di
 not ``latitude``, ``longitude``, ``vertical``, or ``independent``).
 
 Note that only a single grid can be used for each type of dimension per time value. This means that, for example, it is
-possible to change the vertical grid from sample to sample. However, it is not possible to use different vertical grids
+possible to change the vertical grid from sample to sample, but it is not possible to use different vertical grids
 for the *same* sample.
 
 To allow a different vertical grid from sample to sample, the ``altitude`` variable should have dimensions
 ``{time,vertical}`` (instead of ``{vertical}``). This way, the altitude values for the first sample, ``altitude[0,:]``,
 may differ from the altitude values for the second sample, ``altitude[1,:]``, and so on. However, for an averaging
 kernel, which has dimensions ``{time,vertical,vertical}``, the altitude values for both vertical dimensions are
-necessarily the same for each sample.
+necessarily the same for each single sample.
 
 A grid that differs from sample to sample could have a different effective length per sample. This is implemented by
 taking the maximum length over all samples as the length of the dimension and padding the dimension for each sample at

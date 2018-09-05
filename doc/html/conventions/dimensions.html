@@ -225,13 +225,13 @@ measure along a spectral axis).</li>
 nadir looking spectral instrument on a satellite will generally only have the dimensions <code class="docutils literal"><span class="pre">time</span></code> and <code class="docutils literal"><span class="pre">spectral</span></code> (and
 not <code class="docutils literal"><span class="pre">latitude</span></code>, <code class="docutils literal"><span class="pre">longitude</span></code>, <code class="docutils literal"><span class="pre">vertical</span></code>, or <code class="docutils literal"><span class="pre">independent</span></code>).</p>
 <p>Note that only a single grid can be used for each type of dimension per time value. This means that, for example, it is
-possible to change the vertical grid from sample to sample. However, it is not possible to use different vertical grids
+possible to change the vertical grid from sample to sample, but it is not possible to use different vertical grids
 for the <em>same</em> sample.</p>
 <p>To allow a different vertical grid from sample to sample, the <code class="docutils literal"><span class="pre">altitude</span></code> variable should have dimensions
 <code class="docutils literal"><span class="pre">{time,vertical}</span></code> (instead of <code class="docutils literal"><span class="pre">{vertical}</span></code>). This way, the altitude values for the first sample, <code class="docutils literal"><span class="pre">altitude[0,:]</span></code>,
 may differ from the altitude values for the second sample, <code class="docutils literal"><span class="pre">altitude[1,:]</span></code>, and so on. However, for an averaging
 kernel, which has dimensions <code class="docutils literal"><span class="pre">{time,vertical,vertical}</span></code>, the altitude values for both vertical dimensions are
-necessarily the same for each sample.</p>
+necessarily the same for each single sample.</p>
 <p>A grid that differs from sample to sample could have a different effective length per sample. This is implemented by
 taking the maximum length over all samples as the length of the dimension and padding the dimension for each sample at
 the end with &#8216;invalid&#8217; values (e.g. <code class="docutils literal"><span class="pre">NaN</span></code>). For instance, you can have an <code class="docutils literal"><span class="pre">altitude{time,vertical}</span></code> variable where
