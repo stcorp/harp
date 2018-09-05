@@ -235,7 +235,6 @@ typedef struct ingest_info_struct
     long *grid_data_parameter_ref;      /* [num_grid_data] */
     coda_cursor *parameter_cursor;      /* [num_grid_data], array of cursors to /[]/data([])/values for each param */
     double *level;      /* [num_grid_data] */
-    double wavelength;
 
     double datetime;
     double reference_datetime;
@@ -263,6 +262,8 @@ typedef struct ingest_info_struct
     long num_levels;    /* max(1, num_grib_levels) */
     long num_grib_levels;       /* number of levels as reported in the GRIB file */
     double *coordinate_values;  /* [2 * (num_grib_levels + 1)], contains ap and bp coefficients */
+
+    long num_wavelengths;       /* for AOD */
 
     int has_parameter[NUM_GRIB_PARAMETERS];
     long *grid_data_index;      /* [NUM_GRIB_PARAMETERS, num_levels] */
@@ -857,6 +858,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     dimension[harp_dimension_longitude] = info->num_longitudes;
     dimension[harp_dimension_latitude] = info->num_latitudes;
     dimension[harp_dimension_vertical] = info->num_levels;
+    dimension[harp_dimension_spectral] = info->num_wavelengths;
 
     return 0;
 }
@@ -882,9 +884,37 @@ static int read_longitude(void *user_data, long index, harp_array data)
     return 0;
 }
 
-static int read_wavelength(void *user_data, harp_array data)
+static int read_wavelengths(void *user_data, harp_array data)
 {
-    *data.double_data = ((ingest_info *)user_data)->wavelength;
+    ingest_info *info = (ingest_info *)user_data;
+    long index = 0;
+
+    if (info->has_parameter[grib_param_aod469])
+    {
+        data.double_data[index] = 469;
+        index++;
+    }
+    if (info->has_parameter[grib_param_aod550])
+    {
+        data.double_data[index] = 550;
+        index++;
+    }
+    if (info->has_parameter[grib_param_aod670])
+    {
+        data.double_data[index] = 670;
+        index++;
+    }
+    if (info->has_parameter[grib_param_aod865])
+    {
+        data.double_data[index] = 865;
+        index++;
+    }
+    if (info->has_parameter[grib_param_aod1240])
+    {
+        data.double_data[index] = 1240;
+        index++;
+    }
+
     return 0;
 }
 
@@ -1115,30 +1145,60 @@ static int read_gtco3(void *user_data, long index, harp_array data)
 static int read_aod(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    harp_array subarray = data;
+    long dimension_transpose[2];
 
+    dimension_transpose[0] = info->num_wavelengths;
+    dimension_transpose[1] = info->num_longitudes;
+
+    /* we read the data as [spectral,longitude] */
     if (info->has_parameter[grib_param_aod550])
     {
-        return read_2d_grid_data((ingest_info *)user_data, grib_param_aod550, index, data);
+        if (read_2d_grid_data((ingest_info *)user_data, grib_param_aod469, index, subarray) != 0)
+        {
+            return -1;
+        }
+        subarray.float_data = &subarray.float_data[info->num_longitudes];
     }
     if (info->has_parameter[grib_param_aod469])
     {
-        return read_2d_grid_data((ingest_info *)user_data, grib_param_aod469, index, data);
+        if (read_2d_grid_data((ingest_info *)user_data, grib_param_aod550, index, subarray) != 0)
+        {
+            return -1;
+        }
+        subarray.float_data = &subarray.float_data[info->num_longitudes];
     }
     if (info->has_parameter[grib_param_aod670])
     {
-        return read_2d_grid_data((ingest_info *)user_data, grib_param_aod670, index, data);
+        if (read_2d_grid_data((ingest_info *)user_data, grib_param_aod670, index, subarray) != 0)
+        {
+            return -1;
+        }
+        subarray.float_data = &subarray.float_data[info->num_longitudes];
     }
     if (info->has_parameter[grib_param_aod865])
     {
-        return read_2d_grid_data((ingest_info *)user_data, grib_param_aod865, index, data);
+        if (read_2d_grid_data((ingest_info *)user_data, grib_param_aod865, index, subarray) != 0)
+        {
+            return -1;
+        }
+        subarray.float_data = &subarray.float_data[info->num_longitudes];
     }
     if (info->has_parameter[grib_param_aod1240])
     {
-        return read_2d_grid_data((ingest_info *)user_data, grib_param_aod1240, index, data);
+        if (read_2d_grid_data((ingest_info *)user_data, grib_param_aod1240, index, subarray) != 0)
+        {
+            return -1;
+        }
     }
 
-    assert(0);
-    exit(1);
+    /* and then reorder dimensions from [spectral,longitude] to [longitude,spectral] */
+    if (harp_array_transpose(harp_type_float, 2, dimension_transpose, NULL, data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 static int read_ssaod(void *user_data, long index, harp_array data)
@@ -2459,6 +2519,28 @@ static int init_cursors_and_grid(ingest_info *info)
         }
     }
 
+    /* determine wavelength grid */
+    if (info->has_parameter[grib_param_aod469])
+    {
+        info->num_wavelengths++;
+    }
+    if (info->has_parameter[grib_param_aod550])
+    {
+        info->num_wavelengths++;
+    }
+    if (info->has_parameter[grib_param_aod670])
+    {
+        info->num_wavelengths++;
+    }
+    if (info->has_parameter[grib_param_aod865])
+    {
+        info->num_wavelengths++;
+    }
+    if (info->has_parameter[grib_param_aod1240])
+    {
+        info->num_wavelengths++;
+    }
+
     return 0;
 }
 
@@ -2517,7 +2599,6 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     info->grid_data_parameter_ref = NULL;
     info->parameter_cursor = NULL;
     info->level = NULL;
-    info->wavelength = harp_nan();
     info->datetime = 0;
     info->reference_datetime = 0;
     info->is_forecast_datetime = 0;
@@ -2539,6 +2620,7 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     info->num_levels = 1;
     info->num_grib_levels = 0;
     info->coordinate_values = NULL;
+    info->num_wavelengths = 0;
     info->grid_data_index = NULL;
 
     for (i = 0; i < NUM_GRIB_PARAMETERS; i++)
@@ -2563,10 +2645,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     coda_format format;
 
     (void)options;
-    if (ingest_info_new(product, &info) != 0)
-    {
-        return -1;
-    }
 
     if (coda_get_product_format(product, &format) != 0)
     {
@@ -2574,6 +2652,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     assert(format == coda_format_grib);
 
+    if (ingest_info_new(product, &info) != 0)
+    {
+        return -1;
+    }
     if (init_cursors_and_grid(info) != 0)
     {
         ingest_info_delete(info);
@@ -2586,9 +2668,9 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int exclude_wavelength(void *user_data)
+static int exclude_wavelengths(void *user_data)
 {
-    return harp_isnan(((ingest_info *)user_data)->wavelength);
+    return ((ingest_info *)user_data)->num_wavelengths == 0;
 }
 
 static int exclude_tclw(void *user_data)
@@ -2755,30 +2837,7 @@ static int exclude_gtco3(void *user_data)
 
 static int exclude_aod(void *user_data)
 {
-    ingest_info *info = (ingest_info *)user_data;
-
-    if (info->has_parameter[grib_param_aod550])
-    {
-        return 0;
-    }
-    if (info->has_parameter[grib_param_aod469])
-    {
-        return 0;
-    }
-    if (info->has_parameter[grib_param_aod670])
-    {
-        return 0;
-    }
-    if (info->has_parameter[grib_param_aod865])
-    {
-        return 0;
-    }
-    if (info->has_parameter[grib_param_aod1240])
-    {
-        return 0;
-    }
-
-    return 1;
+    return ((ingest_info *)user_data)->num_wavelengths == 0;
 }
 
 static int exclude_ssaod(void *user_data)
@@ -2902,6 +2961,9 @@ int harp_ingestion_module_ecmwf_grib_init(void)
         harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_vertical,
         harp_dimension_independent
     };
+    harp_dimension_type spectral_dimension_type[4] = {
+        harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_spectral
+    };
     long bounds_dimension[5] = { -1, -1, -1, -1, 2 };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -2956,15 +3018,14 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "GRIB2", path, description);
 
     /* wavelength */
-    description = "wavelength of the aerosol property";
+    description = "wavelengths of the aerosol properties";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 0, NULL, NULL,
-                                                   description, "nm", exclude_wavelength, read_wavelength);
-    description =
-        "the wavelength value is based on the AOD; possible values are: 469, 550, 670, 865, 1240; a single "
-        "HARP file will not have AODs at more than one wavelength";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "AOD quantity is present", NULL, description);
-
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
+                                                   &spectral_dimension_type[3], NULL, description, "nm",
+                                                   exclude_wavelengths, read_wavelengths);
+    description = "the values are based on the available AODs; possible values are: 469, 550, 670, 865, 1240";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "one or more AOD quantities are present", NULL,
+                                         description);
 
     /* tclw: LWC_column_density */
     description = "total column cloud liquid water";
@@ -3244,19 +3305,20 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,206)",
                                "(discipline,category,number) = (192,210,206)");
 
-    /* aod550/aod469/aod670/aod865/aod1240: aerosol_optical_depth */
+    /* aod469/aod550/aod670/aod865/aod1240: aerosol_optical_depth */
     description = "total aerosol optical depth";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "aerosol_optical_depth",
-                                                                      harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, HARP_UNIT_DIMENSIONLESS, exclude_aod,
-                                                                      read_aod);
-    add_value_variable_mapping(variable_definition, "Only one AOD wavelength is allowed; (table,indicator) = (210,207) "
-                               "[550nm], (210,213) [469nm], (210,214) [670nm], (210,215) [865nm], or (210,216) "
-                               "[1240nm]", "(discipline,category,number) = (192,210,207) [550nm], (192,210,213) "
-                               "[469nm], (192,210,214) [670nm], (192,210,215) [865nm], or (192,210,216) [1240nm]");
+                                                                      harp_type_float, 3, &spectral_dimension_type[1],
+                                                                      NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                                      exclude_aod, read_aod);
+    add_value_variable_mapping(variable_definition, "AODs are combined using a spectal axis; "
+                               "(table,indicator) = (210,213) [469nm], (210,207) [550nm], (210,214) [670nm], "
+                               "(210,215) [865nm], or (210,216) [1240nm]", "(discipline,category,number) = "
+                               "(192,210,213) [469nm], (192,210,207) [550nm], (192,210,214) [670nm], "
+                               "(192,210,215) [865nm], or (192,210,216) [1240nm]");
 
     /* ssaod550: sea_salt_aerosol_optical_depth */
-    description = "sea salt aerosol optical depth";
+    description = "sea salt aerosol optical depth (at 550nm)";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "sea_salt_aerosol_optical_depth", harp_type_float,
                                                                       2, &dimension_type[1], NULL, description,
@@ -3266,7 +3328,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                "(discipline,category,number) = (192,210,208) [550nm]");
 
     /* duaod550: dust_aerosol_optical_depth */
-    description = "dust aerosol optical depth";
+    description = "dust aerosol optical depth (at 550nm)";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "dust_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, HARP_UNIT_DIMENSIONLESS,
@@ -3275,7 +3337,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                "(discipline,category,number) = (192,210,209) [550nm]");
 
     /* omaod550: organic_matter_aerosol_optical_depth */
-    description = "organic matter aerosol optical depth";
+    description = "organic matter aerosol optical depth (at 550nm)";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "organic_matter_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
@@ -3285,7 +3347,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                "(discipline,category,number) = (192,210,210) [550nm]");
 
     /* bcaod550: black_carbon_aerosol_optical_depth */
-    description = "black carbon aerosol optical depth";
+    description = "black carbon aerosol optical depth (at 550nm)";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "black_carbon_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
@@ -3295,7 +3357,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                "(discipline,category,number) = (192,210,211) [550nm]");
 
     /* suaod550: sulphate_aerosol_optical_depth */
-    description = "sulphate aerosol optical depth";
+    description = "sulphate aerosol optical depth (at 550nm)";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "sulphate_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,

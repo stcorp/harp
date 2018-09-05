@@ -196,9 +196,9 @@
 </tr>
 <tr class="row-odd"><td><strong>wavelength</strong></td>
 <td>double</td>
-<td>&#160;</td>
+<td>{<em>spectral</em>}</td>
 <td>[nm]</td>
-<td>wavelength of the aerosol property</td>
+<td>wavelengths of the aerosol properties</td>
 </tr>
 <tr class="row-even"><td><strong>LWC_column_density</strong></td>
 <td>float</td>
@@ -400,7 +400,7 @@
 </tr>
 <tr class="row-odd"><td><strong>aerosol_optical_depth</strong></td>
 <td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>spectral</em>}</td>
 <td>[]</td>
 <td>total aerosol optical depth</td>
 </tr>
@@ -408,31 +408,31 @@
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
 <td>[]</td>
-<td>sea salt aerosol optical depth</td>
+<td>sea salt aerosol optical depth (at 550nm)</td>
 </tr>
 <tr class="row-odd"><td><strong>dust_aerosol_optical_depth</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
 <td>[]</td>
-<td>dust aerosol optical depth</td>
+<td>dust aerosol optical depth (at 550nm)</td>
 </tr>
 <tr class="row-even"><td><strong>organic_matter_aerosol_optical_depth</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
 <td>[]</td>
-<td>organic matter aerosol optical depth</td>
+<td>organic matter aerosol optical depth (at 550nm)</td>
 </tr>
 <tr class="row-odd"><td><strong>black_carbon_aerosol_optical_depth</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
 <td>[]</td>
-<td>black carbon aerosol optical depth</td>
+<td>black carbon aerosol optical depth (at 550nm)</td>
 </tr>
 <tr class="row-even"><td><strong>sulphate_aerosol_optical_depth</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
 <td>[]</td>
-<td>sulphate aerosol optical depth</td>
+<td>sulphate aerosol optical depth (at 550nm)</td>
 </tr>
 <tr class="row-odd"><td><strong>HNO3_mass_mixing_ratio</strong></td>
 <td>float</td>
@@ -610,10 +610,10 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>AOD quantity is present</td>
+<td>one or more AOD quantities are present</td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>the wavelength value is based on the AOD; possible values are: 469, 550, 670, 865, 1240; a single HARP file will not have AODs at more than one wavelength</td>
+<td>the values are based on the available AODs; possible values are: 469, 550, 670, 865, 1240</td>
 </tr>
 <tr class="row-odd"><td rowspan="7"><strong>LWC_column_density</strong></td>
 <td><em>available</em></td>
@@ -1325,7 +1325,7 @@
 <td><strong>/[]/data/values[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>Only one AOD wavelength is allowed; (table,indicator) = (210,207) [550nm], (210,213) [469nm], (210,214) [670nm], (210,215) [865nm], or (210,216) [1240nm]</td>
+<td>AODs are combined using a spectal axis; (table,indicator) = (210,213) [469nm], (210,207) [550nm], (210,214) [670nm], (210,215) [865nm], or (210,216) [1240nm]</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
 <td>GRIB2</td>
@@ -1334,7 +1334,7 @@
 <td><strong>/[]/data[]/values[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,207) [550nm], (192,210,213) [469nm], (192,210,214) [670nm], (192,210,215) [865nm], or (192,210,216) [1240nm]</td>
+<td>(discipline,category,number) = (192,210,213) [469nm], (192,210,207) [550nm], (192,210,214) [670nm], (192,210,215) [865nm], or (192,210,216) [1240nm]</td>
 </tr>
 <tr class="row-even"><td rowspan="7"><strong>sea_salt_aerosol_optical_depth</strong></td>
 <td><em>available</em></td>
