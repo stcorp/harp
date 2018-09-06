@@ -2025,8 +2025,13 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
             dimension[i] = info->dimension[i];
         }
     }
+    if (init_variable_mask(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
 
-    if (product_has_empty_dimensions(info))
+    if (product_has_empty_dimensions(info) || !product_has_variables(info))
     {
         /* empty product is not considered an error */
         *datetime_start = harp_mininf();
@@ -2035,29 +2040,32 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
         return 0;
     }
 
-    /* read all variables whose name starts with 'datetime' */
+    /* read all (available) variables whose name starts with 'datetime' */
     for (i = 0; i < info->product_definition->num_variable_definitions; i++)
     {
-        harp_variable_definition *variable_def;
-        harp_variable *variable;
-
-        variable_def = info->product_definition->variable_definition[i];
-        if (strncmp(variable_def->name, "datetime", 8) != 0)
+        if (info->variable_mask[i])
         {
-            continue;
-        }
+            harp_variable_definition *variable_def;
+            harp_variable *variable;
 
-        if (get_variable(info, variable_def, info->dimension_mask_set, &variable) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
+            variable_def = info->product_definition->variable_definition[i];
+            if (strncmp(variable_def->name, "datetime", 8) != 0)
+            {
+                continue;
+            }
 
-        if (harp_product_add_variable(info->product, variable) != 0)
-        {
-            harp_variable_delete(variable);
-            ingestion_done(info);
-            return -1;
+            if (get_variable(info, variable_def, info->dimension_mask_set, &variable) != 0)
+            {
+                ingestion_done(info);
+                return -1;
+            }
+
+            if (harp_product_add_variable(info->product, variable) != 0)
+            {
+                harp_variable_delete(variable);
+                ingestion_done(info);
+                return -1;
+            }
         }
     }
 
