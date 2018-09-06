@@ -86,15 +86,6 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
         }
     }
 
-    if (dimension_type == harp_dimension_spectral)
-    {
-        if (strstr(variable->name, "aerosol_optical_depth") != NULL ||
-            strstr(variable->name, "aerosol_extinction_coefficient") != NULL)
-        {
-            return resample_loglog;
-        }
-    }
-
     /* ensure that there is only 1 dimension of the given type */
     for (i = 0, num_matching_dims = 0; i < variable->num_dimensions; i++)
     {
@@ -119,7 +110,7 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
     /* we can't resample data without a unit */
     if (variable->unit == NULL)
     {
-        /* this also (intentionally) removes 'index' and 'count' variables when regredding in the time dimension */
+        /* this also (intentionally) removes 'index' and 'count' variables when regridding in the time dimension */
         return resample_remove;
     }
 
@@ -153,6 +144,15 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
         if (strstr(variable->name, "_column_") != NULL)
         {
             return resample_interval;
+        }
+    }
+
+    if (dimension_type == harp_dimension_spectral)
+    {
+        if (strstr(variable->name, "aerosol_optical_depth") != NULL ||
+            strstr(variable->name, "aerosol_extinction_coefficient") != NULL)
+        {
+            return resample_loglog;
         }
     }
 
