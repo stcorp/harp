@@ -10,7 +10,7 @@
   This is equivalent to using the Angstrom Exponent approach.
 
 * Fixed interpolation issue where points beyond the source grid could end up
-  having the final grid point value (instead of NaN). This is a regression of
+  having an arbitrary wrong value (instead of NaN). This is a regression of
   harp 1.3.
 
 * Add derivations between wind speed/direction and zonal/meridional velocity.
