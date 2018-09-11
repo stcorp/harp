@@ -324,37 +324,66 @@
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>[m]</td>
-<td>averaging kernel for the vertically integrated CO column density</td>
+<td>averaging kernel for the vertically integrated CO column density (for number density profiles)</td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>CO_column_number_density_avk</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>vertical</em>}</td>
+<td>[]</td>
+<td>averaging kernel for the vertically integrated CO column density (for partial column number density profiles)</td>
+</tr>
+<tr class="row-even"><td><strong>H2O_column_number_density</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[mol/m^2]</td>
 <td>H2O total column density</td>
 </tr>
-<tr class="row-even"><td><strong>H2O_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><strong>H2O_column_number_density_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[mol/m^2]</td>
 <td>uncertainty of the H2O column density (standard error)</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_height</strong></td>
+<tr class="row-even"><td><strong>cloud_height</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>Scattering layer height</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>Scattering optical thickness SWIR</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>zero-based index of the sample within the source product</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">S5P_L2_CO</span></code> products.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>co_avk</td>
+<td>number_density</td>
+<td>whether to ingest the partial column number density column avk (default) for CO or the number density column avk (avk=number_density)</td>
 </tr>
 </tbody>
 </table>
@@ -497,12 +526,31 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/qa_value</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>CO_number_density_avk</strong></td>
-<td><em>path</em></td>
+<tr class="row-odd"><td rowspan="4"><strong>CO_number_density_avk</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>avk=number_density</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>the vertical grid is inverted to make it ascending</td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>CO_column_number_density_avk</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>avk unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the vertical grid is inverted to make it ascending and each element is divided by 1000 [m] so the column avk can be applied to partial column number density profiles instead of number density profiles</td>
 </tr>
 <tr class="row-odd"><td><strong>H2O_column_number_density</strong></td>
 <td><em>path</em></td>

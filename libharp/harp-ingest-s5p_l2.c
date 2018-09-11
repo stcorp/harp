@@ -96,6 +96,7 @@ typedef struct ingest_info_struct
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
     int use_ch4_bias_corrected;
+    int use_co_nd_avk;
     int use_o3_tcl_upper;
     int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
 
@@ -602,6 +603,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "ch4"))
     {
         info->use_ch4_bias_corrected = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "co_avk"))
+    {
+        info->use_co_nd_avk = 1;
     }
     if (harp_ingestion_options_has_option(options, "o3"))
     {
@@ -2279,6 +2284,24 @@ static int read_results_column_averaging_kernel_inverted(void *user_data, harp_a
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
+static int read_results_column_averaging_kernel_inverted_scaled(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_results_column_averaging_kernel_inverted(user_data, data) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < info->num_scanlines * info->num_pixels * info->num_layers; i++)
+    {
+        data.float_data[i] /= 1e3;      /* divide each element by the layer height (= 1km) */
+    }
+
+    return 0;
+}
+
 static int read_results_degrees_of_freedom(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3619,6 +3642,16 @@ static int exclude_nrti(void *user_data)
     return ((ingest_info *)user_data)->is_nrti;
 }
 
+static int exclude_co_nd_avk(void *user_data)
+{
+    return !((ingest_info *)user_data)->use_co_nd_avk;
+}
+
+static int exclude_co_pcnd_avk(void *user_data)
+{
+    return ((ingest_info *)user_data)->use_co_nd_avk;
+}
+
 static int exclude_o3_tcl(void *user_data)
 {
     return !((ingest_info *)user_data)->use_o3_tcl_upper;
@@ -4288,6 +4321,7 @@ static void register_ch4_product(void)
 
 static void register_co_product(void)
 {
+    const char *avk_options[] = { "number_density" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -4300,6 +4334,10 @@ static void register_co_product(void)
 
     module = harp_ingestion_register_module_coda("S5P_L2_CO", "Sentinel-5P", "Sentinel5P", "L2__CO____",
                                                  "Sentinel-5P L2 CO total column", ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "co_avk", "whether to ingest the partial column number density column avk "
+                                   "(default) for CO or the number density column avk (avk=number_density)", 1,
+                                   avk_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CO", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_co]);
@@ -4369,14 +4407,26 @@ static void register_co_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
     /* CO_number_density_avk */
-    description = "averaging kernel for the vertically integrated CO column density";
+    description = "averaging kernel for the vertically integrated CO column density (for number density profiles)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_number_density_avk", harp_type_float,
-                                                   2, dimension_type, NULL, description, "m", NULL,
+                                                   2, dimension_type, NULL, description, "m", exclude_co_nd_avk,
                                                    read_results_column_averaging_kernel_inverted);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
     description = "the vertical grid is inverted to make it ascending";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "avk=number_density", NULL, path, description);
+
+    /* CO_column_number_density_avk */
+    description = "averaging kernel for the vertically integrated CO column density "
+        "(for partial column number density profiles)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_avk", harp_type_float,
+                                                   2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   exclude_co_pcnd_avk,
+                                                   read_results_column_averaging_kernel_inverted_scaled);
+    description = "the vertical grid is inverted to make it ascending and each element is divided by 1000 [m] so the "
+        "column avk can be applied to partial column number density profiles instead of number density profiles";
+    harp_variable_definition_add_mapping(variable_definition, "avk unset", NULL, path, description);
 
     /* H2O_column_number_density */
     description = "H2O total column density";
