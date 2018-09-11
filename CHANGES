@@ -9,6 +9,10 @@
   automatically use a log/log regridding in the spectral dimension.
   This is equivalent to using the Angstrom Exponent approach.
 
+* Fixed interpolation issue where points beyond the source grid could end up
+  having the final grid point value (instead of NaN). This is a regression of
+  harp 1.3.
+
 * Add derivations between wind speed/direction and zonal/meridional velocity.
 
 * Flattening a dimension now special cases a dimension length 1 (with less

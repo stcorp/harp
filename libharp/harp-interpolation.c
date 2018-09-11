@@ -358,7 +358,15 @@ void harp_interpolate_find_index(long source_length, const double *source_grid, 
         }
     }
 
-    *index = low;
+    if (low == source_length - 1)
+    {
+        /* point is after source_grid[source_length - 1], because equality was already checked */
+        *index = source_length;
+    }
+    else
+    {
+        *index = low;
+    }
 }
 
 int harp_cubic_spline_interpolation(const double *xx, const double *yy, long n, const double xp, double *yp)
