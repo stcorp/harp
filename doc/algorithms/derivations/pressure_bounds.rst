@@ -18,7 +18,7 @@ pressure bounds derivations
       \begin{eqnarray}
          p^{B}(1,1) & = & e^{\frac{3\ln(p(1)) - \ln(p(2))}{2}} \\
          p^{B}(i,1) & = & e^{\frac{\ln(p(i-1)) + \ln(p(i))}{2}}, 1 < i \leq N \\
-         p^{B}(i,2) & = & e^{\ln(p^{B}(i+1,1))}, 1 \leq i < N \\
+         p^{B}(i,2) & = & p^{B}(i+1,1), 1 \leq i < N \\
          p^{B}(N,2) & = & e^{\frac{3\ln(p(N)) - \ln(p(N-1))}{2}}
       \end{eqnarray}
 
