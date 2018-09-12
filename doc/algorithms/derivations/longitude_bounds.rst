@@ -16,10 +16,10 @@ longitude bounds derivations
       :nowrap:
 
       \begin{eqnarray}
-         \lambda^{B}(1,1) & = & 2\lambda(1) - \lambda(2) \\
+         \lambda^{B}(1,1) & = & \frac{3\lambda(1) - \lambda(2)}{2} \\
          \lambda^{B}(i,1) & = & \frac{\lambda(i-1) + \lambda(i)}{2}, 1 < i \leq N \\
          \lambda^{B}(i,2) & = & \lambda^{B}(i+1,1), 1 \leq i < N \\
-         \lambda^{B}(N,2) & = & 2\lambda(N) - \lambda(N-1)
+         \lambda^{B}(N,2) & = & \frac{3\lambda(N) - \lambda(N-1)}{2}
       \end{eqnarray}
 
    This formula applies if the harp option ``regrid_out_of_bounds`` is set to ``nan`` or to ``extrapolate``.

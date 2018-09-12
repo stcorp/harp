@@ -16,10 +16,10 @@ altitude bounds derivations
       :nowrap:
 
       \begin{eqnarray}
-         z^{B}(1,1) & = & 2z(1) - z(2) \\
+         z^{B}(1,1) & = & \frac{3z(1) - z(2)}{2} \\
          z^{B}(i,1) & = & \frac{z(i-1) + z(i)}{2}, 1 < i \leq N \\
          z^{B}(i,2) & = & z^{B}(i+1,1), 1 \leq i < N \\
-         z^{B}(N,2) & = & 2z(N) - z(N-1)
+         z^{B}(N,2) & = & \frac{3z(N) - z(N-1)}{2}
       \end{eqnarray}
 
    This formula applies if the harp option ``regrid_out_of_bounds`` is set to ``nan`` or to ``extrapolate``.
