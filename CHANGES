@@ -20,7 +20,8 @@
 
 * Fixed issue where a point distance of 0 could sometimes result in NaN.
 
-* Updates to S5P L2, GOME/GOME-2 L2, and ECMWF GRIB product ingestions.
+* Updates to S5P L2, GOME/GOME-2 L2, ECMWF GRIB, and AERONET product
+  ingestions.
 
 1.3 2018-07-05
 ~~~~~~~~~~~~~~
