@@ -4546,10 +4546,10 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* HCHO_volume_mixing_ratio_apriori */
-    description = "HCHO apriori profile in volume mixing ratios";
+    /* HCHO_volume_mixing_ratio_dry_air_apriori */
+    description = "HCHO apriori profile in volume mixing ratios (with regard to dry air)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_apriori",
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_dry_air_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "ppv",
                                                    exclude_non_nrti, read_results_formaldehyde_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_profile_apriori[]";
