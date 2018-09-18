@@ -461,6 +461,16 @@ static int exclude_dust_layer_height(void *user_data)
     return exclude_field_if_not_existing(user_data, "DustLayerHeight");
 }
 
+static int exclude_backscatter(void *user_data)
+{
+    return exclude_field_if_not_existing(user_data, "Backscatter");
+}
+
+static int exclude_backscatter_uncertainty(void *user_data)
+{
+    return exclude_field_if_not_existing(user_data, "ErrorBackscatter");
+}
+
 static int exclude_extinction(void *user_data)
 {
     return exclude_field_if_not_existing(user_data, "Extinction");
@@ -682,7 +692,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     description = "backscatter coefficient";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "1/(m*sr)", NULL,
+                                                   dimension_type, NULL, description, "1/(m*sr)", exclude_backscatter,
                                                    read_backscatter);
     path = "/Backscatter";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -692,7 +702,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1/(m*sr)",
-                                                   NULL, read_backscatter_uncertainty);
+                                                   exclude_backscatter_uncertainty, read_backscatter_uncertainty);
     path = "/ErrorBackscatter";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
