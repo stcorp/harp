@@ -2315,10 +2315,10 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, "detailed_results=NO2", "CODA product version >= 3", path,
                                          description);
 
-    /* HCHO_volume_mixing_ratio_apriori */
+    /* HCHO_volume_mixing_ratio_dry_air_apriori */
     description = "a priori HCHO volume mixing ratio profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_apriori",
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_dry_air_apriori",
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_VOLUME_MIXING_RATIO, exclude_hcho_details,
                                                    read_hcho_apriori);
@@ -2338,10 +2338,10 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, "detailed_results=HCHO", "CODA product version >= 3",
                                          path, description);
 
-    /* NO2_volume_mixing_ratio_apriori */
+    /* NO2_volume_mixing_ratio_dry_air_apriori */
     description = "a priori NO2 volume mixing ratio profile";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "NO2_volume_mixing_ratio_apriori",
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_volume_mixing_ratio_dry_air_apriori",
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_VOLUME_MIXING_RATIO, exclude_no2_details,
                                                    read_no2_apriori);
