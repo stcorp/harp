@@ -5760,10 +5760,10 @@ static void register_so2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* SO2_volume_mixing_ratio_apriori */
+    /* SO2_volume_mixing_ratio_dry_air_apriori */
     description = "SO2 apriori profile in volume mixing ratios";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "SO2_volume_mixing_ratio_apriori",
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_volume_mixing_ratio_dry_air_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "ppv",
                                                    exclude_so2_apriori_profile,
                                                    read_results_sulfurdioxide_profile_apriori);
