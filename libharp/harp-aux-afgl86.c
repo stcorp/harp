@@ -3210,8 +3210,7 @@ int harp_aux_afgl86_get_profile(const char *name, double datetime, double latitu
     }
     else
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "US standard 76 climatology does not have a profile for '%s'",
-                       name);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "AFGL86 climatology does not have a profile for '%s'", name);
         return -1;
     }
 
