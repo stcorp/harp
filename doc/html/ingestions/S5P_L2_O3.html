@@ -496,9 +496,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="6%" />
-<col width="77%" />
+<col width="15%" />
+<col width="5%" />
+<col width="81%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -588,12 +588,24 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><strong>pressure_bounds</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="6"><strong>pressure_bounds</strong></td>
+<td><em>condition</em></td>
+<td>processor version &lt;= 01.01.02</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from pressure per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>processor version &gt; 01.01.02</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>derived from pressure per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1</td>
+<td>derived from pressure per level (layer boundary) by repeating the inner levels; the upper bound of layer k is equal to the lower bound of layer k+1; if level 0 and level 1 have the same pressure, skip lowest layer and set bounds of highest layer to NaN</td>
 </tr>
 <tr class="row-even"><td><strong>O3_column_number_density</strong></td>
 <td><em>path</em></td>
@@ -607,13 +619,43 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/qa_value</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>O3_column_number_density_apriori</strong></td>
-<td><em>path</em></td>
+<tr class="row-odd"><td rowspan="6"><strong>O3_column_number_density_apriori</strong></td>
+<td><em>condition</em></td>
+<td>processor version &lt;= 01.01.02</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_number_density_avk</strong></td>
-<td><em>path</em></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>if pressure value at level N is NaN then skip lowest layer and add NaN fill value at the end</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt; 01.01.02</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>if lowest two levels have equal pressure then skip lowest layer and add NaN fill value at the end</td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><strong>O3_column_number_density_avk</strong></td>
+<td><em>condition</em></td>
+<td>processor version &lt;= 01.01.02</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>if pressure value at level N is NaN then skip lowest layer and add NaN fill value at the end</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt; 01.01.02</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>if lowest two levels have equal pressure then skip lowest layer and add NaN fill value at the end</td>
 </tr>
 <tr class="row-odd"><td rowspan="3"><strong>O3_column_number_density_amf</strong></td>
 <td><em>available</em></td>

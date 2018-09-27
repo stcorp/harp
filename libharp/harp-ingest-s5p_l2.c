@@ -119,6 +119,8 @@ typedef struct ingest_info_struct
     int collection_number;
     int wavelength_ratio;
     int is_nrti;
+
+    uint8_t *surface_layer_status;      /* used for O3; 0: use as-is, 1: remove */
 } ingest_info;
 
 static void broadcast_array_float(long num_scanlines, long num_pixels, float *data)
@@ -532,7 +534,14 @@ static int init_processing_mode(ingest_info *info)
 
 static void ingestion_done(void *user_data)
 {
-    free(user_data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->surface_layer_status != NULL)
+    {
+        free(info->surface_layer_status);
+    }
+
+    free(info);
 }
 
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
@@ -565,6 +574,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->collection_number = -1;
     info->wavelength_ratio = 354;
     info->is_nrti = 0;
+    info->surface_layer_status = NULL;
 
     if (get_product_type(info->product, &info->product_type) != 0)
     {
@@ -838,6 +848,61 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
         default:
             assert(0);
             exit(1);
+    }
+
+    return 0;
+}
+
+static int read_surface_layer_status(ingest_info *info)
+{
+    harp_array data;
+    long i;
+
+    info->surface_layer_status = malloc(info->num_scanlines * info->num_pixels * sizeof(uint8_t));
+    if (info->surface_layer_status == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * sizeof(uint8_t), __FILE__, __LINE__);
+        return -1;
+
+    }
+    memset(info->surface_layer_status, 0, info->num_scanlines * info->num_pixels);
+
+    data.ptr = malloc(info->num_scanlines * info->num_pixels * info->num_levels * sizeof(float));
+    if (data.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * info->num_levels * sizeof(float), __FILE__, __LINE__);
+        return -1;
+
+    }
+    if (read_dataset(info->detailed_results_cursor, "pressure_grid", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_levels, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->processor_version <= 10102)
+    {
+        for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+        {
+            /* exclude lowest layer if top pressure value is NaN */
+            if (harp_isnan(data.float_data[(i + 1) * info->num_levels - 1]))
+            {
+                info->surface_layer_status[i] = 1;
+            }
+        }
+    }
+    else
+    {
+        for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+        {
+            /* exclude lowest layer if the two lowest pressure levels are identical (i.e zero length layer) */
+            if (data.float_data[i * info->num_levels] == data.float_data[i * info->num_levels + 1])
+            {
+                info->surface_layer_status[i] = 1;
+            }
+        }
     }
 
     return 0;
@@ -2430,14 +2495,6 @@ static int read_results_ozone_total_air_mass_factor_trueness(void *user_data, ha
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_results_ozone_profile_apriori(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "ozone_profile_apriori", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
-}
-
 static int read_results_ozone_profile_error_covariance_matrix(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2452,41 +2509,6 @@ static int read_results_ozone_slant_column_ring_corrected(void *user_data, harp_
 
     return read_dataset(info->detailed_results_cursor, "ozone_slant_column_ring_corrected", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_results_pressure_bounds(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    long num_layers;
-    long i;
-
-    if (read_dataset(info->detailed_results_cursor, "pressure_grid", harp_type_float,
-                     info->num_scanlines * info->num_pixels * info->num_levels, data) != 0)
-    {
-        return -1;
-    }
-
-    /* Convert from #levels (== #layers + 1) consecutive pressures to #layers x 2 pressure bounds.
-     * Iterate in reverse to ensure correct results (conversion is performed in place).
-     */
-    num_layers = info->num_layers;
-    assert((num_layers + 1) == info->num_levels);
-
-    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; i--)
-    {
-        float *pressure = &data.float_data[i * (num_layers + 1)];
-        float *pressure_bounds = &data.float_data[i * num_layers * 2];
-        long j;
-
-        for (j = num_layers - 1; j >= 0; j--)
-        {
-            /* NB. The order of the following two lines is important to ensure correct results. */
-            pressure_bounds[j * 2 + 1] = pressure[j + 1];
-            pressure_bounds[j * 2] = pressure[j];
-        }
-    }
-
-    return 0;
 }
 
 static int read_results_pressure_levels_as_bounds_inverted(void *user_data, harp_array data)
@@ -2726,6 +2748,145 @@ static int read_o3_cloud_fraction_precision(void *user_data, harp_array data)
     return read_dataset(info->input_data_cursor,
                         info->is_nrti ? "cloud_fraction_precision" : "cloud_fraction_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o3_averaging_kernel_1d(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i, j;
+
+    if (read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->surface_layer_status == NULL)
+    {
+        if (read_surface_layer_status(info) != 0)
+        {
+            return -1;
+        }
+    }
+
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (info->surface_layer_status[i] == 1)
+        {
+            for (j = i * info->num_layers; j < (i + 1) * info->num_layers - 1; j++)
+            {
+                data.float_data[j] = data.float_data[j + 1];
+            }
+            data.float_data[(i + 1) * info->num_layers - 1] = harp_nan();
+        }
+    }
+
+    return 0;
+}
+
+static int read_o3_ozone_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i, j;
+
+    if (read_dataset(info->detailed_results_cursor, "ozone_profile_apriori", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->processor_version > 10102)
+    {
+        if (info->surface_layer_status == NULL)
+        {
+            if (read_surface_layer_status(info) != 0)
+            {
+                return -1;
+            }
+        }
+        for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+        {
+            if (info->surface_layer_status[i] == 1)
+            {
+                for (j = i * info->num_layers; j < (i + 1) * info->num_layers - 1; j++)
+                {
+                    data.float_data[j] = data.float_data[j + 1];
+                }
+                data.float_data[(i + 1) * info->num_layers - 1] = harp_nan();
+            }
+        }
+    }
+
+    return 0;
+}
+
+static int read_o3_pressure_bounds(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long num_layers;
+    long i, j;
+
+    if (read_dataset(info->detailed_results_cursor, "pressure_grid", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_levels, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Convert from #levels (== #layers + 1) consecutive pressures to #layers x 2 pressure bounds.
+     * Iterate in reverse to ensure correct results (conversion is performed in place).
+     */
+    num_layers = info->num_layers;
+    assert((num_layers + 1) == info->num_levels);
+
+    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; i--)
+    {
+        float *pressure = &data.float_data[i * (num_layers + 1)];
+        float *pressure_bounds = &data.float_data[i * num_layers * 2];
+
+        for (j = num_layers - 1; j >= 0; j--)
+        {
+            /* NB. The order of the following two lines is important to ensure correct results. */
+            pressure_bounds[j * 2 + 1] = pressure[j + 1];
+            pressure_bounds[j * 2] = pressure[j];
+        }
+    }
+
+    if (info->processor_version <= 10102)
+    {
+        /* just check if last pressure value is NaN and then also set the lower bound of the last layer to NaN */
+        for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+        {
+            if (harp_isnan(data.float_data[(i + 1) * num_layers * 2 - 1]))
+            {
+                data.float_data[(i + 1) * num_layers * 2 - 2] = harp_nan();
+            }
+        }
+    }
+    else
+    {
+        if (info->surface_layer_status == NULL)
+        {
+            if (read_surface_layer_status(info) != 0)
+            {
+                return -1;
+            }
+        }
+        for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+        {
+            if (info->surface_layer_status[i] == 1)
+            {
+                for (j = i * info->num_layers * 2; j < (i + 1) * info->num_layers * 2 - 2; j += 2)
+                {
+                    data.float_data[j] = data.float_data[j + 2];
+                    data.float_data[j + 1] = data.float_data[j + 3];
+                }
+                data.float_data[(i + 1) * info->num_layers * 2 - 2] = harp_nan();
+                data.float_data[(i + 1) * info->num_layers * 2 - 1] = harp_nan();
+            }
+        }
+    }
+
+    return 0;
 }
 
 static int read_o3_tcl_cloud_top_pressure_min(void *user_data, harp_array data)
@@ -4654,11 +4815,15 @@ static void register_o3_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
                                                    dimension_type, dimension, description, "Pa", NULL,
-                                                   read_results_pressure_bounds);
+                                                   read_o3_pressure_bounds);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]";
     description = "derived from pressure per level (layer boundary) by repeating the inner levels; "
         "the upper bound of layer k is equal to the lower bound of layer k+1";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version <= 01.01.02", path, description);
+    description = "derived from pressure per level (layer boundary) by repeating the inner levels; "
+        "the upper bound of layer k is equal to the lower bound of layer k+1; "
+        "if level 0 and level 1 have the same pressure, skip lowest layer and set bounds of highest layer to NaN";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version > 01.01.02", path, description);
 
     /* O3_column_number_density */
     description = "O3 column number density";
@@ -4691,18 +4856,24 @@ static void register_o3_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "mol/m^2",
-                                                   NULL, read_results_ozone_profile_apriori);
+                                                   NULL, read_o3_ozone_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "if pressure value at level N is NaN then skip lowest layer and add NaN fill value at the end";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version <= 01.01.02", path, description);
+    description = "if lowest two levels have equal pressure then skip lowest layer and add NaN fill value at the end";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version > 01.01.02", path, description);
 
     /* O3_column_number_density_avk */
     description = "averaging kernel for the O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_averaging_kernel_1d);
+                                                   read_o3_averaging_kernel_1d);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "if pressure value at level N is NaN then skip lowest layer and add NaN fill value at the end";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version <= 01.01.02", path, description);
+    description = "if lowest two levels have equal pressure then skip lowest layer and add NaN fill value at the end";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version > 01.01.02", path, description);
 
     /* O3_column_number_density_amf */
     description = "O3 column number density total air mass factor";
