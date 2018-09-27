@@ -3813,6 +3813,13 @@ static int exclude_co_pcnd_avk(void *user_data)
     return ((ingest_info *)user_data)->use_co_nd_avk;
 }
 
+static int exclude_hcho_apriori(void *user_data)
+{
+    /* note that this will still exclude the apriori for processor 01.00.00
+     * since that processor did not include a correctly formatted 'id' global attribute */
+    return !(((ingest_info *)user_data)->is_nrti || ((ingest_info *)user_data)->processor_version >= 10000);
+}
+
 static int exclude_o3_tcl(void *user_data)
 {
     return !((ingest_info *)user_data)->use_o3_tcl_upper;
@@ -4712,9 +4719,10 @@ static void register_hcho_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_dry_air_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "ppv",
-                                                   exclude_non_nrti, read_results_formaldehyde_profile_apriori);
+                                                   exclude_hcho_apriori, read_results_formaldehyde_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_profile_apriori[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "NRTI or processor version >= 01.00.00", path,
+                                         NULL);
 
     /* tropospheric_HCHO_column_number_density_amf */
     description = "tropospheric air mass factor";
