@@ -882,7 +882,7 @@ static int read_surface_layer_status(ingest_info *info)
         return -1;
     }
 
-    if (info->processor_version <= 10102)
+    if (info->processor_version < 10104)
     {
         for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
         {
@@ -2795,7 +2795,7 @@ static int read_o3_ozone_profile_apriori(void *user_data, harp_array data)
         return -1;
     }
 
-    if (info->processor_version > 10102)
+    if (info->processor_version >= 10104)
     {
         if (info->surface_layer_status == NULL)
         {
@@ -2851,7 +2851,7 @@ static int read_o3_pressure_bounds(void *user_data, harp_array data)
         }
     }
 
-    if (info->processor_version <= 10102)
+    if (info->processor_version < 10104)
     {
         /* just check if last pressure value is NaN and then also set the lower bound of the last layer to NaN */
         for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
@@ -4827,11 +4827,11 @@ static void register_o3_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/pressure_grid[]";
     description = "derived from pressure per level (layer boundary) by repeating the inner levels; "
         "the upper bound of layer k is equal to the lower bound of layer k+1";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version <= 01.01.02", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 01.01.04", path, description);
     description = "derived from pressure per level (layer boundary) by repeating the inner levels; "
         "the upper bound of layer k is equal to the lower bound of layer k+1; "
         "if level 0 and level 1 have the same pressure, skip lowest layer and set bounds of highest layer to NaN";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version > 01.01.02", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.01.04", path, description);
 
     /* O3_column_number_density */
     description = "O3 column number density";
@@ -4867,9 +4867,9 @@ static void register_o3_product(void)
                                                    NULL, read_o3_ozone_profile_apriori);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_apriori[]";
     description = "if pressure value at level N is NaN then skip lowest layer and add NaN fill value at the end";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version <= 01.01.02", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 01.01.04", path, description);
     description = "if lowest two levels have equal pressure then skip lowest layer and add NaN fill value at the end";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version > 01.01.02", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.01.04", path, description);
 
     /* O3_column_number_density_avk */
     description = "averaging kernel for the O3 column number density";
@@ -4879,9 +4879,9 @@ static void register_o3_product(void)
                                                    read_o3_averaging_kernel_1d);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     description = "if pressure value at level N is NaN then skip lowest layer and add NaN fill value at the end";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version <= 01.01.02", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 01.01.04", path, description);
     description = "if lowest two levels have equal pressure then skip lowest layer and add NaN fill value at the end";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version > 01.01.02", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.01.04", path, description);
 
     /* O3_column_number_density_amf */
     description = "O3 column number density total air mass factor";
