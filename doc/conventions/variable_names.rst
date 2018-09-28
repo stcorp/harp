@@ -57,9 +57,9 @@ cloud_top_pressure                                                            X 
 cloud_top_temperature                                                         X            X
 collocation_index                                                                                        zero-based index as provided in the collocation result file
 column_density                                stratospheric,  amf, apriori,   X       X    X             this is the mass density
-                                              tropospheric    avk, dfs
+                                              tropospheric    avk, dfs, sic
 column_number_density                         stratospheric,  amf, apriori,   X       X    X
-                                              tropospheric    avk, dfs
+                                              tropospheric    avk, dfs, sic
 count
 datetime
 datetime_length
@@ -150,12 +150,12 @@ wind_direction                                surface                         X 
 year                                                                                                     integer value representing a year
 zonal_wind_velocity                           surface                         X       X    X
 <species>_column_density                      stratospheric,  amf, apriori,   X       X    X             this is the mass density
-                                              tropospheric    avk, dfs
+                                              tropospheric    avk, dfs, sic
 <species>_slant_column_density                                                X            X             this is the mass density
 <pm>_column_density                           stratospheric,                  X       X    X             this is the mass density
                                               tropospheric
 <species>_column_number_density               stratospheric,  amf, apriori,   X       X    X
-                                              tropospheric    avk, dfs
+                                              tropospheric    avk, dfs, sic
 <species>_slant_column_number_density                                         X            X
 <species>_column_mass_mixing_ratio            stratospheric,                  X            X
                                               tropospheric
@@ -169,17 +169,17 @@ zonal_wind_velocity                           surface                         X 
 <pm>_density                                  surface                         X       X    X             this is the mass density
 O3_effective_temperature                                                      X            X
 <species>_mass_mixing_ratio                   surface         apriori, avk,   X       X    X
-                                                              dfs
+                                                              dfs, sic
 <species>_mass_mixing_ratio_dry_air           surface         apriori, avk,   X       X    X
-                                                              dfs
+                                                              dfs, sic
 <species>_number_density                      surface         apriori, avk,   X       X    X
-                                                              dfs
+                                                              dfs, sic
 <species>_partial_pressure                    surface                         X       X    X
 <species>_partial_pressure_dry_air            surface                         X       X    X
 <species>_volume_mixing_ratio                 surface         apriori, avk,   X       X    X             this is equal to 'number mixing ratio'
-                                                              dfs
+                                                              dfs, sic
 <species>_volume_mixing_ratio_dry_air         surface         apriori, avk,   X       X    X
-                                                              dfs
+                                                              dfs, sic
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
 
 The supported aerosol types are:
@@ -338,3 +338,5 @@ The 'amf' postfix is used for air mass factors.
 The 'dfs' postfix is used for the 'degree of freedom for signal' for vertical profiles which equals the trace or
 diagonal of the two-dimensional AVK and provides information on the vertical resolution and information content of
 profiles.
+The 'sic' postfix is used for the 'Shannon information content' for vertical profiles which can be derived from the
+two-dimensional AVK.

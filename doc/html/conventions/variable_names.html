@@ -548,7 +548,7 @@ surface</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk, dfs</td>
+avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -559,7 +559,7 @@ avk, dfs</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk, dfs</td>
+avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1299,7 +1299,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk, dfs</td>
+avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1329,7 +1329,7 @@ tropospheric</td>
 <td>stratospheric,
 tropospheric</td>
 <td>amf, apriori,
-avk, dfs</td>
+avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1415,7 +1415,7 @@ tropospheric</td>
 <tr class="row-odd"><td>&lt;species&gt;_mass_mixing_ratio</td>
 <td>surface</td>
 <td>apriori, avk,
-dfs</td>
+dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1425,7 +1425,7 @@ dfs</td>
 <tr class="row-even"><td>&lt;species&gt;_mass_mixing_ratio_dry_air</td>
 <td>surface</td>
 <td>apriori, avk,
-dfs</td>
+dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1435,7 +1435,7 @@ dfs</td>
 <tr class="row-odd"><td>&lt;species&gt;_number_density</td>
 <td>surface</td>
 <td>apriori, avk,
-dfs</td>
+dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1463,7 +1463,7 @@ dfs</td>
 <tr class="row-even"><td>&lt;species&gt;_volume_mixing_ratio</td>
 <td>surface</td>
 <td>apriori, avk,
-dfs</td>
+dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1473,7 +1473,7 @@ dfs</td>
 <tr class="row-odd"><td>&lt;species&gt;_volume_mixing_ratio_dry_air</td>
 <td>surface</td>
 <td>apriori, avk,
-dfs</td>
+dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
@@ -1857,7 +1857,9 @@ and an AVK that depends twice on the vertical dimension is a profile averaging k
 The &#8216;amf&#8217; postfix is used for air mass factors.
 The &#8216;dfs&#8217; postfix is used for the &#8216;degree of freedom for signal&#8217; for vertical profiles which equals the trace or
 diagonal of the two-dimensional AVK and provides information on the vertical resolution and information content of
-profiles.</p>
+profiles.
+The &#8216;sic&#8217; postfix is used for the &#8216;Shannon information content&#8217; for vertical profiles which can be derived from the
+two-dimensional AVK.</p>
 </div>
 
 

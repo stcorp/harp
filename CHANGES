@@ -8,6 +8,9 @@
 * Added support for meridional/zonal wind speed, and planetary boundary layer
   height variables.
 
+* Added support for sic (Shannon information content) variables for vertical
+  profiles.
+
 * Aerosol optical depth and extinction coefficient variables will now
   automatically use a log/log regridding in the spectral dimension.
   This is equivalent to using the Angstrom Exponent approach.

@@ -2600,6 +2600,14 @@ static int read_results_scattering_optical_thickness_SWIR(void *user_data, harp_
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_shannon_information_content(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "shannon_information_content", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_sulfurdioxide_profile_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -4910,6 +4918,16 @@ static void register_o3_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, exclude_nrti,
                                                    read_results_degrees_of_freedom);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/degrees_of_freedom[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
+
+    /* O3_column_number_density_sic */
+    description = "Shannon information content of the O3 column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_sic",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, exclude_nrti,
+                                                   read_results_shannon_information_content);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/shannon_information_content[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
     /* O3_slant_column_number_density */
