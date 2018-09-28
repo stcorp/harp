@@ -2138,6 +2138,11 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     }
     else if (template_type == uvvis_doas_offaxis)
     {
+        char vmr_available_description[MAX_DESCRIPTION_LENGTH];
+
+        snprintf(vmr_available_description, MAX_DESCRIPTION_LENGTH,
+                 "/%s.MIXING.RATIO.VOLUME_SCATTER.SOLAR.OFFAXIS available", harp_gas_name[gas]);
+
         /* tropospheric_aerosol_optical_depth */
         description = "tropospheric aerosol optical depth used for the retrieval ";
         variable_definition = harp_ingestion_register_variable_full_read
@@ -2167,7 +2172,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
              exclude_optimal_estimation_variables, read_vmr_offaxis_covariance);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, vmr_available_description, gas_mapping_path,
+                                             NULL);
 
         /* <gas>_volume_mixing_ratio_uncertainty_random */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_uncertainty_random", harp_gas_name[gas]);
@@ -2178,7 +2184,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
              exclude_optimal_estimation_variables, read_vmr_offaxis_uncertainty_random);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
+        harp_variable_definition_add_mapping(variable_definition, NULL, vmr_available_description, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
         /* <gas>_volume_mixing_ratio_uncertainty_systematic */
@@ -2191,7 +2197,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
              exclude_optimal_estimation_variables, read_vmr_offaxis_uncertainty_systematic);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path,
+        harp_variable_definition_add_mapping(variable_definition, NULL, vmr_available_description, gas_mapping_path,
                                              "the uncertainty is the square root of the trace of the covariance");
 
         /* <gas>_volume_mixing_ratio_apriori */
@@ -2202,7 +2208,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
              exclude_optimal_estimation_variables, read_vmr_offaxis_apriori);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, vmr_available_description, gas_mapping_path,
+                                             NULL);
 
         /* <gas>_volume_mixing_ratio_avk */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_avk", harp_gas_name[gas]);
@@ -2213,7 +2220,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
              HARP_UNIT_DIMENSIONLESS, exclude_optimal_estimation_variables, read_vmr_offaxis_avk);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, vmr_available_description, gas_mapping_path,
+                                             NULL);
 
         /* tropospheric_<gas>_column_number_density */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", harp_gas_name[gas]);
@@ -2257,7 +2265,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", exclude_optimal_estimation_variables, read_tropo_column_offaxis_apriori);
+             "Pmolec cm-2", NULL, read_tropo_column_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* tropospheric_<gas>_column_number_density_avk */
@@ -2280,7 +2288,8 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
              "Pmolec cm-2", exclude_optimal_estimation_variables, read_partial_column_offaxis);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, vmr_available_description, gas_mapping_path,
+                                             NULL);
 
         /* <gas>_column_number_density_apriori */
         snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", harp_gas_name[gas]);
@@ -2290,7 +2299,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
-             "Pmolec cm-2", exclude_optimal_estimation_variables, read_partial_column_offaxis_apriori);
+             "Pmolec cm-2", NULL, read_partial_column_offaxis_apriori);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
     }
     else if (template_type == uvvis_doas_zenith)
