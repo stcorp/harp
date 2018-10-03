@@ -609,6 +609,7 @@ void harp_product_remove_all_variables(harp_product *product)
 int harp_product_get_datetime_range(const harp_product *product, double *datetime_start, double *datetime_stop)
 {
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    harp_data_type data_type = harp_type_double;
     harp_variable *mid_datetime = NULL;
     harp_variable *datetime;
     long i;
@@ -617,11 +618,11 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
     {
         double start = harp_plusinf();
 
-        if (harp_product_get_derived_variable(product, "datetime_start", NULL, "days since 2000-01-01", 1,
+        if (harp_product_get_derived_variable(product, "datetime_start", &data_type, "days since 2000-01-01", 1,
                                               dimension_type, &datetime) != 0)
         {
-            if (harp_product_get_derived_variable(product, "datetime", NULL, "days since 2000-01-01", 1, dimension_type,
-                                                  &datetime) != 0)
+            if (harp_product_get_derived_variable(product, "datetime", &data_type, "days since 2000-01-01", 1,
+                                                  dimension_type, &datetime) != 0)
             {
                 return -1;
             }
@@ -667,14 +668,14 @@ int harp_product_get_datetime_range(const harp_product *product, double *datetim
     {
         double stop = harp_mininf();
 
-        if (harp_product_get_derived_variable(product, "datetime_stop", NULL, "days since 2000-01-01", 1,
+        if (harp_product_get_derived_variable(product, "datetime_stop", &data_type, "days since 2000-01-01", 1,
                                               dimension_type, &datetime) != 0)
         {
             if (mid_datetime != NULL)
             {
                 datetime = mid_datetime;
             }
-            else if (harp_product_get_derived_variable(product, "datetime", NULL, "days since 2000-01-01", 1,
+            else if (harp_product_get_derived_variable(product, "datetime", &data_type, "days since 2000-01-01", 1,
                                                        dimension_type, &datetime) != 0)
             {
                 return -1;

@@ -1129,6 +1129,7 @@ static int remove_unused_variables(collocation_info *info, harp_product *product
 static int filter_product(collocation_info *info, harp_product *product, int is_dataset_a)
 {
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    harp_data_type data_type;
     int include_latlon_bounds;
     int include_latlon;
     long i;
@@ -1145,11 +1146,13 @@ static int filter_product(collocation_info *info, harp_product *product, int is_
     }
 
     /* make sure that we have an 'index' variable */
-    if (harp_product_add_derived_variable(product, "index", NULL, NULL, 1, dimension_type) != 0)
+    data_type = harp_type_int32;
+    if (harp_product_add_derived_variable(product, "index", &data_type, NULL, 1, dimension_type) != 0)
     {
         return -1;
     }
 
+    data_type = harp_type_double;
     for (i = 0; i < info->num_criteria; i++)
     {
         const char *unit = NULL;
@@ -1203,7 +1206,8 @@ static int filter_product(collocation_info *info, harp_product *product, int is_
             unit = info->criterium[i]->unit;
         }
 
-        if (harp_product_add_derived_variable(product, info->criterium[i]->variable_name, NULL, unit, 1, dimension_type)
+        if (harp_product_add_derived_variable(product, info->criterium[i]->variable_name, &data_type, unit, 1,
+                                              dimension_type)
             != 0)
         {
             return -1;
@@ -1215,22 +1219,22 @@ static int filter_product(collocation_info *info, harp_product *product, int is_
      */
     if (include_latlon)
     {
-        if (harp_product_add_derived_variable(product, "latitude", NULL, NULL, 1, dimension_type) != 0)
+        if (harp_product_add_derived_variable(product, "latitude", &data_type, NULL, 1, dimension_type) != 0)
         {
             return -1;
         }
-        if (harp_product_add_derived_variable(product, "longitude", NULL, NULL, 1, dimension_type) != 0)
+        if (harp_product_add_derived_variable(product, "longitude", &data_type, NULL, 1, dimension_type) != 0)
         {
             return -1;
         }
     }
     if (include_latlon_bounds)
     {
-        if (harp_product_add_derived_variable(product, "latitude_bounds", NULL, NULL, 2, dimension_type) != 0)
+        if (harp_product_add_derived_variable(product, "latitude_bounds", &data_type, NULL, 2, dimension_type) != 0)
         {
             return -1;
         }
-        if (harp_product_add_derived_variable(product, "longitude_bounds", NULL, NULL, 2, dimension_type) != 0)
+        if (harp_product_add_derived_variable(product, "longitude_bounds", &data_type, NULL, 2, dimension_type) != 0)
         {
             return -1;
         }
@@ -1248,6 +1252,7 @@ static int filter_product(collocation_info *info, harp_product *product, int is_
 static int assign_variables(collocation_info *info, cache_variables *cache, harp_product *product)
 {
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    harp_data_type data_type = harp_type_double;
     long i;
 
     if (harp_product_get_variable_by_name(product, "index", &cache->index) != 0)
@@ -1265,12 +1270,12 @@ static int assign_variables(collocation_info *info, cache_variables *cache, harp
         {
             harp_variable_delete(cache->longitude);
         }
-        if (harp_product_get_derived_variable(product, "latitude", NULL, HARP_UNIT_LATITUDE, 1, dimension_type,
+        if (harp_product_get_derived_variable(product, "latitude", &data_type, HARP_UNIT_LATITUDE, 1, dimension_type,
                                               &cache->latitude) != 0)
         {
             return -1;
         }
-        if (harp_product_get_derived_variable(product, "longitude", NULL, HARP_UNIT_LONGITUDE, 1, dimension_type,
+        if (harp_product_get_derived_variable(product, "longitude", &data_type, HARP_UNIT_LONGITUDE, 1, dimension_type,
                                               &cache->longitude) != 0)
         {
             return -1;
@@ -1286,13 +1291,13 @@ static int assign_variables(collocation_info *info, cache_variables *cache, harp
         {
             harp_variable_delete(cache->longitude_bounds);
         }
-        if (harp_product_get_derived_variable(product, "latitude_bounds", NULL, HARP_UNIT_LATITUDE, 2, dimension_type,
-                                              &cache->latitude_bounds) != 0)
+        if (harp_product_get_derived_variable(product, "latitude_bounds", &data_type, HARP_UNIT_LATITUDE, 2,
+                                              dimension_type, &cache->latitude_bounds) != 0)
         {
             return -1;
         }
-        if (harp_product_get_derived_variable(product, "longitude_bounds", NULL, HARP_UNIT_LONGITUDE, 2, dimension_type,
-                                              &cache->longitude_bounds) != 0)
+        if (harp_product_get_derived_variable(product, "longitude_bounds", &data_type, HARP_UNIT_LONGITUDE, 2,
+                                              dimension_type, &cache->longitude_bounds) != 0)
         {
             return -1;
         }

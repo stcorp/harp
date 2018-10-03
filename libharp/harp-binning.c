@@ -1810,6 +1810,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                                          long num_longitude_edges, double *longitude_edges)
 {
     long spatial_block_length = (num_latitude_edges - 1) * (num_longitude_edges - 1);
+    harp_data_type data_type = harp_type_double;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
     long dimension[HARP_MAX_NUM_DIMS];
     harp_variable *latitude = NULL;
@@ -1907,10 +1908,10 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_independent;
-    if (harp_product_get_derived_variable(product, "latitude_bounds", NULL, "degree_north", 2, dimension_type,
+    if (harp_product_get_derived_variable(product, "latitude_bounds", &data_type, "degree_north", 2, dimension_type,
                                           &latitude) == 0)
     {
-        if (harp_product_get_derived_variable(product, "longitude_bounds", NULL, "degree_east", 2, dimension_type,
+        if (harp_product_get_derived_variable(product, "longitude_bounds", &data_type, "degree_east", 2, dimension_type,
                                               &longitude) == 0)
         {
             area_binning = 1;
@@ -1929,12 +1930,12 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
     }
     if (!area_binning)
     {
-        if (harp_product_get_derived_variable(product, "latitude", NULL, "degree_north", 1, dimension_type,
+        if (harp_product_get_derived_variable(product, "latitude", &data_type, "degree_north", 1, dimension_type,
                                               &latitude) != 0)
         {
             goto error;
         }
-        if (harp_product_get_derived_variable(product, "longitude", NULL, "degree_east", 1, dimension_type,
+        if (harp_product_get_derived_variable(product, "longitude", &data_type, "degree_east", 1, dimension_type,
                                               &longitude) != 0)
         {
             goto error;

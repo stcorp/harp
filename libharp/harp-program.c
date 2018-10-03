@@ -374,22 +374,23 @@ static int execute_value_filter(harp_product *product, harp_program *program)
 
 static int execute_point_filter(harp_product *product, harp_program *program)
 {
+    harp_dimension_type dimension_type = harp_dimension_time;
+    harp_data_type data_type = harp_type_double;
     harp_variable *latitude;
     harp_variable *longitude;
-    harp_dimension_type dimension_type = harp_dimension_time;
     uint8_t *mask;
     int num_operations = 1;
     long num_points;
     long i;
     int k;
 
-    if (harp_product_get_derived_variable(product, "latitude", NULL, "degree_north", 1, &dimension_type, &latitude) !=
-        0)
+    if (harp_product_get_derived_variable(product, "latitude", &data_type, "degree_north", 1, &dimension_type,
+                                          &latitude) != 0)
     {
         return -1;
     }
-    if (harp_product_get_derived_variable(product, "longitude", NULL, "degree_east", 1, &dimension_type, &longitude) !=
-        0)
+    if (harp_product_get_derived_variable(product, "longitude", &data_type, "degree_east", 1, &dimension_type,
+                                          &longitude) != 0)
     {
         harp_variable_delete(latitude);
         return -1;
@@ -465,6 +466,7 @@ static int execute_point_filter(harp_product *product, harp_program *program)
 static int execute_polygon_filter(harp_product *product, harp_program *program)
 {
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    harp_data_type data_type = harp_type_double;
     harp_variable *latitude_bounds;
     harp_variable *longitude_bounds;
     uint8_t *mask;
@@ -474,12 +476,12 @@ static int execute_polygon_filter(harp_product *product, harp_program *program)
     long i;
     int k;
 
-    if (harp_product_get_derived_variable(product, "latitude_bounds", NULL, "degree_north", 2, dimension_type,
+    if (harp_product_get_derived_variable(product, "latitude_bounds", &data_type, "degree_north", 2, dimension_type,
                                           &latitude_bounds) != 0)
     {
         return -1;
     }
-    if (harp_product_get_derived_variable(product, "longitude_bounds", NULL, "degree_east", 2, dimension_type,
+    if (harp_product_get_derived_variable(product, "longitude_bounds", &data_type, "degree_east", 2, dimension_type,
                                           &longitude_bounds) != 0)
     {
         harp_variable_delete(latitude_bounds);
