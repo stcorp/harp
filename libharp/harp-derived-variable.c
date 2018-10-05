@@ -1066,6 +1066,7 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const cha
 
             if (variable_name != NULL && strcmp(conversion->variable_name, variable_name) != 0)
             {
+                info.skip[i] = 0;
                 continue;
             }
 

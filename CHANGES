@@ -4,6 +4,9 @@
 * harp_product_get_derived_variable() no longer converts data to double if
   no data type was provided and data already had the right unit.
 
+* Fixed issue where listing derivations for a specific variable would not show
+  all possible conversions.
+
 1.4 2018-09-28
 ~~~~~~~~~~~~~~
 
