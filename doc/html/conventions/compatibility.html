@@ -194,14 +194,20 @@ This is complementary to the naming convention for variables used in netCDF-CF w
 <blockquote>
 <div><ul class="simple">
 <li>In HARP the vertical dimension in a variables always comes after the latitude and longitude dimensions, whereas in
-netCDF-CF the vertical dimension always comes before latitude and longitude.</li>
+netCDF-CF the recommendation (not a requirement) is to have the vertical dimension before latitude and longitude.</li>
 <li>In netCDF-CF a specific type of dimension can be used only once as dimension of a variable.
 This is not the case in HARP where a specific dimension may occur more than once.
 For instance, HARP allows you to use a <code class="docutils literal"><span class="pre">{vertical,vertical}</span></code> dimension for a vertical correlation matrix,
 whereas in netCDF-CF the second vertical dimension needs to be a differently named dimension.</li>
-<li>In HARP coordinate variables can be 2-dimensional (e.g. <code class="docutils literal"><span class="pre">{time,axis}</span></code>). This allows for e.g. a different altitude
-grid per time sample. It is unclear whether netCDF-CF allows such an incomplete multidimensional array representation
-for coordinate variables.</li>
+<li>Axis variables in HARP can have different names from the dimension and are therefore generally considered
+&#8216;auxiliary coordinate variables&#8217; in netCDF-CF terminology.</li>
+<li>In addition, HARP axis variables can be 2-dimensional (e.g. <code class="docutils literal"><span class="pre">{time,axis}</span></code>). This allows for e.g. a different
+altitude grid per time sample (where the actual <code class="docutils literal"><span class="pre">axis</span></code> length can also differ per time and will then contain
+fill values at the end to represent shorter lengths). It is unclear whether netCDF-CF supports such a
+&#8216;variable length&#8217; multidimensional array representation of axis variables.
+Note that this is a different case from the 2-dimensional lat/lon coordinate variables that netCDF-CF covers (e.g.
+<code class="docutils literal"><span class="pre">lon(j,i)</span></code> and <code class="docutils literal"><span class="pre">lat(j,i)</span></code>); what netCDF-CF considers coordinate variables in this case are not considered
+axis variables by HARP.</li>
 </ul>
 </div></blockquote>
 </div>
