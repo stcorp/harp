@@ -193,20 +193,26 @@ This is complementary to the naming convention for variables used in netCDF-CF w
 <p>There are however a few differences between the conventions used in HARP and netCDF-CF. These are:</p>
 <blockquote>
 <div><ul class="simple">
-<li>In HARP the vertical dimension in a variables always comes after the latitude and longitude dimensions, whereas in
+<li>In HARP the vertical dimension in a variable always comes after the latitude and longitude dimensions, whereas in
 netCDF-CF the recommendation (not a requirement) is to have the vertical dimension before latitude and longitude.</li>
 <li>In netCDF-CF a specific type of dimension can be used only once as dimension of a variable.
 This is not the case in HARP where a specific dimension may occur more than once.
 For instance, HARP allows you to use a <code class="docutils literal"><span class="pre">{vertical,vertical}</span></code> dimension for a vertical correlation matrix,
 whereas in netCDF-CF the second vertical dimension needs to be a differently named dimension.</li>
-<li>Axis variables in HARP can have different names from the dimension and are therefore generally considered
-&#8216;auxiliary coordinate variables&#8217; in netCDF-CF terminology.</li>
-<li>In addition, HARP axis variables can be 2-dimensional (e.g. <code class="docutils literal"><span class="pre">{time,axis}</span></code>). This allows for e.g. a different
-altitude grid per time sample (where the actual <code class="docutils literal"><span class="pre">axis</span></code> length can also differ per time and will then contain
-fill values at the end to represent shorter lengths). It is unclear whether netCDF-CF supports such a
-&#8216;variable length&#8217; multidimensional array representation of axis variables.
-Note that this is a different case from the 2-dimensional lat/lon coordinate variables that netCDF-CF covers (e.g.
-<code class="docutils literal"><span class="pre">lon(j,i)</span></code> and <code class="docutils literal"><span class="pre">lat(j,i)</span></code>); what netCDF-CF considers coordinate variables in this case are not considered
+<li>Axis variables in HARP can generally be considered &#8216;auxiliary coordinate variables&#8217; (using netCDF-CF terminology)
+but rarely strict &#8216;coordinate variables&#8217;. Note that HARP does not require a pre-identification of axis variables;
+none of the dimensions have a fixed axis variable associated with them (or require presence of an axis variable);
+different variables in a product can function as axis variable for a dimension dynamically, depending on the
+operation to be performed.</li>
+<li>Due to the way axis variables and dimensions are defined in HARP, HARP products do not meet the netCDF-CF
+requirement that any used dimension (with length greater than one) that is latitude, longitude, vertical, or time
+needs to have a &#8216;coordinate variable&#8217; (using same name and single dimension).</li>
+<li>HARP axis variables can be 2-dimensional (e.g. <code class="docutils literal"><span class="pre">{time,axis}</span></code>) to allow for e.g. a different altitude grid per
+time sample (where the actual <code class="docutils literal"><span class="pre">axis</span></code> length can also differ per time and will then contain fill values at the
+end to represent shorter lengths). NetCDF-CF supports this as &#8216;incomplete multidimensional array representation&#8217;
+of &#8216;auxiliary coordinate variables&#8217;. However, other multi-dimensional &#8216;auxiliary coordinate variable&#8217; cases in
+netCDF-CF generally do not have a HARP axis variable equivalent. For instance, for the 2-dimensional lat/lon
+coordinate variables case (using <code class="docutils literal"><span class="pre">lon(j,i)</span></code> and <code class="docutils literal"><span class="pre">lat(j,i)</span></code>) the coordinate variables would not be considered
 axis variables by HARP.</li>
 </ul>
 </div></blockquote>
