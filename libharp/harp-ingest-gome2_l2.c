@@ -1889,7 +1889,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "BrO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "mol/cm^2", exclude_bro,
+                                                   dimension_type, NULL, description, "molec/cm^2", exclude_bro,
                                                    read_bro_column);
     path = "/TOTAL_COLUMNS/BrO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1898,8 +1898,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the BrO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_bro, read_bro_column_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   "molec/cm^2", exclude_bro, read_bro_column_error);
     path = "/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]";
     description = "derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -1951,7 +1951,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density", harp_type_double,
-                                                   1, dimension_type, NULL, description, "mol/cm^2", exclude_hcho,
+                                                   1, dimension_type, NULL, description, "molec/cm^2", exclude_hcho,
                                                    read_hcho_column);
     path = "/TOTAL_COLUMNS/HCHO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1960,8 +1960,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_hcho, read_hcho_column_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   "molec/cm^2", exclude_hcho, read_hcho_column_error);
     path = "/TOTAL_COLUMNS/HCHO_Error[], /TOTAL_COLUMNS/HCHO[]";
     description = "derived from the relative error in percent as: HCHO_Error[] * 0.01 * HCHO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -1982,7 +1982,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "NO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "mol/cm^2", exclude_no2,
+                                                   dimension_type, NULL, description, "molec/cm^2", exclude_no2,
                                                    read_no2_column);
     path = "/TOTAL_COLUMNS/NO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1991,8 +1991,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the NO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
-                                                   exclude_no2, read_no2_column_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   "molec/cm^2", exclude_no2, read_no2_column_error);
     path = "/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]";
     description = "derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
@@ -2013,7 +2013,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "tropospheric NO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    exclude_no2_column_tropospheric, read_no2_column_tropospheric);
     path = "/TOTAL_COLUMNS/NO2_Trop[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 2", path, NULL);
@@ -2025,7 +2025,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    exclude_no2_column_tropospheric_error,
                                                    read_no2_column_tropospheric_error);
     path = "/TOTAL_COLUMNS/NO2Tropo_Error[]";
@@ -2065,7 +2065,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "OClO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density", harp_type_double,
-                                                   1, dimension_type, NULL, description, "mol/cm^2", exclude_oclo,
+                                                   1, dimension_type, NULL, description, "molec/cm^2", exclude_oclo,
                                                    read_oclo_column);
     path = "/TOTAL_COLUMNS/OClO[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2074,7 +2074,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the OClO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/cm^2",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    exclude_oclo, read_oclo_column_error);
     path = "/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]";
     description = "derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]";

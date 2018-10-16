@@ -7,6 +7,8 @@
 * Fixed issue where listing derivations for a specific variable would not show
   all possible conversions.
 
+* Updates to GOME/GOME-2 L2 product ingestions.
+
 1.4 2018-09-28
 ~~~~~~~~~~~~~~
 
