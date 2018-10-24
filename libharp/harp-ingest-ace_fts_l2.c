@@ -875,11 +875,11 @@ static void register_general_fields(harp_product_definition *product_definition)
     path = "/data section/P (atm)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* density */
+    /* number_density */
     description = "atmospheric density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "density", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "cm^-3", NULL, read_density);
+        harp_ingestion_register_variable_full_read(product_definition, "number_density", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "cm^-3", NULL, read_density);
     path = "/data section/dens";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
