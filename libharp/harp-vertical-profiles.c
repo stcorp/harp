@@ -1200,7 +1200,7 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
 
             /* avk */
             if (harp_product_add_derived_variable(collocated_product, avk_name, &data_type, "", 3, local_dimension_type)
-                                                  != 0)
+                != 0)
             {
                 harp_product_delete(collocated_product);
                 harp_product_delete(merged_product);

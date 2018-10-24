@@ -1207,8 +1207,7 @@ static int filter_product(collocation_info *info, harp_product *product, int is_
         }
 
         if (harp_product_add_derived_variable(product, info->criterium[i]->variable_name, &data_type, unit, 1,
-                                              dimension_type)
-            != 0)
+                                              dimension_type) != 0)
         {
             return -1;
         }
