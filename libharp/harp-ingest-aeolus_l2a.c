@@ -473,7 +473,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     description = "particle extinction";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "extinction_coefficient",
                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                      description, "10^-6 m^-1", NULL, read_extinction);
+                                                                      description, "1/um", NULL, read_extinction);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/extinction", NULL);
 
@@ -482,7 +482,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "extinction_coefficient_uncertainty",
                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                      description, "m^-1", NULL,
+                                                                      description, "1/m", NULL,
                                                                       read_extinction_uncertainty);
     description = "the square root of the variance is taken as uncertainty";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
@@ -492,7 +492,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     description = "particle backscatter";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "backscatter_coefficient",
                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                      description, "10^-6 m^-1 sr^-1", NULL,
+                                                                      description, "1/um/sr", NULL,
                                                                       read_backscatter);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/backscatter", NULL);
@@ -502,7 +502,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "backscatter_coefficient_uncertainty",
                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                      description, "m^-1 sr^-1", NULL,
+                                                                      description, "1/m/sr", NULL,
                                                                       read_backscatter_uncertainty);
     description = "the square root of the variance is taken as uncertainty";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,

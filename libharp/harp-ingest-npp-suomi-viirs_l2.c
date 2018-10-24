@@ -994,7 +994,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
     description = "cloud_effective_particle_size";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_effective_particle_size",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "µm",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "um",
                                                    (type_nr ==
                                                     CLOUD_EFFECTIVE_PARTICLE_SIZE) ? NULL :
                                                    include_non_cloud_effective_particle_size,

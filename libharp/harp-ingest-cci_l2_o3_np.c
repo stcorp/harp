@@ -756,7 +756,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "O3 number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_number_density", harp_type_float, 2,
-                                                   dimension_type, NULL, description, "cm^-3", NULL,
+                                                   dimension_type, NULL, description, "molec/cm3", NULL,
                                                    read_o3_number_density);
     path = "/o3_nd[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -765,7 +765,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "uncertainty of the O3 number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_uncertainty", harp_type_float,
-                                                   2, dimension_type, NULL, description, "cm^-3", NULL,
+                                                   2, dimension_type, NULL, description, "molec/cm3", NULL,
                                                    read_o3_number_density_error);
     path = "/o3_nd[], /o3_error[]";
     description = "derived from the relative error in percent as: o3_error[] * 0.01 * o3_nd[]";
@@ -775,7 +775,7 @@ int harp_ingestion_module_cci_l2_o3_np_init(void)
     description = "O3 number density solution covariance matrix";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_number_density_covariance", harp_type_float,
-                                                   3, dimension_type, NULL, description, "cm^-6", NULL,
+                                                   3, dimension_type, NULL, description, "(molec/cm3)2", NULL,
                                                    read_o3_number_density_covariance);
     path = "/sx[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
