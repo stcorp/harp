@@ -436,9 +436,9 @@ static int read_h2o_column(void *user_data, harp_array data)
     return read_variable_double(user_data, "/H2O_COLUMN_DERIVED", ((ingest_info *)user_data)->num_time, data);
 }
 
-static int exclude_h2o_column(void *user_data)
+static int include_h2o_column(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_h2o_column;
+    return ((ingest_info *)user_data)->has_h2o_column;
 }
 
 static void ingestion_done(void *user_data)
@@ -848,7 +848,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     /* H2O_column_number_density */
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, "H2O_column_number_density", harp_type_double, 1, dimension_type, NULL,
-         "derived integrated water vapor partial column from retrieval", "molec/cm2", exclude_h2o_column,
+         "derived integrated water vapor partial column from retrieval", "molec/cm2", include_h2o_column,
          read_h2o_column);
     harp_variable_definition_add_mapping(variable_definition, NULL, "variable is available", "/H2O.COLUMN_DERIVED",
                                          NULL);

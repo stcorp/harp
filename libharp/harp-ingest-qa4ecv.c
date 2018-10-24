@@ -1145,9 +1145,9 @@ static int read_no2_column_tropospheric_avk(void *user_data, harp_array data)
     return 0;
 }
 
-static int exclude_cloud_fraction_uncertainty(void *user_data)
+static int include_cloud_fraction_uncertainty(void *user_data)
 {
-    return ((ingest_info *)user_data)->use_radiance_cloud_fraction;
+    return !((ingest_info *)user_data)->use_radiance_cloud_fraction;
 }
 
 static void register_common_variables(harp_product_definition *product_definition, int no2)
@@ -1321,7 +1321,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      description, HARP_UNIT_DIMENSIONLESS,
-                                                                     exclude_cloud_fraction_uncertainty,
+                                                                     include_cloud_fraction_uncertainty,
                                                                      read_cloud_fraction_uncertainty);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "cloud_fraction unset", NULL, path, NULL);

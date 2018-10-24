@@ -2668,276 +2668,276 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int exclude_wavelengths(void *user_data)
+static int include_wavelengths(void *user_data)
 {
-    return ((ingest_info *)user_data)->num_wavelengths == 0;
+    return ((ingest_info *)user_data)->num_wavelengths > 0;
 }
 
-static int exclude_tclw(void *user_data)
+static int include_tclw(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tclw];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tclw];
 }
 
-static int exclude_tciw(void *user_data)
+static int include_tciw(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tciw];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tciw];
 }
 
-static int exclude_z(void *user_data)
+static int include_z(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_z];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_z];
 }
 
-static int exclude_t(void *user_data)
+static int include_t(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_t];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_t];
 }
 
-static int exclude_q(void *user_data)
+static int include_q(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_q];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_q];
 }
 
-static int exclude_tcwv(void *user_data)
+static int include_tcwv(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tcwv];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tcwv];
 }
 
-static int exclude_vo(void *user_data)
+static int include_vo(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_vo];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_vo];
 }
 
-static int exclude_lnsp(void *user_data)
+static int include_lnsp(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_lnsp];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_lnsp];
 }
 
-static int exclude_pressure(void *user_data)
+static int include_pressure(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return !info->has_parameter[grib_param_lnsp] || info->coordinate_values == NULL;
+    return info->has_parameter[grib_param_lnsp] && info->coordinate_values != NULL;
 }
 
-static int exclude_blh(void *user_data)
+static int include_blh(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_blh];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_blh];
 }
 
-static int exclude_tcc(void *user_data)
+static int include_tcc(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tcc];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tcc];
 }
 
-static int exclude_10u(void *user_data)
+static int include_10u(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_10u];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_10u];
 }
 
-static int exclude_10v(void *user_data)
+static int include_10v(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_10v];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_10v];
 }
 
-static int exclude_2t(void *user_data)
+static int include_2t(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_2t];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_2t];
 }
 
-static int exclude_lsm(void *user_data)
+static int include_lsm(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_lsm];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_lsm];
 }
 
-static int exclude_clwc(void *user_data)
+static int include_clwc(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_clwc];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_clwc];
 }
 
-static int exclude_ciwc(void *user_data)
+static int include_ciwc(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_ciwc];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_ciwc];
 }
 
-static int exclude_co2(void *user_data)
+static int include_co2(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_co2];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_co2];
 }
 
-static int exclude_ch4(void *user_data)
+static int include_ch4(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_ch4];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_ch4];
 }
 
-static int exclude_pm1(void *user_data)
+static int include_pm1(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_pm1];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_pm1];
 }
 
-static int exclude_pm2p5(void *user_data)
+static int include_pm2p5(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_pm2p5];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_pm2p5];
 }
 
-static int exclude_pm10(void *user_data)
+static int include_pm10(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_pm10];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_pm10];
 }
 
-static int exclude_no2(void *user_data)
+static int include_no2(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_no2];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_no2];
 }
 
-static int exclude_so2(void *user_data)
+static int include_so2(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_so2];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_so2];
 }
 
-static int exclude_co(void *user_data)
+static int include_co(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_co];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_co];
 }
 
-static int exclude_hcho(void *user_data)
+static int include_hcho(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_hcho];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_hcho];
 }
 
-static int exclude_tcno2(void *user_data)
+static int include_tcno2(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tcno2];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tcno2];
 }
 
-static int exclude_tcso2(void *user_data)
+static int include_tcso2(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tcso2];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tcso2];
 }
 
-static int exclude_tcco(void *user_data)
+static int include_tcco(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tcco];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tcco];
 }
 
-static int exclude_tchcho(void *user_data)
+static int include_tchcho(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tchcho];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tchcho];
 }
 
-static int exclude_go3(void *user_data)
+static int include_go3(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_go3];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_go3];
 }
 
-static int exclude_gtco3(void *user_data)
+static int include_gtco3(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_gtco3];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_gtco3];
 }
 
-static int exclude_aod(void *user_data)
+static int include_aod(void *user_data)
 {
-    return ((ingest_info *)user_data)->num_wavelengths == 0;
+    return ((ingest_info *)user_data)->num_wavelengths > 0;
 }
 
-static int exclude_ssaod(void *user_data)
+static int include_ssaod(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_ssaod550];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_ssaod550];
 }
 
-static int exclude_duaod(void *user_data)
+static int include_duaod(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_duaod550];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_duaod550];
 }
 
-static int exclude_omaod(void *user_data)
+static int include_omaod(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_omaod550];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_omaod550];
 }
 
-static int exclude_bcaod(void *user_data)
+static int include_bcaod(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_bcaod550];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_bcaod550];
 }
 
-static int exclude_suaod(void *user_data)
+static int include_suaod(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_suaod550];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_suaod550];
 }
 
-static int exclude_hno3(void *user_data)
+static int include_hno3(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_hno3];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_hno3];
 }
 
-static int exclude_pan(void *user_data)
+static int include_pan(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_pan];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_pan];
 }
 
-static int exclude_c5h8(void *user_data)
+static int include_c5h8(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_c5h8];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_c5h8];
 }
 
-static int exclude_no(void *user_data)
+static int include_no(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_no];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_no];
 }
 
-static int exclude_oh(void *user_data)
+static int include_oh(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_oh];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_oh];
 }
 
-static int exclude_c2h6(void *user_data)
+static int include_c2h6(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_c2h6];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_c2h6];
 }
 
-static int exclude_c3h8(void *user_data)
+static int include_c3h8(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_c3h8];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_c3h8];
 }
 
-static int exclude_tc_ch4(void *user_data)
+static int include_tc_ch4(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_ch4];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_ch4];
 }
 
-static int exclude_tc_hno3(void *user_data)
+static int include_tc_hno3(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_hno3];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_hno3];
 }
 
-static int exclude_tc_pan(void *user_data)
+static int include_tc_pan(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_pan];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_pan];
 }
 
-static int exclude_tc_c5h8(void *user_data)
+static int include_tc_c5h8(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_c5h8];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_c5h8];
 }
 
-static int exclude_tc_no(void *user_data)
+static int include_tc_no(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_no];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_no];
 }
 
-static int exclude_tc_oh(void *user_data)
+static int include_tc_oh(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_oh];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_oh];
 }
 
-static int exclude_tc_c2h6(void *user_data)
+static int include_tc_c2h6(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_c2h6];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_c2h6];
 }
 
-static int exclude_tc_c3h8(void *user_data)
+static int include_tc_c3h8(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_parameter[grib_param_tc_c3h8];
+    return ((ingest_info *)user_data)->has_parameter[grib_param_tc_c3h8];
 }
 
 static void add_value_variable_mapping(harp_variable_definition *variable_definition, const char *grib1_description,
@@ -3022,7 +3022,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_double, 1,
                                                    &spectral_dimension_type[3], NULL, description, "nm",
-                                                   exclude_wavelengths, read_wavelengths);
+                                                   include_wavelengths, read_wavelengths);
     description = "the values are based on the available AODs; possible values are: 469, 550, 670, 865, 1240";
     harp_variable_definition_add_mapping(variable_definition, NULL, "one or more AOD quantities are present", NULL,
                                          description);
@@ -3031,7 +3031,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column cloud liquid water";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "LWC_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tclw, read_tclw);
+                                                                      description, "kg/m^2", include_tclw, read_tclw);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,78)",
                                "(discipline,category,number) = (192,128,78)");
 
@@ -3039,7 +3039,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column cloud ice water";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "IWC_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tciw, read_tciw);
+                                                                      description, "kg/m^2", include_tciw, read_tciw);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,79)",
                                "(discipline,category,number) = (192,128,79)");
 
@@ -3047,7 +3047,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "geopotential at the surface";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_geopotential",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "m2/s2", exclude_z, read_z);
+                                                                      description, "m2/s2", include_z, read_z);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,129), (160,129), (170,129), (180,129), "
                                "or (190,129)", "(discipline,category,number) = (0,3,4)");
 
@@ -3055,7 +3055,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "temperature";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "temperature",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "K", exclude_t, read_t);
+                                                                      description, "K", include_t, read_t);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,130), (160,130), (170,130), (180,130), "
                                "or (190,130)", "(discipline,category,number) = (0,0,0)");
 
@@ -3063,7 +3063,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "specific humidity";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "H2O_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_q, read_q);
+                                                                      description, "kg/kg", include_q, read_q);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,133), (160,133), (170,133), (180,133), "
                                "or (190,133)", "(discipline,category,number) = (0,1,0)");
 
@@ -3071,7 +3071,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column water vapour";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "H2O_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tcwv, read_tcwv);
+                                                                      description, "kg/m^2", include_tcwv, read_tcwv);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,137) or (180,137)",
                                "(discipline,category,number) = (192,128,137)");
 
@@ -3079,7 +3079,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "relative vorticity";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "relative_vorticity",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "1/s", exclude_vo, read_vo);
+                                                                      description, "1/s", include_vo, read_vo);
     add_value_variable_mapping(variable_definition,
                                "(table,indicator) = (160,138), (128,138), (170,138), (180, 138) or (190,138)",
                                "(discipline,category,number) = (0,2,12)");
@@ -3088,7 +3088,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "pressure at the surface";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_pressure",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "Pa", exclude_lnsp, read_lnsp);
+                                                                      description, "Pa", include_lnsp, read_lnsp);
     add_value_variable_mapping(variable_definition,
                                "(table,indicator) = (128,152) or (190,152); returned value = exp(lnsp)",
                                "(discipline,category,number) = (0,3,25); returned value = exp(lnsp)");
@@ -3097,7 +3097,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "pressure";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "pressure",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "Pa", exclude_pressure,
+                                                                      description, "Pa", include_pressure,
                                                                       read_pressure);
     description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
         "vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))lnsp)/2";
@@ -3110,7 +3110,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "pressure_bounds",
                                                                       harp_type_float, 4, &dimension_type[1],
                                                                       &bounds_dimension[1], description, "Pa",
-                                                                      exclude_pressure, read_pressure_bounds);
+                                                                      include_pressure, read_pressure_bounds);
     description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
         "vertical layer boundaries; p(N-i,1) = a(i) + b(i)lnsp; p(N-i,2) = a(i+1) + b(i+1)lnsp";
     harp_variable_definition_add_mapping(variable_definition, NULL, "surface_pressure is available and at least one "
@@ -3122,7 +3122,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "planetary_boundary_layer_height",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "m", exclude_blh, read_blh);
+                                                                      description, "m", include_blh, read_blh);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,159)",
                                "(discipline,category,number) = (192,128,159)");
 
@@ -3130,7 +3130,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "cloud fraction";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_fraction",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, HARP_UNIT_DIMENSIONLESS, exclude_tcc,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, include_tcc,
                                                                       read_tcc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,164), (160,164), (170,164), (180,164), "
                                "or (190,164)", "(discipline,category,number) = (192,128,164)");
@@ -3139,7 +3139,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "10 meter U wind component";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_zonal_wind_velocity",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "m/s", exclude_10u, read_10u);
+                                                                      description, "m/s", include_10u, read_10u);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,165), (160,165), (180,165), or (190,165)",
                                "(discipline,category,number) = (0,2,2)");
 
@@ -3148,7 +3148,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "surface_meridional_wind_velocity",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "m/s", exclude_10v, read_10v);
+                                                                      description, "m/s", include_10v, read_10v);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,166), (160,166), (180,166), or (190,166)",
                                "(discipline,category,number) = (0,2,3)");
 
@@ -3156,7 +3156,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "2 metre temperature";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_temperature",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "K", exclude_2t, read_2t);
+                                                                      description, "K", include_2t, read_2t);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,167), (160,167), (180,167), or (190,167)",
                                NULL);
 
@@ -3164,7 +3164,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "land-sea mask";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "land_flag",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, NULL, exclude_lsm, read_lsm);
+                                                                      description, NULL, include_lsm, read_lsm);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,172), (160,172), (171,172), (174,172), "
                                "(175,172), (180,172), or (190,172)", "(discipline,category,number) = (2,0,0)");
 
@@ -3172,7 +3172,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "specific cloud liquid water content";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "LWC_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_clwc, read_clwc);
+                                                                      description, "kg/kg", include_clwc, read_clwc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,246)",
                                "(discipline,category,number) = (0,1,83)");
 
@@ -3180,7 +3180,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "specific cloud ice water content";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "IWC_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_ciwc, read_ciwc);
+                                                                      description, "kg/kg", include_ciwc, read_ciwc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,247)",
                                "(discipline,category,number) = (0,1,84)");
 
@@ -3188,7 +3188,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "carbon dioxide mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CO2_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_co2, read_co2);
+                                                                      description, "kg/kg", include_co2, read_co2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,61)",
                                "(discipline,category,number) = (192,210,61)");
 
@@ -3196,7 +3196,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "methane mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CH4_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_ch4, read_ch4);
+                                                                      description, "kg/kg", include_ch4, read_ch4);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,62) or (217,4)",
                                "(discipline,category,number) = (192,210,62) or (192,217,4)");
 
@@ -3204,7 +3204,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "surface density of particulate matter with d < 1 um";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_PM1_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m3", exclude_pm1, read_pm1);
+                                                                      description, "kg/m3", include_pm1, read_pm1);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,72)",
                                "(discipline,category,number) = (192,210,72)");
 
@@ -3212,7 +3212,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "surface density of particulate matter with d < 2.5 um";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_PM2p5_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m3", exclude_pm2p5, read_pm2p5);
+                                                                      description, "kg/m3", include_pm2p5, read_pm2p5);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,73)",
                                "(discipline,category,number) = (192,210,73)");
 
@@ -3220,7 +3220,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "surface density of particulate matter with d < 10 um";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_PM10_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m3", exclude_pm10, read_pm10);
+                                                                      description, "kg/m3", include_pm10, read_pm10);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,74)",
                                "(discipline,category,number) = (192,210,74)");
 
@@ -3228,7 +3228,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "nitrogen dioxide mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_no2, read_no2);
+                                                                      description, "kg/kg", include_no2, read_no2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,121)",
                                "(discipline,category,number) = (192,210,121)");
 
@@ -3236,7 +3236,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "sulphur dioxide mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SO2_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_so2, read_so2);
+                                                                      description, "kg/kg", include_so2, read_so2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,122)",
                                "(discipline,category,number) = (192,210,122)");
 
@@ -3244,7 +3244,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "carbon monoxide mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CO_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_co, read_co);
+                                                                      description, "kg/kg", include_co, read_co);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,123)",
                                "(discipline,category,number) = (192,210,123)");
 
@@ -3252,7 +3252,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "formaldehyde mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "HCHO_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_hcho, read_hcho);
+                                                                      description, "kg/kg", include_hcho, read_hcho);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,124)",
                                "(discipline,category,number) = (192,210,124)");
 
@@ -3260,7 +3260,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column nitrogen dioxide";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tcno2, read_tcno2);
+                                                                      description, "kg/m^2", include_tcno2, read_tcno2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,125)",
                                "(discipline,category,number) = (192,210,125)");
 
@@ -3268,7 +3268,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column sulphur dioxide";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SO2_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tcso2, read_tcso2);
+                                                                      description, "kg/m^2", include_tcso2, read_tcso2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,126)",
                                "(discipline,category,number) = (192,210,126)");
 
@@ -3276,7 +3276,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column carbon monoxide";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CO_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tcco, read_tcco);
+                                                                      description, "kg/m^2", include_tcco, read_tcco);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,127)",
                                "(discipline,category,number) = (192,210,127)");
 
@@ -3284,7 +3284,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column formaldehyde";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "HCHO_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tchcho,
+                                                                      description, "kg/m^2", include_tchcho,
                                                                       read_tchcho);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,128)",
                                "(discipline,category,number) = (192,210,128)");
@@ -3293,7 +3293,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "ozone mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_go3, read_go3);
+                                                                      description, "kg/kg", include_go3, read_go3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,203)",
                                "(discipline,category,number) = (192,210,203)");
 
@@ -3301,7 +3301,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column ozone";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_gtco3, read_gtco3);
+                                                                      description, "kg/m^2", include_gtco3, read_gtco3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,206)",
                                "(discipline,category,number) = (192,210,206)");
 
@@ -3310,7 +3310,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "aerosol_optical_depth",
                                                                       harp_type_float, 3, &spectral_dimension_type[1],
                                                                       NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                                      exclude_aod, read_aod);
+                                                                      include_aod, read_aod);
     add_value_variable_mapping(variable_definition, "AODs are combined using a spectal axis; "
                                "(table,indicator) = (210,213) [469nm], (210,207) [550nm], (210,214) [670nm], "
                                "(210,215) [865nm], or (210,216) [1240nm]", "(discipline,category,number) = "
@@ -3322,7 +3322,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "sea_salt_aerosol_optical_depth", harp_type_float,
                                                                       2, &dimension_type[1], NULL, description,
-                                                                      HARP_UNIT_DIMENSIONLESS, exclude_ssaod,
+                                                                      HARP_UNIT_DIMENSIONLESS, include_ssaod,
                                                                       read_ssaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,208) [550nm]",
                                "(discipline,category,number) = (192,210,208) [550nm]");
@@ -3332,7 +3332,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "dust_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, HARP_UNIT_DIMENSIONLESS,
-                                                                      exclude_duaod, read_duaod);
+                                                                      include_duaod, read_duaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,209) [550nm]",
                                "(discipline,category,number) = (192,210,209) [550nm]");
 
@@ -3342,7 +3342,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       "organic_matter_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, HARP_UNIT_DIMENSIONLESS,
-                                                                      exclude_omaod, read_omaod);
+                                                                      include_omaod, read_omaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,210) [550nm]",
                                "(discipline,category,number) = (192,210,210) [550nm]");
 
@@ -3352,7 +3352,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       "black_carbon_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, HARP_UNIT_DIMENSIONLESS,
-                                                                      exclude_bcaod, read_bcaod);
+                                                                      include_bcaod, read_bcaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,211) [550nm]",
                                "(discipline,category,number) = (192,210,211) [550nm]");
 
@@ -3362,7 +3362,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       "sulphate_aerosol_optical_depth",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, HARP_UNIT_DIMENSIONLESS,
-                                                                      exclude_suaod, read_suaod);
+                                                                      include_suaod, read_suaod);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,212) [550nm]",
                                "(discipline,category,number) = (192,210,212) [550nm]");
 
@@ -3370,7 +3370,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "nitric acid mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "HNO3_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_hno3, read_hno3);
+                                                                      description, "kg/kg", include_hno3, read_hno3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,6)",
                                "(discipline,category,number) = (192,217,6)");
 
@@ -3378,7 +3378,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "peroxyacetyl nitrate (PAN) mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H3NO5_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_pan, read_pan);
+                                                                      description, "kg/kg", include_pan, read_pan);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,13)",
                                "(discipline,category,number) = (192,217,13)");
 
@@ -3386,7 +3386,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "isoprene mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C5H8_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_c5h8, read_c5h8);
+                                                                      description, "kg/kg", include_c5h8, read_c5h8);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,16)",
                                "(discipline,category,number) = (192,217,16)");
 
@@ -3394,7 +3394,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "nitrogen monoxide mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_no, read_no);
+                                                                      description, "kg/kg", include_no, read_no);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,27)",
                                "(discipline,category,number) = (192,217,27)");
 
@@ -3402,7 +3402,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "hydroxyl radical mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "OH_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_oh, read_oh);
+                                                                      description, "kg/kg", include_oh, read_oh);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,30)",
                                "(discipline,category,number) = (192,217,30)");
 
@@ -3410,7 +3410,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "ethane mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H6_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_c2h6, read_c2h6);
+                                                                      description, "kg/kg", include_c2h6, read_c2h6);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,45)",
                                "(discipline,category,number) = (192,217,45)");
 
@@ -3418,7 +3418,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "propane mass mixing ratio";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C3H8_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", exclude_c3h8, read_c3h8);
+                                                                      description, "kg/kg", include_c3h8, read_c3h8);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,47)",
                                "(discipline,category,number) = (192,217,47)");
 
@@ -3426,7 +3426,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column methane";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CH4_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_ch4,
+                                                                      description, "kg/m^2", include_tc_ch4,
                                                                       read_tc_ch4);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,4)",
                                "(discipline,category,number) = (192,218,4)");
@@ -3435,7 +3435,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column nitric acid";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "HNO3_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_hno3,
+                                                                      description, "kg/m^2", include_tc_hno3,
                                                                       read_tc_hno3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,6)",
                                "(discipline,category,number) = (192,218,6)");
@@ -3444,7 +3444,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total colunn peroxyacetyl nitrate";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H3NO5_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_pan,
+                                                                      description, "kg/m^2", include_tc_pan,
                                                                       read_tc_pan);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,13)",
                                "(discipline,category,number) = (192,218,13)");
@@ -3453,7 +3453,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column isoprene";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C5H8_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_c5h8,
+                                                                      description, "kg/m^2", include_tc_c5h8,
                                                                       read_tc_c5h8);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,16)",
                                "(discipline,category,number) = (192,218,16)");
@@ -3462,7 +3462,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column nitrogen oxide";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_no, read_tc_no);
+                                                                      description, "kg/m^2", include_tc_no, read_tc_no);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,27)",
                                "(discipline,category,number) = (192,218,27)");
 
@@ -3470,7 +3470,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column hydroxyl radical";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "OH_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_oh, read_tc_oh);
+                                                                      description, "kg/m^2", include_tc_oh, read_tc_oh);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,30)",
                                "(discipline,category,number) = (192,218,30)");
 
@@ -3478,7 +3478,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column ethane";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H6_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_c2h6,
+                                                                      description, "kg/m^2", include_tc_c2h6,
                                                                       read_tc_c2h6);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,45)",
                                "(discipline,category,number) = (192,218,45)");
@@ -3487,7 +3487,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "total column propane";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C3H8_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
-                                                                      description, "kg/m^2", exclude_tc_c3h8,
+                                                                      description, "kg/m^2", include_tc_c3h8,
                                                                       read_tc_c3h8);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (218,47)",
                                "(discipline,category,number) = (192,218,47)");

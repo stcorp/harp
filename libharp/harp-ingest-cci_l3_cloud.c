@@ -442,14 +442,14 @@ static int init_dimensions(ingest_info *info)
     return 0;
 }
 
-static int exclude_validity_field(void *user_data)
+static int include_validity_field(void *user_data)
 {
-    return !(((ingest_info *)user_data)->qcflag_present);
+    return ((ingest_info *)user_data)->qcflag_present;
 }
 
-static int exclude_surface_temperature_field(void *user_data)
+static int include_surface_temperature_field(void *user_data)
 {
-    return !(((ingest_info *)user_data)->stemp_present);
+    return ((ingest_info *)user_data)->stemp_present;
 }
 
 /* Code specific for daily data */
@@ -693,7 +693,7 @@ static void register_fields_for_daily_l3u_cloud_data(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "validity",
                                                    harp_type_int16, 2, dimension_type, NULL, description, NULL,
-                                                   exclude_validity_field, read_validity);
+                                                   include_validity_field, read_validity);
     path = "/qcflag_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
     path = "/qcflag_desc[,,]";
@@ -737,7 +737,7 @@ static void register_fields_for_daily_l3u_cloud_data(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_double, 2,
                                                    dimension_type, NULL, description, "K",
-                                                   exclude_surface_temperature_field, read_surface_temperature);
+                                                   include_surface_temperature_field, read_surface_temperature);
     path = "/stemp_asc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
     path = "/stemp_desc[,,]";
@@ -748,7 +748,7 @@ static void register_fields_for_daily_l3u_cloud_data(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "K",
-                                                   exclude_surface_temperature_field,
+                                                   include_surface_temperature_field,
                                                    read_surface_temperature_uncertainty);
     path = "/stemp_asc_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
@@ -971,7 +971,7 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_double, 2,
                                                    dimension_type, NULL, description, "K",
-                                                   exclude_surface_temperature_field, read_surface_temperature);
+                                                   include_surface_temperature_field, read_surface_temperature);
     path = "/stemp[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -980,7 +980,7 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_temperature_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "K",
-                                                   exclude_surface_temperature_field,
+                                                   include_surface_temperature_field,
                                                    read_surface_temperature_uncertainty);
     path = "/stemp_unc[,,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

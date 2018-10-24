@@ -305,117 +305,117 @@ static int init_dimensions(ingest_info *info)
     return 0;
 }
 
-static int exclude_surface_altitude(void *user_data)
+static int include_surface_altitude(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if ((coda_cursor_goto(&cursor, "altitude") != 0) && (coda_cursor_goto(&cursor, "surface_altitude") != 0))
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
-static int exclude_latitude_bounds(void *user_data)
+static int include_latitude_bounds(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "latitude_corners") != 0)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
-static int exclude_longitude_bounds(void *user_data)
+static int include_longitude_bounds(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "longitude_corners") != 0)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
-static int exclude_sensor_zenith_angle(void *user_data)
+static int include_sensor_zenith_angle(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if ((coda_cursor_goto(&cursor, "sensor_zenith_angle") != 0) &&
         (coda_cursor_goto(&cursor, "viewing_zenith_angle") != 0))
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
-static int exclude_solar_zenith_angle(void *user_data)
+static int include_solar_zenith_angle(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "solar_zenith_angle") != 0)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
-static int exclude_ch4(void *user_data)
+static int include_ch4(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "xch4") != 0)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
-static int exclude_co2(void *user_data)
+static int include_co2(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "xco2") != 0)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
 static void register_fields(harp_product_definition *product_definition, ghg_data_source source)
@@ -442,7 +442,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
         description = "average surface altitude w.r.t. geoid";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_double, 1,
-                                                       dimension_type, NULL, description, "m", exclude_surface_altitude,
+                                                       dimension_type, NULL, description, "m", include_surface_altitude,
                                                        read_surface_altitude);
         path = "altitude[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -488,7 +488,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
                                                        bounds_dimension_type, bounds_dimension, description,
-                                                       "degree_north", exclude_latitude_bounds, read_latitude_bounds);
+                                                       "degree_north", include_latitude_bounds, read_latitude_bounds);
         harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
         description = "The corners ABCD are reordered as BDCA.";
         path = "latitude_corners[]";
@@ -499,7 +499,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
                                                        bounds_dimension_type, bounds_dimension, description,
-                                                       "degree_east", exclude_longitude_bounds, read_longitude_bounds);
+                                                       "degree_east", include_longitude_bounds, read_longitude_bounds);
         harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
         description = "The corners ABCD are reordered as BDCA.";
         path = "longitude_corners[]";
@@ -511,7 +511,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree",
-                                                   (source == EMMA) ? exclude_sensor_zenith_angle : NULL,
+                                                   (source == EMMA) ? include_sensor_zenith_angle : NULL,
                                                    read_sensor_zenith_angle);
     path = "sensor_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -521,7 +521,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree",
-                                                   (source == EMMA) ? exclude_solar_zenith_angle : NULL,
+                                                   (source == EMMA) ? include_solar_zenith_angle : NULL,
                                                    read_solar_zenith_angle);
     path = "solar_zenith_angle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -531,7 +531,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio",
                                                    harp_type_double, 1, dimension_type, NULL, description, "ppmv",
-                                                   exclude_ch4, read_CH4_column_volume_mixing_ratio);
+                                                   include_ch4, read_CH4_column_volume_mixing_ratio);
     path = "xch4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -540,7 +540,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "ppmv",
-                                                   exclude_ch4, read_CH4_column_volume_mixing_ratio_uncertainty);
+                                                   include_ch4, read_CH4_column_volume_mixing_ratio_uncertainty);
     path = "xch4_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -549,7 +549,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio",
                                                    harp_type_double, 1, dimension_type, NULL, description, "ppmv",
-                                                   exclude_co2, read_CO2_column_volume_mixing_ratio);
+                                                   include_co2, read_CO2_column_volume_mixing_ratio);
     path = "xco2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -558,7 +558,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "ppmv",
-                                                   exclude_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
+                                                   include_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
     path = "xco2_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }

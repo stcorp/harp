@@ -524,9 +524,9 @@ static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_
     return 0;
 }
 
-static int exclude_when_no_zenith(void *user_data)
+static int include_zenith_angle(void *user_data)
 {
-    return !(((ingest_info *)user_data)->zenith_fields_present);
+    return ((ingest_info *)user_data)->zenith_fields_present;
 }
 
 static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *productname)
@@ -596,7 +596,7 @@ static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *pr
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 2,
                                                    &(dimension_type[1]), NULL, description, "degree",
-                                                   exclude_when_no_zenith, read_aatsr_atsr2_sensor_zenith_angle);
+                                                   include_zenith_angle, read_aatsr_atsr2_sensor_zenith_angle);
     path = "/satellite_zenith_mean[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -605,7 +605,7 @@ static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *pr
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 2,
                                                    &(dimension_type[1]), NULL, description, "degree",
-                                                   exclude_when_no_zenith, read_aatsr_atsr2_solar_zenith_angle);
+                                                   include_zenith_angle, read_aatsr_atsr2_solar_zenith_angle);
     path = "/sun_zenith_mean[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }

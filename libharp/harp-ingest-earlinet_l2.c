@@ -431,64 +431,63 @@ static int read_h2o_mass_mixing_ratio_uncertainty(void *user_data, harp_array da
     return read_array_variable((ingest_info *)user_data, "ErrorWaterVapor", data, NULL);
 }
 
-/* Exclude functions */
+/* Include functions */
 
-static int exclude_field_if_not_existing(void *user_data, const char *field_name)
+static int include_field_if_exists(void *user_data, const char *field_name)
 {
     coda_cursor cursor;
     ingest_info *info = (ingest_info *)user_data;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
+        return 0;
     }
     if (coda_cursor_goto_record_field_by_name(&cursor, field_name) != 0)
     {
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
-static int exclude_datetime_length(void *user_data)
+static int include_datetime_length(void *user_data)
 {
-    /* we exclude datetime_length if the Time variable _does_ exist */
-    return !exclude_field_if_not_existing(user_data, "Time");
+    /* we include datetime_length if the Time variable does _not_ exist */
+    return !include_field_if_exists(user_data, "Time");
 }
 
-static int exclude_dust_layer_height(void *user_data)
+static int include_dust_layer_height(void *user_data)
 {
-    return exclude_field_if_not_existing(user_data, "DustLayerHeight");
+    return include_field_if_exists(user_data, "DustLayerHeight");
 }
 
-static int exclude_backscatter(void *user_data)
+static int include_backscatter(void *user_data)
 {
-    return exclude_field_if_not_existing(user_data, "Backscatter");
+    return include_field_if_exists(user_data, "Backscatter");
 }
 
-static int exclude_backscatter_uncertainty(void *user_data)
+static int include_backscatter_uncertainty(void *user_data)
 {
-    return exclude_field_if_not_existing(user_data, "ErrorBackscatter");
+    return include_field_if_exists(user_data, "ErrorBackscatter");
 }
 
-static int exclude_extinction(void *user_data)
+static int include_extinction(void *user_data)
 {
-    return exclude_field_if_not_existing(user_data, "Extinction");
+    return include_field_if_exists(user_data, "Extinction");
 }
 
-static int exclude_extinction_uncertainty(void *user_data)
+static int include_extinction_uncertainty(void *user_data)
 {
-    return exclude_field_if_not_existing(user_data, "ErrorExtinction");
+    return include_field_if_exists(user_data, "ErrorExtinction");
 }
 
-static int exclude_h2o_mass_mixing_ratio(void *user_data)
+static int include_h2o_mass_mixing_ratio(void *user_data)
 {
-    return exclude_field_if_not_existing(user_data, "WaterVaporMixingRatio");
+    return include_field_if_exists(user_data, "WaterVaporMixingRatio");
 }
 
-static int exclude_h2o_mass_mixing_ratio_uncertainty(void *user_data)
+static int include_h2o_mass_mixing_ratio_uncertainty(void *user_data)
 {
-    return exclude_field_if_not_existing(user_data, "ErrorWaterVapor");
+    return include_field_if_exists(user_data, "ErrorWaterVapor");
 }
 
 /* General functions to define fields and dimensions */
@@ -621,7 +620,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     description = "length of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "s", exclude_datetime_length,
+                                                   dimension_type, NULL, description, "s", include_datetime_length,
                                                    read_datetime_length);
     path = "/@StartTime_UT, /@StopTime_UT";
     description = "convert 'hhmmss' encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; "
@@ -683,7 +682,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     description = "dust layer top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_top_height", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "m", exclude_dust_layer_height,
+                                                   dimension_type, NULL, description, "m", include_dust_layer_height,
                                                    read_dust_layer_height);
     path = "/DustLayerHeight";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -692,7 +691,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     description = "backscatter coefficient";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "1/(m*sr)", exclude_backscatter,
+                                                   dimension_type, NULL, description, "1/(m*sr)", include_backscatter,
                                                    read_backscatter);
     path = "/Backscatter";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -702,7 +701,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1/(m*sr)",
-                                                   exclude_backscatter_uncertainty, read_backscatter_uncertainty);
+                                                   include_backscatter_uncertainty, read_backscatter_uncertainty);
     path = "/ErrorBackscatter";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -710,7 +709,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     description = "extinction coefficient";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "extinction_coefficient", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "1/m", exclude_extinction,
+                                                   dimension_type, NULL, description, "1/m", include_extinction,
                                                    read_extinction);
     path = "/Extinction";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -720,7 +719,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "extinction_coefficient_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "1/m",
-                                                   exclude_extinction_uncertainty, read_extinction_uncertainty);
+                                                   include_extinction_uncertainty, read_extinction_uncertainty);
     path = "/ErrorExtinction";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -729,7 +728,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_mass_mixing_ratio", harp_type_double, 2,
                                                    dimension_type, NULL, description, "g/kg",
-                                                   exclude_h2o_mass_mixing_ratio, read_h2o_mass_mixing_ratio);
+                                                   include_h2o_mass_mixing_ratio, read_h2o_mass_mixing_ratio);
     path = "/WaterVaporMixingRatio";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -738,7 +737,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_mass_mixing_ratio_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "g/kg",
-                                                   exclude_h2o_mass_mixing_ratio_uncertainty,
+                                                   include_h2o_mass_mixing_ratio_uncertainty,
                                                    read_h2o_mass_mixing_ratio_uncertainty);
     path = "/ErrorWaterVapor";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

@@ -641,19 +641,19 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int exclude_air(void *user_data)
+static int include_air(void *user_data)
 {
-    return ((ingest_info *)user_data)->model_air && !((ingest_info *)user_data)->has_model_air;
+    return !((ingest_info *)user_data)->model_air || ((ingest_info *)user_data)->has_model_air;
 }
 
-static int exclude_air_std(void *user_data)
+static int include_air_std(void *user_data)
 {
-    return ((ingest_info *)user_data)->model_air;
+    return !((ingest_info *)user_data)->model_air;
 }
 
-static int exclude_temperature_std(void *user_data)
+static int include_temperature_std(void *user_data)
 {
-    return ((ingest_info *)user_data)->model_temperature;
+    return !((ingest_info *)user_data)->model_temperature;
 }
 
 int harp_ingestion_module_gomos_l2_init(void)
@@ -970,7 +970,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "standard deviation for the local temperature";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "K", exclude_temperature_std,
+                                                                     description, "K", include_temperature_std,
                                                                      read_temperature_std);
     path = "/nl_geolocation[]/local_temp_std";
     harp_variable_definition_add_mapping(variable_definition, "temperature=local or temperature unset", NULL, path,
@@ -980,7 +980,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     description = "air density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "number_density",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     description, "molec/cm3", exclude_air, read_air);
+                                                                     description, "molec/cm3", include_air, read_air);
     path = "/nl_local_species_density[]/air";
     harp_variable_definition_add_mapping(variable_definition, "air=local or air unset", NULL, path, NULL);
     path = "/nl_geolocation[]/tangent_density";
@@ -991,7 +991,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "number_density_uncertainty", harp_type_double,
                                                                      2, dimension_type, NULL, description, "molec/cm3",
-                                                                     exclude_air_std, read_air_std);
+                                                                     include_air_std, read_air_std);
     path = "/nl_local_species_density[]/air_std";
     harp_variable_definition_add_mapping(variable_definition, "air=local or air unset", "CODA product version < 2",
                                          path, description_std_rel);
@@ -1003,7 +1003,7 @@ int harp_ingestion_module_gomos_l2_init(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "number_density_validity", harp_type_int16,
                                                                      2, dimension_type, NULL, description, NULL,
-                                                                     exclude_air_std, read_air_validity);
+                                                                     include_air_std, read_air_validity);
     path = "/nl_local_species_density[]/pcd[3]";
     harp_variable_definition_add_mapping(variable_definition, "air=local or air unset", NULL, path, NULL);
 

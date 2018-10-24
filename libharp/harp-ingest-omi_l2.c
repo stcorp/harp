@@ -1467,28 +1467,26 @@ static int read_relative_azimuth_angle_wgs84(void *user_data, harp_array data)
     return read_variable_double(info, &info->geo_cursor, "RelativeAzimuthAngle", 2, NULL, data);
 }
 
-static int exclude_destriped(void *user_data)
+static int include_no_destriped(void *user_data)
+{
+    return !((ingest_info *)user_data)->destriped;
+}
+
+static int include_cloud_fraction(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return info->destriped;
+    return !info->radiative_cloud_fraction || has_swath_variable(info, "RadiativeCloudFraction");
 }
 
-static int exclude_cloud_fraction(void *user_data)
+static int include_cloud_pressure(void *user_data)
 {
-    ingest_info *info = (ingest_info *)user_data;
-
-    return (info->radiative_cloud_fraction && has_swath_variable(info, "RadiativeCloudFraction") == 0);
+    return has_swath_variable((ingest_info *)user_data, "CloudPressure");
 }
 
-static int exclude_cloud_pressure(void *user_data)
+static int include_cloud_top_pressure(void *user_data)
 {
-    return (has_swath_variable((ingest_info *)user_data, "CloudPressure") == 0);
-}
-
-static int exclude_cloud_top_pressure(void *user_data)
-{
-    return (has_swath_variable((ingest_info *)user_data, "CloudTopPressure") == 0);
+    return has_swath_variable((ingest_info *)user_data, "CloudTopPressure");
 }
 
 static int parse_option_clipped_cloud_fraction(ingest_info *info, const harp_ingestion_options *options)
@@ -2317,7 +2315,7 @@ static void register_ombro_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "BrO_column_number_density_uncertainty",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     description, "molec/cm^2", include_no_destriped,
                                                                      read_bro_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Data_Fields/ColumnUncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
@@ -2374,7 +2372,7 @@ static void register_omchocho_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "C2H2O2_column_number_density_uncertainty",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     description, "molec/cm^2", include_no_destriped,
                                                                      read_chocho_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_CHOCHO/Data_Fields/ColumnUncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
@@ -2850,7 +2848,7 @@ static void register_omhcho_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "HCHO_column_number_density_uncertainty",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     description, "molec/cm^2", include_no_destriped,
                                                                      read_hcho_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Data_Fields/ColumnUncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, NULL);
@@ -3104,7 +3102,7 @@ static void register_omoclo_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "OClO_column_number_density_uncertainty",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "molec/cm^2", exclude_destriped,
+                                                                     description, "molec/cm^2", include_no_destriped,
                                                                      read_oclo_column_error);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Data_Fields/ColumnUncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, "destriped unset", NULL, path, description);
@@ -3198,7 +3196,7 @@ static void register_omso2_product(void)
     description = "effective cloud pressure";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "hPa", exclude_cloud_pressure,
+                                                                     description, "hPa", include_cloud_pressure,
                                                                      read_pressure_cloud);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/CloudPressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V3 product", path, NULL);
@@ -3208,7 +3206,7 @@ static void register_omso2_product(void)
     description = "cloud top pressure";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "hPa", exclude_cloud_top_pressure,
+                                                                     description, "hPa", include_cloud_top_pressure,
                                                                      read_pressure_cloud_top);
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/CloudTopPressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
@@ -3287,7 +3285,7 @@ static void register_omto3_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                                      harp_type_double, 1, dimension_type, NULL,
                                                                      description, HARP_UNIT_DIMENSIONLESS,
-                                                                     exclude_cloud_fraction, read_cloud_fraction);
+                                                                     include_cloud_fraction, read_cloud_fraction);
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/fc[]";
@@ -3302,7 +3300,7 @@ static void register_omto3_product(void)
     description = "effective cloud pressure";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "hPa", exclude_cloud_pressure,
+                                                                     description, "hPa", include_cloud_pressure,
                                                                      read_pressure_cloud);
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudPressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V3 product", path, NULL);
@@ -3311,7 +3309,7 @@ static void register_omto3_product(void)
     description = "cloud top pressure";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "hPa", exclude_cloud_top_pressure,
+                                                                     description, "hPa", include_cloud_top_pressure,
                                                                      read_pressure_cloud_top);
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudTopPressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "V2 product", path, NULL);

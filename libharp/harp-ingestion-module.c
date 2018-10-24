@@ -233,7 +233,7 @@ static void mapping_description_delete(harp_mapping_description *mapping)
 
 static int variable_definition_new(const char *name, harp_data_type data_type, int num_dimensions,
                                    const harp_dimension_type *dimension_type, const long *dimension,
-                                   const char *description, const char *unit, int (*exclude) (void *user_data),
+                                   const char *description, const char *unit, int (*include) (void *user_data),
                                    int (*read_all) (void *user_data, harp_array data),
                                    int (*read_range) (void *user_data, long index_offset, long index_length,
                                                       harp_array data),
@@ -307,7 +307,7 @@ static int variable_definition_new(const char *name, harp_data_type data_type, i
     variable_definition->num_enum_values = 0;
     variable_definition->enum_name = NULL;
 
-    variable_definition->exclude = exclude;
+    variable_definition->include = include;
     variable_definition->read_all = read_all;
     variable_definition->read_range = read_range;
     variable_definition->get_optimal_range_length = get_optimal_range_length;
@@ -873,12 +873,12 @@ harp_product_definition *harp_ingestion_register_product(harp_ingestion_module *
 harp_variable_definition *harp_ingestion_register_variable_full_read
     (harp_product_definition *product_definition, const char *name, harp_data_type data_type, int num_dimensions,
      const harp_dimension_type *dimension_type, const long *dimension, const char *description, const char *unit,
-     int (*exclude) (void *user_data), int (*read_all) (void *user_data, harp_array data))
+     int (*include) (void *user_data), int (*read_all) (void *user_data, harp_array data))
 {
     harp_variable_definition *variable_definition;
 
     assert(product_definition != NULL);
-    if (variable_definition_new(name, data_type, num_dimensions, dimension_type, dimension, description, unit, exclude,
+    if (variable_definition_new(name, data_type, num_dimensions, dimension_type, dimension, description, unit, include,
                                 read_all, NULL, NULL, NULL, &variable_definition) != 0)
     {
         assert(0);
@@ -895,13 +895,13 @@ harp_variable_definition *harp_ingestion_register_variable_full_read
 harp_variable_definition *harp_ingestion_register_variable_range_read
     (harp_product_definition *product_definition, const char *name, harp_data_type data_type, int num_dimensions,
      const harp_dimension_type *dimension_type, const long *dimension, const char *description, const char *unit,
-     int (*exclude) (void *user_data), long (*get_max_range) (void *user_data),
+     int (*include) (void *user_data), long (*get_max_range) (void *user_data),
      int (*read_range) (void *user_data, long index_offset, long index_length, harp_array data))
 {
     harp_variable_definition *variable_definition;
 
     assert(product_definition != NULL);
-    if (variable_definition_new(name, data_type, num_dimensions, dimension_type, dimension, description, unit, exclude,
+    if (variable_definition_new(name, data_type, num_dimensions, dimension_type, dimension, description, unit, include,
                                 NULL, read_range, get_max_range, NULL, &variable_definition) != 0)
     {
         assert(0);
@@ -918,12 +918,12 @@ harp_variable_definition *harp_ingestion_register_variable_range_read
 harp_variable_definition *harp_ingestion_register_variable_block_read
     (harp_product_definition *product_definition, const char *name, harp_data_type data_type, int num_dimensions,
      const harp_dimension_type *dimension_type, const long *dimension, const char *description, const char *unit,
-     int (*exclude) (void *user_data), int (*read_block) (void *user_data, long index, harp_array data))
+     int (*include) (void *user_data), int (*read_block) (void *user_data, long index, harp_array data))
 {
     harp_variable_definition *variable_definition;
 
     assert(product_definition != NULL);
-    if (variable_definition_new(name, data_type, num_dimensions, dimension_type, dimension, description, unit, exclude,
+    if (variable_definition_new(name, data_type, num_dimensions, dimension_type, dimension, description, unit, include,
                                 NULL, NULL, NULL, read_block, &variable_definition) != 0)
     {
         assert(0);
@@ -1077,9 +1077,9 @@ int harp_variable_definition_has_dimension_type(const harp_variable_definition *
     return harp_variable_definition_has_dimension_types(variable_definition, 1, &dimension_type);
 }
 
-int harp_variable_definition_exclude(const harp_variable_definition *variable_definition, void *user_data)
+int harp_variable_definition_include(const harp_variable_definition *variable_definition, void *user_data)
 {
-    return (variable_definition->exclude != NULL && variable_definition->exclude(user_data));
+    return (variable_definition->include != NULL && variable_definition->include(user_data));
 }
 
 void harp_product_definition_add_mapping(harp_product_definition *product_definition, const char *mapping_description,

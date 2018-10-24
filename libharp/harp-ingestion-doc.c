@@ -107,7 +107,7 @@ static int product_definition_has_mapping_description(const harp_product_definit
     {
         harp_variable_definition *variable_definition = product_definition->variable_definition[i];
 
-        if (variable_definition->num_mappings > 0 || variable_definition->exclude != NULL)
+        if (variable_definition->num_mappings > 0 || variable_definition->include != NULL)
         {
             return 1;
         }
@@ -294,14 +294,14 @@ static int generate_product_definition(const char *filename, const harp_ingestio
         {
             harp_variable_definition *variable_definition = product_definition->variable_definition[i];
 
-            if (variable_definition->num_mappings == 0 && variable_definition->exclude == NULL)
+            if (variable_definition->num_mappings == 0 && variable_definition->include == NULL)
             {
                 continue;
             }
 
             column_width[0] = max(column_width[0], scprintf("**%s**", variable_definition->name));
 
-            if (variable_definition->exclude != NULL)
+            if (variable_definition->include != NULL)
             {
                 column_width[1] = max(column_width[1], (int)strlen("*available*"));
                 column_width[2] = max(column_width[2], (int)strlen("optional"));
@@ -381,7 +381,7 @@ static int generate_product_definition(const char *filename, const harp_ingestio
             harp_variable_definition *variable_definition = product_definition->variable_definition[i];
             int first_row = 1;
 
-            if (variable_definition->num_mappings == 0 && variable_definition->exclude == NULL)
+            if (variable_definition->num_mappings == 0 && variable_definition->include == NULL)
             {
                 continue;
             }
@@ -390,7 +390,7 @@ static int generate_product_definition(const char *filename, const harp_ingestio
             print_padded_string(fout, column_width[0], "**%s**", variable_definition->name);
             fputs(" | ", fout);
 
-            if (variable_definition->exclude != NULL)
+            if (variable_definition->include != NULL)
             {
                 print_padded_string(fout, column_width[1], "%s", "*available*");
                 fputs(" | ", fout);

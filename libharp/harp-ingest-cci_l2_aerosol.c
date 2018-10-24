@@ -382,7 +382,7 @@ static int init_dimensions(ingest_info *info)
 
 /* Start of code that is specific for the AATSR and ATSR2 instruments */
 
-static int exclude_when_multiple_zenith_angles(void *user_data)
+static int include_zenith_angles(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
@@ -390,21 +390,21 @@ static int exclude_when_multiple_zenith_angles(void *user_data)
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "/satellite_zenith_at_center") != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_get_num_elements(&cursor, &coda_num_elements) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_num_elements != info->num_time)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
 static int ingestion_init_aatsr_atsr2(const harp_ingestion_module *module, coda_product *product,
@@ -528,7 +528,7 @@ static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *pr
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree",
-                                                   exclude_when_multiple_zenith_angles, read_sensor_zenith_angle);
+                                                   include_zenith_angles, read_sensor_zenith_angle);
     path = "/satellite_zenith_at_center[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -537,7 +537,7 @@ static void register_aatsr_atsr2_product(harp_ingestion_module *module, char *pr
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree",
-                                                   exclude_when_multiple_zenith_angles, read_solar_zenith_angle);
+                                                   include_zenith_angles, read_solar_zenith_angle);
     path = "/sun_zenith_at_center[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }

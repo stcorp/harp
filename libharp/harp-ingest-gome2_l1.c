@@ -1383,18 +1383,18 @@ static int init_measurements_dimensions(ingest_info *info)
     return 0;
 }
 
-static int exclude_when_not_moon(void *user_data)
+static int include_when_moon(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return (info->ingestion_data != DATA_MOON);
+    return (info->ingestion_data == DATA_MOON);
 }
 
-static int exclude_when_not_sun(void *user_data)
+static int include_when_sun(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return (info->ingestion_data != DATA_SUN);
+    return (info->ingestion_data == DATA_SUN);
 }
 
 static void register_variables_radiance_transmittance_fields(harp_product_definition *product_definition, int radiance)
@@ -1672,7 +1672,7 @@ static void register_variables_irradiance_fields(harp_product_definition *produc
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_sun",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/nm", exclude_when_not_sun,
+                                                   "count/s/cm2/nm", include_when_sun,
                                                    read_sun_wavelength_photon_irradiance);
     path = "/MDR[]/Sun/BAND_1A[,]/RAD, /MDR[]/Sun/BAND_1B[,]/RAD, /MDR[]/Sun/BAND_2A[,]/RAD, "
         "/MDR[]/Sun/BAND_2B[,]/RAD, /MDR[]/Sun/BAND_3[,]/RAD, /MDR[]/Sun/BAND_4[,]/RAD";
@@ -1683,7 +1683,7 @@ static void register_variables_irradiance_fields(harp_product_definition *produc
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_photon_irradiance_moon",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "count/s/cm2/nm", exclude_when_not_moon,
+                                                   "count/s/cm2/nm", include_when_moon,
                                                    read_moon_wavelength_photon_irradiance);
     path = "/MDR[]/Moon/BAND_1A[,]/RAD, /MDR[]/Moon/BAND_1B[,]/RAD, /MDR[]/Moon/BAND_2A[,]/RAD, "
         "/MDR[]/Moon/BAND_2B[,]/RAD, /MDR[]/Moon/BAND_3[,]/RAD, /MDR[]/Moon/BAND_4[,]/RAD";

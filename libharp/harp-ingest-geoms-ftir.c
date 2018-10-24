@@ -791,9 +791,9 @@ static int read_solar_zenith_angle(void *user_data, harp_array data)
     return read_variable_double(user_data, "ANGLE_SOLAR_ZENITH_ASTRONOMICAL", info->num_time, data);
 }
 
-static int exclude_vmr_absorption(void *user_data)
+static int include_vmr_absorption(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_vmr_absorption;
+    return ((ingest_info *)user_data)->has_vmr_absorption;
 }
 
 static void ingestion_done(void *user_data)
@@ -1271,7 +1271,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     description = "duration of the measurement";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime_length",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "s", exclude_vmr_absorption,
+                                                                     description, "s", include_vmr_absorption,
                                                                      read_datetime_length);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/INTEGRATION.TIME", NULL);
 
@@ -1378,7 +1378,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
-         exclude_vmr_absorption, read_vmr);
+         include_vmr_absorption, read_vmr);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR", geoms_gas_name[gas]);
@@ -1399,7 +1399,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
-         exclude_vmr_absorption, read_vmr_apriori);
+         include_vmr_absorption, read_vmr_apriori);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_APRIORI", geoms_gas_name[gas]);
@@ -1423,7 +1423,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
-         HARP_UNIT_DIMENSIONLESS, exclude_vmr_absorption, read_vmr_avk);
+         HARP_UNIT_DIMENSIONLESS, include_vmr_absorption, read_vmr_avk);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
@@ -1446,7 +1446,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "covariance of the %s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
-         exclude_vmr_absorption, read_vmr_covariance);
+         include_vmr_absorption, read_vmr_covariance);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
@@ -1472,7 +1472,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
-         exclude_vmr_absorption, read_vmr_uncertainty_random);
+         include_vmr_absorption, read_vmr_uncertainty_random);
     description = "the uncertainty is the square root of the trace of the covariance";
     if (version == 1)
     {
@@ -1503,7 +1503,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
-         exclude_vmr_absorption, read_vmr_uncertainty_systematic);
+         include_vmr_absorption, read_vmr_uncertainty_systematic);
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC",

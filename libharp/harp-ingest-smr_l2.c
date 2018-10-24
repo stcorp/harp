@@ -228,7 +228,7 @@ static int read_totalerror_value(void *user_data, harp_array data)
     return get_main_data((ingest_info *)user_data, "GHz/Data_Vgroup/Data", "TotalError", data);
 }
 
-static int disable_exclude_for_species_in_file(ingest_info *info)
+static int enable_include_for_species_in_file(ingest_info *info)
 {
     coda_cursor cursor;
     int num_dims;
@@ -481,7 +481,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         ingestion_done(info);
         return -1;
     }
-    if (disable_exclude_for_species_in_file(info) != 0)
+    if (enable_include_for_species_in_file(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -493,117 +493,117 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int exclude_ClO(void *user_data)
+static int include_ClO(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = ClO_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[ClO_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[ClO_SPECIES] != 0L;
 }
 
-static int exclude_CO(void *user_data)
+static int include_CO(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = CO_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[CO_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[CO_SPECIES] != 0L;
 }
 
-static int exclude_H2O(void *user_data)
+static int include_H2O(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = H2O_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[H2O_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_SPECIES] != 0L;
 }
 
-static int exclude_H2O_161(void *user_data)
+static int include_H2O_161(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = H2O_161_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[H2O_161_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_161_SPECIES] != 0L;
 }
 
-static int exclude_H2O_162(void *user_data)
+static int include_H2O_162(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = H2O_162_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[H2O_162_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_162_SPECIES] != 0L;
 }
 
-static int exclude_H2O_181(void *user_data)
+static int include_H2O_181(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = H2O_181_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[H2O_181_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[H2O_181_SPECIES] != 0L;
 }
 
-static int exclude_HNO3(void *user_data)
+static int include_HNO3(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = HNO3_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[HNO3_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[HNO3_SPECIES] != 0L;
 }
 
-static int exclude_HO2(void *user_data)
+static int include_HO2(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = HO2_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[HO2_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[HO2_SPECIES] != 0L;
 }
 
-static int exclude_N2O(void *user_data)
+static int include_N2O(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = N2O_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[N2O_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[N2O_SPECIES] != 0L;
 }
 
-static int exclude_NO(void *user_data)
+static int include_NO(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = NO_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[NO_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[NO_SPECIES] != 0L;
 }
 
-static int exclude_O3(void *user_data)
+static int include_O3(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = O3_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[O3_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_SPECIES] != 0L;
 }
 
-static int exclude_O3_666(void *user_data)
+static int include_O3_666(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = O3_666_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[O3_666_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_666_SPECIES] != 0L;
 }
 
-static int exclude_O3_667(void *user_data)
+static int include_O3_667(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = O3_667_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[O3_667_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_667_SPECIES] != 0L;
 }
 
-static int exclude_O3_668(void *user_data)
+static int include_O3_668(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = O3_668_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[O3_668_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_668_SPECIES] != 0L;
 }
 
-static int exclude_O3_686(void *user_data)
+static int include_O3_686(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = O3_686_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[O3_686_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[O3_686_SPECIES] != 0L;
 }
 
-static int exclude_BrO2(void *user_data)
+static int include_BrO2(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = BrO2_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[BrO2_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[BrO2_SPECIES] != 0L;
 }
 
-static int exclude_temperature(void *user_data)
+static int include_temperature(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = TEMP_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[TEMP_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[TEMP_SPECIES] != 0L;
 }
 
-static int exclude_pressure(void *user_data)
+static int include_pressure(void *user_data)
 {
     ((ingest_info *)user_data)->current_species_nr = PRES_SPECIES;
-    return ((ingest_info *)user_data)->species_nr_in_file[PRES_SPECIES] == 0L;
+    return ((ingest_info *)user_data)->species_nr_in_file[PRES_SPECIES] != 0L;
 }
 
 static void add_ingestion_VMR_variables(harp_product_definition *product_definition,
                                         harp_dimension_type *dimension_type, char *species,
-                                        int exclude_function(void *))
+                                        int include_function(void *))
 {
     harp_variable_definition *variable_definition;
     const char *path;
@@ -615,7 +615,7 @@ static void add_ingestion_VMR_variables(harp_product_definition *product_definit
     snprintf(vmr_name, MAX_PATH_LENGTH, "%s_volume_mixing_ratio", species);
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, vmr_name, harp_type_double, 2, dimension_type,
-                                                   NULL, vmr_description, "ppv", exclude_function, read_profile_value);
+                                                   NULL, vmr_description, "ppv", include_function, read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -624,7 +624,7 @@ static void add_ingestion_VMR_variables(harp_product_definition *product_definit
     snprintf(precision_name, MAX_PATH_LENGTH, "%s_volume_mixing_ratio_uncertainty", species);
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, precision_name, harp_type_double, 2,
-                                                   dimension_type, NULL, precision_description, "ppv", exclude_function,
+                                                   dimension_type, NULL, precision_description, "ppv", include_function,
                                                    read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -697,28 +697,28 @@ int harp_ingestion_module_smr_l2_init(void)
     path = "/GHz/Data_Vgroup/Data/Altitudes[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    add_ingestion_VMR_variables(product_definition, dimension_type, "ClO", exclude_ClO);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "CO", exclude_CO);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O", exclude_H2O);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O_161", exclude_H2O_161);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O_162", exclude_H2O_162);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O_181", exclude_H2O_181);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "HNO3", exclude_HNO3);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "HO2", exclude_HO2);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "N2O", exclude_N2O);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "NO", exclude_NO);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "O3", exclude_O3);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_666", exclude_O3_666);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_667", exclude_O3_667);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_668", exclude_O3_668);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_686", exclude_O3_686);
-    add_ingestion_VMR_variables(product_definition, dimension_type, "BrO2", exclude_BrO2);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "ClO", include_ClO);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "CO", include_CO);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O", include_H2O);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O_161", include_H2O_161);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O_162", include_H2O_162);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "H2O_181", include_H2O_181);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "HNO3", include_HNO3);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "HO2", include_HO2);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "N2O", include_N2O);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "NO", include_NO);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "O3", include_O3);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_666", include_O3_666);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_667", include_O3_667);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_668", include_O3_668);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "O3_686", include_O3_686);
+    add_ingestion_VMR_variables(product_definition, dimension_type, "BrO2", include_BrO2);
 
     /* temperature */
     description = "temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "K", exclude_temperature,
+                                                   dimension_type, NULL, description, "K", include_temperature,
                                                    read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -727,7 +727,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "precision of the temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "temperature_uncertainty", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "K", exclude_temperature,
+                                                   dimension_type, NULL, description, "K", include_temperature,
                                                    read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -736,7 +736,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "hPa", exclude_pressure, read_profile_value);
+                                                   NULL, description, "hPa", include_pressure, read_profile_value);
     path = "/GHz/Data_Vgroup/Data/Profiles[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -744,7 +744,7 @@ int harp_ingestion_module_smr_l2_init(void)
     description = "precision of the pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure_uncertainty", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "hPa", exclude_pressure,
+                                                   dimension_type, NULL, description, "hPa", include_pressure,
                                                    read_totalerror_value);
     path = "/GHz/Data_Vgroup/Data/TotalError[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

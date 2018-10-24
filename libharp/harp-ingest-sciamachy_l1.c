@@ -989,15 +989,15 @@ static int read_scan_direction_type(void *user_data, long index, harp_array data
     return 0;
 }
 
-static int exclude_when_not_nadir(void *user_data)
+static int include_nadir(void *user_data)
 {
-    return (((ingest_info *)user_data)->ingestion_data != DATA_NADIR);
+    return (((ingest_info *)user_data)->ingestion_data == DATA_NADIR);
 }
 
-static int exclude_when_not_limb_or_occultation(void *user_data)
+static int include_limb_or_occultation(void *user_data)
 {
-    return ((((ingest_info *)user_data)->ingestion_data != DATA_LIMB) &&
-            (((ingest_info *)user_data)->ingestion_data != DATA_OCCULTATION));
+    return ((((ingest_info *)user_data)->ingestion_data == DATA_LIMB) ||
+            (((ingest_info *)user_data)->ingestion_data == DATA_OCCULTATION));
 }
 
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
@@ -1348,8 +1348,7 @@ static void register_nadir_limb_occultation_product(harp_ingestion_module *modul
     description = "tangent altitude for each measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "km", exclude_when_not_limb_or_occultation,
-                                                   read_altitude);
+                                                   NULL, description, "km", include_limb_or_occultation, read_altitude);
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time";
     path = "/limb[]/geo[]/tan_h[1]";
     harp_variable_definition_add_mapping(variable_definition, "data=limb", NULL, path, description);
@@ -1391,7 +1390,7 @@ static void register_nadir_limb_occultation_product(harp_ingestion_module *modul
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
                                                    bounds_dimension_type, bounds_dimension, description, "degree_north",
-                                                   exclude_when_not_nadir, read_latitude_bounds);
+                                                   include_nadir, read_latitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/nadir[]/geo[]/corner_coord[]/latitude";
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
@@ -1403,7 +1402,7 @@ static void register_nadir_limb_occultation_product(harp_ingestion_module *modul
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
                                                    bounds_dimension_type, bounds_dimension, description, "degree_east",
-                                                   exclude_when_not_nadir, read_longitude_bounds);
+                                                   include_nadir, read_longitude_bounds);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/nadir[]/geo[]/corner_coord[]/longitude";
     description = "dsr is the dsr for the cluster with an integration time equal to the minimal integration time of all"
@@ -1546,7 +1545,7 @@ static void register_nadir_limb_occultation_product(harp_ingestion_module *modul
     variable_definition =
         harp_ingestion_register_variable_block_read(product_definition, "scan_direction_type", harp_type_int8, 1,
                                                     dimension_type, NULL, description, NULL,
-                                                    exclude_when_not_nadir, read_scan_direction_type);
+                                                    include_nadir, read_scan_direction_type);
     harp_variable_definition_set_enumeration_values(variable_definition, 3, scan_direction_type_values);
     path = "/nadir[]/geo[]/corner_coord[], /states[]/intg_times[]";
     description =

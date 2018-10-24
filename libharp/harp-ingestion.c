@@ -442,7 +442,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
 {
     harp_variable *variable;
 
-    if (harp_variable_definition_exclude(variable_def, info->user_data))
+    if (harp_variable_definition_include(variable_def, info->user_data))
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot read variable '%s' (variable unavailable)",
                        variable_def->name);
@@ -813,8 +813,8 @@ static int init_variable_mask(ingest_info *info)
     /* initialize variable mask according to the availability of each variable */
     for (i = 0; i < info->product_definition->num_variable_definitions; i++)
     {
-        info->variable_mask[i] = !harp_variable_definition_exclude(info->product_definition->variable_definition[i],
-                                                                   info->user_data);
+        info->variable_mask[i] = harp_variable_definition_include(info->product_definition->variable_definition[i],
+                                                                  info->user_data);
     }
 
     return 0;

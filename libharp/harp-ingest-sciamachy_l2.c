@@ -2181,19 +2181,19 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int exclude_cloud_top_pressure(void *user_data)
-{
-    return (((ingest_info *)user_data)->format_version >= 2);
-}
-
-static int exclude_cloud_top_height(void *user_data)
+static int include_cloud_top_pressure(void *user_data)
 {
     return (((ingest_info *)user_data)->format_version < 2);
 }
 
-static int exclude_add_diag(void *user_data)
+static int include_cloud_top_height(void *user_data)
 {
-    return !((ingest_info *)user_data)->has_extended_diag;
+    return (((ingest_info *)user_data)->format_version >= 2);
+}
+
+static int include_add_diag(void *user_data)
+{
+    return ((ingest_info *)user_data)->has_extended_diag;
 }
 
 static void register_common_nadir_cloud_variables(harp_product_definition *product_definition, const char *dataset)
@@ -3050,7 +3050,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "O3_volume_mixing_ratio_avk",
                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                      description, "", exclude_add_diag, read_vmr_avk);
+                                                                      description, "", include_add_diag, read_vmr_avk);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
@@ -3059,7 +3059,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_number_density",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd);
+                                                                      include_add_diag, read_nd);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
@@ -3069,7 +3069,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "O3_number_density_uncertainty",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd_error);
+                                                                      include_add_diag, read_nd_error);
     path = "/lim_uv0_o3[]/main_species[,0]/err_tang_vmr, /lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
@@ -3078,7 +3078,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_number_density_apriori",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd_apriori);
+                                                                      include_add_diag, read_nd_apriori);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
@@ -3088,7 +3088,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "O3_number_density_avk",
                                                                       harp_type_double, 3, dimension_type, NULL,
                                                                       description, "(molec/cm^3)/(molec/cm^3)",
-                                                                      exclude_add_diag, read_nd_avk);
+                                                                      include_add_diag, read_nd_avk);
     path = "/lim_uv0_o3[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, nd_avk_mapping);
 
@@ -3122,7 +3122,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "NO2_volume_mixing_ratio_avk",
                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                      description, "", exclude_add_diag, read_vmr_avk);
+                                                                      description, "", include_add_diag, read_vmr_avk);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
@@ -3131,7 +3131,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_number_density",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd);
+                                                                      include_add_diag, read_nd);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
@@ -3141,7 +3141,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "NO2_number_density_uncertainty",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd_error);
+                                                                      include_add_diag, read_nd_error);
     path = "/lim_uv1_no2[]/main_species[,0]/err_tang_vmr, /lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
@@ -3150,7 +3150,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_number_density_apriori",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd_apriori);
+                                                                      include_add_diag, read_nd_apriori);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
@@ -3160,7 +3160,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "NO2_number_density_avk",
                                                                       harp_type_double, 3, dimension_type, NULL,
                                                                       description, "(molec/cm^3)/(molec/cm^3)",
-                                                                      exclude_add_diag, read_nd_avk);
+                                                                      include_add_diag, read_nd_avk);
     path = "/lim_uv1_no2[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, nd_avk_mapping);
 
@@ -3194,7 +3194,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "BrO_volume_mixing_ratio_avk",
                                                                       harp_type_double, 3, dimension_type, NULL,
-                                                                      description, "", exclude_add_diag, read_vmr_avk);
+                                                                      description, "", include_add_diag, read_vmr_avk);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, vmr_avk_mapping);
 
@@ -3203,7 +3203,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "BrO_number_density",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd);
+                                                                      include_add_diag, read_nd);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
@@ -3213,7 +3213,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "BrO_number_density_uncertainty",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd_error);
+                                                                      include_add_diag, read_nd_error);
     path = "/lim_uv3_bro[]/main_species[,0]/err_tang_vmr, /lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, error_mapping);
 
@@ -3222,7 +3222,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "BrO_number_density_apriori",
                                                                       harp_type_double, 2, dimension_type, NULL,
                                                                       description, "molec/cm^3",
-                                                                      exclude_add_diag, read_nd_apriori);
+                                                                      include_add_diag, read_nd_apriori);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, NULL);
 
@@ -3232,7 +3232,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "BrO_number_density_avk",
                                                                       harp_type_double, 3, dimension_type, NULL,
                                                                       description, "(molec/cm^3)/(molec/cm^3)",
-                                                                      exclude_add_diag, read_nd_avk);
+                                                                      include_add_diag, read_nd_avk);
     path = "/lim_uv3_bro[]/main_species[,0]/add_diag[0..n]";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_add_diag, path, nd_avk_mapping);
 
@@ -3248,7 +3248,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     description = "cloud top pressure";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_pressure",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "hPa", exclude_cloud_top_pressure,
+                                                                      description, "hPa", include_cloud_top_pressure,
                                                                       read_cloud_top_pressure);
     path = "/clouds_aerosol[]/cl_top_pres";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_3j, path, NULL);
@@ -3257,7 +3257,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     description = "cloud top height";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_height",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "km", exclude_cloud_top_height,
+                                                                      description, "km", include_cloud_top_height,
                                                                       read_cloud_top_height);
     path = "/clouds_aerosol[]/cl_top_height";
     harp_variable_definition_add_mapping(variable_definition, NULL, condition_3k, path, NULL);

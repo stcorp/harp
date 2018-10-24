@@ -302,36 +302,36 @@ static int init_dimensions(ingest_info *info)
     return 0;
 }
 
-static int exclude_ch4(void *user_data)
+static int include_ch4(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "xch4") != 0)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
-static int exclude_co2(void *user_data)
+static int include_co2(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        return TRUE;
+        return 0;
     }
     if (coda_cursor_goto(&cursor, "xco2") != 0)
     {
-        return TRUE;
+        return 0;
     }
-    return FALSE;
+    return 1;
 }
 
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
@@ -407,7 +407,7 @@ static void register_module_l3_Obs4MIPs(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio",
                                                    harp_type_double, 3, dimension_type, NULL, description, "ppmv",
-                                                   exclude_ch4, read_CH4_column_volume_mixing_ratio);
+                                                   include_ch4, read_CH4_column_volume_mixing_ratio);
     path = "xch4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -416,7 +416,7 @@ static void register_module_l3_Obs4MIPs(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 3, dimension_type, NULL, description, "ppmv",
-                                                   exclude_ch4, read_CH4_column_volume_mixing_ratio_uncertainty);
+                                                   include_ch4, read_CH4_column_volume_mixing_ratio_uncertainty);
     path = "xch4_stddev[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -425,7 +425,7 @@ static void register_module_l3_Obs4MIPs(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio",
                                                    harp_type_double, 3, dimension_type, NULL, description, "ppmv",
-                                                   exclude_co2, read_CO2_column_volume_mixing_ratio);
+                                                   include_co2, read_CO2_column_volume_mixing_ratio);
     path = "xco2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -434,7 +434,7 @@ static void register_module_l3_Obs4MIPs(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio_uncertainty",
                                                    harp_type_double, 3, dimension_type, NULL, description, "ppmv",
-                                                   exclude_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
+                                                   include_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
     path = "xco2_stddev[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }

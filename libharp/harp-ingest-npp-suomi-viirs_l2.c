@@ -711,39 +711,39 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int exclude_non_cloud_base_height(void *user_data)
+static int include_non_cloud_base_height(void *user_data)
 {
-    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_BASE_HEIGHT] == NULL;
+    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_BASE_HEIGHT] != NULL;
 }
 
-static int exclude_non_cloud_top_height(void *user_data)
+static int include_non_cloud_top_height(void *user_data)
 {
-    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_TOP_HEIGHT] == NULL;
+    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_TOP_HEIGHT] != NULL;
 }
 
-static int exclude_non_cloud_top_pressure(void *user_data)
+static int include_non_cloud_top_pressure(void *user_data)
 {
-    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_TOP_PRESSURE] == NULL;
+    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_TOP_PRESSURE] != NULL;
 }
 
-static int exclude_non_cloud_top_temperature(void *user_data)
+static int include_non_cloud_top_temperature(void *user_data)
 {
-    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_TOP_TEMPERATURE] == NULL;
+    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_TOP_TEMPERATURE] != NULL;
 }
 
-static int exclude_non_cloud_fraction(void *user_data)
+static int include_non_cloud_fraction(void *user_data)
 {
-    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_FRACTION] == NULL;
+    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_FRACTION] != NULL;
 }
 
-static int exclude_non_cloud_effective_particle_size(void *user_data)
+static int include_non_cloud_effective_particle_size(void *user_data)
 {
-    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_EFFECTIVE_PARTICLE_SIZE] == NULL;
+    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_EFFECTIVE_PARTICLE_SIZE] != NULL;
 }
 
-static int exclude_non_cloud_optical_depth(void *user_data)
+static int include_non_cloud_optical_depth(void *user_data)
 {
-    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_OPTICAL_DEPTH] == NULL;
+    return ((ingest_info *)user_data)->viirs_swath_names[CLOUD_OPTICAL_DEPTH] != NULL;
 }
 
 static void register_aeros_product_type(const char *product_type)
@@ -942,7 +942,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
         harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height",
                                                    harp_type_double, 1, dimension_type, NULL, description, "km",
                                                    (type_nr ==
-                                                    CLOUD_BASE_HEIGHT) ? NULL : exclude_non_cloud_base_height,
+                                                    CLOUD_BASE_HEIGHT) ? NULL : include_non_cloud_base_height,
                                                    read_cloud_base_height);
     path = "/All_Data/VIIRS-CBH-EDR_All/AverageCloudBaseHeight";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -952,7 +952,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height",
                                                    harp_type_double, 1, dimension_type, NULL, description, "km",
-                                                   (type_nr == CLOUD_TOP_HEIGHT) ? NULL : exclude_non_cloud_top_height,
+                                                   (type_nr == CLOUD_TOP_HEIGHT) ? NULL : include_non_cloud_top_height,
                                                    read_cloud_top_height);
     path = "/All_Data/VIIRS-CTH-EDR_All/AverageCloudTopHeight";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -963,7 +963,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure",
                                                    harp_type_double, 1, dimension_type, NULL, description, "hPa",
                                                    (type_nr ==
-                                                    CLOUD_TOP_PRESSURE) ? NULL : exclude_non_cloud_top_pressure,
+                                                    CLOUD_TOP_PRESSURE) ? NULL : include_non_cloud_top_pressure,
                                                    read_cloud_top_pressure);
     path = "/All_Data/VIIRS-CTP-EDR_All/AverageCloudTopPressure";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -974,7 +974,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature",
                                                    harp_type_double, 1, dimension_type, NULL, description, "K",
                                                    (type_nr ==
-                                                    CLOUD_TOP_TEMPERATURE) ? NULL : exclude_non_cloud_top_temperature,
+                                                    CLOUD_TOP_TEMPERATURE) ? NULL : include_non_cloud_top_temperature,
                                                    read_cloud_top_temperature);
     path = "/All_Data/VIIRS-CTT-EDR_All/AverageCloudTopTemperature";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -985,7 +985,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                    harp_type_double, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS,
-                                                   (type_nr == CLOUD_FRACTION) ? NULL : exclude_non_cloud_fraction,
+                                                   (type_nr == CLOUD_FRACTION) ? NULL : include_non_cloud_fraction,
                                                    read_cloud_fraction);
     path = "/All_Data/VIIRS-CCL-EDR_All/SummedCloudCover";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -997,7 +997,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
                                                    harp_type_double, 1, dimension_type, NULL, description, "µm",
                                                    (type_nr ==
                                                     CLOUD_EFFECTIVE_PARTICLE_SIZE) ? NULL :
-                                                   exclude_non_cloud_effective_particle_size,
+                                                   include_non_cloud_effective_particle_size,
                                                    read_cloud_effective_particle_size);
     path = "/All_Data/VIIRS-CEPS-EDR_All/AverageCloudEffectiveParticleSize";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -1009,7 +1009,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
                                                    harp_type_double, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS,
                                                    (type_nr ==
-                                                    CLOUD_OPTICAL_DEPTH) ? NULL : exclude_non_cloud_optical_depth,
+                                                    CLOUD_OPTICAL_DEPTH) ? NULL : include_non_cloud_optical_depth,
                                                    read_cloud_optical_depth);
     path = "/All_Data/VIIRS-COT-EDR_All/AverageCloudOpticalThickness";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
