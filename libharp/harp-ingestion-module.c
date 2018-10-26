@@ -1079,7 +1079,7 @@ int harp_variable_definition_has_dimension_type(const harp_variable_definition *
 
 int harp_variable_definition_include(const harp_variable_definition *variable_definition, void *user_data)
 {
-    return (variable_definition->include != NULL && variable_definition->include(user_data));
+    return (variable_definition->include == NULL || variable_definition->include(user_data));
 }
 
 void harp_product_definition_add_mapping(harp_product_definition *product_definition, const char *mapping_description,

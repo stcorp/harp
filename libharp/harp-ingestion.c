@@ -442,7 +442,7 @@ static int get_variable(ingest_info *info, const harp_variable_definition *varia
 {
     harp_variable *variable;
 
-    if (harp_variable_definition_include(variable_def, info->user_data))
+    if (!harp_variable_definition_include(variable_def, info->user_data))
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot read variable '%s' (variable unavailable)",
                        variable_def->name);
