@@ -4925,7 +4925,7 @@ static void register_o3_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_sic",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_nrti,
+                                                   HARP_UNIT_DIMENSIONLESS, include_offl,
                                                    read_results_shannon_information_content);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/shannon_information_content[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
