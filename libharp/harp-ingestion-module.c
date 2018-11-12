@@ -770,7 +770,7 @@ static int read_index(void *user_data, long index, harp_array data)
 {
     (void)user_data;
 
-    assert(index <= INT32_MAX);
+    assert(index <= 2147483647);
     *data.int32_data = (int32_t)index;
     return 0;
 }
