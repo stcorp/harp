@@ -112,9 +112,10 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-cci_l4_o3_np.c \
 	libharp/harp-ingest-cloudnet_l2.c \
 	libharp/harp-ingest-ecmwf-grib.c \
+	libharp/harp-ingest-geoms-ftir.c \
 	libharp/harp-ingest-geoms-lidar.c \
 	libharp/harp-ingest-geoms-mwr.c \
-	libharp/harp-ingest-geoms-ftir.c \
+	libharp/harp-ingest-geoms-pandora.c \
 	libharp/harp-ingest-geoms-uvvis-doas.c \
 	libharp/harp-ingest-gome_l1.c \
 	libharp/harp-ingest-gome_l2.c \
