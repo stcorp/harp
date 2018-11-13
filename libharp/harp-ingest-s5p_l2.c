@@ -3745,7 +3745,7 @@ static int read_sea_ice_fraction(void *user_data, harp_array data)
     {
         if (data.float_data[i] > 0 && data.float_data[i] <= 100)
         {
-            data.float_data[i] /= 100.0;
+            data.float_data[i] /= (float)100.0;
         }
         else
         {
