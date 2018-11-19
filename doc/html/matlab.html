@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="index.html"/>
-        <link rel="next" title="Python interface" href="python.html"/>
-        <link rel="prev" title="IDL interface" href="idl.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="next" title="Python interface" href="python.html" />
+    <link rel="prev" title="IDL interface" href="idl.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -113,7 +104,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">HARP</a>
@@ -121,9 +112,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -231,7 +223,7 @@ to arrays of mxCHAR in MATLAB which is an unicode string.</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
-<div class="highlight-MATLAB"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">Ingest</span> <span class="n">a</span> <span class="n">file</span> <span class="n">and</span> <span class="n">convert</span> <span class="n">it</span> <span class="n">to</span> <span class="n">a</span> <span class="n">HARP</span> <span class="n">product</span> <span class="p">(</span><span class="n">the</span>
+<div class="highlight-MATLAB notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">Ingest</span> <span class="n">a</span> <span class="n">file</span> <span class="n">and</span> <span class="n">convert</span> <span class="n">it</span> <span class="n">to</span> <span class="n">a</span> <span class="n">HARP</span> <span class="n">product</span> <span class="p">(</span><span class="n">the</span>
 <span class="p">;</span> <span class="n">file</span> <span class="n">that</span> <span class="n">is</span> <span class="n">used</span> <span class="n">in</span> <span class="n">this</span> <span class="n">example</span> <span class="n">is</span> <span class="n">an</span> <span class="n">ACE</span><span class="o">-</span><span class="n">FTS</span> <span class="n">file</span><span class="p">).</span>
 <span class="n">product1</span> <span class="p">=</span> <span class="n">harp_import</span><span class="p">(</span>&quot;<span class="n">ss13799</span><span class="p">.</span><span class="n">asc</span>&quot;<span class="p">)</span>
 
@@ -280,10 +272,10 @@ will be returned.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to ingest</li>
-<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the import; should be
+<li><strong>filename</strong> (<em>str</em>) – Filename of the product to ingest</li>
+<li><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the import; should be
 specified as a semi-colon separated string of operations.</li>
-<li><strong>options</strong> (<em>str</em>) &#8211; Ingestion module specific options; should be specified as
+<li><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
 a semi-colon separated string of key=value pairs; only
 used if the file is not in HARP format.</li>
 </ul>
@@ -305,10 +297,10 @@ used if the file is not in HARP format.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>product</strong> (<em>str</em>) &#8211; Product to export.</li>
-<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the exported product.</li>
-<li><strong>file_format</strong> (<em>str</em>) &#8211; File format to use; one of &#8216;netcdf&#8217;, &#8216;hdf4&#8217;, or
-&#8216;hdf5&#8217;. If no format is specified, netcdf is used.</li>
+<li><strong>product</strong> (<em>str</em>) – Product to export.</li>
+<li><strong>filename</strong> (<em>str</em>) – Filename of the exported product.</li>
+<li><strong>file_format</strong> (<em>str</em>) – File format to use; one of ‘netcdf’, ‘hdf4’, or
+‘hdf5’. If no format is specified, netcdf is used.</li>
 </ul>
 </td>
 </tr>
@@ -327,9 +319,7 @@ used if the file is not in HARP format.</li>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -347,7 +337,7 @@ used if the file is not in HARP format.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -365,36 +355,24 @@ used if the file is not in HARP format.</li>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

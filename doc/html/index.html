@@ -24,27 +24,18 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="#"/>
-        <link rel="next" title="Installation" href="install.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="next" title="Installation" href="install.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -105,7 +96,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="#">HARP</a>
@@ -113,9 +104,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -343,7 +335,7 @@ HARP from MATLAB.</p>
 <h2>Python interface</h2>
 <p>The <a class="reference internal" href="python.html"><span class="doc">HARP Python interface</span></a> provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
-HARP from Python. The Python interface depends on the <code class="docutils literal"><span class="pre">_cffi_backend</span></code> module,
+HARP from Python. The Python interface depends on the <code class="docutils literal notranslate"><span class="pre">_cffi_backend</span></code> module,
 which is part of the C foreign function interface (cffi) package. This package
 must be installed in order to be able to use the Python interface. See the <a class="reference external" href="http://cffi.readthedocs.org/en/latest/installation.html">cffi
 documentation</a> for details on how to install the cffi package.</p>
@@ -351,8 +343,8 @@ documentation</a> for details on how to install the cffi package.</p>
 <div class="section" id="command-line-tools">
 <span id="id2"></span><h2>Command line tools</h2>
 <p>The HARP command line tools perform various operations on HARP compliant data
-products. All command line tools except <code class="docutils literal"><span class="pre">harpconvert</span></code> expect one or more HARP
-data products as input. The <code class="docutils literal"><span class="pre">harpconvert</span></code> tool can be used to convert non-HARP
+products. All command line tools except <code class="docutils literal notranslate"><span class="pre">harpconvert</span></code> expect one or more HARP
+data products as input. The <code class="docutils literal notranslate"><span class="pre">harpconvert</span></code> tool can be used to convert non-HARP
 products into HARP products.</p>
 <p>The available command line tools are described in more detail in the
 <a class="reference internal" href="tools.html"><span class="doc">Command line tools</span></a> section of the documentation.</p>
@@ -361,37 +353,35 @@ products into HARP products.</p>
 <h2>A typical inter-comparison</h2>
 <p>Typical sequence when comparing two datasets of measurements:</p>
 <dl class="docutils">
-<dt>harpconvert ...</dt>
+<dt>harpconvert …</dt>
 <dd>Convert all products that do not already follow the HARP format conventions
 to a common data format.
 Filter/convert the data in each file: remove unneeded
 parameters/measurements, add derived physical parameters, perform unit
 conversion, regrid dimensions, etc.</dd>
-<dt>harpcollocate matchup ...</dt>
+<dt>harpcollocate matchup …</dt>
 <dd>Find the measurement pairs that match within the specified collocation
 criteria and save the result into a collocation result file.</dd>
-<dt>harpcollocate resample ...</dt>
+<dt>harpcollocate resample …</dt>
 <dd>Apply resampling to the collocation result file.</dd>
-<dt>harpconvert -a &#8216;collocate-left(&lt;csvfile&gt;)&#8217; ...</dt>
+<dt>harpconvert -a ‘collocate-left(&lt;csvfile&gt;)’ …</dt>
 <dd>Apply the collocation filter for each file in the primary dataset</dd>
-<dt>harpconvert -a &#8216;collocate-right(&lt;csvfile&gt;)&#8217; ...</dt>
+<dt>harpconvert -a ‘collocate-right(&lt;csvfile&gt;)’ …</dt>
 <dd>Apply the collocation filter for each file in the secondary dataset</dd>
 </dl>
 <p>Input files can be verified with</p>
 <blockquote>
-<div>harpcheck ...</div></blockquote>
+<div>harpcheck …</div></blockquote>
 <p>and after each stage, the contents of each file can be inspected from the
 command line using:</p>
 <blockquote>
-<div>harpdump ...</div></blockquote>
+<div>harpdump …</div></blockquote>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -407,7 +397,7 @@ command line using:</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -425,36 +415,24 @@ command line using:</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

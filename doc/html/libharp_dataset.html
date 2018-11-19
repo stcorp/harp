@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="index.html"/>
-        <link rel="up" title="C library" href="libharp.html"/>
-        <link rel="next" title="Documentation" href="libharp_documentation.html"/>
-        <link rel="prev" title="Collocation" href="libharp_collocation.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="next" title="Documentation" href="libharp_documentation.html" />
+    <link rel="prev" title="Collocation" href="libharp_collocation.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -121,7 +111,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">HARP</a>
@@ -129,9 +119,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -177,14 +168,14 @@
 <h1>Dataset</h1>
 <dl class="group">
 <dt>
-<span class="target" id="libharpgroup__harp__dataset"></span><em>group</em> <code class="descname">harp_dataset</code></dt>
+<span class="target" id="group__harp__dataset"></span><em>group</em> <code class="descname">harp_dataset</code></dt>
 <dd><p>The HARP harp_dataset module contains everything regarding HARP datasets.</p>
-<p>A Dataset contains a list of references to HARP products together with optional metadata on each product. The primary reference to a product is the value of the &#8216;source_product&#8217; global attribute of a HARP product. </p>
+<p>A Dataset contains a list of references to HARP products together with optional metadata on each product. The primary reference to a product is the value of the ‘source_product’ global attribute of a HARP product. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="type">
-<dt id="_CPPv212harp_dataset">
-<span id="harp_dataset"></span><span class="target" id="libharpgroup__harp__dataset_1gad68088d6c638ed1a84703b99773caa52"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv219harp_dataset_struct" title="harp_dataset_struct">harp_dataset_struct</a> <code class="descname">harp_dataset</code><br /></dt>
+<dt id="_CPPv312harp_dataset">
+<span id="_CPPv212harp_dataset"></span><span id="harp_dataset"></span><span class="target" id="group__harp__dataset_1gad68088d6c638ed1a84703b99773caa52"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv319harp_dataset_struct" title="harp_dataset_struct">harp_dataset_struct</a> <code class="descname">harp_dataset</code><br /></dt>
 <dd><p>HARP Dataset typedef </p>
 </dd></dl>
 
@@ -192,18 +183,18 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="_CPPv216harp_dataset_newPP12harp_dataset">
-<span id="harp_dataset_new__harp_datasetPP"></span><span class="target" id="libharpgroup__harp__dataset_1ga35ac46cdc9370a916fd14ef144051f3e"></span>int <code class="descname">harp_dataset_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> **<em>new_dataset</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv316harp_dataset_newPP12harp_dataset">
+<span id="_CPPv216harp_dataset_newPP12harp_dataset"></span><span id="harp_dataset_new__harp_datasetPP"></span><span class="target" id="group__harp__dataset_1ga35ac46cdc9370a916fd14ef144051f3e"></span>int <code class="descname">harp_dataset_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_dataset" title="harp_dataset">harp_dataset</a> **<em>new_dataset</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create new HARP dataset. The metadata will be intialized with zero product metadata elements. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">new_dataset</span></code>: Pointer to the C variable where the new HARP product metadata will be stored. </li>
+<li><code class="docutils literal notranslate"><span class="pre">new_dataset</span></code>: Pointer to the C variable where the new HARP product metadata will be stored. </li>
 </ul>
 </dd>
 </dl>
@@ -211,12 +202,12 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv219harp_dataset_deleteP12harp_dataset">
-<span id="harp_dataset_delete__harp_datasetP"></span><span class="target" id="libharpgroup__harp__dataset_1gabee5947f6968607661a761a5ac4c4ca7"></span>void <code class="descname">harp_dataset_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv319harp_dataset_deleteP12harp_dataset">
+<span id="_CPPv219harp_dataset_deleteP12harp_dataset"></span><span id="harp_dataset_delete__harp_datasetP"></span><span class="target" id="group__harp__dataset_1gabee5947f6968607661a761a5ac4c4ca7"></span>void <code class="descname">harp_dataset_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Delete HARP dataset. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">dataset</span></code>: Pointer to the dataset to free. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Pointer to the dataset to free. </li>
 </ul>
 </dd>
 </dl>
@@ -224,13 +215,13 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv218harp_dataset_printP12harp_datasetPFiPKczE">
-<span class="target" id="libharpgroup__harp__dataset_1ga9b2f2eb09902c7416baeff016491cbd6"></span>void <code class="descname">harp_dataset_print</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv318harp_dataset_printP12harp_datasetPFiPKczE">
+<span id="_CPPv218harp_dataset_printP12harp_datasetPFiPKczE"></span><span class="target" id="group__harp__dataset_1ga9b2f2eb09902c7416baeff016491cbd6"></span>void <code class="descname">harp_dataset_print</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print HARP dataset. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">dataset</span></code>: Pointer to the dataset to print. </li>
-<li><code class="docutils literal"><span class="pre">print</span></code>: Pointer to the function that should be used for printing. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Pointer to the dataset to print. </li>
+<li><code class="docutils literal notranslate"><span class="pre">print</span></code>: Pointer to the function that should be used for printing. </li>
 </ul>
 </dd>
 </dl>
@@ -238,22 +229,22 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv219harp_dataset_importP12harp_datasetPKcPKc">
-<span id="harp_dataset_import__harp_datasetP.cCP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1gaf09a7b6ceec6c24ff158aae030c128fa"></span>int <code class="descname">harp_dataset_import</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>path</em>, <em class="property">const</em> char *<em>options</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv319harp_dataset_importP12harp_datasetPKcPKc">
+<span id="_CPPv219harp_dataset_importP12harp_datasetPKcPKc"></span><span id="harp_dataset_import__harp_datasetP.cCP.cCP"></span><span class="target" id="group__harp__dataset_1gaf09a7b6ceec6c24ff158aae030c128fa"></span>int <code class="descname">harp_dataset_import</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>path</em>, <em class="property">const</em> char *<em>options</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Import metadata for products into the dataset. If path is a directory then all files (recursively) from that directory are added to the dataset. If path references a .pth file then the file paths from that text file (one per line) are imported. These file paths can be absolute or relative and can point to files, directories, or other .pth files. If path references a product file then that file is added to the dataset. Trying to add a file that is not supported by HARP will result in an error.</p>
-<p>Note that datasets cannot have multiple entries with the same &#8216;source_product&#8217; value. Therefore, for each product where the dataset already contained an entry with the same &#8216;source_product&#8217; value, the metadata of that entry is replaced with the new metadata (instead of adding a new entry to the dataset or raising an error).</p>
+<p>Note that datasets cannot have multiple entries with the same ‘source_product’ value. Therefore, for each product where the dataset already contained an entry with the same ‘source_product’ value, the metadata of that entry is replaced with the new metadata (instead of adding a new entry to the dataset or raising an error).</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">dataset</span></code>: Dataset into which to import the metadata. </li>
-<li><code class="docutils literal"><span class="pre">path</span></code>: Path to either a directory containing product files, a .pth file, or a single product file. </li>
-<li><code class="docutils literal"><span class="pre">options</span></code>: Ingestion module specific options (optional); should be specified as a semi-colon separated string of key=value pair; only used for product files that are not already in HARP format. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Dataset into which to import the metadata. </li>
+<li><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to either a directory containing product files, a .pth file, or a single product file. </li>
+<li><code class="docutils literal notranslate"><span class="pre">options</span></code>: Ingestion module specific options (optional); should be specified as a semi-colon separated string of key=value pair; only used for product files that are not already in HARP format. </li>
 </ul>
 </dd>
 </dl>
@@ -261,20 +252,20 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv242harp_dataset_get_index_from_source_productP12harp_datasetPKcPl">
-<span id="harp_dataset_get_index_from_source_product__harp_datasetP.cCP.lP"></span><span class="target" id="libharpgroup__harp__dataset_1gab92a6e6a9952685cd7cf1aa0036c5ce7"></span>int <code class="descname">harp_dataset_get_index_from_source_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>source_product</em>, long *<em>index</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv342harp_dataset_get_index_from_source_productP12harp_datasetPKcPl">
+<span id="_CPPv242harp_dataset_get_index_from_source_productP12harp_datasetPKcPl"></span><span id="harp_dataset_get_index_from_source_product__harp_datasetP.cCP.lP"></span><span class="target" id="group__harp__dataset_1gab92a6e6a9952685cd7cf1aa0036c5ce7"></span>int <code class="descname">harp_dataset_get_index_from_source_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>source_product</em>, long *<em>index</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Lookup the index of source_product in the given dataset. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">dataset</span></code>: Dataset to get index in. </li>
-<li><code class="docutils literal"><span class="pre">source_product</span></code>: Source product reference. </li>
-<li><code class="docutils literal"><span class="pre">index</span></code>: Pointer to the C variable where the index in the dataset for the product is returned. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Dataset to get index in. </li>
+<li><code class="docutils literal notranslate"><span class="pre">source_product</span></code>: Source product reference. </li>
+<li><code class="docutils literal notranslate"><span class="pre">index</span></code>: Pointer to the C variable where the index in the dataset for the product is returned. </li>
 </ul>
 </dd>
 </dl>
@@ -282,19 +273,19 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv224harp_dataset_has_productP12harp_datasetPKc">
-<span id="harp_dataset_has_product__harp_datasetP.cCP"></span><span class="target" id="libharpgroup__harp__dataset_1ga58e6344eb1d20b96e5ec51063c5a2b95"></span>int <code class="descname">harp_dataset_has_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv324harp_dataset_has_productP12harp_datasetPKc">
+<span id="_CPPv224harp_dataset_has_productP12harp_datasetPKc"></span><span id="harp_dataset_has_product__harp_datasetP.cCP"></span><span class="target" id="group__harp__dataset_1ga58e6344eb1d20b96e5ec51063c5a2b95"></span>int <code class="descname">harp_dataset_has_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if dataset contains an entry with the specified source product reference. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Dataset does not contain a product with the specific source reference. </li>
-<li><code class="docutils literal"><span class="pre">1</span></code>, Dataset contains a product with the specific source reference. </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Dataset does not contain a product with the specific source reference. </li>
+<li><code class="docutils literal notranslate"><span class="pre">1</span></code>, Dataset contains a product with the specific source reference. </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">dataset</span></code>: Dataset in which to find the product. </li>
-<li><code class="docutils literal"><span class="pre">source_product</span></code>: Source product reference. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Dataset in which to find the product. </li>
+<li><code class="docutils literal notranslate"><span class="pre">source_product</span></code>: Source product reference. </li>
 </ul>
 </dd>
 </dl>
@@ -302,20 +293,20 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv224harp_dataset_add_productP12harp_datasetPKcP21harp_product_metadata">
-<span id="harp_dataset_add_product__harp_datasetP.cCP.harp_product_metadataP"></span><span class="target" id="libharpgroup__harp__dataset_1gaeb9189ed0ccc571893ecf40d06566044"></span>int <code class="descname">harp_dataset_add_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv212harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>source_product</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv221harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv324harp_dataset_add_productP12harp_datasetPKcP21harp_product_metadata">
+<span id="_CPPv224harp_dataset_add_productP12harp_datasetPKcP21harp_product_metadata"></span><span id="harp_dataset_add_product__harp_datasetP.cCP.harp_product_metadataP"></span><span class="target" id="group__harp__dataset_1gaeb9189ed0ccc571893ecf40d06566044"></span>int <code class="descname">harp_dataset_add_product</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_dataset" title="harp_dataset">harp_dataset</a> *<em>dataset</em>, <em class="property">const</em> char *<em>source_product</em>, <a class="reference internal" href="libharp_product_metadata.html#_CPPv321harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Add a product reference to a dataset. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">dataset</span></code>: Dataset in which to add a new entry. </li>
-<li><code class="docutils literal"><span class="pre">source_product</span></code>: The source product reference of the new entry. </li>
-<li><code class="docutils literal"><span class="pre">metadata</span></code>: The product metadata of the new entry (can be NULL); the dataset is the new owner of metadata. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Dataset in which to add a new entry. </li>
+<li><code class="docutils literal notranslate"><span class="pre">source_product</span></code>: The source product reference of the new entry. </li>
+<li><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: The product metadata of the new entry (can be NULL); the dataset is the new owner of metadata. </li>
 </ul>
 </dd>
 </dl>
@@ -324,8 +315,8 @@
 
 </div>
 <dl class="class">
-<dt id="_CPPv219harp_dataset_struct">
-<span id="harp_dataset_struct"></span><span class="target" id="libharpstructharp__dataset__struct"></span><em class="property">struct </em><code class="descname">harp_dataset_struct</code><br /></dt>
+<dt id="_CPPv319harp_dataset_struct">
+<span id="_CPPv219harp_dataset_struct"></span><span id="harp_dataset_struct"></span><span class="target" id="structharp__dataset__struct"></span><em class="property">struct </em><code class="descname">harp_dataset_struct</code><br /></dt>
 <dd><em>#include &lt;harp.h&gt;</em><p>HARP Dataset struct </p>
 </dd></dl>
 
@@ -335,9 +326,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -355,7 +344,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -373,36 +362,24 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

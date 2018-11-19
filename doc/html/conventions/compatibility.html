@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="up" title="Conventions" href="index.html"/>
-        <link rel="next" title="Collocation result file" href="collocation_result.html"/>
-        <link rel="prev" title="HDF5/netCDF-4" href="hdf5.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="Collocation result file" href="collocation_result.html" />
+    <link rel="prev" title="HDF5/netCDF-4" href="hdf5.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -126,7 +116,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -134,9 +124,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -189,7 +180,7 @@ attributes either use the same definition as used for netCDF-CF or the attribute
 And vice versa, HARP allows (and ignores) attributes that are not HARP specific.</p>
 <p>For the naming convention of variables, in HARP these apply to the actual variable names.
 This is complementary to the naming convention for variables used in netCDF-CF which is performed by means of the
-<code class="docutils literal"><span class="pre">standard_name</span></code> variable attribute.</p>
+<code class="docutils literal notranslate"><span class="pre">standard_name</span></code> variable attribute.</p>
 <p>There are however a few differences between the conventions used in HARP and netCDF-CF. These are:</p>
 <blockquote>
 <div><ul class="simple">
@@ -197,22 +188,22 @@ This is complementary to the naming convention for variables used in netCDF-CF w
 netCDF-CF the recommendation (not a requirement) is to have the vertical dimension before latitude and longitude.</li>
 <li>In netCDF-CF a specific type of dimension can be used only once as dimension of a variable.
 This is not the case in HARP where a specific dimension may occur more than once.
-For instance, HARP allows you to use a <code class="docutils literal"><span class="pre">{vertical,vertical}</span></code> dimension for a vertical correlation matrix,
+For instance, HARP allows you to use a <code class="docutils literal notranslate"><span class="pre">{vertical,vertical}</span></code> dimension for a vertical correlation matrix,
 whereas in netCDF-CF the second vertical dimension needs to be a differently named dimension.</li>
-<li>Axis variables in HARP can generally be considered &#8216;auxiliary coordinate variables&#8217; (using netCDF-CF terminology)
-but rarely strict &#8216;coordinate variables&#8217;. Note that HARP does not require a pre-identification of axis variables;
+<li>Axis variables in HARP can generally be considered ‘auxiliary coordinate variables’ (using netCDF-CF terminology)
+but rarely strict ‘coordinate variables’. Note that HARP does not require a pre-identification of axis variables;
 none of the dimensions have a fixed axis variable associated with them (or require presence of an axis variable);
 different variables in a product can function as axis variable for a dimension dynamically, depending on the
 operation to be performed.</li>
 <li>Due to the way axis variables and dimensions are defined in HARP, HARP products do not meet the netCDF-CF
 requirement that any used dimension (with length greater than one) that is latitude, longitude, vertical, or time
-needs to have a &#8216;coordinate variable&#8217; (using same name and single dimension).</li>
-<li>HARP axis variables can be 2-dimensional (e.g. <code class="docutils literal"><span class="pre">{time,axis}</span></code>) to allow for e.g. a different altitude grid per
-time sample (where the actual <code class="docutils literal"><span class="pre">axis</span></code> length can also differ per time and will then contain fill values at the
-end to represent shorter lengths). NetCDF-CF supports this as &#8216;incomplete multidimensional array representation&#8217;
-of &#8216;auxiliary coordinate variables&#8217;. However, other multi-dimensional &#8216;auxiliary coordinate variable&#8217; cases in
+needs to have a ‘coordinate variable’ (using same name and single dimension).</li>
+<li>HARP axis variables can be 2-dimensional (e.g. <code class="docutils literal notranslate"><span class="pre">{time,axis}</span></code>) to allow for e.g. a different altitude grid per
+time sample (where the actual <code class="docutils literal notranslate"><span class="pre">axis</span></code> length can also differ per time and will then contain fill values at the
+end to represent shorter lengths). NetCDF-CF supports this as ‘incomplete multidimensional array representation’
+of ‘auxiliary coordinate variables’. However, other multi-dimensional ‘auxiliary coordinate variable’ cases in
 netCDF-CF generally do not have a HARP axis variable equivalent. For instance, for the 2-dimensional lat/lon
-coordinate variables case (using <code class="docutils literal"><span class="pre">lon(j,i)</span></code> and <code class="docutils literal"><span class="pre">lat(j,i)</span></code>) the coordinate variables would not be considered
+coordinate variables case (using <code class="docutils literal notranslate"><span class="pre">lon(j,i)</span></code> and <code class="docutils literal notranslate"><span class="pre">lat(j,i)</span></code>) the coordinate variables would not be considered
 axis variables by HARP.</li>
 </ul>
 </div></blockquote>
@@ -221,9 +212,7 @@ axis variables by HARP.</li>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -241,7 +230,7 @@ axis variables by HARP.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -259,36 +248,24 @@ axis variables by HARP.</li>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

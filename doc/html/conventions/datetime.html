@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="up" title="Conventions" href="index.html"/>
-        <link rel="next" title="File naming" href="filenames.html"/>
-        <link rel="prev" title="Categorical Variables" href="categorical_variables.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="File naming" href="filenames.html" />
+    <link rel="prev" title="Categorical Variables" href="categorical_variables.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -123,7 +113,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -131,9 +121,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -178,26 +169,24 @@
   <div class="section" id="datetime-values">
 <h1>Datetime values</h1>
 <p>Datetime values are always represented as a number of days or seconds since a reference time. This is also reflected
-by the <code class="docutils literal"><span class="pre">unit</span></code> attribute for datetime values (e.g. <code class="docutils literal"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">2000-01-01</span></code>). The reference time that is mentioned in
+by the <code class="docutils literal notranslate"><span class="pre">unit</span></code> attribute for datetime values (e.g. <code class="docutils literal notranslate"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">2000-01-01</span></code>). The reference time that is mentioned in
 these units should always use UTC as timezone (i.e none of the datetime values should reference a local time in HARP).</p>
 <p>In addition, HARP does not deal explicitly with leap seconds in its time calculations. Each day is just treated as
 having 24 * 60 * 60 = 86400 seconds (the udunits2 library, which HARP uses internally, has the same behaviour).
 In practice, datetime values should be chosen such that they end up being accurate with regard to the UTC epoch that
 they represent when using the 86400 seconds per day convention (and will introduce an error when calculating time
 differences between epochs if there were leap seconds introduced between those epochs). For instance when representing
-<code class="docutils literal"><span class="pre">2010-01-01T00:00:00</span></code> as an amount of seconds since 2000, then this is best represented with
-<code class="docutils literal"><span class="pre">315619200</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2000-01-01]</span></code> and not with <code class="docutils literal"><span class="pre">315619202</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2000-01-01]</span></code>.
+<code class="docutils literal notranslate"><span class="pre">2010-01-01T00:00:00</span></code> as an amount of seconds since 2000, then this is best represented with
+<code class="docutils literal notranslate"><span class="pre">315619200</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2000-01-01]</span></code> and not with <code class="docutils literal notranslate"><span class="pre">315619202</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2000-01-01]</span></code>.
 For cases where it is needed to be interoperable with software that can properly deal with leap seconds, the
 recommended approach is to use a reference epoch in the unit such that the represented value is not impacted by leap
 seconds. This can, for instance, be achieved by using the start of the day as reference epoch (i.e. represent
-<code class="docutils literal"><span class="pre">2001-02-03T04:05:06</span></code> as <code class="docutils literal"><span class="pre">14706</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2001-02-03]</span></code>).</p>
+<code class="docutils literal notranslate"><span class="pre">2001-02-03T04:05:06</span></code> as <code class="docutils literal notranslate"><span class="pre">14706</span> <span class="pre">[s</span> <span class="pre">since</span> <span class="pre">2001-02-03]</span></code>).</p>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -215,7 +204,7 @@ seconds. This can, for instance, be achieved by using the start of the day as re
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -233,36 +222,24 @@ seconds. This can, for instance, be achieved by using the start of the day as re
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

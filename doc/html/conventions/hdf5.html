@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="up" title="Conventions" href="index.html"/>
-        <link rel="next" title="Compatibility with other standards" href="compatibility.html"/>
-        <link rel="prev" title="HDF4" href="hdf4.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="Compatibility with other standards" href="compatibility.html" />
+    <link rel="prev" title="HDF4" href="hdf4.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -123,7 +113,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -131,9 +121,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -284,14 +275,14 @@ name as a shared dimension where the single dimension of the variable also match
 containing the values of the variable will be used as the dimension scale. Such a variable is called a
 <em>coordinate variable</em> in netCDF-4. If a variable has the same name as the dimension but the variable is not
 one-dimensional or the single dimension of the variable does not match the dimension then the variable will be stored
-with a <code class="docutils literal"><span class="pre">_nc4_non_coord_</span></code> name prefix in the HDF5 file (this is identical to how netCDF-4 deals with this case).
+with a <code class="docutils literal notranslate"><span class="pre">_nc4_non_coord_</span></code> name prefix in the HDF5 file (this is identical to how netCDF-4 deals with this case).
 For shared dimensions for which a variable with the same name does not exist, a stub dataset containing fill values is
-created and used as the dimension scale. The optional <code class="docutils literal"><span class="pre">NAME</span></code> attribute of the dimension scale is set to
-<code class="docutils literal"><span class="pre">This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">netCDF</span> <span class="pre">dimension</span> <span class="pre">but</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">netCDF</span> <span class="pre">variable.</span></code>, which causes the netCDF-4 library to hide the stub dataset
-from the user. For more information about the netCDF-4 format, see the <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf/docs/file_format_specifications.html#netcdf_4_spec">NetCDF User&#8217;s Guide</a>.</p>
+created and used as the dimension scale. The optional <code class="docutils literal notranslate"><span class="pre">NAME</span></code> attribute of the dimension scale is set to
+<code class="docutils literal notranslate"><span class="pre">This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">netCDF</span> <span class="pre">dimension</span> <span class="pre">but</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">netCDF</span> <span class="pre">variable.</span></code>, which causes the netCDF-4 library to hide the stub dataset
+from the user. For more information about the netCDF-4 format, see the <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf/docs/file_format_specifications.html#netcdf_4_spec">NetCDF User’s Guide</a>.</p>
 <p>The HDF5 file format conventions used by HARP are designed to be compatible with netCDF-4. Like netCDF-4, HARP uses
 dimension scales to represent shared dimensions. For independent dimensions, the same approach is used as for the
-netCDF-3 backend. For each unique dimension length <code class="docutils literal"><span class="pre">L</span></code>, a dimension scale named <code class="docutils literal"><span class="pre">independent_L</span></code> is created.</p>
+netCDF-3 backend. For each unique dimension length <code class="docutils literal notranslate"><span class="pre">L</span></code>, a dimension scale named <code class="docutils literal notranslate"><span class="pre">independent_L</span></code> is created.</p>
 <p>To summarize, HARP dimensions types are mapped to HDF5 dimension scales as follows:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -324,7 +315,7 @@ netCDF-3 backend. For each unique dimension length <code class="docutils literal
 </tr>
 </tbody>
 </table>
-<p>The <code class="docutils literal"><span class="pre">_nc3_strict</span></code> attribute is attached to the root group of the HDF5 file such that it will be interpreted using the
+<p>The <code class="docutils literal notranslate"><span class="pre">_nc3_strict</span></code> attribute is attached to the root group of the HDF5 file such that it will be interpreted using the
 netCDF classic data model by the netCDF-4 library. Enhanced features of netCDF-4 beyond the classic data model, such as
 groups and user-defined types, are not supported by HARP.</p>
 <p>HDF5 can represent strings in several ways. Both fixed and variable length strings are supported. The HDF5 backend
@@ -333,9 +324,9 @@ length of the longest string, or 1 if the length of the longest string is zero. 
 termination characters.</p>
 <p>HARP uses empty strings to represent the unit of dimensionless quantities (to distinguish them from non-quantities,
 which will lack a unit attribute). However, HDF5 cannot store string attributes with length zero. For this reason
-an empty unit string will be written as a <code class="docutils literal"><span class="pre">units</span></code> attribute with value <code class="docutils literal"><span class="pre">&quot;1&quot;</span></code> when writing data to HDF5.
-When reading from HDF5 a unit string value <code class="docutils literal"><span class="pre">&quot;1&quot;</span></code> will be converted back again to an empty unit string.</p>
-<p>Note that even though the <code class="docutils literal"><span class="pre">time</span></code> dimension is conceptually considered <cite>appendable</cite>, this dimension is not stored as an
+an empty unit string will be written as a <code class="docutils literal notranslate"><span class="pre">units</span></code> attribute with value <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code> when writing data to HDF5.
+When reading from HDF5 a unit string value <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code> will be converted back again to an empty unit string.</p>
+<p>Note that even though the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension is conceptually considered <cite>appendable</cite>, this dimension is not stored as an
 actual appendable dimension in HDF5. Products are read/written from/to files in full and are only modified in memory.
 The <cite>appendable</cite> aspect is only relevant for tools such as plotting routines that combine the data from a series of HARP
 products in order to provide plots/statistics for a whole dataset (and thus, where data from different files will have
@@ -344,9 +335,7 @@ to be concatenated).</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -364,7 +353,7 @@ to be concatenated).</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -382,36 +371,24 @@ to be concatenated).</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

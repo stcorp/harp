@@ -1,53 +1,51 @@
 /*
- * searchtools.js_t
+ * searchtools.js
  * ~~~~~~~~~~~~~~~~
  *
  * Sphinx JavaScript utilities for the full-text search.
  *
- * :copyright: Copyright 2007-2017 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2018 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
 
+if (!Scorer) {
+  /**
+   * Simple result scoring code.
+   */
+  var Scorer = {
+    // Implement the following function to further tweak the score for each result
+    // The function takes a result array [filename, title, anchor, descr, score]
+    // and returns the new score.
+    /*
+    score: function(result) {
+      return result[4];
+    },
+    */
 
+    // query matches the full name of an object
+    objNameMatch: 11,
+    // or matches in the last dotted part of the object name
+    objPartialMatch: 6,
+    // Additive scores depending on the priority of the object
+    objPrio: {0:  15,   // used to be importantResults
+              1:  5,   // used to be objectResults
+              2: -5},  // used to be unimportantResults
+    //  Used when the priority is not in the mapping.
+    objPrioDefault: 0,
 
-
-/**
- * Simple result scoring code.
- */
-var Scorer = {
-  // Implement the following function to further tweak the score for each result
-  // The function takes a result array [filename, title, anchor, descr, score]
-  // and returns the new score.
-  /*
-  score: function(result) {
-    return result[4];
-  },
-  */
-
-  // query matches the full name of an object
-  objNameMatch: 11,
-  // or matches in the last dotted part of the object name
-  objPartialMatch: 6,
-  // Additive scores depending on the priority of the object
-  objPrio: {0:  15,   // used to be importantResults
-            1:  5,   // used to be objectResults
-            2: -5},  // used to be unimportantResults
-  //  Used when the priority is not in the mapping.
-  objPrioDefault: 0,
-
-  // query found in title
-  title: 15,
-  // query found in terms
-  term: 5
-};
-
-
-
-function splitQuery(query) {
-    return query.split(/\s+/);
+    // query found in title
+    title: 15,
+    // query found in terms
+    term: 5
+  };
 }
 
+if (!splitQuery) {
+  function splitQuery(query) {
+    return query.split(/\s+/);
+  }
+}
 
 /**
  * Search Module
@@ -140,7 +138,7 @@ var Search = {
    */
   query : function(query) {
     var i;
-    var stopwords = ;
+    var stopwords = DOCUMENTATION_OPTIONS.SEARCH_LANGUAGE_STOP_WORDS;
 
     // stem the searchterms and add them to the correct list
     var stemmer = new Stemmer();
@@ -263,6 +261,9 @@ var Search = {
           });
         } else if (DOCUMENTATION_OPTIONS.HAS_SOURCE) {
           var suffix = DOCUMENTATION_OPTIONS.SOURCELINK_SUFFIX;
+          if (suffix === undefined) {
+            suffix = '.txt';
+          }
           $.ajax({url: DOCUMENTATION_OPTIONS.URL_ROOT + '_sources/' + item[5] + (item[5].slice(-suffix.length) === suffix ? '' : suffix),
                   dataType: "text",
                   complete: function(jqxhr, textstatus) {

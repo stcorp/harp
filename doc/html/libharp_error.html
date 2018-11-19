@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="index.html"/>
-        <link rel="up" title="C library" href="libharp.html"/>
-        <link rel="next" title="General" href="libharp_general.html"/>
-        <link rel="prev" title="Documentation" href="libharp_documentation.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="next" title="General" href="libharp_general.html" />
+    <link rel="prev" title="Documentation" href="libharp_documentation.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -121,7 +111,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">HARP</a>
@@ -129,9 +119,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -177,218 +168,218 @@
 <h1>Error</h1>
 <dl class="group">
 <dt>
-<span class="target" id="libharpgroup__harp__error"></span><em>group</em> <code class="descname">harp_error</code></dt>
-<dd><p>With a few exceptions almost all HARP functions return an integer that indicate whether the function was able to perform its operations successfully. The return value will be 0 on success and -1 otherwise. In case you get a -1 you can look at the global variable <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a> for a precise error code. Each error code and its meaning is described in this section. You will also be able to retrieve a character string with an error description via the <a class="reference internal" href="#libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span class="std std-ref">harp_errno_to_string()</span></a> function. This function will return either the default error message for the error code, or a custom error message. A custom error message will only be returned if the error code you pass to <a class="reference internal" href="#libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span class="std std-ref">harp_errno_to_string()</span></a> is equal to the last error that occurred and if this last error was set with a custom error message. The HARP error state can be set with the <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a> function.</p>
+<span class="target" id="group__harp__error"></span><em>group</em> <code class="descname">harp_error</code></dt>
+<dd><p>With a few exceptions almost all HARP functions return an integer that indicate whether the function was able to perform its operations successfully. The return value will be 0 on success and -1 otherwise. In case you get a -1 you can look at the global variable <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a> for a precise error code. Each error code and its meaning is described in this section. You will also be able to retrieve a character string with an error description via the <a class="reference internal" href="#group__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span class="std std-ref">harp_errno_to_string()</span></a> function. This function will return either the default error message for the error code, or a custom error message. A custom error message will only be returned if the error code you pass to <a class="reference internal" href="#group__harp__error_1ga5c71395e78e526d21c422a436c9253e2"><span class="std std-ref">harp_errno_to_string()</span></a> is equal to the last error that occurred and if this last error was set with a custom error message. The HARP error state can be set with the <a class="reference internal" href="#group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a> function.</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Error values</p>
 <dl class="macro">
 <dt id="c.HARP_SUCCESS">
-<span class="target" id="libharpgroup__harp__error_1ga68059cea92b0f401f970fe20e3e60760"></span><code class="descname">HARP_SUCCESS</code> (0)</dt>
+<span class="target" id="group__harp__error_1ga68059cea92b0f401f970fe20e3e60760"></span><code class="descname">HARP_SUCCESS</code></dt>
 <dd><p>Success (no error). </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_OUT_OF_MEMORY">
-<span class="target" id="libharpgroup__harp__error_1gafb2ed30a8c793905d1af7a9f113bf825"></span><code class="descname">HARP_ERROR_OUT_OF_MEMORY</code> (-1)</dt>
+<span class="target" id="group__harp__error_1gafb2ed30a8c793905d1af7a9f113bf825"></span><code class="descname">HARP_ERROR_OUT_OF_MEMORY</code></dt>
 <dd><p>Out of memory. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_HDF4">
-<span class="target" id="libharpgroup__harp__error_1ga30840307c6dc9e163e28a0477a592e32"></span><code class="descname">HARP_ERROR_HDF4</code> (-100)</dt>
+<span class="target" id="group__harp__error_1ga30840307c6dc9e163e28a0477a592e32"></span><code class="descname">HARP_ERROR_HDF4</code></dt>
 <dd><p>An error occurred in the HDF4 library. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_NO_HDF4_SUPPORT">
-<span class="target" id="libharpgroup__harp__error_1ga4f2eeb016cae99fbfb573b38973c2d88"></span><code class="descname">HARP_ERROR_NO_HDF4_SUPPORT</code> (-101)</dt>
+<span class="target" id="group__harp__error_1ga4f2eeb016cae99fbfb573b38973c2d88"></span><code class="descname">HARP_ERROR_NO_HDF4_SUPPORT</code></dt>
 <dd><p>No HDF4 support built into HARP. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_HDF5">
-<span class="target" id="libharpgroup__harp__error_1ga73446b8fb543e9dc469104af96b7b150"></span><code class="descname">HARP_ERROR_HDF5</code> (-102)</dt>
+<span class="target" id="group__harp__error_1ga73446b8fb543e9dc469104af96b7b150"></span><code class="descname">HARP_ERROR_HDF5</code></dt>
 <dd><p>An error occurred in the HDF5 library. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_NO_HDF5_SUPPORT">
-<span class="target" id="libharpgroup__harp__error_1ga1b576af480a680eb53d835d5e5704190"></span><code class="descname">HARP_ERROR_NO_HDF5_SUPPORT</code> (-103)</dt>
+<span class="target" id="group__harp__error_1ga1b576af480a680eb53d835d5e5704190"></span><code class="descname">HARP_ERROR_NO_HDF5_SUPPORT</code></dt>
 <dd><p>No HDF5 support built into HARP. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_NETCDF">
-<span class="target" id="libharpgroup__harp__error_1ga8e53473a3ebc01fa8baacb969f264a91"></span><code class="descname">HARP_ERROR_NETCDF</code> (-104)</dt>
+<span class="target" id="group__harp__error_1ga8e53473a3ebc01fa8baacb969f264a91"></span><code class="descname">HARP_ERROR_NETCDF</code></dt>
 <dd><p>An error occurred in the netCDF library. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_CODA">
-<span class="target" id="libharpgroup__harp__error_1ga74d08eca314d0b115b858a7e904f9e9a"></span><code class="descname">HARP_ERROR_CODA</code> (-105)</dt>
+<span class="target" id="group__harp__error_1ga74d08eca314d0b115b858a7e904f9e9a"></span><code class="descname">HARP_ERROR_CODA</code></dt>
 <dd><p>An error occurred in the CODA library. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_FILE_NOT_FOUND">
-<span class="target" id="libharpgroup__harp__error_1gab949a12a4d53f944ac775f62463d9f04"></span><code class="descname">HARP_ERROR_FILE_NOT_FOUND</code> (-200)</dt>
+<span class="target" id="group__harp__error_1gab949a12a4d53f944ac775f62463d9f04"></span><code class="descname">HARP_ERROR_FILE_NOT_FOUND</code></dt>
 <dd><p>File not found. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_FILE_OPEN">
-<span class="target" id="libharpgroup__harp__error_1gab79d1488679667e3431b865470d5210f"></span><code class="descname">HARP_ERROR_FILE_OPEN</code> (-201)</dt>
+<span class="target" id="group__harp__error_1gab79d1488679667e3431b865470d5210f"></span><code class="descname">HARP_ERROR_FILE_OPEN</code></dt>
 <dd><p>Could not open file. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_FILE_CLOSE">
-<span class="target" id="libharpgroup__harp__error_1ga4872da77fbeaed2ab636a63646a9ddbe"></span><code class="descname">HARP_ERROR_FILE_CLOSE</code> (-202)</dt>
+<span class="target" id="group__harp__error_1ga4872da77fbeaed2ab636a63646a9ddbe"></span><code class="descname">HARP_ERROR_FILE_CLOSE</code></dt>
 <dd><p>Could not close file. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_FILE_READ">
-<span class="target" id="libharpgroup__harp__error_1ga04fe3d66402eade8796f2709b32d1766"></span><code class="descname">HARP_ERROR_FILE_READ</code> (-203)</dt>
+<span class="target" id="group__harp__error_1ga04fe3d66402eade8796f2709b32d1766"></span><code class="descname">HARP_ERROR_FILE_READ</code></dt>
 <dd><p>Could not read data from file. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_FILE_WRITE">
-<span class="target" id="libharpgroup__harp__error_1gab2707a58bbffd9131805ff81fc92d391"></span><code class="descname">HARP_ERROR_FILE_WRITE</code> (-204)</dt>
+<span class="target" id="group__harp__error_1gab2707a58bbffd9131805ff81fc92d391"></span><code class="descname">HARP_ERROR_FILE_WRITE</code></dt>
 <dd><p>Could not write data to file. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_ARGUMENT">
-<span class="target" id="libharpgroup__harp__error_1gaeb49a79d8c6cb0d1573c4e97082378df"></span><code class="descname">HARP_ERROR_INVALID_ARGUMENT</code> (-300)</dt>
+<span class="target" id="group__harp__error_1gaeb49a79d8c6cb0d1573c4e97082378df"></span><code class="descname">HARP_ERROR_INVALID_ARGUMENT</code></dt>
 <dd><p>Invalid argument. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_INDEX">
-<span class="target" id="libharpgroup__harp__error_1ga4b5ecb3852927fd11ece84e559111cb5"></span><code class="descname">HARP_ERROR_INVALID_INDEX</code> (-301)</dt>
+<span class="target" id="group__harp__error_1ga4b5ecb3852927fd11ece84e559111cb5"></span><code class="descname">HARP_ERROR_INVALID_INDEX</code></dt>
 <dd><p>Invalid index argument. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_NAME">
-<span class="target" id="libharpgroup__harp__error_1ga2618a4af32fff0be062eb7027a5cdf59"></span><code class="descname">HARP_ERROR_INVALID_NAME</code> (-302)</dt>
+<span class="target" id="group__harp__error_1ga2618a4af32fff0be062eb7027a5cdf59"></span><code class="descname">HARP_ERROR_INVALID_NAME</code></dt>
 <dd><p>Invalid name argument. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_FORMAT">
-<span class="target" id="libharpgroup__harp__error_1gae5e46e4c93aabd1022ce70924e0f9e06"></span><code class="descname">HARP_ERROR_INVALID_FORMAT</code> (-303)</dt>
+<span class="target" id="group__harp__error_1gae5e46e4c93aabd1022ce70924e0f9e06"></span><code class="descname">HARP_ERROR_INVALID_FORMAT</code></dt>
 <dd><p>Invalid format in argument. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_DATETIME">
-<span class="target" id="libharpgroup__harp__error_1ga96c77d8247a5a78da088004b3e93b17e"></span><code class="descname">HARP_ERROR_INVALID_DATETIME</code> (-304)</dt>
+<span class="target" id="group__harp__error_1ga96c77d8247a5a78da088004b3e93b17e"></span><code class="descname">HARP_ERROR_INVALID_DATETIME</code></dt>
 <dd><p>Invalid date/time argument. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_TYPE">
-<span class="target" id="libharpgroup__harp__error_1ga635b4439f915292d6fb9aa8da1649a92"></span><code class="descname">HARP_ERROR_INVALID_TYPE</code> (-305)</dt>
+<span class="target" id="group__harp__error_1ga635b4439f915292d6fb9aa8da1649a92"></span><code class="descname">HARP_ERROR_INVALID_TYPE</code></dt>
 <dd><p>Invalid type. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_ARRAY_NUM_DIMS_MISMATCH">
-<span class="target" id="libharpgroup__harp__error_1ga3bd88e0fa224286d60c9d0bd05ce72fb"></span><code class="descname">HARP_ERROR_ARRAY_NUM_DIMS_MISMATCH</code> (-308)</dt>
+<span class="target" id="group__harp__error_1ga3bd88e0fa224286d60c9d0bd05ce72fb"></span><code class="descname">HARP_ERROR_ARRAY_NUM_DIMS_MISMATCH</code></dt>
 <dd><p>Incorrect number of dimensions argument. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_ARRAY_OUT_OF_BOUNDS">
-<span class="target" id="libharpgroup__harp__error_1gae9f0f1a1d949f975176e005c49d4cd63"></span><code class="descname">HARP_ERROR_ARRAY_OUT_OF_BOUNDS</code> (-309)</dt>
+<span class="target" id="group__harp__error_1gae9f0f1a1d949f975176e005c49d4cd63"></span><code class="descname">HARP_ERROR_ARRAY_OUT_OF_BOUNDS</code></dt>
 <dd><p>Array index out of bounds. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_VARIABLE_NOT_FOUND">
-<span class="target" id="libharpgroup__harp__error_1ga3d403606b57bb610c3bcbc9b9d1fb731"></span><code class="descname">HARP_ERROR_VARIABLE_NOT_FOUND</code> (-310)</dt>
+<span class="target" id="group__harp__error_1ga3d403606b57bb610c3bcbc9b9d1fb731"></span><code class="descname">HARP_ERROR_VARIABLE_NOT_FOUND</code></dt>
 <dd><p>Variable not found. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_UNIT_CONVERSION">
-<span class="target" id="libharpgroup__harp__error_1ga49b46323ded4794283df45f729a34c41"></span><code class="descname">HARP_ERROR_UNIT_CONVERSION</code> (-400)</dt>
+<span class="target" id="group__harp__error_1ga49b46323ded4794283df45f729a34c41"></span><code class="descname">HARP_ERROR_UNIT_CONVERSION</code></dt>
 <dd><p>An error occurred in the unit conversion. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_OPERATION">
-<span class="target" id="libharpgroup__harp__error_1gaa97b53dbf98865a692206124ecea77a9"></span><code class="descname">HARP_ERROR_OPERATION</code> (-500)</dt>
+<span class="target" id="group__harp__error_1gaa97b53dbf98865a692206124ecea77a9"></span><code class="descname">HARP_ERROR_OPERATION</code></dt>
 <dd><p>There was an error detected in the product operations. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_OPERATION_SYNTAX">
-<span class="target" id="libharpgroup__harp__error_1gac52997dcb8953d62295f207f7ed432ba"></span><code class="descname">HARP_ERROR_OPERATION_SYNTAX</code> (-501)</dt>
+<span class="target" id="group__harp__error_1gac52997dcb8953d62295f207f7ed432ba"></span><code class="descname">HARP_ERROR_OPERATION_SYNTAX</code></dt>
 <dd><p>There is a syntax error in the string defining the product operations. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_IMPORT">
-<span class="target" id="libharpgroup__harp__error_1gab1df5e2e4b0560e799e8fd309ccfcda8"></span><code class="descname">HARP_ERROR_IMPORT</code> (-600)</dt>
+<span class="target" id="group__harp__error_1gab1df5e2e4b0560e799e8fd309ccfcda8"></span><code class="descname">HARP_ERROR_IMPORT</code></dt>
 <dd><p>An error occurred during product import. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_EXPORT">
-<span class="target" id="libharpgroup__harp__error_1gafda54ca1cacf9d1ca9fbaa722925de11"></span><code class="descname">HARP_ERROR_EXPORT</code> (-601)</dt>
+<span class="target" id="group__harp__error_1gafda54ca1cacf9d1ca9fbaa722925de11"></span><code class="descname">HARP_ERROR_EXPORT</code></dt>
 <dd><p>An error occurred during product export. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INGESTION">
-<span class="target" id="libharpgroup__harp__error_1ga96dcea1746335f81175e76af798f7f7b"></span><code class="descname">HARP_ERROR_INGESTION</code> (-700)</dt>
+<span class="target" id="group__harp__error_1ga96dcea1746335f81175e76af798f7f7b"></span><code class="descname">HARP_ERROR_INGESTION</code></dt>
 <dd><p>There was an error in the ingestion of a data product. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INGESTION_OPTION_SYNTAX">
-<span class="target" id="libharpgroup__harp__error_1gad782800f47014699a4edc3fc836a86f6"></span><code class="descname">HARP_ERROR_INGESTION_OPTION_SYNTAX</code> (-701)</dt>
+<span class="target" id="group__harp__error_1gad782800f47014699a4edc3fc836a86f6"></span><code class="descname">HARP_ERROR_INGESTION_OPTION_SYNTAX</code></dt>
 <dd><p>There was a syntax error in the ingestion option. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_INGESTION_OPTION">
-<span class="target" id="libharpgroup__harp__error_1gaa5befae2c7cbbcd46a1acd51356d72f2"></span><code class="descname">HARP_ERROR_INVALID_INGESTION_OPTION</code> (-702)</dt>
+<span class="target" id="group__harp__error_1gaa5befae2c7cbbcd46a1acd51356d72f2"></span><code class="descname">HARP_ERROR_INVALID_INGESTION_OPTION</code></dt>
 <dd><p>The ingestion option is not valid for this ingestion. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_INVALID_INGESTION_OPTION_VALUE">
-<span class="target" id="libharpgroup__harp__error_1gaff7c069d932321c3c5efd7520283e9b8"></span><code class="descname">HARP_ERROR_INVALID_INGESTION_OPTION_VALUE</code> (-703)</dt>
+<span class="target" id="group__harp__error_1gaff7c069d932321c3c5efd7520283e9b8"></span><code class="descname">HARP_ERROR_INVALID_INGESTION_OPTION_VALUE</code></dt>
 <dd><p>The ingestion option has value that is not valid for this option. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_UNSUPPORTED_PRODUCT">
-<span class="target" id="libharpgroup__harp__error_1ga8f380f771cbe87129a96533c96927715"></span><code class="descname">HARP_ERROR_UNSUPPORTED_PRODUCT</code> (-800)</dt>
+<span class="target" id="group__harp__error_1ga8f380f771cbe87129a96533c96927715"></span><code class="descname">HARP_ERROR_UNSUPPORTED_PRODUCT</code></dt>
 <dd><p>The data product is not supported by the import or ingestion module. </p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.HARP_ERROR_NO_DATA">
-<span class="target" id="libharpgroup__harp__error_1ga6436bd225741cc991f393d1ee0f7247b"></span><code class="descname">HARP_ERROR_NO_DATA</code> (-900)</dt>
-<dd><p>The operation resulted in an &#8216;empty&#8217; product. </p>
+<span class="target" id="group__harp__error_1ga6436bd225741cc991f393d1ee0f7247b"></span><code class="descname">HARP_ERROR_NO_DATA</code></dt>
+<dd><p>The operation resulted in an ‘empty’ product. </p>
 </dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="_CPPv222harp_add_error_messagePKcz">
-<span id="harp_add_error_message__cCP.z"></span><span class="target" id="libharpgroup__harp__error_1gae96d94cb25a16e81133a7346c0a970bd"></span>void <code class="descname">harp_add_error_message</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>message</em>, ...<span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv322harp_add_error_messagePKcz">
+<span id="_CPPv222harp_add_error_messagePKcz"></span><span id="harp_add_error_message__cCP.z"></span><span class="target" id="group__harp__error_1gae96d94cb25a16e81133a7346c0a970bd"></span>void <code class="descname">harp_add_error_message</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>message</em>, ...<span class="sig-paren">)</span><br /></dt>
 <dd><p>Extend the current error message with additional information. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">message</span></code>: Error message using printf() format. </li>
+<li><code class="docutils literal notranslate"><span class="pre">message</span></code>: Error message using printf() format. </li>
 </ul>
 </dd>
 </dl>
@@ -396,13 +387,13 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv214harp_set_erroriPKcz">
-<span id="harp_set_error__i.cCP.z"></span><span class="target" id="libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"></span>void <code class="descname">harp_set_error</code><span class="sig-paren">(</span>int <em>err</em>, <em class="property">const</em> char *<em>message</em>, ...<span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv314harp_set_erroriPKcz">
+<span id="_CPPv214harp_set_erroriPKcz"></span><span id="harp_set_error__i.cCP.z"></span><span class="target" id="group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"></span>void <code class="descname">harp_set_error</code><span class="sig-paren">(</span>int <em>err</em>, <em class="property">const</em> char *<em>message</em>, ...<span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the error value and optionally set a custom error message. If <em>message</em> is NULL then the default error message for the error number will be used. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">err</span></code>: Value of <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </li>
-<li><code class="docutils literal"><span class="pre">message</span></code>: Optional error message using printf() format. </li>
+<li><code class="docutils literal notranslate"><span class="pre">err</span></code>: Value of <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </li>
+<li><code class="docutils literal notranslate"><span class="pre">message</span></code>: Optional error message using printf() format. </li>
 </ul>
 </dd>
 </dl>
@@ -410,14 +401,14 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv220harp_errno_to_stringi">
-<span id="harp_errno_to_string__i"></span><span class="target" id="libharpgroup__harp__error_1ga5c71395e78e526d21c422a436c9253e2"></span><em class="property">const</em> char *<code class="descname">harp_errno_to_string</code><span class="sig-paren">(</span>int <em>err</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Returns a string with the description of the HARP error. If <em>err</em> equals the current HARP error status then this function will return the error message that was last set using <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. If the error message argument to <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a> was NULL or if <em>err</em> does not equal the current HARP error status then the default error message for <em>err</em> will be returned. <dl class="docutils">
+<dt id="_CPPv320harp_errno_to_stringi">
+<span id="_CPPv220harp_errno_to_stringi"></span><span id="harp_errno_to_string__i"></span><span class="target" id="group__harp__error_1ga5c71395e78e526d21c422a436c9253e2"></span><em class="property">const</em> char *<code class="descname">harp_errno_to_string</code><span class="sig-paren">(</span>int <em>err</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Returns a string with the description of the HARP error. If <em>err</em> equals the current HARP error status then this function will return the error message that was last set using <a class="reference internal" href="#group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. If the error message argument to <a class="reference internal" href="#group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a> was NULL or if <em>err</em> does not equal the current HARP error status then the default error message for <em>err</em> will be returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>String with a description of the HARP error. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">err</span></code>: Value of <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </li>
+<li><code class="docutils literal notranslate"><span class="pre">err</span></code>: Value of <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </li>
 </ul>
 </dd>
 </dl>
@@ -425,14 +416,14 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv219harp_report_warningPKcz">
-<span id="harp_report_warning__cCP.z"></span><span class="target" id="libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"></span>int <code class="descname">harp_report_warning</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>message</em>, ...<span class="sig-paren">)</span><br /></dt>
-<dd><p>Report a warning message The warning message will be passed on to the current warning handler that was set by <a class="reference internal" href="#libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"><span class="std std-ref">harp_set_warning_handler()</span></a>. If no warning handler was set, then this function will do nothing (and return the value 0). The convention is for warning messages to start with a non-capital letter and not contain end-of-line characters. This is similar to the error messages that can be set with <a class="reference internal" href="#libharpgroup__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. Printing of line endings, if these are needed, should be performed by the warning handler. <dl class="docutils">
+<dt id="_CPPv319harp_report_warningPKcz">
+<span id="_CPPv219harp_report_warningPKcz"></span><span id="harp_report_warning__cCP.z"></span><span class="target" id="group__harp__error_1gaff834a64542a617684269b9512d957f4"></span>int <code class="descname">harp_report_warning</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>message</em>, ...<span class="sig-paren">)</span><br /></dt>
+<dd><p>Report a warning message The warning message will be passed on to the current warning handler that was set by <a class="reference internal" href="#group__harp__error_1ga88c982481989852993829a34cd310b7d"><span class="std std-ref">harp_set_warning_handler()</span></a>. If no warning handler was set, then this function will do nothing (and return the value 0). The convention is for warning messages to start with a non-capital letter and not contain end-of-line characters. This is similar to the error messages that can be set with <a class="reference internal" href="#group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. Printing of line endings, if these are needed, should be performed by the warning handler. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>Return code from the warning handler. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">message</span></code>: Warning message using printf() format. </li>
+<li><code class="docutils literal notranslate"><span class="pre">message</span></code>: Warning message using printf() format. </li>
 </ul>
 </dd>
 </dl>
@@ -440,18 +431,18 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv224harp_get_warning_handlerPPFiPKc7va_listE">
-<span class="target" id="libharpgroup__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span>int <code class="descname">harp_get_warning_handler</code><span class="sig-paren">(</span>int (**<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, va_list ap<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
+<dt id="_CPPv324harp_get_warning_handlerPPFiPKc7va_listE">
+<span id="_CPPv224harp_get_warning_handlerPPFiPKc7va_listE"></span><span class="target" id="group__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span>int <code class="descname">harp_get_warning_handler</code><span class="sig-paren">(</span>int (**<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, va_list ap<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get a reference to the current handler for warning messages If no warning handler was set, the NULL pointer will be returned. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Succes. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Succes. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">print</span></code>: Pointer to the variable in which the reference to the vprintf compatible function will be stored </li>
+<li><code class="docutils literal notranslate"><span class="pre">print</span></code>: Pointer to the variable in which the reference to the vprintf compatible function will be stored </li>
 </ul>
 </dd>
 </dl>
@@ -459,9 +450,9 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv224harp_set_warning_handlerPFiPKc7va_listE">
-<span class="target" id="libharpgroup__harp__error_1ga88c982481989852993829a34cd310b7d"></span>int <code class="descname">harp_set_warning_handler</code><span class="sig-paren">(</span>int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, va_list ap<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
-<dd><p>Set handler for warning messages The <em>print</em> function parameter should be a function that resembles vprintf(). The most common case is to provide a function that prints a &#8216;WARNING&#8217; prefix, prints the message, and adds a newline. For example: <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="nb">int</span> <span class="n">print_warning</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> <span class="n">va_list</span> <span class="n">ap</span><span class="p">)</span>
+<dt id="_CPPv324harp_set_warning_handlerPFiPKc7va_listE">
+<span id="_CPPv224harp_set_warning_handlerPFiPKc7va_listE"></span><span class="target" id="group__harp__error_1ga88c982481989852993829a34cd310b7d"></span>int <code class="descname">harp_set_warning_handler</code><span class="sig-paren">(</span>int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, va_list ap<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set handler for warning messages The <em>print</em> function parameter should be a function that resembles vprintf(). The most common case is to provide a function that prints a ‘WARNING’ prefix, prints the message, and adds a newline. For example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="nb">int</span> <span class="n">print_warning</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> <span class="n">va_list</span> <span class="n">ap</span><span class="p">)</span>
 <span class="p">{</span>
    <span class="nb">int</span> <span class="n">result</span><span class="p">;</span>
    <span class="n">printf</span><span class="p">(</span><span class="s2">&quot;WARNING: &quot;</span><span class="p">);</span>
@@ -472,16 +463,16 @@
 <span class="n">harp_set_warning_handler</span><span class="p">(</span><span class="n">print_warning</span><span class="p">);</span>
 </pre></div>
 </div>
- The handler function will get called whenever <a class="reference internal" href="#libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> is called (several functions inside the HARP library may call <a class="reference internal" href="#libharpgroup__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> to report on certain warning conditions). The warning handler can be set before a call to <a class="reference internal" href="libharp_general.html#libharpgroup__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is made. <dl class="docutils">
+ The handler function will get called whenever <a class="reference internal" href="#group__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> is called (several functions inside the HARP library may call <a class="reference internal" href="#group__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> to report on certain warning conditions). The warning handler can be set before a call to <a class="reference internal" href="libharp_general.html#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is made. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal"><span class="pre">0</span></code>, Succes. </li>
-<li><code class="docutils literal"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Succes. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">print</span></code>: Reference to a vprintf compatible function. </li>
+<li><code class="docutils literal notranslate"><span class="pre">print</span></code>: Reference to a vprintf compatible function. </li>
 </ul>
 </dd>
 </dl>
@@ -492,9 +483,9 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Variables</p>
 <dl class="member">
-<dt id="_CPPv210harp_errno">
-<span id="harp_errno__i"></span><span class="target" id="libharpgroup__harp__error_1gab2eeb46528306c6799632d1e800c4c36"></span>int <code class="descname">harp_errno</code><br /></dt>
-<dd><p>Variable that contains the error type. If no error has occurred the variable contains <a class="reference internal" href="#libharpgroup__harp__error_1ga68059cea92b0f401f970fe20e3e60760"><span class="std std-ref">HARP_SUCCESS</span></a> (0). </p>
+<dt id="_CPPv310harp_errno">
+<span id="_CPPv210harp_errno"></span><span id="harp_errno__i"></span><span class="target" id="group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"></span>int <code class="descname">harp_errno</code><br /></dt>
+<dd><p>Variable that contains the error type. If no error has occurred the variable contains <a class="reference internal" href="#group__harp__error_1ga68059cea92b0f401f970fe20e3e60760"><span class="std std-ref">HARP_SUCCESS</span></a> (0). </p>
 </dd></dl>
 
 </div>
@@ -504,9 +495,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -524,7 +513,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -542,36 +531,24 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

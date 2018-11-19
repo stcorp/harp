@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="next" title="C library" href="../libharp.html"/>
-        <link rel="prev" title="Operations" href="../operations.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="C library" href="../libharp.html" />
+    <link rel="prev" title="Operations" href="../operations.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -178,7 +169,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -186,9 +177,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -231,11 +223,11 @@
   <div class="section" id="ingestion-definitions">
 <h1>Ingestion definitions</h1>
 <p>HARP can ingest data from various types of products. The list of supported product types is provided below. HARP will try to automatically determine the product type of each file that you pass to the ingest function. An error will be raised if the product type of a file cannot be determined.</p>
-<p>For each ingestion, HARP will return a single HARP product. Each variable in a HARP product represents a specific quantity (e.g. O<sub>3</sub> number density, cloud fraction, altitude, longitude, latitude, time, <em>et cetera</em>). You can customize which variables you want to include using the <code class="docutils literal"><span class="pre">include()</span></code> and <code class="docutils literal"><span class="pre">exclude()</span></code> operations that can be passed to the ingest function.</p>
+<p>For each ingestion, HARP will return a single HARP product. Each variable in a HARP product represents a specific quantity (e.g. O<sub>3</sub> number density, cloud fraction, altitude, longitude, latitude, time, <em>et cetera</em>). You can customize which variables you want to include using the <code class="docutils literal notranslate"><span class="pre">include()</span></code> and <code class="docutils literal notranslate"><span class="pre">exclude()</span></code> operations that can be passed to the ingest function.</p>
 <p>Within a HARP product, dimensions of the same type (<em>time</em>, <em>latitude</em>, <em>longitude</em>, <em>vertical</em>, <em>spectral</em>) are linked together. This means that, within an ingested product, variables cannot have dimensions of the same type with different lengths.</p>
 <p>For each type of product that contains one or more quantities for which dimensions of the same type have different lengths, the ingestion will be split into multiple <em>conversions</em>. Each conversion only contains quantities for which the length of each type of dimension is the same. When multiple conversions exist for a product type, HARP will use the first conversion from the list of available conversions by default.</p>
 <p>For example, suppose a certain type of product contains both O<sub>3</sub> and NO<sub>2</sub> volume mixing ratios retrieved on different spatial grids. In this case, it is not possible to have a single pair of <em>longitude</em> and <em>latitude</em> variables that describes the geolocation information for both retrievals. Therefore, two different conversions will be made available for this product type, one for the O<sub>3</sub> volume mixing ratio, and another for the NO<sub>2</sub> volume mixing ratio.</p>
-<p>For each product type, <em>ingestion options</em> may be available. These options can be used, for example, to switch between different product conversions (usually when quantities defined on different grids are present within a single product), or to switch between different variants of a quantity. Ingestion options should be passed to the ingest function as a semi-colon separated string of <code class="docutils literal"><span class="pre">option_name=value</span></code> pairs. These options are unrelated to <em>operations</em> (filtering, inclusion and exclusion of variables, and adding derived variables). Ingestion options are only meaningful in the context of an ingestion, while operations can be applied both on-the-fly during ingestion, as well as to existing HARP products.</p>
+<p>For each product type, <em>ingestion options</em> may be available. These options can be used, for example, to switch between different product conversions (usually when quantities defined on different grids are present within a single product), or to switch between different variants of a quantity. Ingestion options should be passed to the ingest function as a semi-colon separated string of <code class="docutils literal notranslate"><span class="pre">option_name=value</span></code> pairs. These options are unrelated to <em>operations</em> (filtering, inclusion and exclusion of variables, and adding derived variables). Ingestion options are only meaningful in the context of an ingestion, while operations can be applied both on-the-fly during ingestion, as well as to existing HARP products.</p>
 <p>The list below gives an overview of the conversions and ingestion options available for each product type. For each conversion, there is a separate page that describes the resulting HARP product. This includes a list of all the variables, the value type, the dimensions, and the unit of each variable, as well as a full <em>mapping description</em> that details where and how HARP retrieved the data from the input product.</p>
 <div class="section" id="ace-products">
 <span id="ace"></span><h2>ACE products</h2>
@@ -295,7 +287,7 @@
 <div class="section" id="aeolus-l1b">
 <span id="id1"></span><h3>AEOLUS_L1B</h3>
 <p>AEOLUS Level 1B Wind Measurement Product</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">AEOLUS_L1B</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">AEOLUS_L1B</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -327,7 +319,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">AEOLUS_L1B</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">AEOLUS_L1B</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -351,7 +343,7 @@
 <div class="section" id="aeolus-l2a">
 <span id="id2"></span><h3>AEOLUS_L2A</h3>
 <p>AEOLUS Level 2A Optical Properties Product</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">AEOLUS_L2A</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">AEOLUS_L2A</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -375,7 +367,7 @@
 <div class="section" id="aeolus-l2b">
 <span id="id3"></span><h3>AEOLUS_L2B</h3>
 <p>AEOLUS Level 2B Product</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">AEOLUS_L2B</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">AEOLUS_L2B</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -399,7 +391,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">AEOLUS_L2B</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">AEOLUS_L2B</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -563,7 +555,7 @@
 <div class="section" id="esacci-cloud-l3c">
 <span id="id4"></span><h3>ESACCI_CLOUD_L3C</h3>
 <p>CCI L3C Cloud profile</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3C</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">ESACCI_CLOUD_L3C</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -583,7 +575,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3C</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">ESACCI_CLOUD_L3C</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -598,8 +590,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>corrected</td>
-<td>false, &#8221; (default)</td>
-<td>ingest the corrected or uncorrected data; option values are &#8216;false&#8217;, &#8216;&#8217; (default, we ingest the corrected data)</td>
+<td>false, ” (default)</td>
+<td>ingest the corrected or uncorrected data; option values are ‘false’, ‘’ (default, we ingest the corrected data)</td>
 </tr>
 </tbody>
 </table>
@@ -607,7 +599,7 @@
 <div class="section" id="esacci-cloud-l3u">
 <span id="id5"></span><h3>ESACCI_CLOUD_L3U</h3>
 <p>CCI L3U Cloud profile</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3U</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">ESACCI_CLOUD_L3U</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -627,7 +619,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">ESACCI_CLOUD_L3U</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">ESACCI_CLOUD_L3U</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -643,11 +635,11 @@
 <tbody valign="top">
 <tr class="row-even"><td>orbit</td>
 <td>ascending, descending</td>
-<td>the orbit of the L3 product to ingest; option values are &#8216;ascending&#8217;, &#8216;descending&#8217;</td>
+<td>the orbit of the L3 product to ingest; option values are ‘ascending’, ‘descending’</td>
 </tr>
 <tr class="row-odd"><td>corrected</td>
-<td>false, &#8221; (default)</td>
-<td>ingest the corrected or uncorrected data; option values are &#8216;false&#8217;, &#8216;&#8217; (default, we ingest the corrected data)</td>
+<td>false, ” (default)</td>
+<td>ingest the corrected or uncorrected data; option values are ‘false’, ‘’ (default, we ingest the corrected data)</td>
 </tr>
 </tbody>
 </table>
@@ -757,7 +749,7 @@
 <div class="section" id="geoms-te-ftir">
 <span id="id6"></span><h3>GEOMS-TE-FTIR</h3>
 <p>GEOMS template for FTIR</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-FTIR</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-FTIR</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -977,7 +969,7 @@
 <div class="section" id="geoms-te-lidar-h2o">
 <span id="id7"></span><h3>GEOMS-TE-LIDAR-H2O</h3>
 <p>GEOMS template for LIDAR water vapor (Raman)</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-H2O</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-LIDAR-H2O</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1005,7 +997,7 @@
 <div class="section" id="geoms-te-lidar-o3">
 <span id="id8"></span><h3>GEOMS-TE-LIDAR-O3</h3>
 <p>GEOMS template for LIDAR ozone</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-O3</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-LIDAR-O3</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1037,7 +1029,7 @@
 <div class="section" id="geoms-te-lidar-temperature">
 <span id="id9"></span><h3>GEOMS-TE-LIDAR-TEMPERATURE</h3>
 <p>GEOMS template for LIDAR temperature</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-LIDAR-TEMPERATURE</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-LIDAR-TEMPERATURE</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1069,7 +1061,7 @@
 <div class="section" id="geoms-te-mwr">
 <span id="id10"></span><h3>GEOMS-TE-MWR</h3>
 <p>GEOMS template for MWR</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-MWR</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-MWR</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1173,7 +1165,7 @@
 <div class="section" id="geoms-te-pandora-directsun-gas">
 <span id="id11"></span><h3>GEOMS-TE-PANDORA-DIRECTSUN-GAS</h3>
 <p>GEOMS template for Pandora UVVIS-DOAS direct sun measurements</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-PANDORA-DIRECTSUN-GAS</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-PANDORA-DIRECTSUN-GAS</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1201,7 +1193,7 @@
 <div class="section" id="geoms-te-uvvis-doas-directsun">
 <span id="id12"></span><h3>GEOMS-TE-UVVIS-DOAS-DIRECTSUN</h3>
 <p>GEOMS template for UVVIS-DOAS direct sun measurements</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-DIRECTSUN</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-UVVIS-DOAS-DIRECTSUN</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1377,7 +1369,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-DIRECTSUN</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-UVVIS-DOAS-DIRECTSUN</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -1401,7 +1393,7 @@
 <div class="section" id="geoms-te-uvvis-doas-offaxis">
 <span id="id13"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS</h3>
 <p>GEOMS template for UVVIS-DOAS off-axis gas measurements</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1537,7 +1529,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -1561,7 +1553,7 @@
 <div class="section" id="geoms-te-uvvis-doas-offaxis-aerosol">
 <span id="id14"></span><h3>GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</h3>
 <p>GEOMS template for UVVIS-DOAS off-axis aerosol measurements</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1593,7 +1585,7 @@
 <div class="section" id="geoms-te-uvvis-doas-zenith">
 <span id="id15"></span><h3>GEOMS-TE-UVVIS-DOAS-ZENITH</h3>
 <p>GEOMS template for UVVIS-DOAS zenith measurements</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-ZENITH</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-UVVIS-DOAS-ZENITH</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1729,7 +1721,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GEOMS-TE-UVVIS-DOAS-ZENITH</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-UVVIS-DOAS-ZENITH</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -1787,7 +1779,7 @@
 <div class="section" id="gome-l1-extracted">
 <span id="id16"></span><h3>GOME_L1_EXTRACTED</h3>
 <p>GOME Level 1 Extracted data</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1811,7 +1803,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GOME_L1_EXTRACTED</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -1827,7 +1819,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
 <td>band-1a, band-1b, band-2a, band-2b, band-3, band-4, blind-1a, straylight-1a, straylight-1b, straylight-2a</td>
-<td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;, &#8216;blind-1a&#8217;, &#8216;straylight-1a&#8217;, &#8216;straylight-1b&#8217;, &#8216;straylight-2a&#8217;); by default data from all bands is retrieved</td>
+<td>only include data from the specified band (‘band-1a’, ‘band-1b’, ‘band-2a’, ‘band-2b’, ‘band-3’, ‘band-4’, ‘blind-1a’, ‘straylight-1a’, ‘straylight-1b’, ‘straylight-2a’); by default data from all bands is retrieved</td>
 </tr>
 <tr class="row-odd"><td>data</td>
 <td>sun_reference</td>
@@ -1869,7 +1861,7 @@
 <div class="section" id="gome2-l1">
 <span id="id17"></span><h3>GOME2_L1</h3>
 <p>GOME2 Level 1 data</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOME2_L1</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GOME2_L1</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -1901,7 +1893,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOME2_L1</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GOME2_L1</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -1917,7 +1909,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
 <td>band-1a, band-1b, band-2a, band-2b, band-3, band-4</td>
-<td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;); by default data from all bands is retrieved</td>
+<td>only include data from the specified band (‘band-1a’, ‘band-1b’, ‘band-2a’, ‘band-2b’, ‘band-3’, ‘band-4’); by default data from all bands is retrieved</td>
 </tr>
 <tr class="row-odd"><td>data</td>
 <td>radiance, transmission, sun, moon, sun_reference</td>
@@ -1989,7 +1981,7 @@
 <div class="section" id="gosat-fts-l1b">
 <span id="id18"></span><h3>GOSAT_FTS_L1b</h3>
 <p>GOSAT FTS Level 1b radiance spectra</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">GOSAT_FTS_L1b</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">GOSAT_FTS_L1b</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -2033,7 +2025,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOSAT_FTS_L1b</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GOSAT_FTS_L1b</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -2329,7 +2321,7 @@
 <div class="section" id="npp-suomi-l2-crimss-edr-redr">
 <span id="id19"></span><h3>NPP_SUOMI_L2_CRIMSS_EDR_REDR</h3>
 <p>NPP Suomi CRIMSS EDR Atmospheric Vertical Profile</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">NPP_SUOMI_L2_CRIMSS_EDR_REDR</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">NPP_SUOMI_L2_CRIMSS_EDR_REDR</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -2357,7 +2349,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">NPP_SUOMI_L2_CRIMSS_EDR_REDR</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">NPP_SUOMI_L2_CRIMSS_EDR_REDR</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -2373,7 +2365,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>dataset</td>
 <td>h2o, temp, press</td>
-<td>the dataset of the L2 product to ingest; option values are &#8216;h2o&#8217; (h2o mass mixing ratio vs pressure, this is the default), &#8216;temp&#8217; (temperature vs pressure)&#8217;, &#8216;press&#8217; (pressure vs altitude)</td>
+<td>the dataset of the L2 product to ingest; option values are ‘h2o’ (h2o mass mixing ratio vs pressure, this is the default), ‘temp’ (temperature vs pressure)’, ‘press’ (pressure vs altitude)</td>
 </tr>
 </tbody>
 </table>
@@ -2619,7 +2611,7 @@
 <div class="section" id="sciamachy-l1c">
 <span id="id20"></span><h3>SCIAMACHY_L1c</h3>
 <p>SCIAMACHY Level 1c</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">SCIAMACHY_L1c</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">SCIAMACHY_L1c</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -2643,7 +2635,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">SCIAMACHY_L1c</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">SCIAMACHY_L1c</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -2667,7 +2659,7 @@
 <div class="section" id="sciamachy-l2">
 <span id="id21"></span><h3>SCIAMACHY_L2</h3>
 <p>SCIAMACHY Off-Line Level-2</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -2755,7 +2747,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">SCIAMACHY_L2</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -2771,7 +2763,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>dataset</td>
 <td>nad_uv0_o3, nad_uv1_no2, nad_uv3_bro, nad_uv4_h2co, nad_uv5_so2, nad_uv6_oclo, nad_uv7_so2, nad_uv8_h2o, nad_uv9_chocho, nad_ir0_h2o, nad_ir1_ch4, nad_ir2_n2o, nad_ir3_co, nad_ir4_co2, lim_uv0_o3, lim_uv1_no2, lim_uv3_bro, clouds_aerosol</td>
-<td>the dataset of the L2 product to ingest; each dataset is a combination of nadir/limb choice, retrieval window, and main quantity; option values are &#8216;nad_uv0_o3&#8217; (default), &#8216;nad_uv1_no2&#8217;, &#8216;nad_uv3_bro&#8217;,  &#8216;nad_uv4_h2co&#8217;, &#8216;nad_uv5_so2&#8217;, &#8216;nad_uv6_oclo&#8217;, &#8216;nad_uv7_so2&#8217;, &#8216;nad_uv8_h2o&#8217;, &#8216;nad_uv9_chocho&#8217;, &#8216;nad_ir0_h2o&#8217;, &#8216;nad_ir1_ch4&#8217;, &#8216;nad_ir2_n2o&#8217;, &#8216;nad_ir3_co&#8217;, &#8216;nad_ir4_co2&#8217;, &#8216;lim_uv0_o3&#8217;, &#8216;lim_uv1_no2&#8217;, &#8216;lim_uv3_bro&#8217;, &#8216;clouds_aerosol&#8217;</td>
+<td>the dataset of the L2 product to ingest; each dataset is a combination of nadir/limb choice, retrieval window, and main quantity; option values are ‘nad_uv0_o3’ (default), ‘nad_uv1_no2’, ‘nad_uv3_bro’,  ‘nad_uv4_h2co’, ‘nad_uv5_so2’, ‘nad_uv6_oclo’, ‘nad_uv7_so2’, ‘nad_uv8_h2o’, ‘nad_uv9_chocho’, ‘nad_ir0_h2o’, ‘nad_ir1_ch4’, ‘nad_ir2_n2o’, ‘nad_ir3_co’, ‘nad_ir4_co2’, ‘lim_uv0_o3’, ‘lim_uv1_no2’, ‘lim_uv3_bro’, ‘clouds_aerosol’</td>
 </tr>
 </tbody>
 </table>
@@ -2911,7 +2903,7 @@
 <div class="section" id="s5p-l1b-ir-sir">
 <span id="id22"></span><h3>S5P_L1B_IR_SIR</h3>
 <p>Sentinel-5P L1b SWIR irradiance spectra</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_SIR</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">S5P_L1B_IR_SIR</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -2935,7 +2927,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">S5P_L1B_IR_SIR</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L1B_IR_SIR</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -2959,7 +2951,7 @@
 <div class="section" id="s5p-l1b-ir-uvn">
 <span id="id23"></span><h3>S5P_L1B_IR_UVN</h3>
 <p>Sentinel-5P L1b UVN irradiance spectra</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L1B_IR_UVN</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">S5P_L1B_IR_UVN</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -2999,7 +2991,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">S5P_L1B_IR_UVN</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L1B_IR_UVN</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -3023,7 +3015,7 @@
 <div class="section" id="s5p-l2-cloud">
 <span id="id24"></span><h3>S5P_L2_CLOUD</h3>
 <p>Sentinel-5P L2 cloud properties</p>
-<p>The table below lists the available product conversions for <code class="docutils literal"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -3047,7 +3039,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L2_CLOUD</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -3063,7 +3055,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>model</td>
 <td>CAL, CRB</td>
-<td>whether to retrieve the cloud properties from the CAL model or the CRB model; option values are &#8216;CAL&#8217; (default) and &#8216;CRB&#8217;</td>
+<td>whether to retrieve the cloud properties from the CAL model or the CRB model; option values are ‘CAL’ (default) and ‘CRB’</td>
 </tr>
 </tbody>
 </table>
@@ -3189,9 +3181,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -3209,7 +3199,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -3227,36 +3217,24 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

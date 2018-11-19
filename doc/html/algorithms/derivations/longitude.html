@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../../index.html"/>
-        <link rel="up" title="Algorithms" href="../index.html"/>
-        <link rel="next" title="longitude bounds derivations" href="longitude_bounds.html"/>
-        <link rel="prev" title="latitude bounds derivations" href="latitude_bounds.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="next" title="longitude bounds derivations" href="longitude_bounds.html" />
+    <link rel="prev" title="latitude bounds derivations" href="latitude_bounds.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -165,7 +155,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">HARP</a>
@@ -173,9 +163,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -244,20 +235,20 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(\lambda\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\lambda\)</span></td>
 <td>longitude</td>
-<td><span class="math">\(degE\)</span></td>
+<td><span class="math notranslate nohighlight">\(degE\)</span></td>
 <td><cite>longitude {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\lambda^{B}(l)\)</span></td>
-<td>longitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
-<td><span class="math">\(degE\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\lambda^{B}(l)\)</span></td>
+<td>longitude boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(degE\)</span></td>
 <td><cite>longitude_bounds {:,2}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{longitude}</cite>, or <cite>{time,longitude}</cite>.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\lambda = \frac{\lambda^{B}(2) + \lambda^{B}(1)}{2}\]</div>
 </li>
 <li><p class="first">longitude from vertical profile latitudes</p>
@@ -276,17 +267,17 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(\lambda\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\lambda\)</span></td>
 <td>single longitude for the full profile</td>
-<td><span class="math">\(degE\)</span></td>
+<td><span class="math notranslate nohighlight">\(degE\)</span></td>
 <td><cite>longitude {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\lambda(i)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\lambda(i)\)</span></td>
 <td>longitude for each profile point</td>
-<td><span class="math">\(degE\)</span></td>
+<td><span class="math notranslate nohighlight">\(degE\)</span></td>
 <td><cite>longitude {:,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(N\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(N\)</span></td>
 <td>number of profile points</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -294,7 +285,7 @@
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \begin{eqnarray}
   N &amp; = &amp; max(i, \lambda(i) \neq NaN) \\
   \lambda &amp; = &amp; \lambda(N/2)
@@ -315,20 +306,20 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(\lambda\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\lambda\)</span></td>
 <td>longitude</td>
-<td><span class="math">\(degE\)</span></td>
+<td><span class="math notranslate nohighlight">\(degE\)</span></td>
 <td><cite>longitude {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\lambda_{instr}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\lambda_{instr}\)</span></td>
 <td>longitude of the sensor</td>
-<td><span class="math">\(degE\)</span></td>
+<td><span class="math notranslate nohighlight">\(degE\)</span></td>
 <td><cite>sensor_longitude {:}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\lambda = \lambda_{instr}\]</div>
 </li>
 </ol>
@@ -336,9 +327,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -356,7 +345,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -374,36 +363,24 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

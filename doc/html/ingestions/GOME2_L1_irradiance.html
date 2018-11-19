@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -104,7 +95,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -112,9 +103,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -158,7 +150,7 @@
 <h1>GOME2_L1_irradiance</h1>
 <div class="section" id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal"><span class="pre">GOME2_L1_irradiance</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">GOME2_L1_irradiance</span></code> data.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="25%" />
@@ -223,7 +215,7 @@
 </div>
 <div class="section" id="ingestion-options">
 <h2>Ingestion options</h2>
-<p>The table below lists the available ingestion options for <code class="docutils literal"><span class="pre">GOME2_L1</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GOME2_L1</span></code> products.</p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="15%" />
@@ -239,7 +231,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>band</td>
 <td>band-1a, band-1b, band-2a, band-2b, band-3, band-4</td>
-<td>only include data from the specified band (&#8216;band-1a&#8217;, &#8216;band-1b&#8217;, &#8216;band-2a&#8217;, &#8216;band-2b&#8217;, &#8216;band-3&#8217;, &#8216;band-4&#8217;); by default data from all bands is retrieved</td>
+<td>only include data from the specified band (‘band-1a’, ‘band-1b’, ‘band-2a’, ‘band-2b’, ‘band-3’, ‘band-4’); by default data from all bands is retrieved</td>
 </tr>
 <tr class="row-odd"><td>data</td>
 <td>radiance, transmission, sun, moon, sun_reference</td>
@@ -251,12 +243,12 @@
 </div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
-<p>The GOME2 spectral data in the GOME2 L1b product is stored inside MDRs. There are separate MDRs for Earthshine, Calibration, Sun, and Moon measurements. In addition there are also &#8216;Dummy Records&#8217; (DMDR) that can be present when there is lost data in the product. With HARP only Earthshine, Sun, and Moon measurements can be ingested.</p>
+<p>The GOME2 spectral data in the GOME2 L1b product is stored inside MDRs. There are separate MDRs for Earthshine, Calibration, Sun, and Moon measurements. In addition there are also ‘Dummy Records’ (DMDR) that can be present when there is lost data in the product. With HARP only Earthshine, Sun, and Moon measurements can be ingested.</p>
 <p>Each MDR roughly contains a single scan. However, an MDR does not exactly correspond 1-to-1 with a GOME-2 scan. This is an important fact to be aware of. The real situation is as follows:</p>
 <p>Within a single scan (a scan takes 6 seconds) there are 16 Instrument Source Packets (covering 375ms each) coming from the satellite. Each ISP contains at most two readouts (there are two if the integration time for a band is 187.5ms (or 93.75ms)). The problem is that the two readouts of the first ISP of a scan contain the last measurement of the previous scan and the first measurement of the new scan. The second ISP contains data for measurements #2 and #3, the third for #4 and #5, etc. The last measurement of a scan will again be found in the first ISP of the next scan. Instead of shifting the data and grouping all data of a single scan together in a single MDR the Level 1a and Level 1b processors just place the MDR boundary at the start of the first ISP of a scan and terminate the MDR at the end of ISP 16. This means that in Level 1b (but also 1a) products the first measurement in an MDR will always be the last measurement of the previous scan.</p>
-<p>Nearly all meta-data for a readout (time, geolocation, viewing/solar angles, etc.) in an MDR are filled taking into account this same shift. This means that for retrieving the geolocation of the first readout of an MDR from the GEO_EARTH_ACTUAL record, one will in fact get the geolocation information of the last backscan pixel of the previous scan. However, the integration time meta-data for the first readout in an MDR is not shifted this way (the GEO_EARTH information is also not shifted, by the way, and just contains the 32 geolocation pixels for the scan). As long as the integration time does not change from one scan to another this won&#8217;t impact anything, but the L1 products will contain invalid metadata for the first MDR readout if there is a change of integration time between two consecutive scans. In that case the calculated geolocation, angles, etc. of the first readout are values based on the integration time of the _new_ scan instead of the _old_ scan (e.g. the ground pixel will thus either be too large or too small). The (relative) good news to this is that, if a change in integration time occurs, the last pixel readout of the final scan with the &#8216;old&#8217; integration time will never be valid and will have undefined values in the product (this is because the instrument prematurely terminates the final readout if a scan configuration change occurs). This means that the readout that has the &#8216;invalid&#8217; meta-data will never be a valid measurement anyway.</p>
+<p>Nearly all meta-data for a readout (time, geolocation, viewing/solar angles, etc.) in an MDR are filled taking into account this same shift. This means that for retrieving the geolocation of the first readout of an MDR from the GEO_EARTH_ACTUAL record, one will in fact get the geolocation information of the last backscan pixel of the previous scan. However, the integration time meta-data for the first readout in an MDR is not shifted this way (the GEO_EARTH information is also not shifted, by the way, and just contains the 32 geolocation pixels for the scan). As long as the integration time does not change from one scan to another this won’t impact anything, but the L1 products will contain invalid metadata for the first MDR readout if there is a change of integration time between two consecutive scans. In that case the calculated geolocation, angles, etc. of the first readout are values based on the integration time of the _new_ scan instead of the _old_ scan (e.g. the ground pixel will thus either be too large or too small). The (relative) good news to this is that, if a change in integration time occurs, the last pixel readout of the final scan with the ‘old’ integration time will never be valid and will have undefined values in the product (this is because the instrument prematurely terminates the final readout if a scan configuration change occurs). This means that the readout that has the ‘invalid’ meta-data will never be a valid measurement anyway.</p>
 <p>Because of all this, HARP will exercise the following rules during ingestion:
-1) the first readout of the first MDR will always be ignored (and you will never see the last readout of the last scan, because it won&#8217;t be in the product)
+1) the first readout of the first MDR will always be ignored (and you will never see the last readout of the last scan, because it won’t be in the product)
 2) the first readout after a change in measurement mode (i.e. earthshine vs. calibration vs. sun vs. moon) will be ignored
 3) if a change in integration time occurs (for any of the bands) then the first readout (for all bands) of the next MDR will be ignored
 4) if two MDRs are not continuous (i.e. there is a time gap) then the first readout of the second MDR will be ignored</p>
@@ -351,9 +343,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -362,7 +352,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -380,36 +370,24 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

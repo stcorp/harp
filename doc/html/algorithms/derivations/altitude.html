@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../../index.html"/>
-        <link rel="up" title="Algorithms" href="../index.html"/>
-        <link rel="next" title="altitude bounds derivations" href="altitude_bounds.html"/>
-        <link rel="prev" title="aerosol optical depth derivations" href="aerosol_optical_depth.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="next" title="altitude bounds derivations" href="altitude_bounds.html" />
+    <link rel="prev" title="aerosol optical depth derivations" href="aerosol_optical_depth.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -165,7 +155,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">HARP</a>
@@ -173,9 +163,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -236,42 +227,42 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(g_{wgs84}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{wgs84}\)</span></td>
 <td>gravity at WGS84 ellipsoid</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math">\(R_{wgs84}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{wgs84}\)</span></td>
 <td>local earth curvature radius
 at WGS84 ellipsoid</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(z\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z\)</span></td>
 <td>altitude</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(z_{g}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{g}\)</span></td>
 <td>geopotential height</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>geopotential_height {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\phi\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
 <td>latitude</td>
-<td><span class="math">\(degN\)</span></td>
+<td><span class="math notranslate nohighlight">\(degN\)</span></td>
 <td><cite>latitude {:}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{time}</cite>, <cite>{time,vertical}</cite>, or no dimensions at all.</p>
 <p>This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \begin{eqnarray}
    g_{wgs84} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
@@ -295,20 +286,20 @@ at WGS84 ellipsoid</td>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(z\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z\)</span></td>
 <td>altitude</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(z^{B}(l)\)</span></td>
-<td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
-<td><span class="math">\(m\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z^{B}(l)\)</span></td>
+<td>altitude boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude_bounds {:,2}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, or <cite>{time,vertical}</cite>.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[z = \frac{z^{B}(2) + z^{B}(1)}{2}\]</div>
 </li>
 <li><p class="first">altitude from sensor altitude</p>
@@ -327,20 +318,20 @@ at WGS84 ellipsoid</td>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(z\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z\)</span></td>
 <td>altitude</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(z_{instr}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{instr}\)</span></td>
 <td>altitude of the sensor</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>sensor_altitude {:}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimensions at all.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[z = z_{instr}\]</div>
 </li>
 <li><p class="first">altitude from pressure</p>
@@ -359,97 +350,97 @@ at WGS84 ellipsoid</td>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(a\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(a\)</span></td>
 <td>WGS84 semi-major axis</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(b\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(b\)</span></td>
 <td>WGS84 semi-minor axis</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math">\(f\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(f\)</span></td>
 <td>WGS84 flattening</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(g\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
 <td>gravity</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(g_{surf}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
 <td>gravity at surface</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math">\(GM\)</span></td>
-<td>WGS84 earth&#8217;s gravitational
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(GM\)</span></td>
+<td>WGS84 earth’s gravitational
 constant</td>
-<td><span class="math">\(\frac{m^3}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m^3}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(M_{air}(i)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(M_{air}(i)\)</span></td>
 <td>molar mass of total air</td>
-<td><span class="math">\(\frac{g}{mol}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span></td>
 <td><cite>molar_mass {:,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(p(i)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(p(i)\)</span></td>
 <td>pressure</td>
-<td><span class="math">\(Pa\)</span></td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
 <td><cite>pressure {:,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(p_{surf}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(p_{surf}\)</span></td>
 <td>surface pressure</td>
-<td><span class="math">\(Pa\)</span></td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
 <td><cite>surface_pressure {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(R\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
 <td>universal gas constant</td>
-<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{kg m^2}{K mol s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(T(i)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(T(i)\)</span></td>
 <td>temperature</td>
-<td><span class="math">\(K\)</span></td>
+<td><span class="math notranslate nohighlight">\(K\)</span></td>
 <td><cite>temperature {:,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(z(i)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z(i)\)</span></td>
 <td>altitude</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude {:,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(z_{surf}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{surf}\)</span></td>
 <td>surface height</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>surface_altitude {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\phi\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
 <td>latitude</td>
-<td><span class="math">\(degN\)</span></td>
+<td><span class="math notranslate nohighlight">\(degN\)</span></td>
 <td><cite>latitude {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\omega\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\omega\)</span></td>
 <td>WGS84 earth angular velocity</td>
-<td><span class="math">\(rad/s\)</span></td>
+<td><span class="math notranslate nohighlight">\(rad/s\)</span></td>
 <td>&#160;</td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
-<p>The surface pressure <span class="math">\(p_{surf}\)</span> and surface height <span class="math">\(z_{surf}\)</span> need to use the same definition of &#8216;surface&#8217;.</p>
-<p>The pressures <span class="math">\(p(i)\)</span> are expected to be at higher levels than the surface pressure (i.e. lower values).
-This should normally be the case since even for pressure grids that start at the surface, <span class="math">\(p_{surf}\)</span> should
-equal the lower pressure boundary <span class="math">\(p^{B}(1,1)\)</span>, whereas <span class="math">\(p(1)\)</span> should then be between <span class="math">\(p^{B}(1,1)\)</span>
-and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <span class="math">\(p^{B}(1,1)\)</span>).</p>
-<div class="math">
+<p>The surface pressure <span class="math notranslate nohighlight">\(p_{surf}\)</span> and surface height <span class="math notranslate nohighlight">\(z_{surf}\)</span> need to use the same definition of ‘surface’.</p>
+<p>The pressures <span class="math notranslate nohighlight">\(p(i)\)</span> are expected to be at higher levels than the surface pressure (i.e. lower values).
+This should normally be the case since even for pressure grids that start at the surface, <span class="math notranslate nohighlight">\(p_{surf}\)</span> should
+equal the lower pressure boundary <span class="math notranslate nohighlight">\(p^{B}(1,1)\)</span>, whereas <span class="math notranslate nohighlight">\(p(1)\)</span> should then be between <span class="math notranslate nohighlight">\(p^{B}(1,1)\)</span>
+and <span class="math notranslate nohighlight">\(p^{B}(1,2)\)</span> (which is generally not equal to <span class="math notranslate nohighlight">\(p^{B}(1,1)\)</span>).</p>
+<div class="math notranslate nohighlight">
 \begin{eqnarray}
    g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
@@ -475,37 +466,37 @@ and <span class="math">\(p^{B}(1,2)\)</span> (which is generally not equal to <s
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(g_{wgs84}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{wgs84}\)</span></td>
 <td>gravity at WGS84 ellipsoid</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math">\(R_{wgs84}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{wgs84}\)</span></td>
 <td>local earth curvature radius
 at WGS84 ellipsoid</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(z_{surf}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{surf}\)</span></td>
 <td>surface altitude
 (relative to mean sea level)</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>surface_altitude {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(z_{g,surf}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></td>
 <td>surface geopotential height
 (relative to mean sea level)</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>surface_geopotential_height {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\phi\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
 <td>latitude</td>
-<td><span class="math">\(degN\)</span></td>
+<td><span class="math notranslate nohighlight">\(degN\)</span></td>
 <td><cite>latitude {:}</cite></td>
 </tr>
 </tbody>
@@ -513,7 +504,7 @@ at WGS84 ellipsoid</td>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
 <p>This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \begin{eqnarray}
    g_{wgs84} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
@@ -537,47 +528,45 @@ or no dimensions at all.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(p(i)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(p(i)\)</span></td>
 <td>pressure</td>
-<td><span class="math">\(Pa\)</span></td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
 <td><cite>pressure {:,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(T(i)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(T(i)\)</span></td>
 <td>temperature</td>
-<td><span class="math">\(K\)</span></td>
+<td><span class="math notranslate nohighlight">\(K\)</span></td>
 <td><cite>temperature {:,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(z(i)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z(i)\)</span></td>
 <td>altitude</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude {:,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(z_{TP}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{TP}\)</span></td>
 <td>tropopause altitude</td>
-<td><span class="math">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>tropopause_altitude {:}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
-<p>The tropopause altitude <span class="math">\(z_{TP}\)</span> equals the altitude <span class="math">\(z(i)\)</span> where <span class="math">\(i\)</span> is the minimum level that satisfies:</p>
-<div class="math">
+<p>The tropopause altitude <span class="math notranslate nohighlight">\(z_{TP}\)</span> equals the altitude <span class="math notranslate nohighlight">\(z(i)\)</span> where <span class="math notranslate nohighlight">\(i\)</span> is the minimum level that satisfies:</p>
+<div class="math notranslate nohighlight">
 \begin{eqnarray}
    &amp; 1 &lt; i &lt; N  &amp; \wedge \\
    &amp; 5000 &lt;= p(i) &lt;= 50000  &amp; \wedge \\
    &amp; \frac{T(i-1)-T(i)}{z(i)-z(i-1)} &gt; 0.002 \wedge \frac{T(i)-T(i+1)}{z(i+1)-z(i)} &lt;= 0.002 &amp; \wedge \\
    &amp; \forall_{j, i &lt; j &lt;= N \wedge z(j)-z(i) &lt;= 2000} \frac{T(i)-T(j)}{z(j)-z(i)} &lt;= 0.002 &amp;
-\end{eqnarray}</div><p>If no such <span class="math">\(i\)</span> can be found then <span class="math">\(z_{TP}\)</span> is set to <cite>NaN</cite>.</p>
+\end{eqnarray}</div><p>If no such <span class="math notranslate nohighlight">\(i\)</span> can be found then <span class="math notranslate nohighlight">\(z_{TP}\)</span> is set to <cite>NaN</cite>.</p>
 </li>
 </ol>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -595,7 +584,7 @@ or no dimensions at all.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -613,36 +602,24 @@ or no dimensions at all.</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="up" title="Conventions" href="index.html"/>
-        <link rel="next" title="Categorical Variables" href="categorical_variables.html"/>
-        <link rel="prev" title="Variables" href="variables.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="Categorical Variables" href="categorical_variables.html" />
+    <link rel="prev" title="Variables" href="variables.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -123,7 +113,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -131,9 +121,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -179,7 +170,7 @@
 <h1>Variable names</h1>
 <p>To allow HARP to perform automatic operations on variables, it imposes a strict naming convention for variables. This
 naming convention applies to the variable name itself and is therefore fully complementary to naming conventions that
-apply to the value of a variable attribute, such as <code class="docutils literal"><span class="pre">standard_name</span></code> (as specified by netCDF-CF).</p>
+apply to the value of a variable attribute, such as <code class="docutils literal notranslate"><span class="pre">standard_name</span></code> (as specified by netCDF-CF).</p>
 <p>Note that it is possible to use variables inside HARP products with names that do not follow the convention, but then
 these variables may not be handled correctly by operations that you perform on the product. The general rule is that if
 you have a quantity that can be represented by the naming convention below then you should use the HARP variable name
@@ -270,7 +261,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
-<td>this is equal to &#8216;aerosol optical thickness&#8217;</td>
+<td>this is equal to ‘aerosol optical thickness’</td>
 </tr>
 <tr class="row-odd"><td>aerosol_pressure</td>
 <td>&#160;</td>
@@ -343,7 +334,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
-<td>this is equal to &#8216;aerosol optical thickness&#8217;</td>
+<td>this is equal to ‘aerosol optical thickness’</td>
 </tr>
 <tr class="row-odd"><td>&lt;aerosol_type&gt;_aerosol_pressure</td>
 <td>&#160;</td>
@@ -479,7 +470,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is equal to &#8216;cloud optical thickness&#8217;</td>
+<td>this is equal to ‘cloud optical thickness’</td>
 </tr>
 <tr class="row-even"><td>cloud_pressure</td>
 <td>&#160;</td>
@@ -726,7 +717,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>hlos means &#8216;horizontal line of sight&#8217;</td>
+<td>hlos means ‘horizontal line of sight’</td>
 </tr>
 <tr class="row-odd"><td>index</td>
 <td>&#160;</td>
@@ -803,7 +794,7 @@ datetime values means replication of measured value in time dimension</td>
 <td>X</td>
 <td>&#160;</td>
 <td>this is the molar mass of the total substance (it is defined by the
-relation between the variables &#8216;density&#8217; and &#8216;number_density&#8217;)</td>
+relation between the variables ‘density’ and ‘number_density’)</td>
 </tr>
 <tr class="row-odd"><td>month</td>
 <td>&#160;</td>
@@ -812,7 +803,7 @@ relation between the variables &#8216;density&#8217; and &#8216;number_density&#
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
-<td>category variable for month of year (&#8216;January&#8217;, ..., &#8216;December&#8217;)</td>
+<td>category variable for month of year (‘January’, …, ‘December’)</td>
 </tr>
 <tr class="row-even"><td>number_density</td>
 <td>surface</td>
@@ -830,7 +821,7 @@ relation between the variables &#8216;density&#8217; and &#8216;number_density&#
 <td>X</td>
 <td>X</td>
 <td>X</td>
-<td>this is equal to &#8216;optical thickness&#8217;</td>
+<td>this is equal to ‘optical thickness’</td>
 </tr>
 <tr class="row-even"><td>orbit_index</td>
 <td>&#160;</td>
@@ -1468,7 +1459,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is equal to &#8216;number mixing ratio&#8217;</td>
+<td>this is equal to ‘number mixing ratio’</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_volume_mixing_ratio_dry_air</td>
 <td>surface</td>
@@ -1804,7 +1795,7 @@ H2O in liquid state</td>
 </table>
 <p>Variables for which a prefix and/or postfix is provided can have any of the given prefixes and/or any of the given
 postfixes (separated by underscores). It is not allowed to provide more than one prefix or more than one postfix.
-Variables having an &#8216;X&#8217; in the Quality column can have any of the following additional versions of the variable
+Variables having an ‘X’ in the Quality column can have any of the following additional versions of the variable
 (where <cite>&lt;variable&gt;</cite> can include any of the allowed prefix and/or postfix combinations):</p>
 <ul class="simple">
 <li>&lt;variable&gt;_covariance</li>
@@ -1813,60 +1804,58 @@ Variables having an &#8216;X&#8217; in the Quality column can have any of the fo
 <li>&lt;variable&gt;_uncertainty_systematic</li>
 <li>&lt;variable&gt;_validity</li>
 </ul>
-<p>Some examples of valid variable names are: <code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density</span></code>,
-<code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density_apriori</span></code>, <code class="docutils literal"><span class="pre">O3_column_number_density_apriori</span></code>,
-<code class="docutils literal"><span class="pre">tropospheric_O3_column_number_density_uncertainty</span></code>, <code class="docutils literal"><span class="pre">O3_column_number_density_apriori_uncertainty</span></code>.</p>
-<p>The <cite>Vert</cite>, <cite>Lat/Lon</cite>, and <cite>Spec</cite> columns indicate whether a variable can be dependent on the <code class="docutils literal"><span class="pre">vertical</span></code>,
-<code class="docutils literal"><span class="pre">latitude</span></code> &amp; <code class="docutils literal"><span class="pre">longitude</span></code>, and/or <code class="docutils literal"><span class="pre">spectral</span></code> dimensions (any variable can be dependent on the <code class="docutils literal"><span class="pre">time</span></code> dimension).</p>
-<p>The &#8216;surface&#8217; prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
-If a product just contains surface quantities then don&#8217;t use a &#8216;surface&#8217; prefix but just omit the vertical dimension and
-indicate the vertical level (i.e. location of the surface) using a &#8216;pressure&#8217;, &#8216;altitude&#8217;, and/or &#8216;geopotential_height&#8217; variable.</p>
+<p>Some examples of valid variable names are: <code class="docutils literal notranslate"><span class="pre">tropospheric_O3_column_number_density</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tropospheric_O3_column_number_density_apriori</span></code>, <code class="docutils literal notranslate"><span class="pre">O3_column_number_density_apriori</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tropospheric_O3_column_number_density_uncertainty</span></code>, <code class="docutils literal notranslate"><span class="pre">O3_column_number_density_apriori_uncertainty</span></code>.</p>
+<p>The <cite>Vert</cite>, <cite>Lat/Lon</cite>, and <cite>Spec</cite> columns indicate whether a variable can be dependent on the <code class="docutils literal notranslate"><span class="pre">vertical</span></code>,
+<code class="docutils literal notranslate"><span class="pre">latitude</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">spectral</span></code> dimensions (any variable can be dependent on the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension).</p>
+<p>The ‘surface’ prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
+If a product just contains surface quantities then don’t use a ‘surface’ prefix but just omit the vertical dimension and
+indicate the vertical level (i.e. location of the surface) using a ‘pressure’, ‘altitude’, and/or ‘geopotential_height’ variable.</p>
 <p>Surface wind velocity variables are actually near-surface wind velocities (usually at surface_altitude + 10m).</p>
 <p>All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing
 and the angle is increasing when moving Eastwards (i.e. clockwise).
 Wind direction follows the same rules as for azimuth angles (North = 0, East = 90 degrees),
 but the direction indicates where the wind is coming <em>from</em>.</p>
-<p>In addition to the conventions above there can also be variables that describe a &#8216;difference&#8217;.
+<p>In addition to the conventions above there can also be variables that describe a ‘difference’.
 These difference variables can only be used to describe differences of the same quantity between different datasets
-(&#8216;x&#8217; and &#8216;y&#8217;) and only for variables that have a unit.
-All difference variables in a single product should apply to the same datasets &#8216;x&#8217; and &#8216;y&#8217;
+(‘x’ and ‘y’) and only for variables that have a unit.
+All difference variables in a single product should apply to the same datasets ‘x’ and ‘y’
 (i.e. the difference variables should only reflect a single comparison of datasets;
-you should not combine one difference variable for &#8216;x-y&#8217; and another for &#8216;x-z&#8217; (even for different quantities)
+you should not combine one difference variable for ‘x-y’ and another for ‘x-z’ (even for different quantities)
 within the same product).
 A difference variable is indicated by a postfix.
-The &#8216;difference postfix&#8217; can come before a &#8216;quality postfix&#8217; if we are talking about the &#8216;quality of the difference&#8217;.
-If the &#8216;difference postfix&#8217; comes after a &#8216;quality postfix&#8217; then we are talking about the &#8216;difference of the quality quantity&#8217;.
+The ‘difference postfix’ can come before a ‘quality postfix’ if we are talking about the ‘quality of the difference’.
+If the ‘difference postfix’ comes after a ‘quality postfix’ then we are talking about the ‘difference of the quality quantity’.
 The supported differences are:</p>
 <ul class="simple">
-<li>&lt;variable&gt;_diff (<span class="math">\(x-y\)</span>)</li>
-<li>&lt;variable&gt;_diffrelx (<span class="math">\(\frac{x-y}{x}\)</span>)</li>
-<li>&lt;variable&gt;_diffrely (<span class="math">\(\frac{x-y}{y}\)</span>)</li>
-<li>&lt;variable&gt;_diffrelmin (<span class="math">\(\frac{x-y}{\min(x,y)}\)</span>)</li>
-<li>&lt;variable&gt;_diffrelmax (<span class="math">\(\frac{x-y}{\max(x,y)}\)</span>)</li>
-<li>&lt;variable&gt;_diffrelavg (<span class="math">\(\frac{2(x-y)}{x+y}\)</span>)</li>
-<li>&lt;variable&gt;_diffabs (<span class="math">\(|x-y|\)</span>)</li>
-<li>&lt;variable&gt;_diffabsrelx (<span class="math">\(\frac{|x-y|}{|x|}\)</span>)</li>
-<li>&lt;variable&gt;_diffabsrely (<span class="math">\(\frac{|x-y|}{|y|}\)</span>)</li>
-<li>&lt;variable&gt;_diffabsrelmin (<span class="math">\(\frac{|x-y|}{\min(|x|,|y|)}\)</span>)</li>
-<li>&lt;variable&gt;_diffabsrelmax (<span class="math">\(\frac{|x-y|}{\max(|x|,|y|)}\)</span>)</li>
-<li>&lt;variable&gt;_diffabsrelavg (<span class="math">\(\frac{2|x-y|}{|x+y|}\)</span>)</li>
+<li>&lt;variable&gt;_diff (<span class="math notranslate nohighlight">\(x-y\)</span>)</li>
+<li>&lt;variable&gt;_diffrelx (<span class="math notranslate nohighlight">\(\frac{x-y}{x}\)</span>)</li>
+<li>&lt;variable&gt;_diffrely (<span class="math notranslate nohighlight">\(\frac{x-y}{y}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmin (<span class="math notranslate nohighlight">\(\frac{x-y}{\min(x,y)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmax (<span class="math notranslate nohighlight">\(\frac{x-y}{\max(x,y)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelavg (<span class="math notranslate nohighlight">\(\frac{2(x-y)}{x+y}\)</span>)</li>
+<li>&lt;variable&gt;_diffabs (<span class="math notranslate nohighlight">\(|x-y|\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelx (<span class="math notranslate nohighlight">\(\frac{|x-y|}{|x|}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrely (<span class="math notranslate nohighlight">\(\frac{|x-y|}{|y|}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelmin (<span class="math notranslate nohighlight">\(\frac{|x-y|}{\min(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelmax (<span class="math notranslate nohighlight">\(\frac{|x-y|}{\max(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffabsrelavg (<span class="math notranslate nohighlight">\(\frac{2|x-y|}{|x+y|}\)</span>)</li>
 </ul>
-<p>The postfix &#8216;avk&#8217; is used for averaging kernels of atmospheric vertical profiles.
+<p>The postfix ‘avk’ is used for averaging kernels of atmospheric vertical profiles.
 An AVK that only depends once on the vertical dimension is a column averaging kernel,
 and an AVK that depends twice on the vertical dimension is a profile averaging kernel.
-The &#8216;amf&#8217; postfix is used for air mass factors.
-The &#8216;dfs&#8217; postfix is used for the &#8216;degree of freedom for signal&#8217; for vertical profiles which equals the trace or
+The ‘amf’ postfix is used for air mass factors.
+The ‘dfs’ postfix is used for the ‘degree of freedom for signal’ for vertical profiles which equals the trace or
 diagonal of the two-dimensional AVK and provides information on the vertical resolution and information content of
 profiles.
-The &#8216;sic&#8217; postfix is used for the &#8216;Shannon information content&#8217; for vertical profiles which can be derived from the
+The ‘sic’ postfix is used for the ‘Shannon information content’ for vertical profiles which can be derived from the
 two-dimensional AVK.</p>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1884,7 +1873,7 @@ two-dimensional AVK.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -1902,36 +1891,24 @@ two-dimensional AVK.</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="up" title="Algorithms" href="index.html"/>
-        <link rel="next" title="aerosol extinction coefficient derivations" href="derivations/aerosol_extinction_coefficient.html"/>
-        <link rel="prev" title="Common formula" href="formula.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="aerosol extinction coefficient derivations" href="derivations/aerosol_extinction_coefficient.html" />
+    <link rel="prev" title="Common formula" href="formula.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -165,7 +155,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -173,9 +163,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -221,7 +212,7 @@
 <h1>common derivations</h1>
 <ol class="arabic">
 <li><p class="first">time dependent from time independent variable:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\forall t: x(t,:) = x(:)\]</div>
 </li>
 <li><p class="first">total uncertainty from random and systematic uncertainty:</p>
@@ -240,27 +231,27 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(\mu_{x}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\mu_{x}\)</span></td>
 <td>total uncertainty for a variable x</td>
-<td>same as that of <span class="math">\(x\)</span></td>
+<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
 <td><cite>&lt;variable&gt;_uncertainty {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\mu^{r}_{x}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\mu^{r}_{x}\)</span></td>
 <td>uncertainty due to random effects
 for a variable x</td>
-<td>same as that of <span class="math">\(x\)</span></td>
+<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
 <td><cite>&lt;variable&gt;_uncertainty_random {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(\mu^{s}_{x}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\mu^{s}_{x}\)</span></td>
 <td>uncertainty due to systematic
 effects for a variable x</td>
-<td>same as that of <span class="math">\(x\)</span></td>
+<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
 <td><cite>&lt;variable&gt;_uncertainty_systematic {:}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the first dimensions can represent any combination of dimensions for which <cite>x {:}</cite> exists.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\mu_{x} = \sqrt{{\mu^{r}_{x}}^2 + {\mu^{s}_{x}}^2}\]</div>
 </li>
 <li><p class="first">total uncertainty from vertical covariance:</p>
@@ -279,20 +270,20 @@ effects for a variable x</td>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(S_{x}(i,j)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(S_{x}(i,j)\)</span></td>
 <td>covariance for a variable x</td>
-<td>square of that of <span class="math">\(x\)</span></td>
+<td>square of that of <span class="math notranslate nohighlight">\(x\)</span></td>
 <td><cite>&lt;variable&gt;_covariance {:,vertical,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\mu_{x}(i)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\mu_{x}(i)\)</span></td>
 <td>total uncertainty for a variable x</td>
-<td>same as that of <span class="math">\(x\)</span></td>
+<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
 <td><cite>&lt;variable&gt;_uncertainty {:,vertical}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent any combination of dimensions for which <cite>x {:,vertical}</cite> exists.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\forall i: \mu_{x}(i) = \sqrt{S(i,i)}\]</div>
 </li>
 </ol>
@@ -300,9 +291,7 @@ effects for a variable x</td>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -320,7 +309,7 @@ effects for a variable x</td>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -338,36 +327,24 @@ effects for a variable x</td>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

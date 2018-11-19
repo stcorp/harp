@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../../index.html"/>
-        <link rel="up" title="Algorithms" href="../index.html"/>
-        <link rel="next" title="partial pressure derivations" href="partial_pressure.html"/>
-        <link rel="prev" title="number density derivations" href="number_density.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="next" title="partial pressure derivations" href="partial_pressure.html" />
+    <link rel="prev" title="number density derivations" href="number_density.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -165,7 +155,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">HARP</a>
@@ -173,9 +163,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -236,28 +227,28 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(A^{c}_{x}(i,j)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(A^{c}_{x}(i,j)\)</span></td>
 <td>AVK for column number density profile for air
-component x (e.g. <span class="math">\(A^{c}_{O_{3}}(i,j)\)</span>)</td>
-<td><span class="math">\(\frac{molec/m^2}{molec/m^2}\)</span></td>
+component x (e.g. <span class="math notranslate nohighlight">\(A^{c}_{O_{3}}(i,j)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec/m^2}{molec/m^2}\)</span></td>
 <td><cite>&lt;species&gt;_column_number_density_avk {:,vertical,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(A^{n}_{x}(i,j)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(A^{n}_{x}(i,j)\)</span></td>
 <td>AVK for number density profile for air
-component x (e.g. <span class="math">\(A^{n}_{O_{3}}(i,j)\)</span>)</td>
-<td><span class="math">\(\frac{molec/m^3}{molec/m^3}\)</span></td>
+component x (e.g. <span class="math notranslate nohighlight">\(A^{n}_{O_{3}}(i,j)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec/m^3}{molec/m^3}\)</span></td>
 <td><cite>&lt;species&gt;_number_density_avk {:,vertical,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(z^{B}(i,l)\)</span></td>
-<td>altitude boundaries (<span class="math">\(l \in \{1,2\}\)</span>)</td>
-<td><span class="math">\(m\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z^{B}(i,l)\)</span></td>
+<td>altitude boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude_bounds {:,vertical,2}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\begin{split}A^{n}_{x}(i,j) = \begin{cases}
   z^{B}(i,1) \neq z^{B}(i,2), &amp; A^{c}_{x}(i,j) \frac{\lvert z^{B}(j,2) - z^{B}(j,1) \rvert}{\lvert z^{B}(i,2) - z^{B}(i,1) \rvert} \\
   z^{B}(i,1) = z^{B}(i,2), &amp; 0
@@ -279,28 +270,28 @@ or no dimensions at all.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(A^{n}_{x}(i,j)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(A^{n}_{x}(i,j)\)</span></td>
 <td>AVK for number density profile for air
-component x (e.g. <span class="math">\(A^{n}_{O_{3}}(i,j)\)</span>)</td>
-<td><span class="math">\(\frac{molec/m^3}{molec/m^3}\)</span></td>
+component x (e.g. <span class="math notranslate nohighlight">\(A^{n}_{O_{3}}(i,j)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec/m^3}{molec/m^3}\)</span></td>
 <td><cite>&lt;species&gt;_number_density_avk {:,vertical,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(A^{\nu}_{x}(i,j)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(A^{\nu}_{x}(i,j)\)</span></td>
 <td>AVK for volume mixing ratio profile for air
-component x (e.g. <span class="math">\(A^{\nu}_{O_{3}}(i,j)\)</span>)</td>
-<td><span class="math">\(\frac{ppv}{ppv}\)</span></td>
+component x (e.g. <span class="math notranslate nohighlight">\(A^{\nu}_{O_{3}}(i,j)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{ppv}{ppv}\)</span></td>
 <td><cite>&lt;species&gt;_volume_mixing_ratio_avk {:,vertical,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(n(i)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(n(i)\)</span></td>
 <td>number density profile of total air</td>
-<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^3}\)</span></td>
 <td><cite>number_density {:,vertical}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\begin{split}A^{n}_{x}(i,j) = \begin{cases}
   n(j) \neq 0, &amp; A^{\nu}_{x}(i,j) \frac{n(i)}{n(j)} \\
   n(j) = 0, &amp; 0
@@ -322,28 +313,28 @@ or no dimensions at all.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(A^{n}_{x}(i,j)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(A^{n}_{x}(i,j)\)</span></td>
 <td>AVK for number density profile for air
-component x (e.g. <span class="math">\(A^{n}_{O_{3}}(i,j)\)</span>)</td>
-<td><span class="math">\(\frac{molec/m^3}{molec/m^3}\)</span></td>
+component x (e.g. <span class="math notranslate nohighlight">\(A^{n}_{O_{3}}(i,j)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec/m^3}{molec/m^3}\)</span></td>
 <td><cite>&lt;species&gt;_number_density_avk {:,vertical,vertical}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(A^{\bar{\nu}}_{x}(i,j)\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(A^{\bar{\nu}}_{x}(i,j)\)</span></td>
 <td>AVK for volume mixing ratio profile for air
-component x (e.g. <span class="math">\(A^{\bar{\nu}}_{O_{3}}(i,j)\)</span>)</td>
-<td><span class="math">\(\frac{ppv}{ppv}\)</span></td>
+component x (e.g. <span class="math notranslate nohighlight">\(A^{\bar{\nu}}_{O_{3}}(i,j)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{ppv}{ppv}\)</span></td>
 <td><cite>&lt;species&gt;_volume_mixing_ratio_dry_air_avk {:,vertical,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(n_{dry_air}(i)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(n_{dry_air}(i)\)</span></td>
 <td>number density profile of dry air</td>
-<td><span class="math">\(\frac{molec}{m^3}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^3}\)</span></td>
 <td><cite>dry_air_number_density {:,vertical}</cite></td>
 </tr>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\begin{split}A^{n}_{x}(i,j) = \begin{cases}
   n_{dry_air}(j) \neq 0, &amp; A^{\bar{\nu}}_{x}(i,j) \frac{n_{dry_air}(i)}{n_{dry_air}(j)} \\
   n_{dry_air}(j) = 0, &amp; 0
@@ -354,9 +345,7 @@ or no dimensions at all.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -374,7 +363,7 @@ or no dimensions at all.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -392,36 +381,24 @@ or no dimensions at all.</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

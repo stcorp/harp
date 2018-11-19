@@ -10,32 +10,40 @@ get regenerated (all using the autotools build system):
 
 Run 'make doc' to regenerate the documentation.
 Current versions used for generating the documentation are:
-- Sphinx 1.5.5
-- sphinx-autobuild 0.6.0
-- sphinx-rtd-theme 0.2.4
-- breathe 4.6.0
-- doxygen 1.8.11
+- Sphinx 1.8.2
+- sphinx-autobuild 0.7.1
+- sphinx-rtd-theme 0.4.2
+- breathe 4.11.0
+- doxygen 1.8.14
 With the following versions for third party dependencies:
-- Babel 2.4.0
-- Jinja2 2.9.6
-- MarkupSafe 1.0
-- PyYAML 3.12
+- Babel 2.6.0
+- Jinja2 2.10
+- MarkupSafe 1.1.0
+- PyYAML 3.13
 - Pygments 2.2.0
-- alabaster 0.7.10
+- alabaster 0.7.12
 - argh 0.26.2
 - backports-abc 0.5
-- certifi 2017.01.23
-- docutils 0.13.1
-- imagesize 0.7.1
-- livereload 2.5.1
+- certifi 2018.10.15
+- chardet 3.0.4
+- docutils 0.14
+- futures 3.2.0
+- idna 2.7
+- imagesize 1.1.0
+- livereload 2.5.2
+- packaging 18.0
 - pathtools 0.1.2
 - port-for 0.3.1
-- pytz 2017.2
+- pyparsing 2.3.0
+- pytz 2018.7
 - singledispatch 3.4.0.3
-- six 1.10.0
+- six 1.11.0
 - snowballstemmer 1.2.1
-- tornado 4.4.3
-- watchdog 0.8.3
+- sphinxcontrib-websupport 1.1.0
+- tornado 5.1.1
+- typing 3.6.6
+- urllib3 1.24.1
+- watchdog 0.9.0
 
 Run 'make dist' to have config.h.cmake.in and harp.h.cmake.in updated to be
 in line with config.h.in and harp.h.in.

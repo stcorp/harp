@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="up" title="Algorithms" href="index.html"/>
-        <link rel="next" title="Common formula" href="formula.html"/>
-        <link rel="prev" title="Algorithms" href="index.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="Common formula" href="formula.html" />
+    <link rel="prev" title="Algorithms" href="index.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -117,7 +107,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -125,9 +115,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -177,12 +168,12 @@
 For instance, a density conversion can be the same algorithm for either <cite>density {}</cite>, <cite>density {time}</cite>,
 <cite>density {latitude,longitude}</cite>, <cite>density {time,vertical}</cite>, etc.
 The algorithm is just applied element-wise for each element in the dimensions that <cite>density</cite> depends on.
-Such leading dimensions that can be handled element-wise are captured by a &#8216;:&#8217; in the variable reference in the
+Such leading dimensions that can be handled element-wise are captured by a ‘:’ in the variable reference in the
 definitions below.
 Any dimensions that are significant for the conversion (for instance, the <cite>vertical</cite> dimension when integrating a
 vertical profile to a total column) will still be mentioned explicitly and will map to an index in the symbol used for
-the quantity (e.g. <span class="math">\(\nu(:,i)\)</span>). If an algorithm has variables with a &#8216;:&#8217; in the dimension specification then the
-algorithm will contain a description of which combination of dimensions are supported for &#8216;:&#8217;.</p>
+the quantity (e.g. <span class="math notranslate nohighlight">\(\nu(:,i)\)</span>). If an algorithm has variables with a ‘:’ in the dimension specification then the
+algorithm will contain a description of which combination of dimensions are supported for ‘:’.</p>
 </div>
 <div class="section" id="constants">
 <h2>Constants</h2>
@@ -201,83 +192,83 @@ algorithm will contain a description of which combination of dimensions are supp
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math">\(a\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(a\)</span></td>
 <td>WGS84 semi-major axis</td>
-<td><span class="math">\(m\)</span></td>
-<td><span class="math">\(6378137.0\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(6378137.0\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(b\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(b\)</span></td>
 <td>WGS84 semi-minor axis</td>
-<td><span class="math">\(m\)</span></td>
-<td><span class="math">\(6356752.314245\)</span></td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><span class="math notranslate nohighlight">\(6356752.314245\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(c\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(c\)</span></td>
 <td>speed of light</td>
-<td><span class="math">\(\frac{m}{s}\)</span></td>
-<td><span class="math">\(2.99792458\cdot10^{8}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s}\)</span></td>
+<td><span class="math notranslate nohighlight">\(2.99792458\cdot10^{8}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\frac{1}{f}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\frac{1}{f}\)</span></td>
 <td>WGS84 inverse flatting</td>
 <td>&#160;</td>
-<td><span class="math">\(298.257223563\)</span></td>
+<td><span class="math notranslate nohighlight">\(298.257223563\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(g_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td><span class="math">\(9.80665\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(9.80665\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(g_{e}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{e}\)</span></td>
 <td>earth gravity at equator</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td><span class="math">\(9.7803253359\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(9.7803253359\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(g_{p}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{p}\)</span></td>
 <td>earth gravity at poles</td>
-<td><span class="math">\(\frac{m}{s^2}\)</span></td>
-<td><span class="math">\(9.8321849378\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(9.8321849378\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(GM\)</span></td>
-<td>WGS84 earth&#8217;s gravitational
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(GM\)</span></td>
+<td>WGS84 earth’s gravitational
 constant</td>
-<td><span class="math">\(\frac{m^3}{s^2}\)</span></td>
-<td><span class="math">\(3986004.418\cdot10^{8}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{m^3}{s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(3986004.418\cdot10^{8}\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(k\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(k\)</span></td>
 <td>Boltzmann constant</td>
-<td><span class="math">\(\frac{kg m^2}{K s^2}\)</span></td>
-<td><span class="math">\(1.38064852\cdot10^{-23}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{kg m^2}{K s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(1.38064852\cdot10^{-23}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(N_A\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(N_A\)</span></td>
 <td>Avogadro constant</td>
-<td><span class="math">\(\frac{1}{mol}\)</span></td>
-<td><span class="math">\(6.022140857\cdot10^{23}\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{1}{mol}\)</span></td>
+<td><span class="math notranslate nohighlight">\(6.022140857\cdot10^{23}\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(p_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(p_{0}\)</span></td>
 <td>standard pressure</td>
-<td><span class="math">\(Pa\)</span></td>
-<td><span class="math">\(101325\)</span></td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
+<td><span class="math notranslate nohighlight">\(101325\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(R\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(R\)</span></td>
 <td>universal gas constant</td>
-<td><span class="math">\(\frac{kg m^2}{K mol s^2}\)</span></td>
-<td><span class="math">\(8.3144598\)</span></td>
+<td><span class="math notranslate nohighlight">\(\frac{kg m^2}{K mol s^2}\)</span></td>
+<td><span class="math notranslate nohighlight">\(8.3144598\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math">\(T_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(T_{0}\)</span></td>
 <td>standard temperature</td>
-<td><span class="math">\(K\)</span></td>
-<td><span class="math">\(273.15\)</span></td>
+<td><span class="math notranslate nohighlight">\(K\)</span></td>
+<td><span class="math notranslate nohighlight">\(273.15\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math">\(\omega\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\omega\)</span></td>
 <td>WGS84 earth angular velocity</td>
-<td><span class="math">\(rad/s\)</span></td>
-<td><span class="math">\(7292115.0\cdot10^{-11}\)</span></td>
+<td><span class="math notranslate nohighlight">\(rad/s\)</span></td>
+<td><span class="math notranslate nohighlight">\(7292115.0\cdot10^{-11}\)</span></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="molar-mass">
 <h2>Molar mass</h2>
-<p>The following table provides for each species the molar mass <span class="math">\(M_{x}\)</span> in <span class="math">\(\frac{g}{mol}\)</span>.</p>
+<p>The following table provides for each species the molar mass <span class="math notranslate nohighlight">\(M_{x}\)</span> in <span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span>.</p>
 <p>See the documentation on the HARP data format for a description of all species.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -477,9 +468,7 @@ constant</td>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -497,7 +486,7 @@ constant</td>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -515,36 +504,24 @@ constant</td>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

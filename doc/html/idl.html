@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="index.html"/>
-        <link rel="next" title="MATLAB interface" href="matlab.html"/>
-        <link rel="prev" title="Variable" href="libharp_variable.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="next" title="MATLAB interface" href="matlab.html" />
+    <link rel="prev" title="Variable" href="libharp_variable.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -113,7 +104,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">HARP</a>
@@ -121,9 +112,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -167,7 +159,7 @@
 <h1>IDL interface</h1>
 <p>The Interactive Data Language (IDL) interface consists of a Dynamic Loadable
 Module (DLM) that provides the <cite>harp_import</cite>, <cite>harp_export</cite>, <cite>harp_version</cite>,
-and &#8216;harp_unload&#8217; functions.</p>
+and ‘harp_unload’ functions.</p>
 <p>Products are represented in IDL as structures which can be manipulated freely
 from within IDL. A product structure contains a field for each variable
 contained in the product and contains the global attributes <cite>source_product</cite>
@@ -240,11 +232,11 @@ Note also that this holds for the <cite>valid_min</cite> and <cite>valid_max</ci
 <div class="section" id="unicode">
 <h2>Unicode</h2>
 <p>Zero-terminated C strings received from the HARP C library are always converted
-to instances of type <code class="docutils literal"><span class="pre">string</span></code> in IDL which are unicode strings.</p>
+to instances of type <code class="docutils literal notranslate"><span class="pre">string</span></code> in IDL which are unicode strings.</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
-<div class="highlight-IDL"><div class="highlight"><pre><span></span><span class="c c-Singleline">; Import a file as a HARP product.</span>
+<div class="highlight-IDL notranslate"><div class="highlight"><pre><span></span><span class="c c-Singleline">; Import a file as a HARP product.</span>
 prod <span class="o">=</span> harp_import(<span class="s2">&quot;filename.ext&quot;</span>)
 
 <span class="c c-Singleline">; Print information about the product.</span>
@@ -292,10 +284,10 @@ will be returned.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the product to ingest</li>
-<li><strong>operations</strong> (<em>str</em>) &#8211; Actions to apply as part of the import; should be
+<li><strong>filename</strong> (<em>str</em>) – Filename of the product to ingest</li>
+<li><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the import; should be
 specified as a semi-colon separated string of operations.</li>
-<li><strong>options</strong> (<em>str</em>) &#8211; Ingestion module specific options; should be specified as
+<li><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
 a semi-colon separated string of key=value pairs; only
 used if the file is not in HARP format.</li>
 </ul>
@@ -317,10 +309,10 @@ used if the file is not in HARP format.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>product</strong> (<em>str</em>) &#8211; Product to export.</li>
-<li><strong>filename</strong> (<em>str</em>) &#8211; Filename of the exported product.</li>
-<li><strong>file_format</strong> (<em>str</em>) &#8211; File format to use; one of &#8216;netcdf&#8217;, &#8216;hdf4&#8217;, or
-&#8216;hdf5&#8217;. If no format is specified, netcdf is used.</li>
+<li><strong>product</strong> (<em>str</em>) – Product to export.</li>
+<li><strong>filename</strong> (<em>str</em>) – Filename of the exported product.</li>
+<li><strong>file_format</strong> (<em>str</em>) – File format to use; one of ‘netcdf’, ‘hdf4’, or
+‘hdf5’. If no format is specified, netcdf is used.</li>
 </ul>
 </td>
 </tr>
@@ -335,7 +327,7 @@ used if the file is not in HARP format.</li>
 <dt id="harp_version">
 <code class="descname">harp_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>The harp_version function returns a string containing the current version
-number of HARP. The version number is always of the format &#8216;x.y.z&#8217;, i.e.,
+number of HARP. The version number is always of the format ‘x.y.z’, i.e.,
 major, minor, and revision numbers, separated by dots.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -364,9 +356,7 @@ the HARP C Library again.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -384,7 +374,7 @@ the HARP C Library again.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -402,36 +392,24 @@ the HARP C Library again.</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

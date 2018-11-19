@@ -24,29 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-    <link rel="top" title="HARP 1.4 documentation" href="../index.html"/>
-        <link rel="up" title="Conventions" href="index.html"/>
-        <link rel="next" title="Variables" href="variables.html"/>
-        <link rel="prev" title="Global attributes" href="global_attributes.html"/> 
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="Variables" href="variables.html" />
+    <link rel="prev" title="Global attributes" href="global_attributes.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -123,7 +113,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
@@ -131,9 +121,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -178,46 +169,44 @@
   <div class="section" id="variable-attributes">
 <h1>Variable attributes</h1>
 <dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">description</span></code> string (optional)</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">description</span></code> string (optional)</dt>
 <dd>This attribute provides a human readable description of the content of the variable. It should make clear what the
 source of the data was (e.g. measured, climatology, derived, etcetera).</dd>
-<dt><code class="docutils literal"><span class="pre">dims</span></code> string (optional)</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">dims</span></code> string (optional)</dt>
 <dd>This attribute is only applicable for <a class="reference internal" href="hdf4.html"><span class="doc">HDF4</span></a> files (<a class="reference internal" href="netcdf3.html"><span class="doc">netCDF-3</span></a> uses named dimensions and
 <a class="reference internal" href="hdf5.html"><span class="doc">HDF5</span></a> uses dimension scales).
 This attribute stores the type of each dimension of the associated variable as a comma-separated list of
 dimension type names. The number of dimension types should equal the number of dimensions of the variable.</dd>
-<dt><code class="docutils literal"><span class="pre">units</span></code> string (optional)</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">units</span></code> string (optional)</dt>
 <dd>This attribute is used for data that has a physical unit. It should provide the unit in a form compatible with the
-<code class="docutils literal"><span class="pre">udunits2</span></code> software. A <code class="docutils literal"><span class="pre">units</span></code> attribute is expected to be available for any variable defining a quantity.
-If a variable represents a dimensionless quantity the <code class="docutils literal"><span class="pre">units</span></code> string should be an empty string (or have the value
-<code class="docutils literal"><span class="pre">1</span></code> in case empty strings are not supported).</dd>
-<dt><code class="docutils literal"><span class="pre">valid_min</span></code> [int8, int16, int32, float, double] (optional)</dt>
+<code class="docutils literal notranslate"><span class="pre">udunits2</span></code> software. A <code class="docutils literal notranslate"><span class="pre">units</span></code> attribute is expected to be available for any variable defining a quantity.
+If a variable represents a dimensionless quantity the <code class="docutils literal notranslate"><span class="pre">units</span></code> string should be an empty string (or have the value
+<code class="docutils literal notranslate"><span class="pre">1</span></code> in case empty strings are not supported).</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">valid_min</span></code> [int8, int16, int32, float, double] (optional)</dt>
 <dd>Provides the minimum value below which the data is to be considered invalid. The data type of this attribute should
 match the data type of the associated variable. This attribute is <em>not</em> allowed to be present for variables of type
 <em>string</em>. For variables of numeric type, this attribute should only be present if the variable actually contains
 values below this threshold that are to be interpreted as <cite>missing</cite> or <cite>invalid</cite> values.</dd>
-<dt><code class="docutils literal"><span class="pre">valid_max</span></code> [int8, int16, int32, float, double] (optional)</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">valid_max</span></code> [int8, int16, int32, float, double] (optional)</dt>
 <dd>Provides the maximum value above which the data is to be considered invalid. The data type of this attribute should
 match the data type of the associated variable. This attribute is <em>not</em> allowed to be present for variables of type
 <em>string</em>. For variables of numeric type, this attribute should only be present if the variable actually contains
 values above this threshold that are to be interpreted as <cite>missing</cite> or <cite>invalid</cite> values.</dd>
-<dt><code class="docutils literal"><span class="pre">enum_name</span></code>/<code class="docutils literal"><span class="pre">flag_meanings</span></code> [string] (optional)</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">enum_name</span></code>/<code class="docutils literal notranslate"><span class="pre">flag_meanings</span></code> [string] (optional)</dt>
 <dd>Provides the list of string values of the enumeration labels of a categorical variable. For the in-memory
-representation (C, Python, etc.) this attribute is called <code class="docutils literal"><span class="pre">enum_name</span></code> and consists of a list of strings.
+representation (C, Python, etc.) this attribute is called <code class="docutils literal notranslate"><span class="pre">enum_name</span></code> and consists of a list of strings.
 Within a <a class="reference internal" href="netcdf3.html"><span class="doc">netCDF-3</span></a>, <a class="reference internal" href="hdf4.html"><span class="doc">HDF4</span></a>, or <a class="reference internal" href="hdf5.html"><span class="doc">HDF5</span></a> file this attribute is stored as a
-single string attribute named <code class="docutils literal"><span class="pre">flag_meanings</span></code> which contains a space separated list of the label names.</dd>
+single string attribute named <code class="docutils literal notranslate"><span class="pre">flag_meanings</span></code> which contains a space separated list of the label names.</dd>
 </dl>
-<p>Note that <code class="docutils literal"><span class="pre">_FillValue</span></code> is not used by HARP. Whether a value is valid is purely determined by the <code class="docutils literal"><span class="pre">valid_min</span></code> and
-<code class="docutils literal"><span class="pre">valid_max</span></code> attributes.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code> is not used by HARP. Whether a value is valid is purely determined by the <code class="docutils literal notranslate"><span class="pre">valid_min</span></code> and
+<code class="docutils literal notranslate"><span class="pre">valid_max</span></code> attributes.</p>
 <p>Note that files using the HARP data format can include variable attributes in addition to the ones mentioned above
-(such as e.g. a <code class="docutils literal"><span class="pre">_FillValue</span></code> attribute). However, such attributes will be ignored when the product is imported.</p>
+(such as e.g. a <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code> attribute). However, such attributes will be ignored when the product is imported.</p>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -235,7 +224,7 @@ single string attribute named <code class="docutils literal"><span class="pre">f
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2018 S&amp;T, The Netherlands.
+        &copy; Copyright 2015-2018 S&amp;T, The Netherlands
 
     </p>
   </div> 
@@ -253,36 +242,24 @@ single string attribute named <code class="docutils literal"><span class="pre">f
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'1.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  false,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
