@@ -102,6 +102,7 @@ static void handle_udunits_error(void)
 }
 
 /** Set the location of the udunits2 unit conversion xml configuration file.
+ * \ingroup harp_general
  * This function should be called before harp_init() is called.
  *
  * The HARP C library uses the udunits2 library to perform unit conversions. The xml configuration files for udunits2
@@ -151,6 +152,7 @@ LIBHARP_API int harp_set_udunits2_xml_path(const char *path)
 }
 
 /** Set the location of the udunits2 xml configuration file based on the location of another file.
+ * \ingroup harp_general
  * This function should be called before harp_init() is called.
  *
  * The HARP C library uses the udunits2 library to perform unit conversions. The xml configuration files for udunits2

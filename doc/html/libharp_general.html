@@ -290,6 +290,68 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
+<dt id="_CPPv326harp_set_udunits2_xml_pathPKc">
+<span id="_CPPv226harp_set_udunits2_xml_pathPKc"></span><span id="harp_set_udunits2_xml_path__cCP"></span><span class="target" id="group__harp__general_1ga92af8b1a8aaca9b9e665d35a0dad0895"></span>int <code class="descname">harp_set_udunits2_xml_path</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set the location of the udunits2 unit conversion xml configuration file.</p>
+<p>This function should be called before <a class="reference internal" href="#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is called.</p>
+<p>The HARP C library uses the udunits2 library to perform unit conversions. The xml configuration files for udunits2 are included with a HARP installation and a default absolute path to these xml files is built into the library.</p>
+<p>If the HARP installation ends up in a different location on disk compared to what was provided at build time then you will either need to set the UDUNITS2_XML_PATH environment variable or call one of the functions <a class="reference internal" href="#group__harp__general_1ga92af8b1a8aaca9b9e665d35a0dad0895"><span class="std std-ref">harp_set_udunits2_xml_path()</span></a> or <a class="reference internal" href="#group__harp__general_1gab35a6e458ae75f777ceef7006244183d"><span class="std std-ref">harp_set_udunits2_xml_path_conditional()</span></a> to set the path programmatically.</p>
+<p>The path should be an absolute path to the udunits2.xml file that was included with the HARP installation.</p>
+<p>Specifying a path using this function will prevent HARP from using the UDUNITS2_XML_PATH environment variable. If you still want HARP to acknowledge the UDUNITS2_XML_PATH environment variable then use something like this in your code: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;UDUNITS2_XML_PATH&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">harp_set_udunits2_xml_path</span><span class="p">(</span><span class="s2">&quot;&lt;your path&gt;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">path</span></code>: Absolute path to the udunits2.xml file </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv338harp_set_udunits2_xml_path_conditionalPKcPKcPKc">
+<span id="_CPPv238harp_set_udunits2_xml_path_conditionalPKcPKcPKc"></span><span id="harp_set_udunits2_xml_path_conditional__cCP.cCP.cCP"></span><span class="target" id="group__harp__general_1gab35a6e458ae75f777ceef7006244183d"></span>int <code class="descname">harp_set_udunits2_xml_path_conditional</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>file</em>, <em class="property">const</em> char *<em>searchpath</em>, <em class="property">const</em> char *<em>relative_location</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set the location of the udunits2 xml configuration file based on the location of another file.</p>
+<p>This function should be called before <a class="reference internal" href="#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is called.</p>
+<p>The HARP C library uses the udunits2 library to perform unit conversions. The xml configuration files for udunits2 are included with a HARP installation and a default absolute path to the main xml file is built into the library.</p>
+<p>If the HARP installation ends up in a different location on disk compared to what was provided at build time then you will either need to set the UDUNITS2_XML_PATH environment variable or call one of the functions <a class="reference internal" href="#group__harp__general_1ga92af8b1a8aaca9b9e665d35a0dad0895"><span class="std std-ref">harp_set_udunits2_xml_path()</span></a> or <a class="reference internal" href="#group__harp__general_1gab35a6e458ae75f777ceef7006244183d"><span class="std std-ref">harp_set_udunits2_xml_path_conditional()</span></a> to set the path programmatically.</p>
+<p>This function will try to find the file with filename <em>file</em> in the provided searchpath <em>searchpath</em>. The first directory in the searchpath where the file <em>file</em> exists will be appended with the relative location <em>relative_location</em> to determine the udunits2 xml path. If the file to search for could not be found in the searchpath then the HARP udunits2 xml path will not be set.</p>
+<p>If the UDUNITS2_XML_PATH environment variable was set then this function will not perform a search or set the udunits2 xml path (i.e. the udunits2 xml path will be taken from the UDUNITS2_XML_PATH variable).</p>
+<p>If you provide NULL for <em>searchpath</em> then the PATH environment variable will be used as searchpath. For instance, you can use harp_set_udunits2_xml_path_conditional(argv[0], NULL, “../somedir/udunits2.xml”) to set the udunits2 xml path to a location relative to the location of your executable.</p>
+<p>The searchpath, if provided, should have a similar format as the PATH environment variable of your system. Path components should be separated by ‘;’ on Windows and by ‘:’ on other systems.</p>
+<p>The <em>relative_location</em> parameter should point to the udunits2.xml file itself (and not the directory that the file is in).</p>
+<p>Note that this function differs from <a class="reference internal" href="#group__harp__general_1ga92af8b1a8aaca9b9e665d35a0dad0895"><span class="std std-ref">harp_set_udunits2_xml_path()</span></a> in that it will not modify the udunits2 xml path if the UDUNITS2_XML_PATH variable was set.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">file</span></code>: Filename of the file to search for </li>
+<li><code class="docutils literal notranslate"><span class="pre">searchpath</span></code>: Search path where to look for the file <em>file</em> (can be NULL) </li>
+<li><code class="docutils literal notranslate"><span class="pre">relative_location</span></code>: Filepath relative to the directory from <em>searchpath</em> where <em>file</em> was found that provides the location of the udunits2.xml file. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv317harp_convert_unitPKcPKclPd">
 <span id="_CPPv217harp_convert_unitPKcPKclPd"></span><span id="harp_convert_unit__cCP.cCP.l.doubleP"></span><span class="target" id="group__harp__general_1gaf2f2e7ffc3090f796385669ed69f92e9"></span>int <code class="descname">harp_convert_unit</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>from_unit</em>, <em class="property">const</em> char *<em>to_unit</em>, long <em>num_values</em>, double *<em>value</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Perform unit conversion on data</p>
