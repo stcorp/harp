@@ -512,6 +512,7 @@ RSTFILES = \
 	doc/algorithms/derivations/wavenumber.rst \
 	doc/algorithms/formula.rst \
 	doc/algorithms/index.rst \
+	doc/conventions/categorical_variables.rst \
 	doc/conventions/collocation_result.rst \
 	doc/conventions/compatibility.rst \
 	doc/conventions/datatypes.rst \
@@ -551,6 +552,7 @@ EXTRA_DIST += \
 	$(RSTFILES) \
 	doc/conf.py \
 	doc/static/custom.css \
+	doc/templates/searchbox.html \
 	$(DOCFILES)
 
 nobase_pkgdata_DATA = $(DOCFILES)
