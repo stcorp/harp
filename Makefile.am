@@ -472,11 +472,13 @@ RSTFILES = \
 	doc/algorithms/derivations/column_mass_density.rst \
 	doc/algorithms/derivations/column_mass_mixing_ratio.rst \
 	doc/algorithms/derivations/column_number_density.rst \
+	doc/algorithms/derivations/column_number_density_avk.rst \
 	doc/algorithms/derivations/column_volume_mixing_ratio.rst \
 	doc/algorithms/derivations/datetime.rst \
 	doc/algorithms/derivations/datetime_length.rst \
 	doc/algorithms/derivations/datetime_start.rst \
 	doc/algorithms/derivations/datetime_stop.rst \
+	doc/algorithms/derivations/degrees_of_freedom_for_signal.rst \
 	doc/algorithms/derivations/frequency.rst \
 	doc/algorithms/derivations/geopotential.rst \
 	doc/algorithms/derivations/geopotential_height.rst \
@@ -488,6 +490,7 @@ RSTFILES = \
 	doc/algorithms/derivations/mass_mixing_ratio.rst \
 	doc/algorithms/derivations/molar_mass.rst \
 	doc/algorithms/derivations/number_density.rst \
+	doc/algorithms/derivations/number_density_avk.rst \
 	doc/algorithms/derivations/partial_pressure.rst \
 	doc/algorithms/derivations/pressure.rst \
 	doc/algorithms/derivations/pressure_bounds.rst \
@@ -508,8 +511,10 @@ RSTFILES = \
 	doc/algorithms/derivations/viewing_zenith_angle.rst \
 	doc/algorithms/derivations/virtual_temperature.rst \
 	doc/algorithms/derivations/volume_mixing_ratio.rst \
+	doc/algorithms/derivations/volume_mixing_ratio_avk.rst \
 	doc/algorithms/derivations/wavelength.rst \
 	doc/algorithms/derivations/wavenumber.rst \
+	doc/algorithms/derivations/wind_velocity.rst \
 	doc/algorithms/formula.rst \
 	doc/algorithms/index.rst \
 	doc/conventions/categorical_variables.rst \
