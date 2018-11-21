@@ -576,6 +576,7 @@ harp_doc: harpconvert libharp/harp.h doc/Doxyfile
 	  if test "x$(srcdir)" != "x$(builddir)" ; then \
 	    cp $(srcdir)/doc/conf.py doc ; \
 	    cp -r $(srcdir)/doc/static doc ; \
+	    cp -r $(srcdir)/doc/templates doc ; \
 	    $(mkinstalldirs) doc/algorithms ; \
 	    $(mkinstalldirs) doc/algorithms/derivations ; \
 	    $(mkinstalldirs) doc/conventions ; \
