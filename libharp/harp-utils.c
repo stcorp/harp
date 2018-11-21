@@ -68,45 +68,6 @@ int harp_is_identifier(const char *name)
     return 1;
 }
 
-/** \addtogroup harp_general
- * @{
- */
-
-/** Remove everything but the last pathname component from \a path.
- * \param path Path to compute the basename of.
- * \return Pointer to the last pathname component of \a path, i.e. everything from the end of \a path up to the first
- *   pathname component separation character ('\\' or '/' on Windows, '/' otherwise).
- */
-LIBHARP_API const char *harp_basename(const char *path)
-{
-    if (path == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        const char *separator = NULL;
-
-#ifdef WIN32
-        const char *cursor = path;
-
-        while (*cursor != '\0')
-        {
-            if (*cursor == '\\' || *cursor == '/')
-            {
-                separator = cursor;
-            }
-
-            cursor++;
-        }
-#else
-        separator = strrchr(path, '/');
-#endif
-
-        return (separator == NULL ? path : separator + 1);
-    }
-}
-
 static void clean_path(char *path)
 {
     int from;
@@ -438,6 +399,45 @@ int harp_path_for_program(const char *argv0, char **location)
     }
 
     return 0;
+}
+
+/** \addtogroup harp_general
+ * @{
+ */
+
+/** Remove everything but the last pathname component from \a path.
+ * \param path Path to compute the basename of.
+ * \return Pointer to the last pathname component of \a path, i.e. everything from the end of \a path up to the first
+ *   pathname component separation character ('\\' or '/' on Windows, '/' otherwise).
+ */
+LIBHARP_API const char *harp_basename(const char *path)
+{
+    if (path == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        const char *separator = NULL;
+
+#ifdef WIN32
+        const char *cursor = path;
+
+        while (*cursor != '\0')
+        {
+            if (*cursor == '\\' || *cursor == '/')
+            {
+                separator = cursor;
+            }
+
+            cursor++;
+        }
+#else
+        separator = strrchr(path, '/');
+#endif
+
+        return (separator == NULL ? path : separator + 1);
+    }
 }
 
 /** Returns the name of a data type.
