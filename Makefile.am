@@ -576,6 +576,7 @@ harp_doc: harpconvert libharp/harp.h doc/Doxyfile
 	    cp -r $(srcdir)/doc/static doc ; \
 	    $(mkinstalldirs) doc/algorithms ; \
 	    $(mkinstalldirs) doc/algorithms/derivations ; \
+	    $(mkinstalldirs) doc/conventions ; \
 	    for file in $(RSTFILES) ; do \
 	      cp $(srcdir)/$$file $$file ; \
 	    done ; \
