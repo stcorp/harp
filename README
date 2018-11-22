@@ -69,13 +69,9 @@ Documentation
 
 Full documentation in HTML is included with the HARP software.
 
-An online version of the documentation for this release is available at:
-
-    https://cdn.rawgit.com/stcorp/harp/1.4/doc/html/index.html
-
 A version matching the latest development status on GitHub can be viewed at:
 
-    https://cdn.rawgit.com/stcorp/harp/master/doc/html/index.html
+    http://stcorp.github.io/harp/doc/html/index.html
 
 
 Download
