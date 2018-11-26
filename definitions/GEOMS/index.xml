@@ -131,7 +131,7 @@
   </cd:ProductType>
   <cd:ProductType name="PANDORA_DIRECTSUN_GAS">
     <cd:Description>GEOMS template for Pandora UVVIS-DOAS direct-sun measurements</cd:Description>
-    <cd:ProductDefinition id="PANDORA_DIRECTSUN_GAS_002_hdf5" format="hdf5" version="2003">
+    <cd:ProductDefinition id="PANDORA_DIRECTSUN_GAS_002_hdf5" format="hdf5" version="2002">
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-PANDORA-DIRECTSUN-GAS-002"</cd:MatchExpression>
