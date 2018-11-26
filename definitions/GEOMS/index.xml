@@ -237,4 +237,13 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+  <cd:ProductType name="UVVIS_DOBSON_TOTALCOL">
+      <cd:Description>GEOMS template for Dobson total column measurements</cd:Description>
+      <cd:ProductDefinition id="UVVIS_DOBSON_TOTALCOL_001_hdf4" format="hdf4" version="1001">
+          <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
+          <cd:DetectionRule>
+              <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-UVVIS-DOBSON-TOTALCOL-001"</cd:MatchExpression>
+          </cd:DetectionRule>
+      </cd:ProductDefinition>
+  </cd:ProductType>
 </cd:ProductClass>
