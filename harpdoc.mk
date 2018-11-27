@@ -366,6 +366,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-O3.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-OClO.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-SO2.html \
+	doc/html/ingestions/GEOMS-TE-UVVIS-DOBSON-TOTALCOL-001.html \
 	doc/html/ingestions/GOME2_L1_irradiance.html \
 	doc/html/ingestions/GOME2_L1_radiance.html \
 	doc/html/ingestions/GOME2_L1_sun_reference.html \
@@ -1272,6 +1273,8 @@ doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-O3.html:
 doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-OClO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-ZENITH-GAS-007-SO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-UVVIS-DOBSON-TOTALCOL-001.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L1_irradiance.html:
 	$(MAKE) harp_doc

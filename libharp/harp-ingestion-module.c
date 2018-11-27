@@ -68,6 +68,7 @@ int harp_ingestion_module_geoms_mwr_init(void);
 int harp_ingestion_module_geoms_lidar_init(void);
 int harp_ingestion_module_geoms_pandora_init(void);
 int harp_ingestion_module_geoms_uvvis_doas_init(void);
+int harp_ingestion_module_geoms_uvvis_dobson_init(void);
 int harp_ingestion_module_gome_l1_init(void);
 int harp_ingestion_module_gome_l2_init(void);
 int harp_ingestion_module_gome2_l1_init(void);
@@ -129,6 +130,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_geoms_lidar_init,
     harp_ingestion_module_geoms_pandora_init,
     harp_ingestion_module_geoms_uvvis_doas_init,
+    harp_ingestion_module_geoms_uvvis_dobson_init,
     harp_ingestion_module_gome_l1_init,
     harp_ingestion_module_gome_l2_init,
     harp_ingestion_module_gome2_l1_init,
