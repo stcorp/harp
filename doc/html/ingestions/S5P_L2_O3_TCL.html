@@ -302,8 +302,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>o3</td>
-<td>upper</td>
-<td>whether to ingest the ‘normal’ tropospheric O3 column grid (default) or the upper tropospheric column grid (o3=upper)</td>
+<td>csa</td>
+<td>whether to ingest the tropical tropospheric ozone column with the Convective Cloud Differential (CCD) method (default) or with the Cloud Slicing Algorithm (CSA) (o3=csa)</td>
 </tr>
 </tbody>
 </table>
@@ -345,13 +345,13 @@
 <td><strong>/PRODUCT/latitude_ccd[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper and processor version &lt; 01.01.00</td>
+<td>o3=csa and processor version &lt; 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/lat[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper and processor version &gt;= 01.01.00</td>
+<td>o3=csa and processor version &gt;= 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/latitude_csa[]</strong></td>
@@ -370,13 +370,13 @@
 <td><strong>/PRODUCT/longitude_ccd[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper and processor version &lt; 01.01.00</td>
+<td>o3=csa and processor version &lt; 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/lon[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper and processor version &gt;= 01.01.00</td>
+<td>o3=csa and processor version &gt;= 01.01.00</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/longitude_csa[]</strong></td>
@@ -389,7 +389,7 @@
 <td><strong>/PRODUCT/ozone_tropospheric_mixing_ratio[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3=csa</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/ozone_upper_tropospheric_mixing_ratio[]</strong></td>
@@ -402,7 +402,7 @@
 <td><strong>/PRODUCT/ozone_tropospheric_mixing_ratio_precision[]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3=csa</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/ozone_upper_tropospheric_mixing_ratio_precision[]</strong></td>
@@ -412,7 +412,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3=csa</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/ozone_upper_tropospheric_mixing_ratio_flag[]</strong></td>
@@ -422,7 +422,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3=csa</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/number_of_observations_ozone_upper_tropospheric_mixing_ratio[]</strong></td>
@@ -512,7 +512,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3=csa</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]</strong></td>
@@ -522,7 +522,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>o3=upper</td>
+<td>o3=csa</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[]</strong></td>

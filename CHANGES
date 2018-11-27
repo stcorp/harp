@@ -9,7 +9,7 @@
 
 * Added support for Pandora and Dobson products in GEOMS format.
 
-* Updates to ACE-FTS and GOME/GOME-2 L2 product ingestions.
+* Updates to ACE-FTS, GOME/GOME-2 L2, and S5P L2 product ingestions.
 
 1.4 2018-09-28
 ~~~~~~~~~~~~~~
