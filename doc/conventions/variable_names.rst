@@ -96,6 +96,7 @@ number_density                                surface                         X 
 optical_depth                                                                 X       X    X       X     this is equal to 'optical thickness'
 orbit_index                                                                                              the absolute orbit number for data from polar orbiting satellites
 planetary_boundary_layer_height                                               X            X
+potential_temperature                         surface                         X       X    X
 pressure                                      surface                         X       X    X
 pressure_bounds                                                               X       X    X
 radiance                                                                      X                    X
