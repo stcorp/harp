@@ -620,7 +620,15 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     if (harp_ingestion_options_has_option(options, "o3"))
     {
-        info->use_o3_tcl_csa = 1;
+        if (harp_ingestion_options_get_option(options, "o3", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "csa") == 0)
+        {
+            info->use_o3_tcl_csa = 1;
+        }
     }
     if (harp_ingestion_options_has_option(options, "so2_column"))
     {
@@ -5319,7 +5327,7 @@ static void register_o3_pr_product(void)
 
 static void register_o3_tcl_product(void)
 {
-    const char *o3_options[] = { "csa" };
+    const char *o3_options[] = { "ccd", "csa" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -5332,8 +5340,8 @@ static void register_o3_tcl_product(void)
                                                  ingestion_done);
 
     harp_ingestion_register_option(module, "o3", "whether to ingest the tropical tropospheric ozone column with the "
-                                   "Convective Cloud Differential (CCD) method (default) or with the Cloud Slicing "
-                                   "Algorithm (CSA) (o3=csa)", 1, o3_options);
+                                   "Convective Cloud Differential (CCD) method (o3=ccd, default) or with the "
+                                   "Cloud Slicing Algorithm (CSA) (o3=csa)", 2, o3_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O3_TCL", NULL, read_dimensions);
 
