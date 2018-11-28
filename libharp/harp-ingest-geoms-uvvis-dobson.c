@@ -468,8 +468,7 @@ static int init_product_definition(harp_ingestion_module *module, int version)
     const char *description;
 
     snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-UVVIS-DOBSON-TOTALCOL-%03d", version);
-    snprintf(product_description, MAX_NAME_LENGTH,
-             "GEOMS template for UVVIS Dobson measurements v%03d", version);
+    snprintf(product_description, MAX_NAME_LENGTH, "GEOMS template for UVVIS Dobson measurements v%03d", version);
     product_definition = harp_ingestion_register_product(module, product_name, product_description, read_dimensions);
 
     dimension_type[0] = harp_dimension_time;
@@ -554,8 +553,7 @@ static int init_product_definition(harp_ingestion_module *module, int version)
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, "O3_column_number_density_amf", harp_type_float, 1, dimension_type, NULL,
          description, "1", NULL, read_column_amf);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/O3.COLUMN_ABSORPTION_AMF", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O3.COLUMN_ABSORPTION_AMF", NULL);
 
     return 0;
 }
