@@ -116,6 +116,7 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-geoms-lidar.c \
 	libharp/harp-ingest-geoms-mwr.c \
 	libharp/harp-ingest-geoms-pandora.c \
+	libharp/harp-ingest-geoms-sonde.c \
 	libharp/harp-ingest-geoms-uvvis-doas.c \
 	libharp/harp-ingest-geoms-uvvis-dobson.c \
 	libharp/harp-ingest-gome_l1.c \
