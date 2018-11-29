@@ -39,11 +39,6 @@
 
 /* ------------------- Defines ------------------ */
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 #define SECONDS_PER_DAY                  86400
 #define SECONDS_FROM_1990_TO_2000    315532800
 

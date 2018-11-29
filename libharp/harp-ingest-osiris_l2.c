@@ -37,11 +37,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 #define SECONDS_FROM_1993_TO_2000 (220838400 + 5)
 
 typedef struct ingest_info_struct

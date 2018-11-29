@@ -37,11 +37,6 @@
 
 /* ------------------- Defines ------------------ */
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 #define SECONDS_FROM_1993_TO_2000 (220838400 + 5)
 
 #define CHECKED_MALLOC(v, s) v = malloc(s); if (v == NULL) { harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)", s, __FILE__, __LINE__); return -1;}
@@ -515,9 +510,9 @@ static int perform_pressure_quality_convergence_precision_checks(ingest_info *in
             quality = quality_data.double_data[i];
             convergence = convergence_data.double_data[i];
             precision = precision_data.double_data[i * info->num_levels + j];
-            pressure_is_within_limits = FALSE;
-            quality_is_high_enough = FALSE;
-            convergence_is_low_enough = FALSE;
+            pressure_is_within_limits = 0;
+            quality_is_high_enough = 0;
+            convergence_is_low_enough = 0;
             limits = check_limits;
             while (limits->product_name != NULL)
             {
@@ -526,14 +521,14 @@ static int perform_pressure_quality_convergence_precision_checks(ingest_info *in
                     if ((limits->pressure_limit_low < 0.0) ||
                         ((pressure >= limits->pressure_limit_low) && (pressure <= limits->pressure_limit_high)))
                     {
-                        pressure_is_within_limits = TRUE;
+                        pressure_is_within_limits = 1;
                         if ((limits->quality_threshold < 0.0) || (quality >= limits->quality_threshold))
                         {
-                            quality_is_high_enough = TRUE;
+                            quality_is_high_enough = 1;
                         }
                         if ((limits->convergence_threshold < 0.0) || (convergence <= limits->convergence_threshold))
                         {
-                            convergence_is_low_enough = TRUE;
+                            convergence_is_low_enough = 1;
                         }
                     }
                 }

@@ -37,11 +37,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 typedef enum variable_type_enum
 {
     IS_NO_ARRAY,
@@ -756,25 +751,25 @@ static int lim_ingestion_init(const harp_ingestion_module *module, coda_product 
     info->format_version = format_version;
     info->elements_per_profile = 0;
 
-    info->upper = TRUE;
+    info->upper = 1;
     if (harp_ingestion_options_has_option(options, "spectra"))
     {
         if (harp_ingestion_options_get_option(options, "spectra", &cp) == 0)
         {
             if (strcmp(cp, "lower") == 0)
             {
-                info->upper = FALSE;
+                info->upper = 0;
             }
         }
     }
-    info->corrected = TRUE;
+    info->corrected = 1;
     if (harp_ingestion_options_has_option(options, "corrected"))
     {
         if (harp_ingestion_options_get_option(options, "corrected", &cp) == 0)
         {
             if (strcmp(cp, "false") == 0)
             {
-                info->corrected = FALSE;
+                info->corrected = 0;
             }
         }
     }

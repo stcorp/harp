@@ -39,11 +39,6 @@
 
 /* --------------------------- defines ------------------------------------ */
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 /* BAND_1A         0
    BAND_1B         1
    BAND_2A         2
@@ -1086,28 +1081,28 @@ static int mdr_record_is_valid(ingest_info *info, coda_cursor *cursor)
 
     if (coda_cursor_goto_record_field_by_name(cursor, info->lightsource) != 0)
     {
-        return FALSE;
+        return 0;
     }
     if (coda_cursor_get_type_class(cursor, &type_class) != 0)
     {
-        return FALSE;
+        return 0;
     }
     if (type_class != coda_record_class)
     {
-        return FALSE;
+        return 0;
     }
 
     if (info->ingestion_data == DATA_RADIANCE || info->ingestion_data == DATA_TRANSMISSION)
     {
         if (coda_cursor_goto_record_field_by_name(cursor, "OUTPUT_SELECTION") != 0)
         {
-            return FALSE;
+            return 0;
         }
         /* Possible values: 0 = measured radiance, 1 = sun normalised radiance (i.e. transmittance) */
         if (coda_cursor_read_uint8(cursor, &output_selection) != 0)
         {
             coda_cursor_goto_parent(cursor);
-            return FALSE;
+            return 0;
         }
         coda_cursor_goto_parent(cursor);
         if ((output_selection == 1 && info->ingestion_data != DATA_TRANSMISSION) ||
@@ -1115,10 +1110,10 @@ static int mdr_record_is_valid(ingest_info *info, coda_cursor *cursor)
         {
             /* The output selection of this MDR record does not match */
             /* the ingestion parameters, skip this MDR record.        */
-            return FALSE;
+            return 0;
         }
     }
-    return TRUE;
+    return 1;
 }
 
 static int determine_fastest_band(ingest_info *info, coda_cursor start_cursor, long valid_mdr_record,
@@ -1269,7 +1264,7 @@ static int init_measurements_dimensions(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    prev_mdr_record_was_valid = FALSE;
+    prev_mdr_record_was_valid = 0;
     time_of_prev_mdr_record = 0.0;
     memset(previous_num_recs_of_band, '\0', sizeof(previous_num_recs_of_band));
     for (mdr_record = 0, valid_mdr_record = 0; mdr_record < num_all_mdr_records; mdr_record++)
@@ -1344,12 +1339,12 @@ static int init_measurements_dimensions(ingest_info *info)
                 }
                 cursor = save_cursor_lightsource;
             }
-            prev_mdr_record_was_valid = TRUE;
+            prev_mdr_record_was_valid = 1;
             time_of_prev_mdr_record = time_of_mdr_record;
         }
         else
         {
-            prev_mdr_record_was_valid = FALSE;
+            prev_mdr_record_was_valid = 0;
         }
 
         cursor = save_cursor_mdr;
@@ -2217,11 +2212,11 @@ int harp_ingestion_module_gome2_l1_init(void)
 
     product_definition = register_measurement_product(module, "GOME2_L1_radiance", "GOME2 Level 1b radiance product",
                                                       "data=radiance or data unset");
-    register_variables_radiance_transmittance_fields(product_definition, TRUE);
+    register_variables_radiance_transmittance_fields(product_definition, 1);
 
     product_definition = register_measurement_product(module, "GOME2_L1_transmission",
                                                       "GOME2 Level 1b transmission product", "data=transmission");
-    register_variables_radiance_transmittance_fields(product_definition, FALSE);
+    register_variables_radiance_transmittance_fields(product_definition, 0);
 
     product_definition = register_measurement_product(module, "GOME2_L1_irradiance",
                                                       "GOME2 Level 1b irradiance product", "data=sun or data=moon");

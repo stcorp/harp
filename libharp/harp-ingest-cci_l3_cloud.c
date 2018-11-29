@@ -39,11 +39,6 @@
 
 /* ------------------- Defines ------------------ */
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 #define SECONDS_PER_DAY                  86400
 #define SECONDS_FROM_1970_TO_2000    946684800
 
@@ -169,56 +164,56 @@ static int read_cloud_optical_depth(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "cot", FALSE, FALSE, -999.0, data);
+    return read_cloud_data(info, "cot", 0, 0, -999.0, data);
 }
 
 static int read_cloud_optical_depth_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "cot", FALSE, TRUE, -999.0, data);
+    return read_cloud_data(info, "cot", 0, 1, -999.0, data);
 }
 
 static int read_cloud_top_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "cth", info->corrected, FALSE, -32767.0, data);
+    return read_cloud_data(info, "cth", info->corrected, 0, -32767.0, data);
 }
 
 static int read_cloud_top_height_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "cth", info->corrected, TRUE, -32767.0, data);
+    return read_cloud_data(info, "cth", info->corrected, 1, -32767.0, data);
 }
 
 static int read_cloud_top_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "ctp", info->corrected, FALSE, -32767.0, data);
+    return read_cloud_data(info, "ctp", info->corrected, 0, -32767.0, data);
 }
 
 static int read_cloud_top_pressure_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "ctp", info->corrected, TRUE, -32767.0, data);
+    return read_cloud_data(info, "ctp", info->corrected, 1, -32767.0, data);
 }
 
 static int read_cloud_top_temperature(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "ctt", info->corrected, FALSE, -32767.0, data);
+    return read_cloud_data(info, "ctt", info->corrected, 0, -32767.0, data);
 }
 
 static int read_cloud_top_temperature_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "ctt", info->corrected, TRUE, -32767.0, data);
+    return read_cloud_data(info, "ctt", info->corrected, 1, -32767.0, data);
 }
 
 static int read_validity(void *user_data, harp_array data)
@@ -281,35 +276,35 @@ static int read_relative_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "relazi", FALSE, FALSE, -32767.0, data);
+    return read_cloud_data(info, "relazi", 0, 0, -32767.0, data);
 }
 
 static int read_viewing_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "satzen", FALSE, FALSE, -999.0, data);
+    return read_cloud_data(info, "satzen", 0, 0, -999.0, data);
 }
 
 static int read_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "solzen", FALSE, FALSE, -999.0, data);
+    return read_cloud_data(info, "solzen", 0, 0, -999.0, data);
 }
 
 static int read_surface_temperature(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "stemp", FALSE, FALSE, -32767.0, data);
+    return read_cloud_data(info, "stemp", 0, 0, -32767.0, data);
 }
 
 static int read_surface_temperature_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_cloud_data(info, "stemp", FALSE, TRUE, -32767.0, data);
+    return read_cloud_data(info, "stemp", 0, 1, -32767.0, data);
 }
 
 static int read_datetime(void *user_data, harp_array data)
@@ -515,7 +510,7 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    info->corrected = TRUE;
+    info->corrected = 1;
     if (harp_ingestion_options_has_option(options, "corrected"))
     {
         if (harp_ingestion_options_get_option(options, "corrected", &option_value) != 0)
@@ -525,7 +520,7 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
         }
         if (strcmp(option_value, "false") == 0)
         {
-            info->corrected = FALSE;
+            info->corrected = 0;
         }
     }
     if (info->corrected && (coda_cursor_goto(&cursor, "ctt_corrected_desc") != 0))
@@ -813,7 +808,7 @@ static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    info->corrected = TRUE;
+    info->corrected = 1;
     if (harp_ingestion_options_has_option(options, "corrected"))
     {
         if (harp_ingestion_options_get_option(options, "corrected", &option_value) != 0)
@@ -823,7 +818,7 @@ static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_
         }
         if (strcmp(option_value, "false") == 0)
         {
-            info->corrected = FALSE;
+            info->corrected = 0;
         }
     }
     if (info->corrected && (coda_cursor_goto(&cursor, "ctt_corrected") != 0))
@@ -833,7 +828,7 @@ static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_
         return -1;
     }
 
-    info->qcflag_present = FALSE;
+    info->qcflag_present = 0;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {

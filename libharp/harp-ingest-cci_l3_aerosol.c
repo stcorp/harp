@@ -39,11 +39,6 @@
 
 /* ------------------- Defines ------------------ */
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 #define SECONDS_PER_DAY                  86400
 #define SECONDS_FROM_1970_TO_2000    946684800
 
@@ -459,11 +454,11 @@ static int init_dimensions(ingest_info *info)
 
     if (coda_cursor_goto(&cursor, "/sun_zenith_mean") != 0)
     {
-        info->zenith_fields_present = FALSE;
+        info->zenith_fields_present = 0;
     }
     else
     {
-        info->zenith_fields_present = TRUE;
+        info->zenith_fields_present = 1;
     }
 
     return 0;

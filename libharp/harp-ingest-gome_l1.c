@@ -37,11 +37,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef FALSE
-#define FALSE    0
-#define TRUE     1
-#endif
-
 /* BAND_1A         0
    BAND_1B         1
    BAND_2A         2
@@ -994,7 +989,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             info->band_nr = band_name_to_band_nr(cp);
         }
     }
-    info->sun_reference = FALSE;
+    info->sun_reference = 0;
     if (harp_ingestion_options_has_option(options, "data"))
     {
         if (harp_ingestion_options_get_option(options, "data", &cp) == 0)
