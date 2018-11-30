@@ -82,7 +82,7 @@ typedef enum grib_parameter_enum
     grib_param_ssaod550,        /* 210208: Sea Salt Aerosol Optical Depth at 550nm [-] */
     grib_param_duaod550,        /* 210209: Dust Aerosol Optical Depth at 550nm [-] */
     grib_param_omaod550,        /* 210210: Organic Matter Aerosol Optical Depth at 550nm [-] */
-    grib_param_bcaod550,        /* 210211: Block Carbon Aerosol Optical Depth at 550nm [-] */
+    grib_param_bcaod550,        /* 210211: Black Carbon Aerosol Optical Depth at 550nm [-] */
     grib_param_suaod550,        /* 210212: Sulphate Aerosol Optical Depth at 550nm [-] */
     grib_param_aod469,  /* 210213: Total Aerosol Optical Depth at 469nm [-] */
     grib_param_aod670,  /* 210214: Total Aerosol Optical Depth at 670nm [-] */
