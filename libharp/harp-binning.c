@@ -771,7 +771,7 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
         goto error;
     }
     /* the temporary polygon is used for calculating the overlap fraction with a cell */
-    /* it needs to be able to hold three times the amout of poinst as the input polygon */
+    /* it needs to be able to hold three times the amout of points as the input polygon */
     temp_poly_latitude = malloc(3 * (max_num_vertices + 3) * sizeof(double));
     if (temp_poly_latitude == NULL)
     {
