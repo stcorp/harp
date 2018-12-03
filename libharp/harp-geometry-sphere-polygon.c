@@ -150,47 +150,6 @@ static int spherical_polygon_bounds_contains_any_points(const harp_spherical_pol
     return 0;
 }
 
-int harp_spherical_polygon_equal(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
-                                 int direction)
-{
-    int ret = 0;        /* false */
-
-    if (polygon_a->numberofpoints == polygon_b->numberofpoints)
-    {
-        int32_t i, k, counter, shift;
-
-        for (shift = 0; shift < polygon_a->numberofpoints; shift++)
-        {
-            counter = 0;
-
-            for (i = 0; i < polygon_a->numberofpoints; i++)
-            {
-                k = (direction) ? (polygon_a->numberofpoints - i - 1) : (i);
-                k += shift;
-                k = (k < polygon_a->numberofpoints) ? (k) : (k - polygon_a->numberofpoints);
-
-                if (harp_spherical_point_equal(&polygon_a->point[i], &polygon_b->point[k]))
-                {
-                    counter++;
-                }
-            }
-            if (counter == polygon_a->numberofpoints)
-            {
-                ret = 1;        /* false */
-                break;
-            }
-        }
-
-        /* Try other direction, if not equal */
-        if (!direction && !ret)
-        {
-            ret = harp_spherical_polygon_equal(polygon_a, polygon_b, 1);
-        }
-    }
-
-    return ret;
-}
-
 /* Derive line segment from edge of polygon */
 static int harp_spherical_line_segment_from_polygon(harp_spherical_line *line, const harp_spherical_polygon *polygon,
                                                     int32_t i)

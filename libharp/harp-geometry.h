@@ -217,8 +217,6 @@ void harp_euler_transformation_from_spherical_vector(harp_euler_transformation *
 /* Spherical polygon functions */
 int harp_spherical_polygon_new(int32_t numberofpoints, harp_spherical_polygon **polygon);
 int harp_spherical_polygon_check(const harp_spherical_polygon *polygon);
-int harp_spherical_polygon_equal(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
-                                 int direction);
 void harp_spherical_polygon_delete(harp_spherical_polygon *polygon);
 int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
                                                           const double *latitude_bounds, const double *longitude_bounds,
