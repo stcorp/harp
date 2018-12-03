@@ -129,9 +129,9 @@ void harp_euler_transformation_set_to_zxz(harp_euler_transformation *transformat
  *   pointbegin = pointer to begin of spherical vector
  *   pointend = pointer to end of spherical vector
  */
-void harp_inverse_euler_transformation_from_spherical_vector(harp_euler_transformation *inverse_transformation,
-                                                             const harp_spherical_point *sphericalvectorbegin,
-                                                             const harp_spherical_point *sphericalvectorend)
+static void inverse_euler_transformation_from_spherical_vector(harp_euler_transformation *inverse_transformation,
+                                                               const harp_spherical_point *sphericalvectorbegin,
+                                                               const harp_spherical_point *sphericalvectorend)
 {
     if (harp_spherical_point_equal(sphericalvectorbegin, sphericalvectorend))
     {
@@ -182,30 +182,10 @@ void harp_euler_transformation_from_spherical_vector(harp_euler_transformation *
                                                      const harp_spherical_point *sphericalvectorend)
 {
     /* Determine inverse Euler transformation and save the inverse transformation in "transformation" */
-    harp_inverse_euler_transformation_from_spherical_vector(transformation, sphericalvectorbegin, sphericalvectorend);
+    inverse_euler_transformation_from_spherical_vector(transformation, sphericalvectorbegin, sphericalvectorend);
 
     /* Invert the inverse Euler transformation */
     harp_euler_transformation_invert(transformation);
-}
-
-/* Apply Euler transformation of spherical point */
-void harp_spherical_point_apply_euler_transformation(harp_spherical_point *pointout,
-                                                     const harp_spherical_point *pointin,
-                                                     const harp_euler_transformation *transformation)
-{
-    harp_vector3d vectorin;
-    harp_vector3d vectorout;
-
-    /* First, convert (lat,lon) to (x,y,z) coordinates */
-    harp_vector3d_from_spherical_point(&vectorin, pointin);
-
-    /* Rotate the vector around the 3 Euler axes to get the output vector */
-    harp_vector3d_apply_euler_transformation(&vectorout, &vectorin, transformation);
-
-    /* Finally, convert the rotated vector (x,y,z) to (lat,lon) coordinates */
-    harp_spherical_point_from_vector3d(pointout, &vectorout);
-
-    harp_spherical_point_check(pointout);
 }
 
 /* Apply Euler transformation of 3d vector.
@@ -217,8 +197,8 @@ void harp_spherical_point_apply_euler_transformation(harp_spherical_point *point
  *
  * Here, the angles are in [rad]
  */
-int harp_vector3d_apply_euler_transformation(harp_vector3d *vectorout, const harp_vector3d *vectorin,
-                                             const harp_euler_transformation *transformation)
+static int vector3d_apply_euler_transformation(harp_vector3d *vectorout, const harp_vector3d *vectorin,
+                                               const harp_euler_transformation *transformation)
 {
     double u[3], v[3], sin_angle, cos_angle;
     const double *angle;
@@ -295,4 +275,24 @@ int harp_vector3d_apply_euler_transformation(harp_vector3d *vectorout, const har
     vectorout->z = u[2];
 
     return 0;
+}
+
+/* Apply Euler transformation of spherical point */
+void harp_spherical_point_apply_euler_transformation(harp_spherical_point *pointout,
+                                                     const harp_spherical_point *pointin,
+                                                     const harp_euler_transformation *transformation)
+{
+    harp_vector3d vectorin;
+    harp_vector3d vectorout;
+
+    /* First, convert (lat,lon) to (x,y,z) coordinates */
+    harp_vector3d_from_spherical_point(&vectorin, pointin);
+
+    /* Rotate the vector around the 3 Euler axes to get the output vector */
+    vector3d_apply_euler_transformation(&vectorout, &vectorin, transformation);
+
+    /* Finally, convert the rotated vector (x,y,z) to (lat,lon) coordinates */
+    harp_spherical_point_from_vector3d(pointout, &vectorout);
+
+    harp_spherical_point_check(pointout);
 }

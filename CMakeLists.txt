@@ -234,7 +234,6 @@ set(LIBHARP_SOURCES
   libharp/harp-geometry-sphere-polygon.c
   libharp/harp-geometry-vector3d.c
   libharp/harp-geometry-util.c
-  libharp/harp-geometry-wgs84.c
   libharp/harp-geometry.h
   libharp/harp-ingest-ace_fts_l2.c
   libharp/harp-ingest-aeolus_l1b.c

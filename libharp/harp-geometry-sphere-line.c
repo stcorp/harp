@@ -42,20 +42,9 @@
  *     psi    the last   rotation angle around z-axis
  */
 
-/* Convert a line to an inverse Euler transformation */
-void harp_inverse_euler_transformation_from_spherical_line(harp_euler_transformation *inverse_transformation,
-                                                           const harp_spherical_line *line)
-{
-    /* First, derive the not-inverted transformation */
-    harp_euler_transformation_from_spherical_line(inverse_transformation, line);
-
-    /* Invert */
-    harp_euler_transformation_invert(inverse_transformation);
-}
-
 /* Convert a line to an Euler transformation */
-void harp_euler_transformation_from_spherical_line(harp_euler_transformation *transformation,
-                                                   const harp_spherical_line *line)
+static void euler_transformation_from_spherical_line(harp_euler_transformation *transformation,
+                                                     const harp_spherical_line *line)
 {
     harp_euler_transformation_set_to_zxz(transformation);
 
@@ -64,8 +53,35 @@ void harp_euler_transformation_from_spherical_line(harp_euler_transformation *tr
     transformation->psi = line->psi;
 }
 
+/* Convert a line to an inverse Euler transformation */
+void harp_inverse_euler_transformation_from_spherical_line(harp_euler_transformation *inverse_transformation,
+                                                           const harp_spherical_line *line)
+{
+    /* First, derive the not-inverted transformation */
+    euler_transformation_from_spherical_line(inverse_transformation, line);
+
+    /* Invert */
+    harp_euler_transformation_invert(inverse_transformation);
+}
+
+/* Transform a spherical line using an Euler transformation */
+static void spherical_line_apply_euler_transformation(harp_spherical_line *lineout, const harp_spherical_line *linein,
+                                                      const harp_euler_transformation *transformation)
+{
+    harp_euler_transformation transformationtemp[2];
+
+    euler_transformation_from_spherical_line(&transformationtemp[0], linein);
+
+    harp_euler_transformation_transform_to_zxz_euler_transformation(&transformationtemp[1], &transformationtemp[0],
+                                                                    transformation);
+    lineout->phi = transformationtemp[1].phi;
+    lineout->theta = transformationtemp[1].theta;
+    lineout->psi = transformationtemp[1].psi;
+    lineout->length = linein->length;
+}
+
 /* Swap the begin point and end point of a spherical line */
-static void harp_spherical_line_swap_begin_end(harp_spherical_line *lineout, const harp_spherical_line *linein)
+static void spherical_line_swap_begin_end(harp_spherical_line *lineout, const harp_spherical_line *linein)
 {
     harp_euler_transformation transformation;
     harp_spherical_line linetemp;
@@ -85,11 +101,11 @@ static void harp_spherical_line_swap_begin_end(harp_spherical_line *lineout, con
     transformation.theta = linein->theta;
     transformation.psi = linein->psi;
 
-    harp_spherical_line_apply_euler_transformation(lineout, &linetemp, &transformation);
+    spherical_line_apply_euler_transformation(lineout, &linetemp, &transformation);
 }
 
 /* Check if two spherical lines are equal */
-int harp_spherical_line_equal(const harp_spherical_line *line1, const harp_spherical_line *line2)
+static int spherical_line_equal(const harp_spherical_line *line1, const harp_spherical_line *line2)
 {
     if (HARP_GEOMETRY_FPne(line1->length, line2->length))
     {
@@ -116,29 +132,13 @@ int harp_spherical_line_equal(const harp_spherical_line *line1, const harp_spher
     return 0;
 }
 
-/* Transform a spherical line using an Euler transformation */
-void harp_spherical_line_apply_euler_transformation(harp_spherical_line *lineout, const harp_spherical_line *linein,
-                                                    const harp_euler_transformation *transformation)
-{
-    harp_euler_transformation transformationtemp[2];
-
-    harp_euler_transformation_from_spherical_line(&transformationtemp[0], linein);
-
-    harp_euler_transformation_transform_to_zxz_euler_transformation(&transformationtemp[1], &transformationtemp[0],
-                                                                    transformation);
-    lineout->phi = transformationtemp[1].phi;
-    lineout->theta = transformationtemp[1].theta;
-    lineout->psi = transformationtemp[1].psi;
-    lineout->length = linein->length;
-}
-
 /* Determine begin point of spherical line */
 void harp_spherical_line_begin(harp_spherical_point *point, const harp_spherical_line *line)
 {
     harp_spherical_point pointtmp = { 0.0, 0.0 };
     harp_euler_transformation euler;
 
-    harp_euler_transformation_from_spherical_line(&euler, line);
+    euler_transformation_from_spherical_line(&euler, line);
     harp_spherical_point_apply_euler_transformation(point, &pointtmp, &euler);
 }
 
@@ -150,34 +150,8 @@ void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_l
 
     pointtmp.lon = line->length;
 
-    harp_euler_transformation_from_spherical_line(&euler, line);
+    euler_transformation_from_spherical_line(&euler, line);
     harp_spherical_point_apply_euler_transformation(point, &pointtmp, &euler);
-}
-
-/* Return a point at a line at given length position */
-int harp_spherical_line_point_by_length(harp_spherical_point *point, const harp_spherical_line *line, double length)
-{
-    harp_euler_transformation se;
-    harp_spherical_point sp = { 0.0, 0.0 };
-
-    if (0.0 > length || length > line->length)
-    {
-        /* Return false */
-        return 0;
-    }
-
-    harp_euler_transformation_set_to_zxz(&se);
-
-    se.phi = line->phi;
-    se.theta = line->theta;
-    se.psi = line->psi;
-
-    sp.lon = length;
-
-    harp_spherical_point_apply_euler_transformation(point, &sp, &se);
-
-    /* Return true */
-    return 1;
 }
 
 int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line *line1,
@@ -191,13 +165,13 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
 
     switched = 0;
 
-    if (harp_spherical_line_equal(line1, line2))
+    if (spherical_line_equal(line1, line2))
     {
         return HARP_GEOMETRY_LINE_EQUAL;
     }
 
-    harp_spherical_line_swap_begin_end(&sl1, line1);
-    if (harp_spherical_line_equal(&sl1, line2))
+    spherical_line_swap_begin_end(&sl1, line1);
+    if (spherical_line_equal(&sl1, line2))
     {
         return HARP_GEOMETRY_LINE_CONTAINS;
     }
@@ -208,14 +182,14 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
     {
         harp_inverse_euler_transformation_from_spherical_line(&se, line1);
         sl1.length = line1->length;
-        harp_spherical_line_apply_euler_transformation(&sl2, line2, &se);
+        spherical_line_apply_euler_transformation(&sl2, line2, &se);
         switched = 0;
     }
     else if (HARP_GEOMETRY_FPge(line2->length, line1->length))
     {
         harp_inverse_euler_transformation_from_spherical_line(&se, line2);
         sl1.length = line2->length;
-        harp_spherical_line_apply_euler_transformation(&sl2, line1, &se);
+        spherical_line_apply_euler_transformation(&sl2, line1, &se);
         switched = 1;
     }
     if (HARP_GEOMETRY_FPzero(sl1.length))
@@ -349,7 +323,7 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
 }
 
 /* Return a meridian line for a given longitude [rad] */
-void harp_spherical_line_meridian(harp_spherical_line *line, double lon)
+static void spherical_line_meridian(harp_spherical_line *line, double lon)
 {
     harp_spherical_point point;
 
@@ -384,7 +358,7 @@ int harp_spherical_line_from_spherical_points(harp_spherical_line *line, const h
     {
         if (HARP_GEOMETRY_FPeq(point_begin->lon, point_end->lon))
         {
-            harp_spherical_line_meridian(line, point_begin->lon);
+            spherical_line_meridian(line, point_begin->lon);
             return 1;   /* true */
         }
         return 0;       /* false */

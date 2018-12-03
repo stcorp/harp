@@ -171,24 +171,15 @@ void harp_spherical_point_deg_from_rad(harp_spherical_point *point);
 double harp_spherical_point_distance(const harp_spherical_point *pointp, const harp_spherical_point *pointq);
 
 /* Spherical line functions */
-int harp_spherical_line_equal(const harp_spherical_line *line1, const harp_spherical_line *line2);
-void harp_spherical_line_meridian(harp_spherical_line *line, double lon);
 void harp_spherical_line_begin(harp_spherical_point *point, const harp_spherical_line *line);
 void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_line *line);
-void harp_inverse_euler_transformation_from_spherical_line(harp_euler_transformation *inverse_transformation,
-                                                           const harp_spherical_line *line);
-void harp_euler_transformation_from_spherical_line(harp_euler_transformation *transformation,
-                                                   const harp_spherical_line *line);
 int harp_spherical_point_is_at_spherical_line(const harp_spherical_point *point, const harp_spherical_line *line);
 void harp_inverse_euler_transformation_from_spherical_line(harp_euler_transformation *inverse_transformation,
                                                            const harp_spherical_line *line);
-void harp_spherical_line_apply_euler_transformation(harp_spherical_line *lineout, const harp_spherical_line *linein,
-                                                    const harp_euler_transformation *transformation);
 int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line *linea,
                                                        const harp_spherical_line *lineb);
 int harp_spherical_line_from_spherical_points(harp_spherical_line *line, const harp_spherical_point *point_begin,
                                               const harp_spherical_point *point_end);
-int harp_spherical_line_point_by_length(harp_spherical_point *point, const harp_spherical_line *line, double length);
 void harp_spherical_line_spherical_line_intersection_point(const harp_spherical_line *line_p,
                                                            const harp_spherical_line *line_q,
                                                            harp_spherical_point *point_u);
@@ -204,12 +195,7 @@ void harp_euler_transformation_invert(harp_euler_transformation *transformation)
 void harp_spherical_point_apply_euler_transformation(harp_spherical_point *pointout,
                                                      const harp_spherical_point *pointin,
                                                      const harp_euler_transformation *transformation);
-int harp_vector3d_apply_euler_transformation(harp_vector3d *vectorout, const harp_vector3d *vectorin,
-                                             const harp_euler_transformation *transformation);
 void harp_euler_transformation_set_to_zxz(harp_euler_transformation *transformation);
-void harp_inverse_euler_transformation_from_spherical_vector(harp_euler_transformation *inverse_transformation,
-                                                             const harp_spherical_point *sphericalvectorbegin,
-                                                             const harp_spherical_point *sphericalvectorend);
 void harp_euler_transformation_from_spherical_vector(harp_euler_transformation *transformation,
                                                      const harp_spherical_point *sphericalvectorbegin,
                                                      const harp_spherical_point *sphericalvectorend);
@@ -227,18 +213,8 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
                                                           const harp_spherical_line *line);
 int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherical_polygon *polygon_a,
                                                              const harp_spherical_polygon *polygon_b, int recheck);
-int harp_spherical_polygon_get_surface_area(const harp_spherical_polygon *polygon_in, double *area);
-int harp_spherical_polygon_intersect(const harp_spherical_polygon *polygon_a, const harp_spherical_polygon *polygon_b,
-                                     harp_spherical_polygon **polygon_intersect, int *has_intersect);
-double harp_spherical_polygon_spherical_point_distance(const harp_spherical_polygon *polygon,
-                                                       const harp_spherical_point *point);
 
 /* Additional functions. */
-
-/* Calculate the point distance [m] between two points on a sphere */
-int harp_spherical_point_distance_from_latitude_longitude(double latitude_a, double longitude_a,
-                                                          double latitude_b, double longitude_b,
-                                                          double *point_distance);
 
 /* Determine if two areas are overlapping */
 int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygona, const harp_spherical_polygon *polygonb,
@@ -248,20 +224,6 @@ int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygona, c
 int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *polygona,
                                                 const harp_spherical_polygon *polygonb,
                                                 int *polygons_are_overlapping, double *overlapping_fraction);
-
-
-/* Convert latitude, longitude [deg] to Cartesian coordinates [m] */
-void harp_wgs84_ellipsoid_cartesian_coordinates_from_latitude_longitude(double latitude, double longitude,
-                                                                        double *new_x, double *new_y, double *new_z);
-
-/* Convert Cartesian coordinates [m] to latitude, longitude [deg] */
-void harp_wgs84_ellipsoid_latitude_longitude_from_cartesian_coordinates(double x, double y, double z,
-                                                                        double *new_latitude, double *new_longitude);
-
-/* Calculate the point distance [m] between two points [deg] on the WGS84 ellipsoid */
-int harp_wgs84_ellipsoid_point_distance_from_latitude_and_longitude(double latitude_a, double longitude_a,
-                                                                    double latitude_b, double longitude_b,
-                                                                    double *point_distance);
 
 void harp_geographic_average(double latitude_p, double longitude_p, double latitude_q, double longitude_q,
                              double *average_latitude, double *average_longitude);

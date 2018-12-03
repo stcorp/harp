@@ -37,6 +37,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* the haversine function */
+static double hav(double x)
+{
+    return (1 - cos(x)) / 2;
+}
+
 /* check whether a point is within the lat/lon bounds of a polygon */
 static int spherical_polygon_bounds_contains_any_points(const harp_spherical_polygon *polygon, int num_points,
                                                         const harp_spherical_point *point)
@@ -151,8 +157,8 @@ static int spherical_polygon_bounds_contains_any_points(const harp_spherical_pol
 }
 
 /* Derive line segment from edge of polygon */
-static int harp_spherical_line_segment_from_polygon(harp_spherical_line *line, const harp_spherical_polygon *polygon,
-                                                    int32_t i)
+static int spherical_line_segment_from_polygon(harp_spherical_line *line, const harp_spherical_polygon *polygon,
+                                               int32_t i)
 {
     if (i >= 0 && i < polygon->numberofpoints)
     {
@@ -199,12 +205,12 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
     for (i = 0; i < polygon->numberofpoints; i++)
     {
         /* Grab line segment from polygon */
-        harp_spherical_line_segment_from_polygon(&linei, polygon, i);
+        spherical_line_segment_from_polygon(&linei, polygon, i);
 
         for (k = (i + 1); k < polygon->numberofpoints; k++)
         {
             /* Grab line segment from polygon */
-            harp_spherical_line_segment_from_polygon(&linek, polygon, k);
+            spherical_line_segment_from_polygon(&linek, polygon, k);
 
             /* Determine the relationship between two line segments */
             relationship = harp_spherical_line_spherical_line_relationship(&linei, &linek);
@@ -250,9 +256,9 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
  *   in = pointer to polygon
  *   out pointer to transformed polygon
  */
-static int harp_spherical_polygon_apply_euler_transformation(harp_spherical_polygon *polygon_out,
-                                                             const harp_spherical_polygon *polygon_in,
-                                                             const harp_euler_transformation *se)
+static int spherical_polygon_apply_euler_transformation(harp_spherical_polygon *polygon_out,
+                                                        const harp_spherical_polygon *polygon_in,
+                                                        const harp_euler_transformation *se)
 {
     int32_t i;
 
@@ -409,7 +415,7 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
         se.theta = -1.0 * point->lat;
         se.psi = -1.0 * (double)M_PI_2;
 
-        harp_spherical_polygon_apply_euler_transformation(tmp, polygon, &se);
+        spherical_polygon_apply_euler_transformation(tmp, polygon, &se);
 
         p.lat = 0.0;
         p.lon = 0.0;
@@ -471,7 +477,7 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
                 se.psi = 0.0;
 
                 /* Apply the rotation */
-                harp_spherical_polygon_apply_euler_transformation(ttt, tmp, &se);
+                spherical_polygon_apply_euler_transformation(ttt, tmp, &se);
 
                 /* Copy the polygon ttt back to tmp */
                 memcpy((void *)tmp, (void *)ttt, offsetof(harp_spherical_polygon, point) +
@@ -494,7 +500,7 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
         for (i = 0; i < polygon->numberofpoints; i++)
         {
             /* Create a single line from the segment */
-            harp_spherical_line_segment_from_polygon(&sl, tmp, i);
+            spherical_line_segment_from_polygon(&sl, tmp, i);
 
             /* Determine begin and point of the spherical line */
             harp_spherical_line_begin(&lp[0], &sl);
@@ -693,6 +699,88 @@ int harp_spherical_polygon_overlapping(const harp_spherical_polygon *polygon_a, 
     return 0;
 }
 
+/* Calculate the signed surface area (in [m2]) of polygon */
+static int spherical_polygon_get_surface_area(const harp_spherical_polygon *polygon, double *area_out)
+{
+    int32_t numberofpoints;
+    double latA, lonA, latC, lonC;
+    double area = 0.0;
+    int32_t i;
+
+    if (polygon == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "input polygon for signed surface area calculation is empty");
+        return -1;
+    }
+
+    numberofpoints = polygon->numberofpoints;
+    if (numberofpoints < 3)
+    {
+        *area_out = 0.0;
+        return 0;
+    }
+
+    /* We use Girard's theorem which says that the area of a polygon is the sum of its internal angles minus (n-2)*pi
+     * The actual algorithm itself is based on that of Robbert D. Miller, "Graphics Gems IV", Academic Press, 1994 */
+    for (i = 0; i < numberofpoints; i++)
+    {
+        double a, b, c, s;
+
+        latA = polygon->point[i].lat;
+        lonA = polygon->point[i].lon;
+        if (i < numberofpoints - 1)
+        {
+            latC = polygon->point[i + 1].lat;
+            lonC = polygon->point[i + 1].lon;
+        }
+        else
+        {
+            latC = polygon->point[0].lat;
+            lonC = polygon->point[0].lon;
+        }
+        if (lonC < lonA - M_PI)
+        {
+            lonC += 2 * M_PI;
+        }
+        else if (lonC > lonA + M_PI)
+        {
+            lonC -= 2 * M_PI;
+        }
+
+        if (lonA != lonC)
+        {
+            double sinangle;
+            double E;
+
+            a = M_PI_2 - latC;
+            c = M_PI_2 - latA;
+            sinangle = sqrt(hav(a - c) + sin(a) * sin(c) * hav(lonC - lonA));
+            HARP_CLAMP(sinangle, -1.0, 1.0);
+            b = 2 * asin(sinangle);
+            s = 0.5 * (a + b + c);
+            E = 4 * atan(sqrt(fabs(tan(s / 2) * tan((s - a) / 2) * tan((s - b) / 2) * tan((s - c) / 2))));
+            if (lonC < lonA)
+            {
+                E = -E;
+            }
+            area += E;
+        }
+    }
+
+    area = fabs(area);
+
+    /* Take the area that covers less than half of the sphere */
+    if (area > 2 * M_PI)
+    {
+        area = 4 * M_PI - area;
+    }
+
+    /* Convert area [rad2] to [m2] */
+    *area_out = CONST_EARTH_RADIUS_WGS84_SPHERE * CONST_EARTH_RADIUS_WGS84_SPHERE * area;
+
+    return 0;
+}
+
 /* Determine whether two polygons overlap, and if so
  * calculate the overlapping fraction of the two polygons */
 int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *polygon_a,
@@ -790,7 +878,7 @@ int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *po
                 harp_spherical_line line_b;
                 int32_t offset_b = 0;
 
-                harp_spherical_line_segment_from_polygon(&line_a, polygon_a, offset_a);
+                spherical_line_segment_from_polygon(&line_a, polygon_a, offset_a);
 
                 /* find line segment in polygon b that crosses line_a */
                 while (offset_b < polygon_b->numberofpoints)
@@ -800,7 +888,7 @@ int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *po
                     if ((point_b_in_polygon_a[offset_b] && !point_b_in_polygon_a[next_offset_b]) ||
                         (!point_b_in_polygon_a[offset_b] && point_b_in_polygon_a[next_offset_b]))
                     {
-                        harp_spherical_line_segment_from_polygon(&line_b, polygon_b, offset_b);
+                        spherical_line_segment_from_polygon(&line_b, polygon_b, offset_b);
                         if (harp_spherical_line_spherical_line_relationship(&line_a, &line_b) !=
                             HARP_GEOMETRY_LINE_SEPARATE)
                         {
@@ -884,13 +972,13 @@ int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *po
         }
 
         /* Calculate areaAB = surface area of intersection polygon */
-        harp_spherical_polygon_get_surface_area(polygon_intersect, &area_ab);
+        spherical_polygon_get_surface_area(polygon_intersect, &area_ab);
 
         /* Calculate areaA = surface area of polygon A */
-        harp_spherical_polygon_get_surface_area(polygon_a, &area_a);
+        spherical_polygon_get_surface_area(polygon_a, &area_a);
 
         /* Calculate areaB = surface area of polygon B */
-        harp_spherical_polygon_get_surface_area(polygon_b, &area_b);
+        spherical_polygon_get_surface_area(polygon_b, &area_b);
 
         /* Overlapping fraction = areaAB / min(areaA, areaB) */
         min_area_a_area_b = (area_a < area_b ? area_a : area_b);
@@ -919,94 +1007,6 @@ int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *po
     return 0;
 }
 
-/* the haversine function */
-static double hav(double x)
-{
-    return (1 - cos(x)) / 2;
-}
-
-/* Calculate the signed surface area (in [m2]) of polygon */
-int harp_spherical_polygon_get_surface_area(const harp_spherical_polygon *polygon, double *area_out)
-{
-    int32_t numberofpoints;
-    double latA, lonA, latC, lonC;
-    double area = 0.0;
-    int32_t i;
-
-    if (polygon == NULL)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "input polygon for signed surface area calculation is empty");
-        return -1;
-    }
-
-    numberofpoints = polygon->numberofpoints;
-    if (numberofpoints < 3)
-    {
-        *area_out = 0.0;
-        return 0;
-    }
-
-    /* We use Girard's theorem which says that the area of a polygon is the sum of its internal angles minus (n-2)*pi
-     * The actual algorithm itself is based on that of Robbert D. Miller, "Graphics Gems IV", Academic Press, 1994 */
-    for (i = 0; i < numberofpoints; i++)
-    {
-        double a, b, c, s;
-
-        latA = polygon->point[i].lat;
-        lonA = polygon->point[i].lon;
-        if (i < numberofpoints - 1)
-        {
-            latC = polygon->point[i + 1].lat;
-            lonC = polygon->point[i + 1].lon;
-        }
-        else
-        {
-            latC = polygon->point[0].lat;
-            lonC = polygon->point[0].lon;
-        }
-        if (lonC < lonA - M_PI)
-        {
-            lonC += 2 * M_PI;
-        }
-        else if (lonC > lonA + M_PI)
-        {
-            lonC -= 2 * M_PI;
-        }
-
-        if (lonA != lonC)
-        {
-            double sinangle;
-            double E;
-
-            a = M_PI_2 - latC;
-            c = M_PI_2 - latA;
-            sinangle = sqrt(hav(a - c) + sin(a) * sin(c) * hav(lonC - lonA));
-            HARP_CLAMP(sinangle, -1.0, 1.0);
-            b = 2 * asin(sinangle);
-            s = 0.5 * (a + b + c);
-            E = 4 * atan(sqrt(fabs(tan(s / 2) * tan((s - a) / 2) * tan((s - b) / 2) * tan((s - c) / 2))));
-            if (lonC < lonA)
-            {
-                E = -E;
-            }
-            area += E;
-        }
-    }
-
-    area = fabs(area);
-
-    /* Take the area that covers less than half of the sphere */
-    if (area > 2 * M_PI)
-    {
-        area = 4 * M_PI - area;
-    }
-
-    /* Convert area [rad2] to [m2] */
-    *area_out = CONST_EARTH_RADIUS_WGS84_SPHERE * CONST_EARTH_RADIUS_WGS84_SPHERE * area;
-
-    return 0;
-}
-
 /* Given number of vertex points, return empty
  * spherical polygon data structure with points (lat,lon) in  [rad] */
 int harp_spherical_polygon_new(int32_t numberofpoints, harp_spherical_polygon **polygon)
@@ -1031,8 +1031,8 @@ void harp_spherical_polygon_delete(harp_spherical_polygon *polygon)
     free(polygon);
 }
 
-static int harp_spherical_polygon_begin_end_point_equal(long measurement_id, long num_vertices,
-                                                        const double *latitude_bounds, const double *longitude_bounds)
+static int spherical_polygon_begin_end_point_equal(long measurement_id, long num_vertices,
+                                                   const double *latitude_bounds, const double *longitude_bounds)
 {
     long ii_begin, ii_end;
     double deg2rad = (double)(CONST_DEG2RAD);
@@ -1065,7 +1065,7 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
     int32_t i;
 
     /* Check if the first and last spherical point of the polygon are equal */
-    if (harp_spherical_polygon_begin_end_point_equal(measurement_id, num_vertices, latitude_bounds, longitude_bounds))
+    if (spherical_polygon_begin_end_point_equal(measurement_id, num_vertices, latitude_bounds, longitude_bounds))
     {
         /* If this is the case, do not include the last point */
         num_points--;
@@ -1098,36 +1098,6 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
 
     *new_polygon = polygon;
     return 0;
-}
-
-/* Calculate the distance to the nearest line segment of the polygon */
-double harp_spherical_polygon_spherical_point_distance(const harp_spherical_polygon *polygon,
-                                                       const harp_spherical_point *point)
-{
-    harp_spherical_line linei;
-    int32_t i;
-    double d;
-    double d_nearest = 10.0;    /* 10 times sphere radius */
-
-    for (i = 0; i < polygon->numberofpoints; i++)
-    {
-        /* Grab line segment from polygon */
-        harp_spherical_line_segment_from_polygon(&linei, polygon, i);
-
-        /* Calculate distance point-line */
-        d = harp_spherical_line_spherical_point_distance(&linei, point);
-        if (d < d_nearest)
-        {
-            d_nearest = d;
-        }
-    }
-
-    if (d_nearest >= 10.0)
-    {
-        d_nearest = harp_nan();
-    }
-
-    return d_nearest;
 }
 
 /** Determine whether a point is in an area on the surface of the Earth
@@ -1249,7 +1219,7 @@ LIBHARP_API int harp_geometry_get_area(int num_vertices, double *latitude_bounds
     {
         return -1;
     }
-    if (harp_spherical_polygon_get_surface_area(polygon, area) != 0)
+    if (spherical_polygon_get_surface_area(polygon, area) != 0)
     {
         harp_spherical_polygon_delete(polygon);
         return -1;
