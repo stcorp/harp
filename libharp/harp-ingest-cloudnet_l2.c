@@ -32,6 +32,7 @@
 #include "coda.h"
 #include "harp-ingestion.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -101,9 +102,11 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
     return 0;
 }
 
-static int read_array_variable(ingest_info *info, const char *name, harp_data_type data_type, harp_array data)
+static int read_array_variable(ingest_info *info, const char *name, long num_elements, harp_data_type data_type,
+                               harp_array data)
 {
     coda_cursor cursor;
+    long actual_num_elements;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -113,6 +116,17 @@ static int read_array_variable(ingest_info *info, const char *name, harp_data_ty
     if (coda_cursor_goto_record_field_by_name(&cursor, name) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (actual_num_elements != num_elements)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected %ld)", name, actual_num_elements,
+                       num_elements);
         return -1;
     }
     if (data_type == harp_type_float)
@@ -125,7 +139,7 @@ static int read_array_variable(ingest_info *info, const char *name, harp_data_ty
             return -1;
         }
         /* filter for NaN */
-        for (i = 0; i < info->num_times; i++)
+        for (i = 0; i < num_elements; i++)
         {
             if (data.float_data[i] == FILL_VALUE_NO_DATA)
             {
@@ -133,8 +147,9 @@ static int read_array_variable(ingest_info *info, const char *name, harp_data_ty
             }
         }
     }
-    else if (data_type == harp_type_int8)
+    else
     {
+        assert(data_type == harp_type_int8);
         if (coda_cursor_read_int8_array(&cursor, data.int8_data, coda_array_ordering_c) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -220,27 +235,38 @@ static int read_sensor_altitude(void *user_data, harp_array data)
 
 static int read_cloud_base_height(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "cloud_base_height", harp_type_float, data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "cloud_base_height", info->num_times, harp_type_float, data);
 }
 
 static int read_cloud_top_height(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "cloud_top_height", harp_type_float, data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "cloud_top_height", info->num_times, harp_type_float, data);
 }
 
 static int read_altitude(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "height", harp_type_float, data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "height", info->num_altitudes, harp_type_float, data);
 }
 
 static int read_cloud_type(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "target_classification", harp_type_int8, data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "target_classification", info->num_times * info->num_altitudes, harp_type_int8,
+                               data);
 }
 
 static int read_detection_status(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "detection_status", harp_type_int8, data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "detection_status", info->num_times * info->num_altitudes, harp_type_int8, data);
 }
 
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
