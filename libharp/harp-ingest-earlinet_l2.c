@@ -32,6 +32,7 @@
 #include "coda.h"
 #include "harp-ingestion.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -146,11 +147,12 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
     return 0;
 }
 
-static int read_array_variable(ingest_info *info, const char *name, harp_array data, short *unit_is_percent)
+static int read_array_variable(ingest_info *info, const char *name, long num_elements, harp_array data,
+                               short *unit_is_percent)
 {
     coda_cursor cursor;
     double *double_data;
-    long num_elements, l;
+    long actual_num_elements, l;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -162,12 +164,18 @@ static int read_array_variable(ingest_info *info, const char *name, harp_array d
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_double_array(&cursor, data.double_data, coda_array_ordering_c) != 0)
+    if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+    if (actual_num_elements != num_elements)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected %ld)", name, actual_num_elements,
+                       num_elements);
+        return -1;
+    }
+    if (coda_cursor_read_double_array(&cursor, data.double_data, coda_array_ordering_c) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -267,7 +275,7 @@ static int read_datetime(void *user_data, harp_array data)
     double *double_data;
     long i;
 
-    if (read_array_variable(info, "Time", data, NULL) != 0)
+    if (read_array_variable(info, "Time", info->num_times, data, NULL) != 0)
     {
         harp_array int32_array;
         int year, month, day;
@@ -319,12 +327,16 @@ static int read_datetime_length(void *user_data, harp_array data)
 
 static int read_altitude(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "Altitude", data, NULL);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "Altitude", info->num_altitudes, data, NULL);
 }
 
 static int read_backscatter(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "Backscatter", data, NULL);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "Backscatter", info->num_times * info->num_altitudes, data, NULL);
 }
 
 static int read_backscatter_uncertainty(void *user_data, harp_array data)
@@ -335,14 +347,16 @@ static int read_backscatter_uncertainty(void *user_data, harp_array data)
     long l;
     short units_is_percent;
 
-    if (read_array_variable(info, "ErrorBackscatter", data, &units_is_percent) != 0)
+    if (read_array_variable(info, "ErrorBackscatter", info->num_times * info->num_altitudes, data, &units_is_percent) !=
+        0)
     {
         return -1;
     }
     if (units_is_percent)
     {
         backscatter_values.double_data = info->values_buffer;
-        if (read_array_variable(info, "Backscatter", backscatter_values, NULL) != 0)
+        if (read_array_variable(info, "Backscatter", info->num_times * info->num_altitudes, backscatter_values, NULL) !=
+            0)
         {
             return -1;
         }
@@ -372,14 +386,16 @@ static int read_dust_layer_height(void *user_data, harp_array data)
 
     if (info->is_time_series)
     {
-        return read_array_variable((ingest_info *)user_data, "DustLayerHeight", data, NULL);
+        return read_array_variable((ingest_info *)user_data, "DustLayerHeight", info->num_times, data, NULL);
     }
     return read_scalar_variable((ingest_info *)user_data, "DustLayerHeight", data);
 }
 
 static int read_extinction(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "Extinction", data, NULL);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "Extinction", info->num_times * info->num_altitudes, data, NULL);
 }
 
 static int read_extinction_uncertainty(void *user_data, harp_array data)
@@ -390,14 +406,16 @@ static int read_extinction_uncertainty(void *user_data, harp_array data)
     long l;
     short units_is_percent;
 
-    if (read_array_variable(info, "ErrorExtinction", data, &units_is_percent) != 0)
+    if (read_array_variable(info, "ErrorExtinction", info->num_times * info->num_altitudes, data, &units_is_percent) !=
+        0)
     {
         return -1;
     }
     if (units_is_percent)
     {
         extinction_values.double_data = info->values_buffer;
-        if (read_array_variable(info, "Extinction", extinction_values, NULL) != 0)
+        if (read_array_variable(info, "Extinction", info->num_times * info->num_altitudes, extinction_values, NULL) !=
+            0)
         {
             return -1;
         }
@@ -423,12 +441,16 @@ static int read_extinction_uncertainty(void *user_data, harp_array data)
 
 static int read_h2o_mass_mixing_ratio(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "WaterVaporMixingRatio", data, NULL);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "WaterVaporMixingRatio", info->num_times * info->num_altitudes, data, NULL);
 }
 
 static int read_h2o_mass_mixing_ratio_uncertainty(void *user_data, harp_array data)
 {
-    return read_array_variable((ingest_info *)user_data, "ErrorWaterVapor", data, NULL);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_variable(info, "ErrorWaterVapor", info->num_times * info->num_altitudes, data, NULL);
 }
 
 /* Include functions */
