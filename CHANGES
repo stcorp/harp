@@ -7,6 +7,8 @@
 * Fixed issue where listing derivations for a specific variable would not show
   all possible conversions.
 
+* Add derivation for cloud height from cloud base/top height.
+
 * Added support for Dobson, Pandora and Sonde products in GEOMS format.
 
 * Updates to ACE-FTS, GOME/GOME-2 L2, and S5P L2 product ingestions.
