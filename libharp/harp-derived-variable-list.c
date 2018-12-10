@@ -4540,6 +4540,26 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         }
     }
 
+    /*** cloud height ***/
+    if (!has_vertical)
+    {
+        if (harp_variable_conversion_new("cloud_height", harp_type_double, HARP_UNIT_LENGTH, num_dimensions,
+                                         dimension_type, 0, get_midpoint_from_begin_and_end, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "cloud_base_height", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "cloud_top_height", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** column number density ***/
 
     /* time dependent from independent */

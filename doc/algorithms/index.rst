@@ -23,6 +23,7 @@ Variable Conversions
    derivations/aerosol_optical_depth
    derivations/altitude
    derivations/altitude_bounds
+   derivations/cloud_height
    derivations/column_mass_density
    derivations/column_mass_mixing_ratio
    derivations/column_number_density
