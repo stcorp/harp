@@ -326,9 +326,9 @@ include file.</p>
 <dd><p class="first last">The configure script will automatically try to locate the HDF4
 libraries in the default locations for libraries (<code class="docutils literal notranslate"><span class="pre">/usr/local/lib</span></code>
 is usually not considered a default location!).
-If <code class="docutils literal notranslate"><span class="pre">./configure</span></code> complains that it can’t find the <code class="docutils literal notranslate"><span class="pre">df</span></code> or
-<code class="docutils literal notranslate"><span class="pre">mfhdf</span></code> library files, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with the
-location of these library files.</p>
+If <code class="docutils literal notranslate"><span class="pre">./configure</span></code> complains that it can’t find the <code class="docutils literal notranslate"><span class="pre">df</span></code>, <code class="docutils literal notranslate"><span class="pre">hdf</span></code>,
+or <code class="docutils literal notranslate"><span class="pre">mfhdf</span></code> library files, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with
+the location of these library files.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">HDF4_INCLUDE=&lt;HDF4</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt>
 <dd><p class="first last">The configure script will automatically try to locate the HDF4 include
@@ -364,8 +364,8 @@ for Python.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">PYTHON=&lt;Python</span> <span class="pre">executable&gt;</span></code> :</dt>
 <dd><p class="first last">If you want to build the Python interface you should also use this option
 to tell the configuration script where your Python executable is located
-(e.g. PYTHON=/usr/bin/python). Make sure that you provide an absolute path
-for the Python executable (i.e. the path should start with a ‘/’).</p>
+(e.g. <code class="docutils literal notranslate"><span class="pre">PYTHON=/usr/bin/python</span></code>). Make sure that you provide an absolute
+path for the Python executable (i.e. the path should start with a <code class="docutils literal notranslate"><span class="pre">/</span></code>).</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">--enable-idl</span></code> :</dt>
 <dd><p class="first last">By default HARP is built without the IDL interface.

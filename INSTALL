@@ -167,9 +167,9 @@ library and executables:
         The configure script will automatically try to locate the HDF4
         libraries in the default locations for libraries (``/usr/local/lib``
         is usually not considered a default location!).
-        If ``./configure`` complains that it can't find the ``df`` or
-        ``mfhdf`` library files, pass this option to ``./configure`` with the
-        location of these library files.
+        If ``./configure`` complains that it can't find the ``df``, ``hdf``,
+        or ``mfhdf`` library files, pass this option to ``./configure`` with
+        the location of these library files.
 
     ``HDF4_INCLUDE=<HDF4 include file directory>`` :
         The configure script will automatically try to locate the HDF4 include
@@ -205,8 +205,8 @@ library and executables:
     ``PYTHON=<Python executable>`` :
         If you want to build the Python interface you should also use this option
         to tell the configuration script where your Python executable is located
-        (e.g. PYTHON=/usr/bin/python). Make sure that you provide an absolute path
-        for the Python executable (i.e. the path should start with a '/').
+        (e.g. ``PYTHON=/usr/bin/python``). Make sure that you provide an absolute
+        path for the Python executable (i.e. the path should start with a ``/``).
 
     ``--enable-idl`` :
         By default HARP is built without the IDL interface.
