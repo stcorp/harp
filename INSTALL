@@ -216,7 +216,7 @@ library and executables:
         If you want to build the IDL interface you should also use this
         option to tell the configuration script where you have installed IDL.
         The <IDL root directory> is the root directory of your IDL
-        installation. It should contain for instance the `bin` directory with
+        installation. It should contain for instance the ``bin`` directory with
         the idl executable and an ``external`` directory containing the file
         ``export.h``. Also make sure that you provide an absolute path for the
         IDL root directory (i.e. starting with a ``/``).
