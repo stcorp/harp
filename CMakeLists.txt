@@ -22,6 +22,7 @@ set(HARP_FORMAT_VERSION_MINOR 0)
 set(HARP_CONVENTION \"HARP-${HARP_FORMAT_VERSION_MAJOR}.${HARP_FORMAT_VERSION_MINOR}\")
 
 
+# General setup
 set(CMAKE_MODULE_PATH
   ${HARP_SOURCE_DIR}/CMakeModules
   ${CMAKE_MODULE_PATH}
@@ -33,7 +34,9 @@ include(CheckLibraryExists)
 include(CheckIncludeFile)
 include(CheckSymbolExists)
 include(CheckTypeSize)
+include(CheckCSourceCompiles)
 include(TestBigEndian)
+include(CMakeDependentOption)
 
 if(NOT MSVC AND NOT CMAKE_BUILD_TYPE AND NOT CMAKE_C_FLAGS)
   set(CMAKE_C_FLAGS "-O2 -g"
@@ -47,6 +50,7 @@ option(HARP_BUILD_MATLAB "build MATLAB interface" OFF)
 option(HARP_BUILD_PYTHON "build Python interface" OFF)
 option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
+option(HARP_ENABLE_CONDA_INSTALL OFF)
 set(HARP_EXPAT_NAME_MANGLE 1)
 set(HARP_NETCDF_NAME_MANGLE 1)
 # Note that we also add an explicit -D option for HARP_UDUNITS2_NAME_MANGLE, since the udunits2 sources do not include config.h
@@ -59,14 +63,51 @@ set(XML_LARGE_SIZE 1)
 set(XML_CONTEXT_BYTES 1024)
 
 if(MSVC)
-# Suppress warnings from VC on deprecated POSIX names and unsafe functions
-add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS)
+  # Suppress warnings from VC on deprecated POSIX names and unsafe functions
+  add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)
 
-if(NOT MSVC)
-set(MATHLIB m)
-endif(NOT MSVC)
+if(HARP_BUILD_PYTHON)
+  find_package(PythonInterp)
+  if(NOT PYTHONINTERP_FOUND)
+    message(FATAL_ERROR "PYTHON interpreter not found.")
+  endif(NOT PYTHONINTERP_FOUND)
+  execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib(1,0,prefix=''))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
+  set(HARP_PYTHON_INSTALL_DIR "${PYTHON_INSTALL_DIR}" CACHE STRING "Install location for HARP Python package")
+endif()
 
+set(BIN_PREFIX bin)
+set(LIB_PREFIX lib)
+set(INCLUDE_PREFIX include)
+set(DOC_PREFIX share/harp/doc)
+set(PYTHON_PREFIX ${HARP_PYTHON_INSTALL_DIR}/harp)
+set(MATLAB_PREFIX lib/harp/matlab)
+set(IDL_PREFIX lib/harp/idl)
+set(CODADEF_PREFIX share/coda/definitions)
+set(UDUNITS2_PREFIX share/harp)
+if(WIN32)
+  # we use a different installation directory structure on Windows
+  if(HARP_ENABLE_CONDA_INSTALL)
+    # all non-python components need to be installed in a Library sub-directory for Conda on Windows
+    set(BIN_PREFIX Library/bin)
+    set(LIB_PREFIX Library/lib)
+    set(INCLUDE_PREFIX Library/include)
+    set(DOC_PREFIX Library/share/harp/doc)
+    set(MATLAB_PREFIX Library/lib/harp/matlab)
+    set(IDL_PREFIX Library/lib/harp/idl)
+    set(CODADEF_PREFIX Library/share/coda/definitions)
+    set(UDUNITS2_PREFIX Library/share/harp)
+  else(CODA_ENABLE_CONDA_INSTALL)
+    set(DOC_PREFIX doc)
+    set(PYTHON_PREFIX python/harp)
+  endif(HARP_ENABLE_CONDA_INSTALL)
+endif(WIN32)
+
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${LIB_PREFIX}")
+
+if(NOT MSVC)
+  set(MATHLIB m)
+endif(NOT MSVC)
 
 set(INCLUDES "")
 
@@ -381,10 +422,10 @@ set(LIBUDUNITS2_SOURCES
   ${FLEX_utscanner_OUTPUTS})
 
 if(WIN32)
-set(LIBUDUNITS2_SOURCES
-  ${LIBUDUNITS2_SOURCES}
-  udunits2/tsearch.c
-  udunits2/tsearch.h)
+  set(LIBUDUNITS2_SOURCES
+    ${LIBUDUNITS2_SOURCES}
+    udunits2/tsearch.c
+    udunits2/tsearch.h)
 endif(WIN32)
 
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/udunits2)
@@ -418,10 +459,9 @@ set(LIBNETCDF_SOURCES
 
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/expat ${CMAKE_CURRENT_SOURCE_DIR}/netcdf)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION include)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION ${INCLUDE_PREFIX})
 
-set(UDUNITS2_XML_DIR_RELATIVE share/harp)
-set(UDUNITS2_XML_DIR ${CMAKE_INSTALL_PREFIX}/${UDUNITS2_XML_DIR_RELATIVE})
+set(UDUNITS2_XML_DIR ${CMAKE_INSTALL_PREFIX}/${UDUNITS2_PREFIX})
 add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${UDUNITS2_XML_DIR}/udunits2.xml" -DHARP_UDUNITS2_NAME_MANGLE)
 add_library(harp SHARED ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES} ${LIBEXPAT_SOURCES})
 target_link_libraries(harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES})
@@ -431,33 +471,30 @@ set_target_properties(harp PROPERTIES
 if(WIN32)
   # Also set DLL compile flags
   set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL -DLIBHARPDLL_EXPORTS -DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL -DYY_NO_UNISTD_H")
-  install(TARGETS harp RUNTIME DESTINATION bin ARCHIVE DESTINATION libs)
+  install(TARGETS harp RUNTIME DESTINATION ${BIN_PREFIX} ARCHIVE DESTINATION ${LIB_PREFIX})
 else(WIN32)
-  install(TARGETS harp DESTINATION lib)
+  install(TARGETS harp DESTINATION ${LIB_PREFIX})
 endif(WIN32)
 
 add_library(harp_static STATIC ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
-
 # On Windows, we want libharp.lib for static, harp.dll & harp.lib for shared.
 # On Unix, we want libharp.a and libharp.so
 if(WIN32)
-  set_target_properties(harp_static PROPERTIES
-    COMPILE_FLAGS "-DYY_NO_UNISTD_H"
-    OUTPUT_NAME "libharp")
-  install(TARGETS harp_static DESTINATION libs)
+  set_target_properties(harp_static PROPERTIES OUTPUT_NAME "libharp")
+  set_target_properties(harp_static PROPERTIES COMPILE_FLAGS "-DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL -DYY_NO_UNISTD_H")
+  install(TARGETS harp_static DESTINATION ${LIB_PREFIX})
 else(WIN32)
   set_target_properties(harp_static PROPERTIES OUTPUT_NAME "harp")
-  install(TARGETS harp_static DESTINATION lib)
 endif(WIN32)
+install(TARGETS harp_static DESTINATION ${LIB_PREFIX})
 
 #  harpcheck
 add_executable(harpcheck tools/harpcheck/harpcheck.c)
 target_link_libraries(harpcheck harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
 if(WIN32)
-  # Also set DLL compile flags
   set_target_properties(harpcheck PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpcheck DESTINATION bin)
+install(TARGETS harpcheck DESTINATION ${BIN_PREFIX})
 
 #  harpcollocate
 set(HARPCOLLOCATE_SOURCES
@@ -468,37 +505,33 @@ set(HARPCOLLOCATE_SOURCES
 add_executable(harpcollocate ${HARPCOLLOCATE_SOURCES})
 target_link_libraries(harpcollocate harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
 if(WIN32)
-  # Also set DLL compile flags
   set_target_properties(harpcollocate PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpcollocate DESTINATION bin)
+install(TARGETS harpcollocate DESTINATION ${BIN_PREFIX})
 
 #  harpconvert
 add_executable(harpconvert tools/harpconvert/harpconvert.c)
 target_link_libraries(harpconvert harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
 if(WIN32)
-  # Also set DLL compile flags
   set_target_properties(harpconvert PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpconvert DESTINATION bin)
+install(TARGETS harpconvert DESTINATION ${BIN_PREFIX})
 
 #  harpdump
 add_executable(harpdump tools/harpdump/harpdump.c)
 target_link_libraries(harpdump harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
 if(WIN32)
-  # Also set DLL compile flags
   set_target_properties(harpdump PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpdump DESTINATION bin)
+install(TARGETS harpdump DESTINATION ${BIN_PREFIX})
 
 #  harpmerge
 add_executable(harpmerge tools/harpmerge/harpmerge.c)
 target_link_libraries(harpmerge harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_LIBRARIES} ${MATHLIB})
 if(WIN32)
-  # Also set DLL compile flags
   set_target_properties(harpmerge PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpmerge DESTINATION bin)
+install(TARGETS harpmerge DESTINATION ${BIN_PREFIX})
 
 # idl
 if(HARP_BUILD_IDL)
@@ -509,20 +542,16 @@ if(HARP_BUILD_IDL)
   include_directories(AFTER ${IDL_INCLUDE_DIRS})
   set(HARP_IDL_SOURCES idl/harp_idl.c idl/harp_idl.def)
   add_library(harp_idl MODULE ${HARP_IDL_SOURCES})
-  set_target_properties(harp_idl PROPERTIES
-    PREFIX ""
-    COMPILE_FLAGS "-DLIBHARPDLL")
+  set_target_properties(harp_idl PROPERTIES PREFIX "")
   target_link_libraries(harp_idl harp ${IDL_LIBRARIES})
+  if(WIN32)
+    set_target_properties(harp_idl PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+  endif(WIN32)
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/idl/harp_idl.dlm.in
     ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm)
-  if(WIN32)
-    install(TARGETS harp_idl DESTINATION idl)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm DESTINATION idl)
-  else(WIN32)
-    install(TARGETS harp_idl DESTINATION lib/harp/idl)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm DESTINATION lib/harp/idl)
-  endif(WIN32)
+  install(TARGETS harp_idl DESTINATION ${IDL_PREFIX})
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm DESTINATION ${IDL_PREFIX})
 endif(HARP_BUILD_IDL)
 
 # matlab
@@ -545,38 +574,28 @@ if(HARP_BUILD_MATLAB)
     COMPILE_DEFINITIONS MATLAB_MEX_FILE
     COMPILE_FLAGS "-DLIBHARPDLL")
   target_link_libraries(harp_matlab harp ${Matlab_LIBRARIES})
+  if(WIN32)
+    set_target_properties(harp_matlab PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+  endif(WIN32)
   set(HARP_MATLAB_M_FILES
     matlab/harp_export.m
     matlab/harp_import.m
     matlab/harp_version.m)
-  if(WIN32)
-    install(TARGETS harp_matlab DESTINATION matlab)
-    install(FILES ${HARP_MATLAB_M_FILES} DESTINATION matlab)
-  else(WIN32)
-    install(TARGETS harp_matlab DESTINATION lib/harp/matlab)
-    install(FILES ${HARP_MATLAB_M_FILES} DESTINATION lib/harp/matlab)
-  endif(WIN32)
+  install(TARGETS harp_matlab DESTINATION ${MATLAB_PREFIX})
+  install(FILES ${HARP_MATLAB_M_FILES} DESTINATION ${MATLAB_PREFIX})
 endif(HARP_BUILD_MATLAB)
 
 # python
 if(HARP_BUILD_PYTHON)
-  find_package(PythonInterp)
-  if(NOT PYTHONINTERP_FOUND)
-    message(FATAL_ERROR "PYTHON interpreter not found.")
-  endif(NOT PYTHONINTERP_FOUND)
-  execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib(1,0,prefix=''))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
-  set(HARP_PYTHON_INSTALL_DIR "${PYTHON_INSTALL_DIR}" CACHE STRING "Install location for HARP Python package")
   install(FILES
     python/__init__.py
     python/_harpc.py
     python/_harppy.py
-    DESTINATION ${HARP_PYTHON_INSTALL_DIR}/harp)
+    DESTINATION ${PYTHON_PREFIX})
 endif(HARP_BUILD_PYTHON)
 
 
 # product definition files
-set(CODADEF_INSTALL_DIR share/coda/definitions)
-
 function(add_codadef name)
   file(GLOB CODADEF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}/index.xml)
   if(CODADEF_DIR)
@@ -590,12 +609,12 @@ function(add_codadef name)
       add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}"
         COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
         DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh")
-      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CODADEF} DESTINATION ${CODADEF_INSTALL_DIR})
+      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CODADEF} DESTINATION ${CODADEF_PREFIX}})
       add_custom_target(codadef_${name} ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}")
     endif(WIN32)
   else(CODADEF_DIR)
     file(GLOB CODADEF RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/definitions ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}-*.codadef)
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${CODADEF} DESTINATION ${CODADEF_INSTALL_DIR})
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${CODADEF} DESTINATION ${CODADEF_PREFIX})
   endif(CODADEF_DIR)
 endfunction(add_codadef)
 
@@ -629,7 +648,7 @@ add_codadef(Sentinel5P)
 add_codadef(TEMIS)
 
 # documentation
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION share/harp/doc)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION ${DOC_PREFIX})
 
 # udunits xml files
 install(FILES
@@ -639,21 +658,23 @@ install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-derived.xml
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-prefixes.xml
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2.xml
-  DESTINATION ${UDUNITS2_XML_DIR_RELATIVE})
+  DESTINATION ${UDUNITS2_PREFIX})
 
 # installer
 SET(CPACK_PACKAGE_NAME "harp")
 set(CPACK_PACKAGE_VENDOR "S&T")
 if(WIN32)
-  install(FILES ${CODA_DLLS} ${HDF4_DLLS} ${HDF5_DLLS} DESTINATION bin)
+  install(FILES ${CODA_DLLS} ${HDF4_DLLS} ${HDF5_DLLS} DESTINATION ${BIN_PREFIX})
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Release/harp.exp DESTINATION ${LIB_PREFIX})
   set(CPACK_GENERATOR "WIX")
   configure_file(COPYING copying.txt COPYONLY)
-  set(CPACK_RESOURCE_FILE_LICENSE copying.txt)
   configure_file(README readme.txt COPYONLY)
-  set(CPACK_RESOURCE_FILE_README readme.txt)
+  set(CPACK_RESOURCE_FILE_LICENSE copying.txt)
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/copying.txt" "${CMAKE_CURRENT_BINARY_DIR}/readme.txt" DESTINATION .)
   set(CPACK_PACKAGE_INSTALL_DIRECTORY "HARP")
   set(CPACK_WIX_UPGRADE_GUID "9CF2DA32-201D-4557-BC59-B655216EAD6D")
   set(CPACK_WIX_PRODUCT_GUID "FA7592A4-D91C-4401-863D-CE52DA95EB11")
+  set(CPACK_WIX_PATCH_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cpack_wix_patch.xml")
 endif(WIN32)
 
 include(CPack)

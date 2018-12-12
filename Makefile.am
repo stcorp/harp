@@ -658,6 +658,7 @@ EXTRA_DIST += \
 	CMakeModules/FindSZIP.cmake \
 	CMakeModules/FindZLIB.cmake \
 	config.h.cmake.in \
+	cpack_wix_patch.xml \
 	libharp/harp.h.cmake.in
 
 config.h.cmake.in: config.h.in Makefile.am
