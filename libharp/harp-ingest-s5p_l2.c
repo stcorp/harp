@@ -5899,12 +5899,11 @@ static void register_so2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
 
-    /* SO2_column_number_density_uncertainty_validity */
+    /* SO2_column_number_density_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition,
-                                                   "SO2_column_number_density_uncertainty_validity", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
