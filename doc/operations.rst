@@ -340,7 +340,7 @@ Supported functions:
         generic (without prefix) way.
         Example:
 
-            ``rename("surface_temperature", "temperature")``
+            ``rename(surface_temperature, temperature)``
 
     ``set(option, value)``
         Set a specific option in HARP.
