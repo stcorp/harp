@@ -87,7 +87,7 @@ Release checklist
 - update version number of shared libharp library (both in configure.ac and
   CMakeLists.txt)
 - make sure all documentation is updated accordingly
-- update README (version number at top and in documentation url)
+- update README (version number at top)
 - update CHANGES
 
 Conventions
