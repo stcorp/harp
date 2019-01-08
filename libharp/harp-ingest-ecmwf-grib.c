@@ -3100,7 +3100,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       description, "Pa", include_pressure,
                                                                       read_pressure);
     description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
-        "vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))lnsp)/2";
+        "vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))exp(lnsp))/2";
     harp_variable_definition_add_mapping(variable_definition, NULL, "surface_pressure is available and at least one "
                                          "parameter has vertical coordinate values", "..../coordinateValues[]",
                                          description);
@@ -3112,7 +3112,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       &bounds_dimension[1], description, "Pa",
                                                                       include_pressure, read_pressure_bounds);
     description = "the coordinateValues contain [a(1), ..., a(N+1), b(1), ..., b(N+1)] coefficients for the N+1 "
-        "vertical layer boundaries; p(N-i,1) = a(i) + b(i)lnsp; p(N-i,2) = a(i+1) + b(i+1)lnsp";
+        "vertical layer boundaries; p(N-i,1) = a(i) + b(i)exp(lnsp); p(N-i,2) = a(i+1) + b(i+1)exp(lnsp)";
     harp_variable_definition_add_mapping(variable_definition, NULL, "surface_pressure is available and at least one "
                                          "parameter has vertical coordinate values", "..../coordinateValues[]",
                                          description);
