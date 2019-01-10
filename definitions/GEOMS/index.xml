@@ -20,13 +20,13 @@
   </cd:ProductType>
   <cd:ProductType name="FTIR_TCCON">
     <cd:Description>GEOMS template for FTIR TCCON measurements</cd:Description>
-    <cd:ProductDefinition id="FTIR_TCCON_004_netcdf3" format="netcdf" version="3004">
-      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+    <cd:ProductDefinition id="FTIR_TCCON_005_hdf5" format="hdf5" version="2005">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-FTIR-TCCON-004"</cd:MatchExpression>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-FTIR-TCCON-005"</cd:MatchExpression>
       </cd:DetectionRule>
       <cd:DetectionRule>
-        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.,24) == "GEOMS-TE-FTIR-TCCON-004\000"</cd:MatchExpression>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.,24) == "GEOMS-TE-FTIR-TCCON-005\000"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
