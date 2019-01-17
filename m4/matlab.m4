@@ -29,10 +29,10 @@ AC_DEFUN([ST_CHECK_MEX_EXTENSION],
 [AC_MSG_CHECKING([for mex extension])
 AC_CANONICAL_HOST
 case $host in
-    x86_64-unknown-linux-gnu)
+    x86_64-*-linux-*)
         MEXEXT=.mexa64
         ;;
-    i*86-pc-linux-*)
+    i*86-*-linux-*)
         MEXEXT=.mexglx
         ;;
     i386-apple-darwin*)
