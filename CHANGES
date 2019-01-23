@@ -1,3 +1,5 @@
+* Added support for scene albedo/pressure/type variables.
+
 * Fix problem in matlab mex extenion determination on linux when using the
   configure script.
 

@@ -55,6 +55,7 @@ cloud_top_albedo                                                              X 
 cloud_top_height                                                              X            X
 cloud_top_pressure                                                            X            X
 cloud_top_temperature                                                         X            X
+cloud_type                                                                    X            X
 collocation_index                                                                                        zero-based index as provided in the collocation result file
 column_density                                stratospheric,  amf, apriori,   X       X    X             this is the mass density
                                               tropospheric    avk, dfs, sic
@@ -84,6 +85,7 @@ integration_time                                                                
                                                                                                          only use if integration time differs from datetime_length;
                                                                                                          integration_time longer than datetime_length that covers multiple
                                                                                                          datetime values means replication of measured value in time dimension
+land_type                                                                     X            X
 latitude                                      sensor                          X            (lat)
 latitude_bounds                                                                            (lat)
 longitude                                     sensor                          X            (lon)
@@ -107,6 +109,9 @@ relative_vorticity                                                            X 
 scan_direction_type
 scan_subindex
 scattering_angle                                                              X
+scene_albedo                                                                  X            X
+scene_pressure                                                                X            X
+scene_type                                                                    X            X
 sensor_azimuth_angle                                                          X
 sensor_elevation_angle                                                        X
 sensor_name                                                                                              used mainly for ground based networks to provide a unique sensor id
