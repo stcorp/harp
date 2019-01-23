@@ -311,13 +311,6 @@ static int read_relative_azimuth_angle(void *user_data, harp_array data)
     return read_dataset(info, "/relative_azimuth_angle", harp_type_double, info->num_time, data);
 }
 
-static int read_pressure(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info, "/effective_scene_pressure", harp_type_double, info->num_time, data);
-}
-
 static int read_pressure_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -454,18 +447,25 @@ static int read_cloud_top_albedo(void *user_data, harp_array data)
     return read_dataset(info, "/cloud_albedo", harp_type_double, info->num_time, data);
 }
 
+static int read_scene_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "/effective_scene_albedo", harp_type_double, info->num_time, data);
+}
+
+static int read_scene_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "/effective_scene_pressure", harp_type_double, info->num_time, data);
+}
+
 static int read_surface_albedo(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "/surface_albedo", harp_type_double, info->num_time, data);
-}
-
-static int read_albedo(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info, "/effective_scene_albedo", harp_type_double, info->num_time, data);
 }
 
 static int read_surface_altitude(void *user_data, harp_array data)
@@ -631,19 +631,20 @@ int harp_ingestion_module_cci_l2_o3_tc_init(void)
     path = "/cloud_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* pressure */
+    /* scene_pressure */
     description = "pressure at the effective scene used for the retrieval";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "Pa", NULL, read_pressure);
+        harp_ingestion_register_variable_full_read(product_definition, "scene_pressure", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL, read_scene_pressure);
     path = "/effective_scene_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* albedo */
+    /* scene_albedo */
     description = "retrieved effective albedo of the scene";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "albedo", harp_type_double, 1, dimension_type,
-                                                   NULL, description, HARP_UNIT_DIMENSIONLESS, NULL, read_albedo);
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo", harp_type_double, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_scene_albedo);
     path = "/effective_scene_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
