@@ -401,7 +401,11 @@
 <td>summed, total</td>
 <td>whether to use total_no2_vertical_column (which is derived from the total slant column diveded by the total amf) or summed_no2_total_vertical_column (which is the sum of the retrieved tropospheric and statospheric columns); option values are ‘summed’ (default) and ‘total’</td>
 </tr>
-<tr class="row-odd"><td>cloud_fraction</td>
+<tr class="row-odd"><td>stratospheric_column</td>
+<td>stream, radiance</td>
+<td>whether to use the default NO2 stratospheric column (default) or the stratospheric column estimated with the STREAM method (stratospheric_column=stream)</td>
+</tr>
+<tr class="row-even"><td>cloud_fraction</td>
 <td>radiance</td>
 <td>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)</td>
 </tr>
@@ -552,13 +556,31 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/amf_trop[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density</strong></td>
-<td><em>path</em></td>
+<tr class="row-odd"><td rowspan="4"><strong>stratospheric_NO2_column_number_density</strong></td>
+<td><em>condition</em></td>
+<td>stratospheric_column unset</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
-<td><em>path</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>stratospheric_column=stream</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column_stream[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>stratospheric_column unset</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column_uncertainty[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>stratospheric_column=stream</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column_stream_uncertainty[]</strong></td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><strong>stratospheric_NO2_column_number_density_avk</strong></td>
 <td><em>path</em></td>

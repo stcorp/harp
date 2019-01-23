@@ -43,6 +43,7 @@ static const char *snow_ice_type_values[] = { "snow_free_land", "sea_ice", "perm
 typedef struct ingest_info_struct
 {
     coda_product *product;
+    int use_stream_stratospheric_column;
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
 
@@ -409,6 +410,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
 
     info->product = product;
+    info->use_stream_stratospheric_column = 0;
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
     info->num_times = 0;
@@ -419,6 +421,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->hybride_coef_a.ptr = NULL;
     info->hybride_coef_b.ptr = NULL;
 
+    if (harp_ingestion_options_has_option(options, "stratospheric_column"))
+    {
+        info->use_stream_stratospheric_column = 1;
+    }
     if (harp_ingestion_options_has_option(options, "total_column"))
     {
         if (harp_ingestion_options_get_option(options, "total_column", &option_value) != 0)
@@ -938,16 +944,25 @@ static int read_no2_column_avk(void *user_data, harp_array data)
 static int read_no2_column_stratospheric(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
 
-    return read_dataset(info->detailed_results_cursor, "stratospheric_no2_vertical_column", harp_type_float,
+    variable_name = info->use_stream_stratospheric_column ? "stratospheric_no2_vertical_column_stream" :
+        "stratospheric_no2_vertical_column";
+
+    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_no2_column_stratospheric_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    char *variable_name;
 
-    return read_dataset(info->detailed_results_cursor, "stratospheric_no2_vertical_column_uncertainty", harp_type_float,
+    variable_name = info->use_stream_stratospheric_column ? "stratospheric_no2_vertical_column_stream_uncertainty" :
+        "stratospheric_no2_vertical_column_uncertainty";
+
+
+    return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1460,6 +1475,7 @@ static void register_hcho_product(void)
 static void register_no2_product(void)
 {
     const char *total_column_options[] = { "summed", "total" };
+    const char *stratospheric_column_options[] = { "stream" };
     const char *cloud_fraction_options[] = { "radiance" };
     const char *path;
     const char *description;
@@ -1476,6 +1492,10 @@ static void register_no2_product(void)
                                    "summed_no2_total_vertical_column (which is the sum of the retrieved tropospheric "
                                    "and statospheric columns); option values are 'summed' (default) and 'total'", 2,
                                    total_column_options);
+
+    harp_ingestion_register_option(module, "stratospheric_column", "whether to use the default NO2 stratospheric "
+                                   "column (default) or the stratospheric column estimated with the STREAM method "
+                                   "(stratospheric_column=stream)", 2, stratospheric_column_options);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
@@ -1542,7 +1562,9 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_stratospheric);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "stratospheric_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column_stream[]";
+    harp_variable_definition_add_mapping(variable_definition, "stratospheric_column=stream", NULL, path, NULL);
 
     /* stratospheric_NO2_column_number_density_uncertainty */
     description = "uncertainty of the stratospheric vertical column of NO2 (standard error)";
@@ -1552,7 +1574,9 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_no2_column_stratospheric_uncertainty);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column_uncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "stratospheric_column unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/stratospheric_no2_vertical_column_stream_uncertainty[]";
+    harp_variable_definition_add_mapping(variable_definition, "stratospheric_column=stream", NULL, path, NULL);
 
     /* stratospheric_NO2_column_number_density_avk */
     description = "averaging kernel for the stratospheric vertical column number density of NO2";

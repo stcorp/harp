@@ -1,6 +1,8 @@
 * Fix problem in matlab mex extenion determination on linux when using the
   configure script.
 
+* Update to QA4ECV product ingestion.
+
 1.5 2018-12-17
 ~~~~~~~~~~~~~~
 
