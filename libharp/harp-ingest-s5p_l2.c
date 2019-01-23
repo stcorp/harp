@@ -2383,6 +2383,14 @@ static int read_results_degrees_of_freedom(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_effective_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "effective_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_formaldehyde_slant_column_corrected(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2605,6 +2613,14 @@ static int read_results_scattering_optical_thickness_SWIR(void *user_data, harp_
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "scattering_optical_thickness_SWIR", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_scene_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "scene_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -5131,6 +5147,24 @@ static void register_o3_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_albedo */
+    description = "effective scene albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_effective_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/effective_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_pressure */
+    description = "scene pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_results_scene_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1);
