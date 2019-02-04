@@ -100,6 +100,15 @@ build HARP, but they do not allow regeneration of automatically generated
 files (such as the documentation), so they are not recommended for performing
 co-development of HARP.
 
+Using Anaconda
+--------------
+
+HARP is also available as a conda package for Windows, Linux, and macOS
+(only 64bit and Python3). You can install HARP using conda with::
+
+    $ conda install -c stcorp -c conda-forge harp
+
+
 Building the source package (Unix)
 ----------------------------------
 
@@ -119,14 +128,14 @@ library and executables:
  1) Go to the directory that contains the downloaded harp-x.y.z.tar.gz
     file and unpack this package::
 
-        % gzip -d harp-x.y.z.tar.gz
-        % tar xf harp-x.y.z.tar
+        $ gzip -d harp-x.y.z.tar.gz
+        $ tar xf harp-x.y.z.tar
 
     Make sure you replace ``x.y.z`` with the appropriate version number.
 
  2) You should now have a ``harp-x.y.z`` directory. Go to this directory::
 
-        % cd harp-x.y.z
+        $ cd harp-x.y.z
 
  3) Next you will have to execute the ``configure`` script that checks what
     system you are on and sets up the build environment. There are several
@@ -240,12 +249,12 @@ library and executables:
     ``harp`` subdirectory of your home directory then your invocation of
     configure would be::
 
-        % ./configure --prefix=$HOME/harp
+        $ ./configure --prefix=$HOME/harp
 
  4) If this completes successfully, you are now able to build the library by
     executing the ``make`` command::
 
-        % make
+        $ make
 
     If everything was successful, you are now ready to install the package
     (this installation step is not optional! You will have to install HARP
@@ -260,7 +269,7 @@ library and executables:
     not want to install HARP in its default location ``/usr/local``. After
     running the configure script, issue the following command::
 
-        % make install
+        $ make install
 
  6) If you enabled the IDL interface then you will have to add
     ``<CODA installdir>/lib/coda/idl`` to your ``DLM_PATH``. You do this by

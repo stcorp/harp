@@ -80,6 +80,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#supported-platforms">Supported platforms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-you-will-need">What you will need</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-github">Using GitHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-anaconda">Using Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-the-source-package-unix">Building the source package (Unix)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-the-binary-package-windows">Installing the binary package (Windows)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-the-source-package-windows">Building the source package (Windows)</a></li>
@@ -260,6 +261,14 @@ build HARP, but they do not allow regeneration of automatically generated
 files (such as the documentation), so they are not recommended for performing
 co-development of HARP.</p>
 </div>
+<div class="section" id="using-anaconda">
+<h2>Using Anaconda</h2>
+<p>HARP is also available as a conda package for Windows, Linux, and macOS
+(only 64bit and Python3). You can install HARP using conda with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c stcorp -c conda-forge harp
+</pre></div>
+</div>
+</div>
 <div class="section" id="building-the-source-package-unix">
 <h2>Building the source package (Unix)</h2>
 <p>To build the source package, make sure to download the official HARP source
@@ -276,14 +285,14 @@ library and executables:</p>
 <div><ol class="arabic">
 <li><p class="first">Go to the directory that contains the downloaded harp-x.y.z.tar.gz
 file and unpack this package:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">gzip</span> <span class="o">-</span><span class="n">d</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="o">%</span> <span class="n">tar</span> <span class="n">xf</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">tar</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gzip -d harp-x.y.z.tar.gz
+$ tar xf harp-x.y.z.tar
 </pre></div>
 </div>
 <p>Make sure you replace <code class="docutils literal notranslate"><span class="pre">x.y.z</span></code> with the appropriate version number.</p>
 </li>
 <li><p class="first">You should now have a <code class="docutils literal notranslate"><span class="pre">harp-x.y.z</span></code> directory. Go to this directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">cd</span> <span class="n">harp</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">z</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd harp-x.y.z
 </pre></div>
 </div>
 </li>
@@ -399,13 +408,13 @@ MATLAB root directory (i.e. starting with a <code class="docutils literal notran
 appropriate for you. For instance, if you want to install HARP in the
 <code class="docutils literal notranslate"><span class="pre">harp</span></code> subdirectory of your home directory then your invocation of
 configure would be:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% ./configure --prefix=$HOME/harp
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./configure --prefix=$HOME/harp
 </pre></div>
 </div>
 </li>
 <li><p class="first">If this completes successfully, you are now able to build the library by
 executing the <code class="docutils literal notranslate"><span class="pre">make</span></code> command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">make</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make
 </pre></div>
 </div>
 <p>If everything was successful, you are now ready to install the package
@@ -420,7 +429,7 @@ the appropriate installation directory option (<code class="docutils literal not
 to the configure script, as explained in the previous section, if you do
 not want to install HARP in its default location <code class="docutils literal notranslate"><span class="pre">/usr/local</span></code>. After
 running the configure script, issue the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">make</span> <span class="n">install</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make install
 </pre></div>
 </div>
 </li>
