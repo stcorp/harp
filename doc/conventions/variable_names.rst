@@ -104,7 +104,7 @@ pressure_bounds                                                               X 
 radiance                                                                      X                    X
 reflectance                                                                   X                    X
 relative_azimuth_angle                                                        X                          absolute difference between sensor and solar azimuth angles
-relative_humidity                                                             X       X    X
+relative_humidity                             surface                         X       X    X
 relative_vorticity                                                            X       X    X
 scan_direction_type
 scan_subindex
