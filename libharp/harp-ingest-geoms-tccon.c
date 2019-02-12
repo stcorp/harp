@@ -302,7 +302,7 @@ static int read_n2o_column_vmr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "N2O_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR", info->num_time, data);
+    return read_variable_float(user_data, "N2O_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR", info->num_time, data);
 }
 
 static int read_n2o_column_vmr_uncertainty(void *user_data, harp_array data)
@@ -310,7 +310,7 @@ static int read_n2o_column_vmr_uncertainty(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_float(user_data,
-                               "N2O_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               "N2O_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
                                info->num_time, data);
 }
 
@@ -325,15 +325,14 @@ static int read_n2o_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "N2O_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_AVK",
-                               info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "N2O_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
 static int read_hf_column_vmr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "HF_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR", info->num_time, data);
+    return read_variable_float(user_data, "HF_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR", info->num_time, data);
 }
 
 static int read_hf_column_vmr_uncertainty(void *user_data, harp_array data)
@@ -341,7 +340,7 @@ static int read_hf_column_vmr_uncertainty(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_float(user_data,
-                               "HF_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               "HF_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
                                info->num_time, data);
 }
 
@@ -356,15 +355,14 @@ static int read_hf_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "HF_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_AVK",
-                               info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "HF_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
 static int read_hdo_column_vmr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "HDO_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR", info->num_time, data);
+    return read_variable_float(user_data, "HDO_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR", info->num_time, data);
 }
 
 static int read_hdo_column_vmr_uncertainty(void *user_data, harp_array data)
@@ -372,7 +370,7 @@ static int read_hdo_column_vmr_uncertainty(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_float(user_data,
-                               "HDO_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               "HDO_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
                                info->num_time, data);
 }
 
@@ -387,15 +385,14 @@ static int read_hdo_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "HDO_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_AVK",
-                               info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "HDO_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
 static int read_h2o_column_vmr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "H2O_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR", info->num_time, data);
+    return read_variable_float(user_data, "H2O_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR", info->num_time, data);
 }
 
 static int read_h2o_column_vmr_uncertainty(void *user_data, harp_array data)
@@ -403,7 +400,7 @@ static int read_h2o_column_vmr_uncertainty(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_float(user_data,
-                               "H2O_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               "H2O_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
                                info->num_time, data);
 }
 
@@ -418,15 +415,14 @@ static int read_h2o_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "H2O_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_AVK",
-                               info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "H2O_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
 static int read_co_column_vmr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "CO_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR", info->num_time, data);
+    return read_variable_float(user_data, "CO_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR", info->num_time, data);
 }
 
 static int read_co_column_vmr_uncertainty(void *user_data, harp_array data)
@@ -434,7 +430,7 @@ static int read_co_column_vmr_uncertainty(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_float(user_data,
-                               "CO_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               "CO_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
                                info->num_time, data);
 }
 
@@ -449,15 +445,14 @@ static int read_co_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "CO_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_AVK",
-                               info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "CO_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
 static int read_co2_column_vmr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "CO2_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR", info->num_time, data);
+    return read_variable_float(user_data, "CO2_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR", info->num_time, data);
 }
 
 static int read_co2_column_vmr_uncertainty(void *user_data, harp_array data)
@@ -465,7 +460,7 @@ static int read_co2_column_vmr_uncertainty(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_float(user_data,
-                               "CO2_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               "CO2_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
                                info->num_time, data);
 }
 
@@ -480,15 +475,14 @@ static int read_co2_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "CO2_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_AVK",
-                               info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "CO2_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
 static int read_ch4_column_vmr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "CH4_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR", info->num_time, data);
+    return read_variable_float(user_data, "CH4_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR", info->num_time, data);
 }
 
 static int read_ch4_column_vmr_uncertainty(void *user_data, harp_array data)
@@ -496,7 +490,7 @@ static int read_ch4_column_vmr_uncertainty(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_float(user_data,
-                               "CH4_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               "CH4_COLUMN_MIXING_RATIO_VOLUME_DRY_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
                                info->num_time, data);
 }
 
@@ -511,8 +505,7 @@ static int read_ch4_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "CH4_COLUMN_MIXING_RATIO_VOLUME_ABSORPTION_SOLAR_AVK",
-                               info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "CH4_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
 static int read_solar_zenith_angle(void *user_data, harp_array data)
@@ -776,21 +769,20 @@ static int init_product_definition(harp_ingestion_module *module, int version)
                                                                      NULL, read_instrument_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);
 
-    /* n2o_column_volume_mixing_ratio */
+    /* n2o_column_volume_mixing_ratio_dry_air */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "N2O_column_volume_mixing_ratio", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "N2O_column_volume_mixing_ratio_dry_air", harp_type_float, 1, dimension_type, NULL,
          "0.2095 * column_N2O/column_O2", "ppbv", NULL, read_n2o_column_vmr);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/N2O.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                         "/N2O.COLUMN.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR", NULL);
 
-    /* n2o_column_volume_mixing_ratio_uncertainty */
+    /* n2o_column_volume_mixing_ratio_dry_air_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "N2O_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
-         "total random uncertainty on the retrieved total column (without smoothing error)", "ppbv", NULL,
+        (product_definition, "N2O_column_volume_mixing_ratio_dry_air_uncertainty", harp_type_float, 1, dimension_type,
+         NULL, "total random uncertainty on the retrieved total column (without smoothing error)", "ppbv", NULL,
          read_n2o_column_vmr_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/N2O.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/N2O.COLUMN.MIXING.RATIO.VOLUME.DRY_"
+                                         "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* n2o_volume_mixing_ratio_apriori */
     variable_definition = harp_ingestion_register_variable_full_read
@@ -798,28 +790,26 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          "apriori profile of N2O volume mixing ratios", "ppbv", NULL, read_n2o_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/N2O.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
-    /* n2o_volume_mixing_ratio_avk */
+    /* n2o_column_number_density_avk */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "N2O_volume_mixing_ratio_avk", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of N2O volume mixing ratios", HARP_UNIT_DIMENSIONLESS, NULL, read_n2o_avk);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/N2O.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK", NULL);
+        (product_definition, "N2O_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+         "averaging kernel matrix for the total N2O vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_n2o_avk);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/N2O.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
 
-    /* HF_column_volume_mixing_ratio */
+    /* HF_column_volume_mixing_ratio_dry_air */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "HF_column_volume_mixing_ratio", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "HF_column_volume_mixing_ratio_dry_air", harp_type_float, 1, dimension_type, NULL,
          "0.2095 * column_HF/column_O2", "pptv", NULL, read_hf_column_vmr);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/HF.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                         "/HF.COLUMN.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR", NULL);
 
-    /* HF_column_volume_mixing_ratio_uncertainty */
+    /* HF_column_volume_mixing_ratio_dry_air_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "HF_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
-         "total random uncertainty on the retrieved total column (without smoothing error)", "pptv", NULL,
+        (product_definition, "HF_column_volume_mixing_ratio_dry_air_uncertainty", harp_type_float, 1, dimension_type,
+         NULL, "total random uncertainty on the retrieved total column (without smoothing error)", "pptv", NULL,
          read_hf_column_vmr_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/HF.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HF.COLUMN.MIXING.RATIO.VOLUME.DRY_"
+                                         "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* HF_volume_mixing_ratio_apriori */
     variable_definition = harp_ingestion_register_variable_full_read
@@ -827,28 +817,26 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          "apriori profile of HF volume mixing ratios", "pptv", NULL, read_hf_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HF.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
-    /* HF_volume_mixing_ratio_avk */
+    /* HF_column_number_density_avk */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "HF_volume_mixing_ratio_avk", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of HF volume mixing ratios", HARP_UNIT_DIMENSIONLESS, NULL, read_hf_avk);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/HF.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK", NULL);
+        (product_definition, "HF_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+         "averaging kernel matrix for the total HF vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_hf_avk);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HF.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
 
-    /* H2O_162_column_volume_mixing_ratio */
+    /* H2O_162_column_volume_mixing_ratio_dry_air */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "H2O_162_column_volume_mixing_ratio", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "H2O_162_column_volume_mixing_ratio_dry_air", harp_type_float, 1, dimension_type, NULL,
          "0.2095 * column_HDO/column_O2", "ppmv", NULL, read_hdo_column_vmr);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/HDO.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                         "/HDO.COLUMN.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR", NULL);
 
-    /* H2O_162_column_volume_mixing_ratio_uncertainty */
+    /* H2O_162_column_volume_mixing_ratio_dry_air_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "H2O_162_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
-         "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
-         read_hdo_column_vmr_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/HDO.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                                         NULL);
+        (product_definition, "H2O_162_column_volume_mixing_ratio_dry_air_uncertainty", harp_type_float, 1,
+         dimension_type, NULL, "total random uncertainty on the retrieved total column (without smoothing error)",
+         "ppmv", NULL, read_hdo_column_vmr_uncertainty);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HDO.COLUMN.MIXING.RATIO.VOLUME.DRY_"
+                                         "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* H2O_162_volume_mixing_ratio_apriori */
     variable_definition = harp_ingestion_register_variable_full_read
@@ -856,28 +844,26 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          "apriori profile of HDO volume mixing ratios", "ppmv", NULL, read_hdo_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HDO.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
-    /* H2O_162_volume_mixing_ratio_avk */
+    /* H2O_162_column_number_density_avk */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "H2O_162_volume_mixing_ratio_avk", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of HDO volume mixing ratios", HARP_UNIT_DIMENSIONLESS, NULL, read_hdo_avk);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/HDO.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK", NULL);
+        (product_definition, "H2O_162_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+         "averaging kernel matrix for the total HDO vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_hdo_avk);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HDO.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
 
-    /* H2O_column_volume_mixing_ratio */
+    /* H2O_column_volume_mixing_ratio_dry_air */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "H2O_column_volume_mixing_ratio", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "H2O_column_volume_mixing_ratio_dry_air", harp_type_float, 1, dimension_type, NULL,
          "0.2095 * column_H2O/column_O2", "ppmv", NULL, read_h2o_column_vmr);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/H2O.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                         "/H2O.COLUMN.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR", NULL);
 
-    /* H2O_column_volume_mixing_ratio_uncertainty */
+    /* H2O_column_volume_mixing_ratio_dry_air_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "H2O_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
-         "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
+        (product_definition, "H2O_column_volume_mixing_ratio_dry_air_uncertainty", harp_type_float, 1, dimension_type,
+         NULL, "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
          read_h2o_column_vmr_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/H2O.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/H2O.COLUMN.MIXING.RATIO.VOLUME.DRY_"
+                                         "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* H2O_volume_mixing_ratio_apriori */
     variable_definition = harp_ingestion_register_variable_full_read
@@ -885,28 +871,26 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          "apriori profile of H2O volume mixing ratios", "ppmv", NULL, read_h2o_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/H2O.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
-    /* H2O_volume_mixing_ratio_avk */
+    /* H2O_column_number_density_avk */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "H2O_volume_mixing_ratio_avk", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of H2O volume mixing ratios", HARP_UNIT_DIMENSIONLESS, NULL, read_h2o_avk);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/H2O.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK", NULL);
+        (product_definition, "H2O_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+         "averaging kernel matrix for the total H2O vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_h2o_avk);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/H2O.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
 
-    /* CO_column_volume_mixing_ratio */
+    /* CO_column_volume_mixing_ratio_dry_air */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CO_column_volume_mixing_ratio", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "CO_column_volume_mixing_ratio_dry_air", harp_type_float, 1, dimension_type, NULL,
          "0.2095 * column_CO/column_O2", "ppbv", NULL, read_co_column_vmr);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CO.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                         "/CO.COLUMN.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR", NULL);
 
-    /* CO_column_volume_mixing_ratio_uncertainty */
+    /* CO_column_volume_mixing_ratio_dry_air_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CO_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
-         "total random uncertainty on the retrieved total column (without smoothing error)", "ppbv", NULL,
+        (product_definition, "CO_column_volume_mixing_ratio_dry_air_uncertainty", harp_type_float, 1, dimension_type,
+         NULL, "total random uncertainty on the retrieved total column (without smoothing error)", "ppbv", NULL,
          read_co_column_vmr_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CO.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CO.COLUMN.MIXING.RATIO.VOLUME.DRY_"
+                                         "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* CO_volume_mixing_ratio_apriori */
     variable_definition = harp_ingestion_register_variable_full_read
@@ -914,28 +898,26 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          "apriori profile of CO volume mixing ratios", "ppbv", NULL, read_co_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CO.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
-    /* CO_volume_mixing_ratio_avk */
+    /* CO_column_number_density_avk */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CO_volume_mixing_ratio_avk", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of CO volume mixing ratios", HARP_UNIT_DIMENSIONLESS, NULL, read_co_avk);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CO.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK", NULL);
+        (product_definition, "CO_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+         "averaging kernel matrix for the total CO vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_co_avk);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CO.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
 
-    /* CO2_column_volume_mixing_ratio */
+    /* CO2_column_volume_mixing_ratio_dry_air */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CO2_column_volume_mixing_ratio", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "CO2_column_volume_mixing_ratio_dry_air", harp_type_float, 1, dimension_type, NULL,
          "0.2095 * column_CO2/column_O2", "ppmv", NULL, read_co2_column_vmr);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CO2.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                         "/CO2.COLUMN.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR", NULL);
 
-    /* CO2_column_volume_mixing_ratio_uncertainty */
+    /* CO2_column_volume_mixing_ratio_dry_air_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CO2_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
-         "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
+        (product_definition, "CO2_column_volume_mixing_ratio_dry_air_uncertainty", harp_type_float, 1, dimension_type,
+         NULL, "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
          read_co2_column_vmr_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CO2.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CO2.COLUMN.MIXING.RATIO.VOLUME.DRY_"
+                                         "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* CO2_volume_mixing_ratio_apriori */
     variable_definition = harp_ingestion_register_variable_full_read
@@ -943,28 +925,26 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          "apriori profile of CO2 volume mixing ratios", "ppmv", NULL, read_co2_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CO2.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
-    /* CO2_volume_mixing_ratio_avk */
+    /* CO2_column_number_density_avk */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CO2_volume_mixing_ratio_avk", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of CO2 volume mixing ratios", HARP_UNIT_DIMENSIONLESS, NULL, read_co2_avk);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CO2.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK", NULL);
+        (product_definition, "CO2_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+         "averaging kernel matrix for the total CO2 vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_co2_avk);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CO2.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
 
-    /* CH4_column_volume_mixing_ratio */
+    /* CH4_column_volume_mixing_ratio_dry_air */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CH4_column_volume_mixing_ratio", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "CH4_column_volume_mixing_ratio_dry_air", harp_type_float, 1, dimension_type, NULL,
          "0.2095 * column_CH4/column_O2", "ppmv", NULL, read_ch4_column_vmr);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CH4.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                         "/CH4.COLUMN.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR", NULL);
 
-    /* CH4_column_volume_mixing_ratio_uncertainty */
+    /* CH4_column_volume_mixing_ratio_dry_air_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CH4_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
-         "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
+        (product_definition, "CH4_column_volume_mixing_ratio_dry_air_uncertainty", harp_type_float, 1, dimension_type,
+         NULL, "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
          read_ch4_column_vmr_uncertainty);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CH4.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CH4.COLUMN.MIXING.RATIO.VOLUME.DRY_"
+                                         "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* CH4_volume_mixing_ratio_apriori */
     variable_definition = harp_ingestion_register_variable_full_read
@@ -972,12 +952,11 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          "apriori profile of CH4 volume mixing ratios", "ppbv", NULL, read_ch4_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CH4.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
-    /* CH4_volume_mixing_ratio_avk */
+    /* CH4_column_number_density_avk */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "CH4_volume_mixing_ratio_avk", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of CH4 volume mixing ratios", HARP_UNIT_DIMENSIONLESS, NULL, read_ch4_avk);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/CH4.COLUMN.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK", NULL);
+        (product_definition, "CH4_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+         "averaging kernel matrix for the total CH4 vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_ch4_avk);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CH4.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
 
     /* altitude */
     description = "a priori altitude profile";
