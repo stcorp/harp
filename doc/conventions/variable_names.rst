@@ -78,6 +78,7 @@ frequency_transmittance                                                       X 
 geoid_height                                                                  X            X
 geopotential                                  surface                         X       X    X
 geopotential_height                           surface                         X       X    X
+gravity                                       surface                         X       X    X
 hlos_wind_velocity                            surface                         X       X    X             hlos means 'horizontal line of sight'
 index                                                                                                    zero-based index of the sample within the source product
 integration_time                                                                      X    X       X     provides measurement specific integration time
