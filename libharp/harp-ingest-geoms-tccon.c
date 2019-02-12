@@ -843,7 +843,7 @@ static int init_product_definition(harp_ingestion_module *module, int version)
 
     /* H2O_162_column_volume_mixing_ratio_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "HDO_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
+        (product_definition, "H2O_162_column_volume_mixing_ratio_uncertainty", harp_type_float, 1, dimension_type, NULL,
          "total random uncertainty on the retrieved total column (without smoothing error)", "ppmv", NULL,
          read_hdo_column_vmr_uncertainty);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
@@ -981,9 +981,9 @@ static int init_product_definition(harp_ingestion_module *module, int version)
 
     /* altitude */
     description = "a priori altitude profile";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude",
-                                                                     harp_type_float, 2, dimension_type, NULL,
-                                                                     description, "km", NULL, read_altitude);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 2,
+                                                                     dimension_type, NULL, description, "km", NULL,
+                                                                     read_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE", NULL);
 
     /* surface_pressure */
@@ -1009,9 +1009,9 @@ static int init_product_definition(harp_ingestion_module *module, int version)
 
     /* temperature */
     description = "independent temperature profile";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature",
-                                                                     harp_type_float, 2, dimension_type, NULL,
-                                                                     description, "K", NULL, read_temperature);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_float,
+                                                                     2, dimension_type, NULL, description, "K", NULL,
+                                                                     read_temperature);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE_INDEPENDENT", NULL);
 
     /* solar_azimuth_angle */
@@ -1032,9 +1032,9 @@ static int init_product_definition(harp_ingestion_module *module, int version)
 
     /* gravity */
     description = "gravitational acceleration";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "gravity",
-                                                                     harp_type_float, 2, dimension_type, NULL,
-                                                                     description, "m/s2", NULL, read_gravity);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "gravity", harp_type_float, 2,
+                                                                     dimension_type, NULL, description,
+                                                                     HARP_UNIT_ACCELERATION, NULL, read_gravity);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/GRAVITY_INDEPENDENT", NULL);
 
     /* surface_wind_speed */
