@@ -288,6 +288,18 @@
 <td>[m]</td>
 <td>surface altitude precision</td>
 </tr>
+<tr class="row-even"><td><strong>surface_meridional_wind_velocity</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m/s]</td>
+<td>northward wind</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_zonal_wind_velocity</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m/s]</td>
+<td>eastward wind</td>
+</tr>
 <tr class="row-even"><td><strong>surface_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
@@ -498,6 +510,26 @@
 <tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>surface_meridional_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>processor version &gt;= 01.03.00</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>surface_zonal_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt;= 01.03.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>surface_pressure</strong></td>
 <td><em>path</em></td>

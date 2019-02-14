@@ -336,6 +336,18 @@
 <td>[m]</td>
 <td>surface altitude precision</td>
 </tr>
+<tr class="row-even"><td><strong>surface_meridional_wind_velocity</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m/s]</td>
+<td>northward wind</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_zonal_wind_velocity</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m/s]</td>
+<td>eastward wind</td>
+</tr>
 <tr class="row-even"><td><strong>surface_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
@@ -368,9 +380,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
+<col width="13%" />
 <col width="5%" />
-<col width="83%" />
+<col width="81%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -507,6 +519,26 @@
 <tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>surface_meridional_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>processor version &gt;= 01.03.00</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>surface_zonal_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt;= 01.03.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="3"><strong>surface_pressure</strong></td>
 <td><em>available</em></td>
