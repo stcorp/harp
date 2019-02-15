@@ -21,6 +21,7 @@ Most operations in HARP work in these Products and Variables.
    libharp_documentation
    libharp_error
    libharp_general
+   libharp_geometry
    libharp_product
    libharp_product_metadata
    libharp_variable

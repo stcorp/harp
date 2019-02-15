@@ -497,10 +497,10 @@ static int execute_polygon_filter(harp_product *product, harp_program *program)
         harp_variable_delete(longitude_bounds);
         return -1;
     }
-    if (latitude_bounds->dimension[1] < 3)
+    if (latitude_bounds->dimension[1] < 2)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "the length of the independent dimension of variables "
-                       "'latitude_bounds' and 'longitude_bounds' should be 3 or more");
+                       "'latitude_bounds' and 'longitude_bounds' should be 2 or higher");
         harp_variable_delete(latitude_bounds);
         harp_variable_delete(longitude_bounds);
         return -1;

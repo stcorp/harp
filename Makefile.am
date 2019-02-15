@@ -547,6 +547,7 @@ RSTFILES = \
 	doc/libharp_documentation.rst \
 	doc/libharp_error.rst \
 	doc/libharp_general.rst \
+	doc/libharp_geometry.rst \
 	doc/libharp_product.rst \
 	doc/libharp_product_metadata.rst \
 	doc/libharp_variable.rst \

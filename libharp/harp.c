@@ -181,6 +181,10 @@ static int auxiliary_data_init(void)
  * automatically by HARP. This includes the ingestion definitions and derived variable conversions.
  */
 
+/** \defgroup harp_geometry HARP Geometry
+ * The HARP Geometry module contains public functions for dealing with polygons and points on a spherical surface.
+ */
+
 /** \addtogroup harp_general
  * @{
  */

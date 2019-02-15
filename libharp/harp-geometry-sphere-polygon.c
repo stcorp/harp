@@ -1050,8 +1050,13 @@ static int spherical_polygon_begin_end_point_equal(long measurement_id, long num
     return harp_spherical_point_equal(&p_begin, &p_end);
 }
 
-/* Obtain spherical polygon from two double arrays with latitude_bounds [degree_north] and longitude_bounds [degree_east]
- * Make sure that the points are organized as follows:
+/* Obtain spherical polygon from two double arrays with latitude_bounds [degree_north] and
+ * longitude_bounds [degree_east]
+ *
+ * The latitude/longitude bounds can be either vertices of a polygon (num_vertices>=3),
+ * or represent corner points that define a bounding rect (num_vertices==2).
+ *
+ * The function makes sure that the points are organized as follows:
  * - counter-clockwise (right-hand rule)
  * - no duplicate points (i.e. begin and end point must not be the same) */
 int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
@@ -1063,6 +1068,43 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
     double deg2rad = (double)(CONST_DEG2RAD);
     int32_t num_points = (int32_t)num_vertices; /* Start with num_vertices */
     int32_t i;
+
+    if (num_points == 2)
+    {
+        /* If we only have two vertices then these are the corner points of a bounding box.
+         * In that case we construct a 4-point bounding box from these two corner coordinates.
+         */
+
+        /* Create the polygon */
+        if (harp_spherical_polygon_new(4, &polygon) != 0)
+        {
+            return -1;
+        }
+
+        polygon->point[0].lat = latitude_bounds[measurement_id * 2] * deg2rad;
+        polygon->point[0].lon = longitude_bounds[measurement_id * 2] * deg2rad;
+        polygon->point[1].lat = latitude_bounds[measurement_id * 2] * deg2rad;
+        polygon->point[1].lon = longitude_bounds[measurement_id * 2 + 1] * deg2rad;
+        polygon->point[2].lat = latitude_bounds[measurement_id * 2 + 1] * deg2rad;
+        polygon->point[2].lon = longitude_bounds[measurement_id * 2 + 1] * deg2rad;
+        polygon->point[3].lat = latitude_bounds[measurement_id * 2 + 1] * deg2rad;
+        polygon->point[3].lon = longitude_bounds[measurement_id * 2] * deg2rad;
+        for (i = 0; i < 4; i++)
+        {
+            harp_spherical_point_check(&polygon->point[i]);
+        }
+
+        /* Check that the bounding line segments don't overlap (i.e. lat/lon values of opposing points are not equal) */
+        if (polygon->point[0].lat == polygon->point[2].lat || polygon->point[0].lon == polygon->point[2].lon)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon (line segments overlap)");
+            harp_spherical_polygon_delete(polygon);
+            return -1;
+        }
+
+        *new_polygon = polygon;
+        return 0;
+    }
 
     /* Check if the first and last spherical point of the polygon are equal */
     if (spherical_polygon_begin_end_point_equal(measurement_id, num_vertices, latitude_bounds, longitude_bounds))
@@ -1102,12 +1144,16 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
 
 /** Determine whether a point is in an area on the surface of the Earth
  * \ingroup harp_geometry
- * This function assumes a spherical earth
+ * This function assumes a spherical earth.
+ *
+ * The latitude/longitude bounds can be either vertices of a polygon (num_vertices>=3)
+ * or represent corner points that define a bounding rect (num_vertices==2).
+ *
  * \param latitude_point Latitude of the point
  * \param longitude_point Longitude of the point
- * \param num_vertices The number of vertices of the bounding polygon of the area
- * \param latitude_bounds Latitude values of the bounds of the area polygon
- * \param longitude_bounds Longitude values of the bounds of the area polygon
+ * \param num_vertices The number of vertices of the bounding polygon/rect of the area
+ * \param latitude_bounds Latitude values of the bounds of the area polygon/rect
+ * \param longitude_bounds Longitude values of the bounds of the area polygon/rect
  * \param in_area Pointer to the C variable where the result will be stored (1 if point is in the area, 0 otherwise).
  * \return
  *   \arg \c 0, Success.
@@ -1141,12 +1187,16 @@ LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double lo
  * \ingroup harp_geometry
  * This function assumes a spherical earth.
  * The overlap fraction is calculated as area(intersection)/min(area(A),area(B)).
- * \param num_vertices_a The number of vertices of the bounding polygon of the first area
- * \param latitude_bounds_a Latitude values of the bounds of the area of the first polygon
- * \param longitude_bounds_a Longitude values of the bounds of the area of the first polygon
- * \param num_vertices_b The number of vertices of the bounding polygon of the second area
- * \param latitude_bounds_b Latitude values of the bounds of the area of the second polygon
- * \param longitude_bounds_b Longitude values of the bounds of the area of the second polygon
+ *
+ * The latitude/longitude bounds for A and B can be either vertices of a polygon (num_vertices>=3),
+ * or represent corner points that define a bounding rect (num_vertices==2).
+ *
+ * \param num_vertices_a The number of vertices of the bounding polygon/rect of the first area
+ * \param latitude_bounds_a Latitude values of the bounds of the area of the first polygon/rect
+ * \param longitude_bounds_a Longitude values of the bounds of the area of the first polygon/rect
+ * \param num_vertices_b The number of vertices of the bounding polygon/rect of the second area
+ * \param latitude_bounds_b Latitude values of the bounds of the area of the second polygon/rect
+ * \param longitude_bounds_b Longitude values of the bounds of the area of the second polygon/rect
  * \param has_overlap Pointer to the C variable where the result will be stored (1 if there is overlap, 0 otherwise).
  * \param fraction Pointer to the C variable where the overlap fraction will be stored (use NULL if not needed).
  * \return
@@ -1201,9 +1251,13 @@ LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latit
 /** Calculate the area size for a polygon on the surface of the Earth
  * \ingroup harp_geometry
  * This function assumes a spherical earth.
- * \param num_vertices The number of vertices of the bounding polygon
- * \param latitude_bounds Latitude values of the bounds of the polygon
- * \param longitude_bounds Longitude values of the bounds of the polygon
+ *
+ * The latitude/longitude bounds for A and B can be either vertices of a polygon (num_vertices>=3),
+ * or represent corner points that define a bounding rect (num_vertices==2).
+ *
+ * \param num_vertices The number of vertices of the bounding polygon/rect
+ * \param latitude_bounds Latitude values of the bounds of the polygon/rect
+ * \param longitude_bounds Longitude values of the bounds of the polygon/rect
  * \param area Pointer to the C variable where the area size will be stored (in [m2]).
  * \return
  *   \arg \c 0, Success.

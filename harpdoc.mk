@@ -536,6 +536,7 @@ HARP_DOCFILES = \
 	doc/html/libharp_documentation.html \
 	doc/html/libharp_error.html \
 	doc/html/libharp_general.html \
+	doc/html/libharp_geometry.html \
 	doc/html/libharp_product.html \
 	doc/html/libharp_product_metadata.html \
 	doc/html/libharp_variable.html \
@@ -1617,6 +1618,8 @@ doc/html/libharp_documentation.html:
 doc/html/libharp_error.html:
 	$(MAKE) harp_doc
 doc/html/libharp_general.html:
+	$(MAKE) harp_doc
+doc/html/libharp_geometry.html:
 	$(MAKE) harp_doc
 doc/html/libharp_product.html:
 	$(MAKE) harp_doc
