@@ -5428,7 +5428,7 @@ static void register_o3_tcl_product(void)
     description = "coverage start time";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "seconds since 2010-01-01", NULL,
+                                                   dimension_type, NULL, description, "seconds since 2000-01-01", NULL,
                                                    read_o3_tcl_datetime_start);
     path = "/@time_coverage_start";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -5437,7 +5437,7 @@ static void register_o3_tcl_product(void)
     description = "coverage stop time";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_stop", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "seconds since 2010-01-01", NULL,
+                                                   dimension_type, NULL, description, "seconds since 2000-01-01", NULL,
                                                    read_o3_tcl_datetime_stop);
     path = "/@time_coverage_end";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
