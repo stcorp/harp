@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Axis variables &mdash; HARP 1.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="next" title="Categorical Variables" href="categorical_variables.html" />
+    <link rel="prev" title="Variable names" href="variable_names.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HARP
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5
+              </div>
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="datatypes.html">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimensions.html">Dimensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_attributes.html">Global attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_attributes.html">Variable attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variables.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable_names.html">Variable names</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Axis variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#intervals">Intervals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#time-intervals">Time intervals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spatial-extent">Spatial extent</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="categorical_variables.html">Categorical Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html">Datetime values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filenames.html">File naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="netcdf3.html">netCDF-3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf4.html">HDF4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hdf5.html">HDF5/netCDF-4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compatibility.html">Compatibility with other standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collocation_result.html">Collocation result file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ingestions/index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Conventions</a> &raquo;</li>
+        
+      <li>Axis variables</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="axis-variables">
+<h1>Axis variables</h1>
+<p>HARP does not impose a fixed link between dimensions and its axis variables.
+A product can contain multiple variables that can function as an axis variable for a dimension.
+For instance, for the vertical dimension, a product can contain both a <code class="docutils literal notranslate"><span class="pre">pressure</span></code> and an <code class="docutils literal notranslate"><span class="pre">altitude</span></code> variable
+where either can function as an axis variable.
+The same applies for e.g. <code class="docutils literal notranslate"><span class="pre">wavelength</span></code> and <code class="docutils literal notranslate"><span class="pre">wavenumber</span></code> for the spectral axis.</p>
+<p>In order for a variable to function as an axis variable it should have either strict ascending or strict descending values.</p>
+<div class="section" id="intervals">
+<h2>Intervals</h2>
+<p>HARP has strict rules when it comes to dealing with the specification of an applicable interval along a dimension.</p>
+<p>Especially for the vertical dimension there is often some degree of confusion about the concept of layers vs. levels
+and whether levels are the centers of layers or the edges of layers.</p>
+<p>Values in HARP are always provided at the <em>center</em> of an interval.
+In HARP, levels are <em>always</em> the center point of layers and values are <em>always</em> provided at levels (never at layer edges).
+If you have data that is provided at the edges of layers then you will have to redefine the layer grid when bringing
+the data into HARP such that edges become centers (and centers become edges).</p>
+<p>When using intervals, the axis variables should always indicate the center of these intervals.
+A separate <code class="docutils literal notranslate"><span class="pre">&lt;axis_variable&gt;_bounds</span></code> variable can be used to define the edges of the intervals.
+This bounds variable has one extra dimension, which is an independent dimension of length 2.
+This independent dimension should contain the edge values of the interval.
+The ordering of these values needs to be exactly the same as the ordering of the axis itself
+(i.e. if the values of the axis are ascending, then the values defining the interval edges should also be ascending).</p>
+<p>Intervals are usually connected. So, if for instance we have an altitude grid of center points <code class="docutils literal notranslate"><span class="pre">latitude</span> <span class="pre">=</span> <span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">15,</span> <span class="pre">20]</span></code>
+then the corresponding intervals could be <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">=</span> <span class="pre">[[2.5,</span> <span class="pre">7.5],</span> <span class="pre">[7.5,</span> <span class="pre">12.5],</span> <span class="pre">[12.5,</span> <span class="pre">17.5],</span> <span class="pre">[17.5,</span> <span class="pre">22.5]]</span></code>.</p>
+<p>There are two special cases for intervals, which are described below.</p>
+<div class="section" id="time-intervals">
+<h3>Time intervals</h3>
+<p>One special case is the time dimension.
+Instead of a <code class="docutils literal notranslate"><span class="pre">datetime_bounds</span></code> variable, HARP uses separate <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> and <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> variables
+to define the edges of a time interval.
+Be aware that in HARP the <code class="docutils literal notranslate"><span class="pre">datetime</span></code> variable always needs to represent the center of a time interval.</p>
+<p>If you provide two out of <code class="docutils literal notranslate"><span class="pre">datetime</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_length</span></code> then you can use
+the HARP derivation operations to automatically have the other two variables calculated.</p>
+</div>
+<div class="section" id="spatial-extent">
+<h3>Spatial extent</h3>
+<p>The other special case is the spatial dimensions.</p>
+<p>When data is gridded spatially using a <code class="docutils literal notranslate"><span class="pre">latitude</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude</span></code> dimension then the normal rules apply and you
+would have a <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">{latitude,2}</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude_bounds</span> <span class="pre">{longitude,2}</span></code> to define the edges of the grid cells.</p>
+<p>However, when <code class="docutils literal notranslate"><span class="pre">latitude</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude</span></code> are not explicit dimensions, which is the case when e.g. you have a time
+series of areas, then <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude_bounds</span></code> can still be used, but with a different convention.</p>
+<ul class="simple">
+<li>if the independent dimension in <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">{time,independent}</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude_bounds</span> <span class="pre">{time,independent}</span></code>
+has a length of 2 then the two values define the corner of a bounding rectangle of a spatial area.</li>
+<li>if the independent dimension has length 3 or higher, then the points define the vertices of a polygon that defines the spatial area.</li>
+</ul>
+<p>A bounding rectangle can always be represented by a 4 point polygon with the exact same meaning.
+For instance, <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">=</span> <span class="pre">[[3.3,</span> <span class="pre">7.1]]</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude_bounds</span> <span class="pre">=</span> <span class="pre">[[50.8,</span> <span class="pre">53.6]]</span></code> as a bounding rectangle definition
+is the same as <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">=</span> <span class="pre">[[3.3,</span> <span class="pre">3.3,</span> <span class="pre">7.1,</span> <span class="pre">7.1]]</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude_bounds</span> <span class="pre">=</span> <span class="pre">[[50.8,</span> <span class="pre">53.6,</span> <span class="pre">53.6,</span> <span class="pre">50.8]]</span></code>
+in terms of a polygon definition (mind the counter clockwise ordering of the polygon points).</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="categorical_variables.html" class="btn btn-neutral float-right" title="Categorical Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="variable_names.html" class="btn btn-neutral" title="Variable names" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2019 S[&amp;]T, The Netherlands
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

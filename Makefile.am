@@ -519,6 +519,7 @@ RSTFILES = \
 	doc/algorithms/derivations/wind_velocity.rst \
 	doc/algorithms/formula.rst \
 	doc/algorithms/index.rst \
+	doc/conventions/axis_variables.rst \
 	doc/conventions/categorical_variables.rst \
 	doc/conventions/collocation_result.rst \
 	doc/conventions/compatibility.rst \
