@@ -845,7 +845,17 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
             /* remove duplicate point (make_2d_polygon will introduce it again) */
             num_vertices--;
         }
-        if (num_vertices < 3)
+        if (num_vertices == 2)
+        {
+            /* treat this as a bounding rect -> create a polygon with four points from the edge coordinates */
+            poly_latitude[2] = poly_latitude[1];
+            poly_longitude[2] = poly_longitude[1];
+            poly_latitude[1] = poly_latitude[0];
+            poly_latitude[3] = poly_latitude[1];
+            poly_longitude[3] = poly_longitude[0];
+            num_vertices = 4;
+        }
+        else if (num_vertices < 2)
         {
             /* skip polygon */
             continue;
