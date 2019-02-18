@@ -68,7 +68,8 @@ datetime_start
 datetime_stop
 density                                                                       X       X    X             this is the mass density
 extinction_coefficient                        surface                         X       X    X       X
-frequency                                                                     X
+frequency                                                                     X                    X
+frequency_bounds                                                              X                    X
 frequency_irradiance                                                          X                    X
 frequency_photon_irradiance                                                   X                    X
 frequency_photon_radiance                                                     X                    X
@@ -78,6 +79,7 @@ frequency_transmittance                                                       X 
 geoid_height                                                                  X            X
 geopotential                                  surface                         X       X    X
 geopotential_height                           surface                         X       X    X
+geopotential_height_bounds                                                    X       X    X
 gravity                                       surface                         X       X    X
 hlos_wind_velocity                            surface                         X       X    X             hlos means 'horizontal line of sight'
 index                                                                                                    zero-based index of the sample within the source product
@@ -139,6 +141,7 @@ viewing_elevation_angle                                                       X
 viewing_zenith_angle                                                          X
 virtual_temperature                                                           X       X    X
 wavelength                                                                    X                    X
+wavelength_bounds                                                             X                    X
 wavelength_irradiance                                                         X                    X
 wavelength_photon_irradiance                                                  X                    X
 wavelength_photon_radiance                                                    X                    X
@@ -146,6 +149,7 @@ wavelength_photon_transmittance                                               X 
 wavelength_radiance                                                           X                    X
 wavelength_transmittance                                                      X                    X
 wavenumber                                                                    X                    X
+wavenumber_bounds                                                             X                    X
 wavenumber_irradiance                                                         X                    X
 wavenumber_photon_irradiance                                                  X                    X
 wavenumber_photon_radiance                                                    X                    X
