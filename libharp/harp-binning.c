@@ -754,6 +754,13 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
     num_elements = latitude_bounds->dimension[0];
     max_num_vertices = latitude_bounds->dimension[latitude_bounds->num_dimensions - 1];
 
+    if (longitude_bounds->dimension[latitude_bounds->num_dimensions - 1] != max_num_vertices)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "latitude_bounds and longitude_bounds variables should have the "
+                       "same length for the inpendent dimension");
+        return -1;
+    }
+
     /* add 1 point to allow closing the polygon (i.e. repeat first point at the end) */
     /* and allow room for 2 more points to close polygons that cover a pole */
     poly_latitude = malloc((max_num_vertices + 3) * sizeof(double));

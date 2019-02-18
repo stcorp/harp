@@ -97,6 +97,12 @@ static int get_area(harp_variable *variable, const harp_variable **source_variab
     long i;
 
     num_vertices = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    if (source_variable[1]->dimension[source_variable[1]->num_dimensions - 1] != num_vertices)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "latitude_bounds and longitude_bounds variables should have the "
+                       "same length for the inpendent dimension");
+        return -1;
+    }
 
     for (i = 0; i < variable->num_elements; i++)
     {
@@ -587,6 +593,12 @@ static int get_latitude_from_latlon_bounds(harp_variable *variable, const harp_v
     long i;
 
     num_vertices = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    if (source_variable[1]->dimension[source_variable[1]->num_dimensions - 1] != num_vertices)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "latitude_bounds and longitude_bounds variables should have the "
+                       "same length for the inpendent dimension");
+        return -1;
+    }
 
     for (i = 0; i < variable->num_elements; i++)
     {
@@ -649,6 +661,12 @@ static int get_longitude_from_latlon_bounds(harp_variable *variable, const harp_
     long i;
 
     num_vertices = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    if (source_variable[1]->dimension[source_variable[1]->num_dimensions - 1] != num_vertices)
+    {
+        harp_set_error(HARP_ERROR_INVALID_VARIABLE, "latitude_bounds and longitude_bounds variables should have the "
+                       "same length for the inpendent dimension");
+        return -1;
+    }
 
     for (i = 0; i < variable->num_elements; i++)
     {
