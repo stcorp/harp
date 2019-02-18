@@ -1103,6 +1103,34 @@ static int execute_sort(harp_product *product, harp_operation_sort *operation)
     return harp_product_sort(product, operation->variable_name);
 }
 
+static int execute_squash(harp_product *product, harp_operation_squash *operation)
+{
+    int i, k;
+
+    for (i = 0; i < operation->num_variables; i++)
+    {
+        harp_variable *variable;
+
+        if (harp_product_get_variable_by_name(product, operation->variable_name[i], &variable) != 0)
+        {
+            return -1;
+        }
+
+        for (k = variable->num_dimensions - 1; k >= 0; k--)
+        {
+            if (variable->dimension_type[k] == operation->dimension_type)
+            {
+                if (harp_variable_squash_dimension(variable, k) != 0)
+                {
+                    return -1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
 static int execute_wrap(harp_product *product, harp_operation_wrap *operation)
 {
     harp_variable *variable;
@@ -1293,6 +1321,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                 break;
             case operation_sort:
                 if (execute_sort(product, (harp_operation_sort *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_squash:
+                if (execute_squash(product, (harp_operation_squash *)operation) != 0)
                 {
                     return -1;
                 }

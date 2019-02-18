@@ -417,6 +417,15 @@ Supported functions:
     	should be one dimensional and the dimension that gets reordered is
     	this dimension of the referenced variable.
 
+    ``squash(dimension, variable)``
+        Remove the given dimension for the variable, assuming that the
+        content for all items in the given dimension is the same.
+        If the content is not the same an error will be raised.
+
+    ``squash(dimension, (variable, ...))``
+        Same as above, but then providing a list of variables that need
+        to be squashed.
+
     ``valid(variable)``
         Filter a dimension for all variables in the product such that
         invalid values for the variable provided as parameter get excluded

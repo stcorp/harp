@@ -109,6 +109,7 @@ WHITESPACE   [[:space:]]+
 "set"                   return FUNC_SET;
 "smooth"                return FUNC_SMOOTH;
 "sort"                  return FUNC_SORT;
+"squash"                return FUNC_SQUASH;
 "valid"                 return FUNC_VALID;
 "wrap"                  return FUNC_WRAP;
 

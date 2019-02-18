@@ -1074,6 +1074,28 @@ static void sort_delete(harp_operation_sort *operation)
     }
 }
 
+static void squash_delete(harp_operation_squash *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->variable_name != NULL)
+        {
+            int i;
+
+            for (i = 0; i < operation->num_variables; i++)
+            {
+                if (operation->variable_name[i] != NULL)
+                {
+                    free(operation->variable_name[i]);
+                }
+            }
+            free(operation->variable_name);
+        }
+
+        free(operation);
+    }
+}
+
 static void string_comparison_filter_delete(harp_operation_string_comparison_filter *operation)
 {
     if (operation != NULL)
@@ -1241,6 +1263,9 @@ void harp_operation_delete(harp_operation *operation)
             break;
         case operation_sort:
             sort_delete((harp_operation_sort *)operation);
+            break;
+        case operation_squash:
+            squash_delete((harp_operation_squash *)operation);
             break;
         case operation_string_comparison_filter:
             string_comparison_filter_delete((harp_operation_string_comparison_filter *)operation);
@@ -2866,6 +2891,58 @@ int harp_operation_sort_new(const char *variable_name, harp_operation **new_oper
                        __LINE__);
         sort_delete(operation);
         return -1;
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_squash_new(harp_dimension_type dimension_type, int num_variables, const char **variable_name,
+                              harp_operation **new_operation)
+{
+    harp_operation_squash *operation;
+
+    assert(variable_name != NULL);
+
+    operation = (harp_operation_squash *)malloc(sizeof(harp_operation_squash));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_squash), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_squash;
+    operation->dimension_type = dimension_type;
+    operation->num_variables = 0;
+
+    if (num_variables > 0)
+    {
+        int i;
+
+        operation->variable_name = (char **)malloc(num_variables * sizeof(char *));
+        if (operation->variable_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_variables * sizeof(char *), __FILE__, __LINE__);
+            squash_delete(operation);
+            return -1;
+        }
+        for (i = 0; i < num_variables; i++)
+        {
+            operation->variable_name[i] = NULL;
+        }
+        for (i = 0; i < num_variables; i++)
+        {
+            operation->variable_name[i] = strdup(variable_name[i]);
+            if (operation->variable_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                squash_delete(operation);
+                return -1;
+            }
+            operation->num_variables++;
+        }
     }
 
     *new_operation = (harp_operation *)operation;

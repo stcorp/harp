@@ -68,6 +68,7 @@ typedef enum harp_operation_type_enum
     operation_smooth_collocated_dataset,
     operation_smooth_collocated_product,
     operation_sort,
+    operation_squash,
     operation_string_comparison_filter,
     operation_string_membership_filter,
     operation_valid_range_filter,
@@ -135,6 +136,7 @@ typedef enum harp_membership_operator_type_enum
  *   |-  harp_operation_smooth_collocated_dataset
  *   |-  harp_operation_smooth_collocated_product
  *   |-  harp_operation_sort
+ *   |-  harp_operation_squash
  *   |-  harp_operation_wrap
  */
 
@@ -457,6 +459,15 @@ typedef struct harp_operation_sort_struct
     char *variable_name;
 } harp_operation_sort;
 
+typedef struct harp_operation_squash_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    harp_dimension_type dimension_type;
+    int num_variables;
+    char **variable_name;
+} harp_operation_squash;
+
 typedef struct harp_operation_string_comparison_filter_struct
 {
     harp_operation_type type;
@@ -586,6 +597,8 @@ int harp_operation_smooth_collocated_product_new(int num_variables, const char *
                                                  const char *axis_unit, const char *filename,
                                                  harp_operation **new_operation);
 int harp_operation_sort_new(const char *variable_name, harp_operation **new_operation);
+int harp_operation_squash_new(harp_dimension_type dimension_type, int num_variables, const char **variable_name,
+                              harp_operation **new_operation);
 int harp_operation_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
                                                 const char *value, harp_operation **new_operation);
 int harp_operation_string_membership_filter_new(const char *variable_name, harp_membership_operator_type operator_type,

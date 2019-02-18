@@ -238,6 +238,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_SET
 %token                  FUNC_SMOOTH
 %token                  FUNC_SORT
+%token                  FUNC_SQUASH
 %token                  FUNC_VALID
 %token                  FUNC_WRAP
 %token                  NAN
@@ -302,6 +303,7 @@ reserved_identifier:
     | FUNC_SET { $$ = "set"; }
     | FUNC_SMOOTH { $$ = "smooth"; }
     | FUNC_SORT { $$ = "sort"; }
+    | FUNC_SQUASH { $$ = "squash"; }
     | FUNC_VALID { $$ = "valid"; }
     | FUNC_WRAP { $$ = "wrap"; }
     ;
@@ -1476,6 +1478,22 @@ operation:
                 YYERROR;
             }
             free($3);
+        }
+    | FUNC_SQUASH '(' DIMENSION ',' identifier ')' {
+            if (harp_operation_squash_new($3, 1, (const char **)&$5, &$$) != 0)
+            {
+                free($5);
+                YYERROR;
+            }
+            free($5);
+        }
+    | FUNC_SQUASH '(' DIMENSION ',' '(' identifier_array ')' ')' {
+            if (harp_operation_squash_new($3, $6->num_elements, (const char **)$6->array.string_data, &$$) != 0)
+            {
+                harp_sized_array_delete($6);
+                YYERROR;
+            }
+            harp_sized_array_delete($6);
         }
     | FUNC_VALID '(' identifier ')' {
             if (harp_operation_valid_range_filter_new($3, &$$) != 0)

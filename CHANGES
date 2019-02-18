@@ -1,3 +1,5 @@
+* Added squash() operation.
+
 * Besides using a polygon of >=3 vertices, a geospatial area can now also be
   defined via a bounding rect. Use e.g. 'latitude_bounds {time,2}' and
   'longitude_bounds {time,2}' to define the min/max of the bounding rect.

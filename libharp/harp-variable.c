@@ -1097,7 +1097,7 @@ int harp_variable_add_dimension(harp_variable *variable, int dim_index, harp_dim
  * dimension (the number of dimensions will be reduced by 1).
  *
  * \param variable Pointer to variable that should have its data rearranged.
- * \param dim_index The id of the dimension in which the rearrangement should take place.
+ * \param dim_index The index of the dimension that should be removed.
  * \param index The index of the element to keep within the to-be-removed dimension.
  * \return
  *   \arg \c 0, Success.
@@ -1120,6 +1120,91 @@ int harp_variable_remove_dimension(harp_variable *variable, int dim_index, long 
     variable->num_dimensions--;
 
     return 0;
+}
+
+/** Remove dimension of a variable where the content for each element in that dimension needs to be the same.
+ * This function is similar to calling harp_variable_remove_dimension() with index=0.
+ * However, this function first checks that the content for each element in the dimension that is going to be removed
+ * is the same. If this is not the case then an error will be returned.
+ *
+ * This function can be used to remove the time dimension for a quantity that is actually time independent (where the
+ * time dimension got introduced as part of a merge operation).
+ *
+ * \param variable Pointer to variable that should have its data rearranged.
+ * \param dim_index The index of the dimension that should be removed.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+int harp_variable_squash_dimension(harp_variable *variable, int dim_index)
+{
+    if (variable == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable argument is NULL (%s:%u)", __FILE__, __LINE__);
+        return -1;
+    }
+    if (dim_index < 0 || dim_index >= variable->num_dimensions)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "dim_index argument (%d) is not in the range [0,%d) (%s:%u)",
+                       dim_index, variable->num_dimensions, __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (variable->dimension[dim_index] > 1)
+    {
+        long num_groups;
+        long num_block_elements;
+        long element_size;
+        long block_size;
+        int i;
+
+        /* check that sub-blocks are identical */
+        num_groups = 1;
+        for (i = 0; i < (long)dim_index; i++)
+        {
+            num_groups *= variable->dimension[i];
+        }
+        num_block_elements = variable->num_elements / (num_groups * variable->dimension[dim_index]);
+        element_size = harp_get_size_for_type(variable->data_type);
+        block_size = num_block_elements * element_size;
+
+        for (i = 0; i < num_groups; i++)
+        {
+            char *block_ptr = (char *)variable->data.ptr + i * variable->dimension[dim_index] * block_size;
+            long sub_id;
+
+            for (sub_id = 1; sub_id < variable->dimension[dim_index]; sub_id++)
+            {
+                if (variable->data_type == harp_type_string)
+                {
+                    char **first_string_data = (char **)block_ptr;
+                    char **string_data = (char **)(&block_ptr[sub_id * block_size]);
+                    long k;
+
+                    for (k = 0; k < num_block_elements; k++)
+                    {
+                        if (strcmp(first_string_data[k], string_data[k]) != 0)
+                        {
+                            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable does not have the same values in "
+                                           "each subdimension block for squash operation");
+                            return -1;
+                        }
+                    }
+                }
+                else
+                {
+                    if (memcmp(block_ptr, &block_ptr[sub_id * block_size], block_size) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable does not have the same values in each "
+                                       "subdimension block for squash operation");
+                        return -1;
+                    }
+                }
+            }
+        }
+    }
+
+    return harp_variable_remove_dimension(variable, dim_index, 0);
 }
 
 /** \addtogroup harp_variable

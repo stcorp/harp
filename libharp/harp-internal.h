@@ -167,6 +167,7 @@ int harp_variable_rearrange_dimension(harp_variable *variable, int dim_index, lo
 int harp_variable_filter_dimension(harp_variable *variable, int dim_index, const uint8_t *mask);
 int harp_variable_resize_dimension(harp_variable *variable, int dim_index, long length);
 int harp_variable_remove_dimension(harp_variable *variable, int dim_index, long index);
+int harp_variable_squash_dimension(harp_variable *variable, int dim_index);
 
 /* Products */
 int harp_product_rearrange_dimension(harp_product *product, harp_dimension_type dimension_type, long num_dim_elements,

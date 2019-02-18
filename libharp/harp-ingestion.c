@@ -1724,6 +1724,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             case operation_smooth_collocated_dataset:
             case operation_smooth_collocated_product:
             case operation_sort:
+            case operation_squash:
             case operation_wrap:
                 /* these operations can only be performed on in-memory data */
                 return 0;
