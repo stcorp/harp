@@ -280,6 +280,202 @@ or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
 \[c_{x} = \sum_{i}{c_{x}(i)}\]</div>
 </li>
+<li><p class="first">tropospheric column number density for air component from partial column number density profile and altitude:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="32%" />
+<col width="19%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(c_{x}\)</span></td>
+<td>tropospheric column number density for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>tropospheric_&lt;species&gt;_column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(c_{x}(i)\)</span></td>
+<td>column number density profile for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}(i)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>&lt;species&gt;_column_number_density {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{TP}\)</span></td>
+<td>tropopause altitude</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><cite>tropopause_altitude {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z^{B}(l)\)</span></td>
+<td>altitude boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><cite>altitude_bounds {:,2}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c_{x} = \sum_{i}{\begin{cases}
+  z^{B}(2) \leq z_{TP}, &amp; c_{x}(i) \\
+  z^{B}(1) &lt; z_{TP} &lt; z^{B}(2), &amp; c_{x}(i) \frac{z_{TP} - z^{B}(1)}{z^{B}(2) - z^{B}(1)} \\
+  z_{TP} \leq z^{B}(1), &amp; 0
+\end{cases}}\end{split}\]</div>
+</li>
+<li><p class="first">stratospheric column number density for air component from partial column number density profile and altitude:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="32%" />
+<col width="19%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(c_{x}\)</span></td>
+<td>stratospheric column number density for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>stratospheric_&lt;species&gt;_column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(c_{x}(i)\)</span></td>
+<td>column number density profile for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}(i)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>&lt;species&gt;_column_number_density {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{TP}\)</span></td>
+<td>tropopause altitude</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><cite>tropopause_altitude {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z^{B}(l)\)</span></td>
+<td>altitude boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><cite>altitude_bounds {:,2}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c_{x} = \sum_{i}{\begin{cases}
+  z^{B}(2) \leq z_{TP}, &amp; 0 \\
+  z^{B}(1) &lt; z_{TP} &lt; z^{B}(2), &amp; c_{x}(i) \frac{z^{B}(2) - z_{TP}}{z^{B}(2) - z^{B}(1)} \\
+  z_{TP} \leq z^{B}(1), &amp; c_{x}(i)
+\end{cases}}\end{split}\]</div>
+</li>
+<li><p class="first">tropospheric column number density for air component from partial column number density profile and pressure:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="32%" />
+<col width="19%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(c_{x}\)</span></td>
+<td>tropospheric column number density for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>tropospheric_&lt;species&gt;_column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(c_{x}(i)\)</span></td>
+<td>column number density profile for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}(i)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>&lt;species&gt;_column_number_density {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(p_{TP}\)</span></td>
+<td>tropopause pressure</td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
+<td><cite>tropopause_pressure {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(p^{B}(l)\)</span></td>
+<td>pressure boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
+<td><cite>pressure_bounds {:,2}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c_{x} = \sum_{i}{\begin{cases}
+  p^{B}(2) \geq p_{TP}, &amp; c_{x}(i) \\
+  p^{B}(1) &gt; p_{TP} &gt; p^{B}(2), &amp; c_{x}(i) \frac{\ln(p^{B}(1)) - \ln(p_{TP})}{\ln(p^{B}(1)) - \ln(p^{B}(2))} \\
+  p_{TP} \geq p^{B}(1), &amp; 0
+\end{cases}}\end{split}\]</div>
+</li>
+<li><p class="first">stratospheric column number density for air component from partial column number density profile and pressure:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="32%" />
+<col width="19%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(c_{x}\)</span></td>
+<td>stratospheric column number density for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>stratospheric_&lt;species&gt;_column_number_density {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(c_{x}(i)\)</span></td>
+<td>column number density profile for air
+component x (e.g. <span class="math notranslate nohighlight">\(c_{O_{3}}(i)\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(\frac{molec}{m^2}\)</span></td>
+<td><cite>&lt;species&gt;_column_number_density {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(p_{TP}\)</span></td>
+<td>tropopause pressure</td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
+<td><cite>tropopause_pressure {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(p^{B}(l)\)</span></td>
+<td>pressure boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
+<td><cite>pressure_bounds {:,2}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the first dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c_{x} = \sum_{i}{\begin{cases}
+  p^{B}(2) \geq p_{TP}, &amp; 0 \\
+  p^{B}(1) &gt; p_{TP} &gt; p^{B}(2), &amp; c_{x}(i) \frac{\ln(p_{TP}) - \ln(p^{B}(2))}{\ln(p^{B}(1)) - \ln(p^{B}(2))} \\
+  p_{TP} \geq p^{B}(1), &amp; c_{x}(i)
+\end{cases}}\end{split}\]</div>
+</li>
 <li><p class="first">column number density for total air from dry air column number density and H2O column number density</p>
 <table border="1" class="docutils">
 <colgroup>

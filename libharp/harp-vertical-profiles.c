@@ -330,7 +330,7 @@ void harp_profile_gph_from_pressure(long num_levels, const double *pressure_prof
 /** Integrate the partial column profile to obtain the column
  * \param num_levels              Number of levels of the partial column profile
  * \param partial_column_profile  Partial column profile [molec/m2]
- * \return column the integrated column [molec/m2]
+ * \return the integrated column [molec/m2]
  */
 double harp_profile_column_from_partial_column(long num_levels, const double *partial_column_profile)
 {
@@ -345,6 +345,196 @@ double harp_profile_column_from_partial_column(long num_levels, const double *pa
         {
             column += partial_column_profile[k];
             empty = 0;
+        }
+    }
+
+    /* Set column to NaN if all contributions were NaN */
+    if (empty)
+    {
+        return harp_nan();
+    }
+
+    return column;
+}
+
+/** Integrate the tropospheric part of the partial column profile to obtain the tropospheric column
+ * This will integrate the partial column for those partial columns that are below the tropopause.
+ * The partial column that contains the tropopause will be scaled to the amount below the tropopause.
+ * \param num_levels Number of levels of the partial column profile
+ * \param partial_column_profile Partial column profile [molec/m2]
+ * \param altitude_bounds Lower and upper altitude [m] boundaries for each level {vertical,2}
+ * \param tropopause_altitude Location of the tropopause [m]
+ * \return the integrated tropospheric column [molec/m2]
+ */
+double harp_profile_tropo_column_from_partial_column_and_altitude(long num_levels, const double *partial_column_profile,
+                                                                  const double *altitude_bounds,
+                                                                  double tropopause_altitude)
+{
+    double column = 0;
+    int empty = 1;
+    long k;
+
+    /* Integrate, but ignore NaN values */
+    for (k = 0; k < num_levels; k++)
+    {
+        if (!harp_isnan(partial_column_profile[k]))
+        {
+            if (altitude_bounds[k * 2] < tropopause_altitude)
+            {
+                if (altitude_bounds[k * 2 + 1] <= tropopause_altitude)
+                {
+                    column += partial_column_profile[k];
+                }
+                else
+                {
+                    column += partial_column_profile[k] * (tropopause_altitude - altitude_bounds[k * 2]) /
+                        (altitude_bounds[k * 2 + 1] - altitude_bounds[k * 2]);
+                }
+                empty = 0;
+            }
+        }
+    }
+
+    /* Set column to NaN if all contributions were NaN */
+    if (empty)
+    {
+        return harp_nan();
+    }
+
+    return column;
+}
+
+/** Integrate the stratospheric part of the partial column profile to obtain the stratospheric column
+ * This will integrate the partial column for those partial columns that are above the tropopause.
+ * The partial column that contains the tropopause will be scaled to the amount above the tropopause.
+ * \param num_levels Number of levels of the partial column profile
+ * \param partial_column_profile Partial column profile [molec/m2]
+ * \param altitude_bounds Lower and upper altitude [m] boundaries for each level {vertical,2}
+ * \param tropopause_altitude Location of the tropopause [m]
+ * \return the integrated stratospheric column [molec/m2]
+ */
+double harp_profile_strato_column_from_partial_column_and_altitude(long num_levels,
+                                                                   const double *partial_column_profile,
+                                                                   const double *altitude_bounds,
+                                                                   double tropopause_altitude)
+{
+    double column = 0;
+    int empty = 1;
+    long k;
+
+    /* Integrate, but ignore NaN values */
+    for (k = 0; k < num_levels; k++)
+    {
+        if (!harp_isnan(partial_column_profile[k]))
+        {
+            if (altitude_bounds[k * 2 + 1] > tropopause_altitude)
+            {
+                if (altitude_bounds[k * 2] >= tropopause_altitude)
+                {
+                    column += partial_column_profile[k];
+                }
+                else
+                {
+                    column += partial_column_profile[k] * (tropopause_altitude - altitude_bounds[k * 2]) /
+                        (altitude_bounds[k * 2 + 1] - altitude_bounds[k * 2]);
+                }
+                empty = 0;
+            }
+        }
+    }
+
+    /* Set column to NaN if all contributions were NaN */
+    if (empty)
+    {
+        return harp_nan();
+    }
+
+    return column;
+}
+
+/** Integrate the tropospheric part of the partial column profile to obtain the tropospheric column
+ * This will integrate the partial column for those partial columns that are below the tropopause.
+ * The partial column that contains the tropopause will be scaled to the amount below the tropopause.
+ * \param num_levels Number of levels of the partial column profile
+ * \param partial_column_profile Partial column profile [molec/m2]
+ * \param pressure_bounds Lower and upper pressure [Pa] boundaries for each level {vertical,2}
+ * \param tropopause_pressure Location of the tropopause [Pa]
+ * \return the integrated tropospheric column [molec/m2]
+ */
+double harp_profile_tropo_column_from_partial_column_and_pressure(long num_levels, const double *partial_column_profile,
+                                                                  const double *pressure_bounds,
+                                                                  double tropopause_pressure)
+{
+    double column = 0;
+    int empty = 1;
+    long k;
+
+    /* Integrate, but ignore NaN values */
+    for (k = 0; k < num_levels; k++)
+    {
+        if (!harp_isnan(partial_column_profile[k]))
+        {
+            if (pressure_bounds[k * 2] > tropopause_pressure)
+            {
+                if (pressure_bounds[k * 2 + 1] >= tropopause_pressure)
+                {
+                    column += partial_column_profile[k];
+                }
+                else
+                {
+                    column += partial_column_profile[k] * log(tropopause_pressure / pressure_bounds[k * 2]) /
+                        log(pressure_bounds[k * 2 + 1] / pressure_bounds[k * 2]);
+                }
+                empty = 0;
+            }
+        }
+    }
+
+    /* Set column to NaN if all contributions were NaN */
+    if (empty)
+    {
+        return harp_nan();
+    }
+
+    return column;
+}
+
+/** Integrate the stratospheric part of the partial column profile to obtain the stratospheric column
+ * This will integrate the partial column for those partial columns that are above the tropopause.
+ * The partial column that contains the tropopause will be scaled to the amount above the tropopause.
+ * \param num_levels Number of levels of the partial column profile
+ * \param partial_column_profile Partial column profile [molec/m2]
+ * \param pressure_bounds Lower and upper pressure [Pa] boundaries for each level {vertical,2}
+ * \param tropopause_pressure Location of the tropopause [Pa]
+ * \return the integrated stratospheric column [molec/m2]
+ */
+double harp_profile_strato_column_from_partial_column_and_pressure(long num_levels,
+                                                                   const double *partial_column_profile,
+                                                                   const double *pressure_bounds,
+                                                                   double tropopause_pressure)
+{
+    double column = 0;
+    int empty = 1;
+    long k;
+
+    /* Integrate, but ignore NaN values */
+    for (k = 0; k < num_levels; k++)
+    {
+        if (!harp_isnan(partial_column_profile[k]))
+        {
+            if (pressure_bounds[k * 2 + 1] < tropopause_pressure)
+            {
+                if (pressure_bounds[k * 2] <= tropopause_pressure)
+                {
+                    column += partial_column_profile[k];
+                }
+                else
+                {
+                    column += partial_column_profile[k] * log(tropopause_pressure / pressure_bounds[k * 2]) /
+                    log(pressure_bounds[k * 2 + 1] / pressure_bounds[k * 2]);
+                }
+                empty = 0;
+            }
         }
     }
 

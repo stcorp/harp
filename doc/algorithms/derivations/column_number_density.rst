@@ -37,6 +37,106 @@ column number density derivations
       c_{x} = \sum_{i}{c_{x}(i)}
 
 
+#. tropospheric column number density for air component from partial column number density profile and altitude:
+
+   ================ =========================================== ========================= ==================================================
+   symbol           description                                 unit                      variable name
+   ================ =========================================== ========================= ==================================================
+   :math:`c_{x}`    tropospheric column number density for air  :math:`\frac{molec}{m^2}` `tropospheric_<species>_column_number_density {:}`
+                    component x (e.g. :math:`c_{O_{3}}`)
+   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+                    component x (e.g. :math:`c_{O_{3}}(i)`)
+   :math:`z_{TP}`   tropopause altitude                         :math:`m`                 `tropopause_altitude {:}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
+   ================ =========================================== ========================= ==================================================
+
+   The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      c_{x} = \sum_{i}{\begin{cases}
+        z^{B}(2) \leq z_{TP}, & c_{x}(i) \\
+        z^{B}(1) < z_{TP} < z^{B}(2), & c_{x}(i) \frac{z_{TP} - z^{B}(1)}{z^{B}(2) - z^{B}(1)} \\
+        z_{TP} \leq z^{B}(1), & 0
+      \end{cases}}
+
+
+#. stratospheric column number density for air component from partial column number density profile and altitude:
+
+   ================ =========================================== ========================= ===================================================
+   symbol           description                                 unit                      variable name
+   ================ =========================================== ========================= ===================================================
+   :math:`c_{x}`    stratospheric column number density for air :math:`\frac{molec}{m^2}` `stratospheric_<species>_column_number_density {:}`
+                    component x (e.g. :math:`c_{O_{3}}`)
+   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+                    component x (e.g. :math:`c_{O_{3}}(i)`)
+   :math:`z_{TP}`   tropopause altitude                         :math:`m`                 `tropopause_altitude {:}`
+   :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
+   ================ =========================================== ========================= ===================================================
+
+   The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      c_{x} = \sum_{i}{\begin{cases}
+        z^{B}(2) \leq z_{TP}, & 0 \\
+        z^{B}(1) < z_{TP} < z^{B}(2), & c_{x}(i) \frac{z^{B}(2) - z_{TP}}{z^{B}(2) - z^{B}(1)} \\
+        z_{TP} \leq z^{B}(1), & c_{x}(i)
+      \end{cases}}
+
+
+#. tropospheric column number density for air component from partial column number density profile and pressure:
+
+   ================ =========================================== ========================= ==================================================
+   symbol           description                                 unit                      variable name
+   ================ =========================================== ========================= ==================================================
+   :math:`c_{x}`    tropospheric column number density for air  :math:`\frac{molec}{m^2}` `tropospheric_<species>_column_number_density {:}`
+                    component x (e.g. :math:`c_{O_{3}}`)
+   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+                    component x (e.g. :math:`c_{O_{3}}(i)`)
+   :math:`p_{TP}`   tropopause pressure                         :math:`Pa`                `tropopause_pressure {:}`
+   :math:`p^{B}(l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa`                `pressure_bounds {:,2}`
+   ================ =========================================== ========================= ==================================================
+
+   The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      c_{x} = \sum_{i}{\begin{cases}
+        p^{B}(2) \geq p_{TP}, & c_{x}(i) \\
+        p^{B}(1) > p_{TP} > p^{B}(2), & c_{x}(i) \frac{\ln(p^{B}(1)) - \ln(p_{TP})}{\ln(p^{B}(1)) - \ln(p^{B}(2))} \\
+        p_{TP} \geq p^{B}(1), & 0
+      \end{cases}}
+
+
+#. stratospheric column number density for air component from partial column number density profile and pressure:
+
+   ================ =========================================== ========================= ===================================================
+   symbol           description                                 unit                      variable name
+   ================ =========================================== ========================= ===================================================
+   :math:`c_{x}`    stratospheric column number density for air :math:`\frac{molec}{m^2}` `stratospheric_<species>_column_number_density {:}`
+                    component x (e.g. :math:`c_{O_{3}}`)
+   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+                    component x (e.g. :math:`c_{O_{3}}(i)`)
+   :math:`p_{TP}`   tropopause pressure                         :math:`Pa`                `tropopause_pressure {:}`
+   :math:`p^{B}(l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa`                `pressure_bounds {:,2}`
+   ================ =========================================== ========================= ===================================================
+
+   The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
+   or no dimensions at all.
+
+   .. math::
+
+      c_{x} = \sum_{i}{\begin{cases}
+        p^{B}(2) \geq p_{TP}, & 0 \\
+        p^{B}(1) > p_{TP} > p^{B}(2), & c_{x}(i) \frac{\ln(p_{TP}) - \ln(p^{B}(2))}{\ln(p^{B}(1)) - \ln(p^{B}(2))} \\
+        p_{TP} \geq p^{B}(1), & c_{x}(i)
+      \end{cases}}
+
+
 #. column number density for total air from dry air column number density and H2O column number density
 
    ==================== ================================ ========================= ===================================

@@ -1198,6 +1198,44 @@ static int get_sqrt_trace_from_matrix(harp_variable *variable, const harp_variab
     return 0;
 }
 
+static int get_strato_column_from_partial_column_and_altitude(harp_variable *variable,
+                                                              const harp_variable **source_variable)
+{
+    long num_levels;
+    long i;
+
+    num_levels = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    assert(variable->num_elements == source_variable[0]->num_elements / num_levels);
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_profile_strato_column_from_partial_column_and_altitude
+                (num_levels, &source_variable[0]->data.double_data[i * num_levels],
+                 &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_strato_column_from_partial_column_and_pressure(harp_variable *variable,
+                                                              const harp_variable **source_variable)
+{
+    long num_levels;
+    long i;
+
+    num_levels = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    assert(variable->num_elements == source_variable[0]->num_elements / num_levels);
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_profile_strato_column_from_partial_column_and_pressure
+                (num_levels, &source_variable[0]->data.double_data[i * num_levels],
+                 &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int get_temperature_from_nd_and_pressure(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -1225,6 +1263,44 @@ static int get_temperature_from_virtual_temperature(harp_variable *variable, con
 
     return 0;
 
+}
+
+static int get_tropo_column_from_partial_column_and_altitude(harp_variable *variable,
+                                                             const harp_variable **source_variable)
+{
+    long num_levels;
+    long i;
+
+    num_levels = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    assert(variable->num_elements == source_variable[0]->num_elements / num_levels);
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+        harp_profile_tropo_column_from_partial_column_and_altitude
+            (num_levels, &source_variable[0]->data.double_data[i * num_levels],
+             &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_tropo_column_from_partial_column_and_pressure(harp_variable *variable,
+                                                             const harp_variable **source_variable)
+{
+    long num_levels;
+    long i;
+
+    num_levels = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    assert(variable->num_elements == source_variable[0]->num_elements / num_levels);
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+        harp_profile_tropo_column_from_partial_column_and_pressure
+            (num_levels, &source_variable[0]->data.double_data[i * num_levels],
+             &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+    }
+
+    return 0;
 }
 
 static int get_tropopause_altitude_from_temperature(harp_variable *variable, const harp_variable **source_variable)
@@ -2066,8 +2142,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     char name_vmr_dry_avk[MAX_NAME_LENGTH];
     int i;
 
-    /* we need to be able to add at least one dimension of our own */
-    assert(num_dimensions < HARP_MAX_NUM_DIMS);
+    /* we need to be able to add at least two dimensions of our own */
+    assert(num_dimensions < HARP_MAX_NUM_DIMS - 1);
 
     for (i = 0; i < num_dimensions; i++)
     {
@@ -2601,6 +2677,58 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
             return -1;
         }
 
+        /* stratospheric column from partial column profile and altitude */
+        if (harp_variable_conversion_new(name_strato_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0,
+                                         get_strato_column_from_partial_column_and_altitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions + 1] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 2, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropopause_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* stratospheric column from partial column profile and pressure */
+        if (harp_variable_conversion_new(name_strato_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0,
+                                         get_strato_column_from_partial_column_and_pressure, &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions + 1] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions + 2, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropopause_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
         /* uncertainties */
         if (add_uncertainty_conversions(name_strato_column_nd, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions,
                                         dimension_type) != 0)
@@ -2640,6 +2768,58 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         if (add_time_indepedent_to_dependent_conversion(name_tropo_column_nd, harp_type_double,
                                                         HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type,
                                                         0) != 0)
+        {
+            return -1;
+        }
+
+        /* tropospheric column from partial column profile and altitude */
+        if (harp_variable_conversion_new(name_tropo_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0,
+                                         get_tropo_column_from_partial_column_and_altitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions + 1] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions + 2, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropopause_altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* tropospheric column from partial column profile and pressure */
+        if (harp_variable_conversion_new(name_tropo_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0,
+                                         get_tropo_column_from_partial_column_and_pressure, &conversion) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (harp_variable_conversion_add_source(conversion, name_column_nd, harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions + 1] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions + 2, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropopause_pressure", harp_type_double, HARP_UNIT_PRESSURE,
+                                                num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }

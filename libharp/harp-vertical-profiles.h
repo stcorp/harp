@@ -65,6 +65,20 @@ void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, 
                                     double *pressure_profile);
 
 double harp_profile_column_from_partial_column(long num_levels, const double *partial_column_profile);
+double harp_profile_tropo_column_from_partial_column_and_altitude(long num_levels, const double *partial_column_profile,
+                                                                  const double *altitude_bounds,
+                                                                  double tropopause_altitude);
+double harp_profile_strato_column_from_partial_column_and_altitude(long num_levels,
+                                                                   const double *partial_column_profile,
+                                                                   const double *altitude_bounds,
+                                                                   double tropopause_altitude);
+double harp_profile_tropo_column_from_partial_column_and_pressure(long num_levels, const double *partial_column_profile,
+                                                                  const double *pressure_bounds,
+                                                                  double tropopause_pressure);
+double harp_profile_strato_column_from_partial_column_and_pressure(long num_levels,
+                                                                   const double *partial_column_profile,
+                                                                   const double *pressure_bounds,
+                                                                   double tropopause_pressure);
 
 /* AVK conversions */
 void harp_profile_column_avk_from_partial_column_avk(long num_levels, const double *column_density_avk_2d,
