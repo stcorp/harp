@@ -5449,9 +5449,11 @@ static void register_o3_tcl_product(void)
                                                                      "degree_north", NULL, read_o3_tcl_latitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
     path = "/PRODUCT/latitude[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version < 01.01.00", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", "processor version < 01.01.00",
+                                         path, NULL);
     path = "/PRODUCT/latitude_ccd[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version >= 01.01.00", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", "processor version >= 01.01.00",
+                                         path, NULL);
     path = "/PRODUCT/lat[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=csa", "processor version < 01.01.00", path, NULL);
     path = "/PRODUCT/latitude_csa[]";
@@ -5464,9 +5466,11 @@ static void register_o3_tcl_product(void)
                                                                      "degree_east", NULL, read_o3_tcl_longitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
     path = "/PRODUCT/longitude[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version < 01.01.00", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", "processor version < 01.01.00",
+                                         path, NULL);
     path = "/PRODUCT/longitude_ccd[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", "processor version >= 01.01.00", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", "processor version >= 01.01.00",
+                                         path, NULL);
     path = "/PRODUCT/lon[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=csa", "processor version < 01.01.00", path, NULL);
     path = "/PRODUCT/longitude_csa[]";
@@ -5480,7 +5484,7 @@ static void register_o3_tcl_product(void)
                                                    harp_type_float, 3, dimension_type, NULL, description, "ppbv", NULL,
                                                    read_o3_tcl_ozone_tropospheric_mixing_ratio);
     path = "/PRODUCT/ozone_tropospheric_mixing_ratio[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
     path = "/PRODUCT/ozone_upper_tropospheric_mixing_ratio[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=csa", NULL, path, NULL);
 
@@ -5492,7 +5496,7 @@ static void register_o3_tcl_product(void)
                                                    harp_type_float, 3, dimension_type, NULL, description, "ppbv", NULL,
                                                    read_o3_tcl_ozone_tropospheric_mixing_ratio_precision);
     path = "/PRODUCT/ozone_tropospheric_mixing_ratio_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
     path = "/PRODUCT/ozone_upper_tropospheric_mixing_ratio_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=csa", NULL, path, NULL);
 
@@ -5526,7 +5530,7 @@ static void register_o3_tcl_product(void)
                                                    harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
                                                    include_o3_tcl_ccd, read_o3_tcl_ozone_tropospheric_vertical_column);
     path = "/PRODUCT/ozone_tropospheric_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* tropospheric_O3_column_number_density_precision */
     description = "uncertainty of the average tropospheric ozone column number density";
@@ -5537,7 +5541,7 @@ static void register_o3_tcl_product(void)
                                                    include_o3_tcl_ccd,
                                                    read_o3_tcl_ozone_tropospheric_vertical_column_precision);
     path = "/PRODUCT/ozone_tropospheric_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* stratospheric_O3_column_number_density */
     description = "average stratospheric ozone column number density";
@@ -5546,7 +5550,7 @@ static void register_o3_tcl_product(void)
                                                    harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
                                                    include_o3_tcl_ccd, read_o3_tcl_ozone_stratospheric_vertical_column);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* stratospheric_O3_column_number_density_precision */
     description = "uncertainty of the average stratospheric ozone column number density";
@@ -5557,7 +5561,7 @@ static void register_o3_tcl_product(void)
                                                    include_o3_tcl_ccd,
                                                    read_o3_tcl_ozone_stratospheric_vertical_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* O3_column_number_density */
     description = "average total ozone column number density";
@@ -5566,7 +5570,7 @@ static void register_o3_tcl_product(void)
                                                    dimension_type, NULL, description, "mol/m2", include_o3_tcl_ccd,
                                                    read_o3_tcl_ozone_total_vertical_column);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* O3_column_number_density_precision */
     description = "uncertainty of the average total ozone column number density";
@@ -5576,7 +5580,7 @@ static void register_o3_tcl_product(void)
                                                    include_o3_tcl_ccd,
                                                    read_o3_tcl_ozone_total_vertical_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_total_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* surface_albedo */
     description = "averaged surface albedo";
@@ -5585,7 +5589,7 @@ static void register_o3_tcl_product(void)
                                                    dimension_type, NULL, description, "", include_o3_tcl_ccd,
                                                    read_o3_tcl_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* surface_alitude */
     description = "averaged surface height above mean sea level";
@@ -5594,7 +5598,7 @@ static void register_o3_tcl_product(void)
                                                    dimension_type, NULL, description, "m", include_o3_tcl_ccd,
                                                    read_o3_tcl_surface_altitude);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_altitude[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
     /* cloud_top_pressure_min */
     description = "minimum cloud top pressure";
