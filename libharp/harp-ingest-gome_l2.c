@@ -475,7 +475,6 @@ static void ingestion_done(void *user_data)
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
-    const char *option_value;
     ingest_info *info;
 
     (void)options;
