@@ -65,8 +65,6 @@ void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, 
                                     double *pressure_profile);
 
 double harp_profile_column_from_partial_column(long num_levels, const double *partial_column_profile);
-double harp_profile_column_uncertainty_from_partial_column_uncertainty
-    (long num_levels, const double *partial_column_uncertainty_profile);
 
 /* AVK conversions */
 void harp_profile_column_avk_from_partial_column_avk(long num_levels, const double *column_density_avk_2d,
