@@ -963,8 +963,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      description, "K", include_temperature_std,
                                                                      read_temperature_std);
     path = "/nl_geolocation[]/local_temp_std";
-    harp_variable_definition_add_mapping(variable_definition, "temperature unset", NULL, path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, "temperature unset", NULL, path, NULL);
 
     /* number_density */
     description = "air density";
