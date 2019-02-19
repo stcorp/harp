@@ -1745,7 +1745,6 @@ static int get_dynamic_units(ingest_info *info)
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
-    const char *option_value;
     ingest_info *info;
 
     info = malloc(sizeof(ingest_info));
@@ -1796,11 +1795,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         info->swap_alt_bounds = 1;
     }
 
+    /* 0:modeled, 1:measured */
     info->aod_variant = 0;
-    if (harp_ingestion_options_get_option(options, "AOD", &option_value) == 0)
+    if (harp_ingestion_options_has_option(options, "AOD"))
     {
-        /* 0:modeled, 1:measured */
-        info->aod_variant = (strcmp(option_value, "measured") == 0);
+        info->aod_variant = 1;
     }
 
     info->invert_vertical = 0;
@@ -2626,7 +2625,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
 
 int harp_ingestion_module_geoms_uvvis_doas_init()
 {
-    const char *aod_option_values[] = { "modeled", "measured" };
+    const char *aod_option_values[] = { "measured" };
     harp_ingestion_module *module;
     int i;
 
@@ -2635,8 +2634,8 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "GEOMS template for UVVIS-DOAS direct sun measurements",
                                                  ingestion_init, ingestion_done);
 
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
-                                   "properties", 2, aod_option_values);
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured (AOD=measured) aerosol "
+                                   "optical depth properties", 1, aod_option_values);
 
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {
@@ -2651,8 +2650,8 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "GEOMS template for UVVIS-DOAS off-axis gas measurements",
                                                  ingestion_init, ingestion_done);
 
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
-                                   "properties", 2, aod_option_values);
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured (AOD=measured) aerosol "
+                                   "optical depth properties", 1, aod_option_values);
 
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {
@@ -2675,8 +2674,8 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
                                                  "GEOMS template for UVVIS-DOAS zenith measurements", ingestion_init,
                                                  ingestion_done);
 
-    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured aerosol optical depth "
-                                   "properties", 2, aod_option_values);
+    harp_ingestion_register_option(module, "AOD", "ingest the modeled (default) or measured (AOD=measured) aerosol "
+                                   "optical depth properties", 1, aod_option_values);
 
     for (i = 0; i < num_uvvis_doas_gas; i++)
     {

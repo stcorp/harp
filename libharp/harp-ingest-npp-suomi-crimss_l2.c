@@ -409,6 +409,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     CHECKED_MALLOC(info, sizeof(ingest_info));
     memset(info, '\0', sizeof(ingest_info));
     info->product = product;
+    info->dataset = DATASET_MOISTURE_PROFILE;   /* default value */
     if (harp_ingestion_options_has_option(options, "dataset"))
     {
         if (harp_ingestion_options_get_option(options, "dataset", &option_value) != 0)
@@ -416,23 +417,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
-    }
-    else
-    {
-        option_value = "h2o";
-    }
-    info->dataset = DATASET_MOISTURE_PROFILE;   /* default value */
-    if (strcmp(option_value, "h2o") == 0)
-    {
-        info->dataset = DATASET_MOISTURE_PROFILE;
-    }
-    else if (strcmp(option_value, "temp") == 0)
-    {
-        info->dataset = DATASET_TEMPERATURE_PROFILE;
-    }
-    else if (strcmp(option_value, "press") == 0)
-    {
-        info->dataset = DATASET_PRESSURE_PROFILE;
+        if (strcmp(option_value, "temp") == 0)
+        {
+            info->dataset = DATASET_TEMPERATURE_PROFILE;
+        }
+        else if (strcmp(option_value, "press") == 0)
+        {
+            info->dataset = DATASET_PRESSURE_PROFILE;
+        }
     }
 
     if (init_swath_names_and_cursors(info) != 0)
@@ -468,16 +460,19 @@ static void register_product(harp_ingestion_module *module, short dataset)
         default:
             product_definition =
                 harp_ingestion_register_product(module, "NPP_SUOMI_L2_CRIMSS_EDR_MOISTURE", NULL, read_dimensions);
+            harp_product_definition_add_mapping(product_definition, NULL, "dataset unset");
             break;
 
         case DATASET_TEMPERATURE_PROFILE:
             product_definition =
                 harp_ingestion_register_product(module, "NPP_SUOMI_L2_CRIMSS_EDR_TEMPERATURE", NULL, read_dimensions);
+            harp_product_definition_add_mapping(product_definition, NULL, "dataset=temp");
             break;
 
         case DATASET_PRESSURE_PROFILE:
             product_definition =
                 harp_ingestion_register_product(module, "NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE", NULL, read_dimensions);
+            harp_product_definition_add_mapping(product_definition, NULL, "dataset=pres");
             break;
     }
 
@@ -617,16 +612,16 @@ static void register_product(harp_ingestion_module *module, short dataset)
 int harp_ingestion_module_npp_suomi_crimss_l2_init(void)
 {
     harp_ingestion_module *module;
-    const char *dataset_options[] = { "h2o", "temp", "press" };
+    const char *dataset_options[] = { "temp", "press" };
 
     module =
         harp_ingestion_register_module_coda("NPP_SUOMI_L2_CRIMSS_EDR_REDR", "NPP", "NPP_SUOMI", "CRIMSS_EDR_REDR_L2",
                                             "NPP Suomi CRIMSS EDR Atmospheric Vertical Profile", ingestion_init,
                                             ingestion_done);
 
-    harp_ingestion_register_option(module, "dataset", "the dataset of the L2 product to ingest; option values are "
-                                   "'h2o' (h2o mass mixing ratio vs pressure, this is the default), 'temp' (temperature"
-                                   " vs pressure)', 'press' (pressure vs altitude)", 3, dataset_options);
+    harp_ingestion_register_option(module, "dataset", "whether to ingest h2o mass mixing ratio vs pressure (default), "
+                                   "temperature vs pressure (dataset=temp) or pressure vs altitude (dataset=pres)", 2,
+                                   dataset_options);
 
     register_product(module, DATASET_MOISTURE_PROFILE);
     register_product(module, DATASET_TEMPERATURE_PROFILE);

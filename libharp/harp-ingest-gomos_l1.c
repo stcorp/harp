@@ -791,7 +791,7 @@ static void register_limb_product(void)
 {
     const char *scene_type_values[] = { "dark", "bright", "twilight", "straylight", "twilight_straylight" };
     const char *upper_lower_options[] = { "upper", "lower" };
-    const char *true_false_options[] = { "true", "false" };
+    const char *true_false_options[] = { "false" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -803,10 +803,10 @@ static void register_limb_product(void)
     module = harp_ingestion_register_module_coda("GOMOS_L1_LIMB", "GOMOS", "ENVISAT_GOMOS", "GOM_LIM_1P", description,
                                                  lim_ingestion_init, ingestion_done);
 
-    harp_ingestion_register_option(module, "spectra", "retrieve the upper or lower background spectra; by default the "
-                                   "upper spectra are retrieved", 2, upper_lower_options);
-    harp_ingestion_register_option(module, "corrected", "retrieve the corrected or uncorrected background spectra; by "
-                                   "default the corrected spectra are retrieved", 2, true_false_options);
+    harp_ingestion_register_option(module, "spectra", "retrieve the upper (default, spectra=upper) or lower "
+                                   "(spectra=lower) background spectra", 2, upper_lower_options);
+    harp_ingestion_register_option(module, "corrected", "retrieve the corrected (default) or uncorrected "
+                                   "(corrected=false) background spectra", 1, true_false_options);
 
     description = "limb data";
     product_definition = harp_ingestion_register_product(module, "GOMOS_L1_LIMB", description, read_lim_dimensions);

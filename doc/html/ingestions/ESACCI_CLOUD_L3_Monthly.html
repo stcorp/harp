@@ -284,8 +284,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>corrected</td>
-<td>false, ” (default)</td>
-<td>ingest the corrected or uncorrected data; option values are ‘false’, ‘’ (default, we ingest the corrected data)</td>
+<td>false</td>
+<td>ingest the corrected data (default) or uncorrected data (corrected=false)</td>
 </tr>
 </tbody>
 </table>
@@ -313,36 +313,108 @@
 <td><em>path</em></td>
 <td><strong>/lon[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_optical_depth</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cot_corrected[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cot[,,]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_optical_depth_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cot_corrected_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cot_unc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_height</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_height</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_corrected[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cth[,,]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_height_uncertainty</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_height_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_corrected_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cth_unc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_pressure</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctp_corrected[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctp[,,]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_pressure_uncertainty</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_pressure_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctp_corrected_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctp_unc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_temperature</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_temperature</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctt_corrected[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctt[,,]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_temperature_uncertainty</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="4"><strong>cloud_top_temperature_uncertainty</strong></td>
+<td><em>condition</em></td>
+<td>corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctt_corrected_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctt_unc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><strong>surface_temperature</strong></td>

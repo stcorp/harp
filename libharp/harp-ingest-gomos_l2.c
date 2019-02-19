@@ -577,7 +577,6 @@ static void ingestion_done(void *user_data)
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
-    const char *option_value;
     int format_version;
     ingest_info *info;
 
@@ -619,20 +618,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
 
-    if (harp_ingestion_options_get_option(options, "temperature", &option_value) == 0)
+    if (harp_ingestion_options_has_option(options, "temperature"))
     {
-        if (strcmp(option_value, "model") == 0)
-        {
-            info->model_temperature = 1;
-        }
+        info->model_temperature = 1;
     }
 
-    if (harp_ingestion_options_get_option(options, "air", &option_value) == 0)
+    if (harp_ingestion_options_has_option(options, "air"))
     {
-        if (strcmp(option_value, "model") == 0)
-        {
-            info->model_air = 1;
-        }
+        info->model_air = 1;
     }
 
     *definition = *module->product_definition;
@@ -659,7 +652,7 @@ static int include_temperature_std(void *user_data)
 int harp_ingestion_module_gomos_l2_init(void)
 {
     const char *scene_type_values[] = { "dark", "bright", "twilight", "straylight", "twilight_straylight" };
-    const char *model_options[] = { "local", "model" };
+    const char *model_options[] = { "model" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -673,13 +666,11 @@ int harp_ingestion_module_gomos_l2_init(void)
     module = harp_ingestion_register_module_coda("GOMOS_L2", "GOMOS", "ENVISAT_GOMOS", "GOM_NL__2P", description,
                                                  ingestion_init, ingestion_done);
 
-    harp_ingestion_register_option(module, "temperature", "can be either 'local' or 'model'; 'local' (the default) "
-                                   "will retrieve the locally measured temperature and 'model' will return the "
-                                   "temperature from the external model", 2, model_options);
+    harp_ingestion_register_option(module, "temperature", "retrieve the locally measured temperature (default) or the "
+                                   "temperature from the external model (temperature=model)", 1, model_options);
 
-    harp_ingestion_register_option(module, "air", "can be either 'local' or 'model'; 'local' (the default) will "
-                                   "retrieve the locally measured air density and 'model' will return the air density "
-                                   "from the external model", 2, model_options);
+    harp_ingestion_register_option(module, "air", "retrieve the locally measured air density (default) or the air "
+                                   "density from the external model (air=model)", 1, model_options);
 
     description = "profile data";
     product_definition = harp_ingestion_register_product(module, "GOMOS_L2", description, read_dimensions);
@@ -961,8 +952,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "K", NULL, read_temperature);
     path = "/nl_geolocation[]/local_temp";
-    harp_variable_definition_add_mapping(variable_definition, "temperature=local or temperature unset", NULL, path,
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, "temperature unset", NULL, path, NULL);
     path = "/nl_geolocation[]/tangent_temp";
     harp_variable_definition_add_mapping(variable_definition, "temperature=model", NULL, path, NULL);
 
@@ -973,7 +963,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      description, "K", include_temperature_std,
                                                                      read_temperature_std);
     path = "/nl_geolocation[]/local_temp_std";
-    harp_variable_definition_add_mapping(variable_definition, "temperature=local or temperature unset", NULL, path,
+    harp_variable_definition_add_mapping(variable_definition, "temperature unset", NULL, path,
                                          NULL);
 
     /* number_density */
@@ -982,7 +972,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "molec/cm3", include_air, read_air);
     path = "/nl_local_species_density[]/air";
-    harp_variable_definition_add_mapping(variable_definition, "air=local or air unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "air unset", NULL, path, NULL);
     path = "/nl_geolocation[]/tangent_density";
     harp_variable_definition_add_mapping(variable_definition, "air=model", "CODA product version > 0", path, NULL);
 
@@ -993,10 +983,10 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      2, dimension_type, NULL, description, "molec/cm3",
                                                                      include_air_std, read_air_std);
     path = "/nl_local_species_density[]/air_std";
-    harp_variable_definition_add_mapping(variable_definition, "air=local or air unset", "CODA product version < 2",
-                                         path, description_std_rel);
-    harp_variable_definition_add_mapping(variable_definition, "air=local or air unset", "CODA product version >= 2",
-                                         path, description_std_abs);
+    harp_variable_definition_add_mapping(variable_definition, "air unset", "CODA product version < 2", path,
+                                         description_std_rel);
+    harp_variable_definition_add_mapping(variable_definition, "air unset", "CODA product version >= 2", path,
+                                         description_std_abs);
 
     /* number_density_validity */
     description = "PCD (product confidence data) value for the local air density";
@@ -1005,7 +995,7 @@ int harp_ingestion_module_gomos_l2_init(void)
                                                                      2, dimension_type, NULL, description, NULL,
                                                                      include_air_std, read_air_validity);
     path = "/nl_local_species_density[]/pcd[3]";
-    harp_variable_definition_add_mapping(variable_definition, "air=local or air unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "air unset", NULL, path, NULL);
 
     /* sensor_altitude */
     description = "altitude of the satellite";

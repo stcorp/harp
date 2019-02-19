@@ -723,6 +723,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     CHECKED_MALLOC(info, sizeof(ingest_info));
     info->product = product;
     info->values_buffer = NULL;
+    info->wavelength = 532;
 
     if (harp_ingestion_options_has_option(options, "wavelength"))
     {
@@ -731,26 +732,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             ingestion_done(info);
             return -1;
         }
-        if (strcmp(option_value, "532") == 0)
-        {
-            info->wavelength = 532;
-        }
-        else if (strcmp(option_value, "1064") == 0)
+        if (strcmp(option_value, "1064") == 0)
         {
             info->wavelength = 1064;
         }
-        else
-        {
-            harp_set_error(HARP_ERROR_INGESTION, "incorrect wavelength option, it must be 532 or 1064.");
-            ingestion_done(info);
-            return -1;
-        }
-    }
-    else
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "the wavelength option has not been filled in.");
-        ingestion_done(info);
-        return -1;
+        /* nothing to do for '532', since it is the default */
     }
 
     if (init_dimensions(info, product_type) != 0)
@@ -1008,7 +994,7 @@ static void register_profile_specific_fields(harp_product_definition *product_de
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    "km^-1", NULL, read_extinction_coefficient);
     path = "/Extinction_Coefficient_532[,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Extinction_Coefficient_1064[,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 
@@ -1032,7 +1018,7 @@ static void register_profile_specific_fields(harp_product_definition *product_de
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    "km^-1", NULL, read_extinction_coefficient_uncertainty);
     path = "/Extinction_Coefficient_Uncertainty_532[,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Extinction_Coefficient_Uncertainty_1064[,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 
@@ -1043,7 +1029,7 @@ static void register_profile_specific_fields(harp_product_definition *product_de
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    "km^-1", NULL, read_backscatter_coefficient);
     path = "/Total_Backscatter_Coefficient_532[,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Backscatter_Coefficient_1064[,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 
@@ -1054,7 +1040,7 @@ static void register_profile_specific_fields(harp_product_definition *product_de
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    "km^-1", NULL, read_backscatter_coefficient_uncertainty);
     path = "/Total_Backscatter_Coefficient_Uncertainty_532[,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Backscatter_Coefficient_Uncertainty_1064[,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 }
@@ -1074,7 +1060,7 @@ static void register_optical_depth_fields(harp_product_definition *product_defin
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_tropospheric_aerosol_optical_depth);
     path = "/Column_Optical_Depth_Tropospheric_Aerosols_532[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Column_Optical_Depth_Tropospheric_Aerosols_1064[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 
@@ -1086,7 +1072,7 @@ static void register_optical_depth_fields(harp_product_definition *product_defin
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_tropospheric_aerosol_optical_depth_uncertainty);
     path = "/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_532[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Column_Optical_Depth_Tropospheric_Aerosols_Uncertainty_1064[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 
@@ -1098,7 +1084,7 @@ static void register_optical_depth_fields(harp_product_definition *product_defin
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_stratospheric_aerosol_optical_depth);
     path = "/Column_Optical_Depth_Stratospheric_Aerosols_532[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Column_Optical_Depth_Stratospheric_Aerosols_1064[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 
@@ -1110,7 +1096,7 @@ static void register_optical_depth_fields(harp_product_definition *product_defin
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_stratospheric_aerosol_optical_depth_uncertainty);
     path = "/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_532[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Column_Optical_Depth_Stratospheric_Aerosols_Uncertainty_1064[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=1064", path, NULL);
 
@@ -1143,7 +1129,7 @@ static void register_aerosol_layer_l2(void)
                                             "CALIOP L2 Aerosol Layers", ingestion_init_aerosol_layer, ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
-                                   " are '532' and '1064'", 2, wavelength_options);
+                                   " are '532' (default), '1064'", 2, wavelength_options);
 
     product_definition = harp_ingestion_register_product(module, "CALIPSO_L2_CAL_LID_ALay", NULL, read_dimensions);
 
@@ -1163,7 +1149,7 @@ static void register_aerosol_profile_l2(void)
                                             ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
-                                   " are '532' and '1064'", 2, wavelength_options);
+                                   " are '532' (default), '1064'", 2, wavelength_options);
 
     product_definition = harp_ingestion_register_product(module, "CALIPSO_L2_CAL_LID_APro", NULL, read_dimensions);
 
@@ -1182,7 +1168,7 @@ static void register_cloud_layer_l2(void)
                                             "CALIOP L2 Cloud Layers", ingestion_init_cloud_layer, ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
-                                   " are '532' and '1064'", 2, wavelength_options);
+                                   " are '532' (default), '1064'", 2, wavelength_options);
 
     product_definition = harp_ingestion_register_product(module, "CALIPSO_L2_CAL_LID_CLay", NULL, read_dimensions);
 
@@ -1201,7 +1187,7 @@ static void register_cloud_profile_l2(void)
                                             "CALIOP L2 Cloud Profiles", ingestion_init_cloud_profile, ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
-                                   " are '532' and '1064'", 2, wavelength_options);
+                                   " are '532' (default), '1064'", 2, wavelength_options);
 
     product_definition = harp_ingestion_register_product(module, "CALIPSO_L2_CAL_LID_CPro", NULL, read_dimensions);
 
@@ -1223,7 +1209,7 @@ static void register_merged_layer_l2(void)
                                             ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
-                                   " are '532' and '1064'", 2, wavelength_options);
+                                   " are '532' (default), '1064'", 2, wavelength_options);
 
     product_definition = harp_ingestion_register_product(module, "CALIPSO_L2_CAL_LID_MLay", NULL, read_dimensions);
 

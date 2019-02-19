@@ -338,7 +338,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>data</td>
 <td>rayleigh_measurement, mie_measurement, rayleigh_observation, mie_observation</td>
-<td>the type of wind profile to ingest (rayleigh/mie, observation/measurement)</td>
+<td>the type of wind profile to ingest; option values are ‘rayleigh_observation’ (default), ‘mie_observation’, ‘rayleigh_measurement’, ‘mie_measurement’</td>
 </tr>
 </tbody>
 </table>
@@ -385,7 +385,7 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><a class="reference internal" href="AEOLUS_L2B_Rayleigh.html"><span class="doc">AEOLUS_L2B_Rayleigh</span></a></td>
-<td>data=rayleigh</td>
+<td>data=rayleigh or data unset</td>
 <td>Rayleigh HLOS wind profile</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="AEOLUS_L2B_Mie.html"><span class="doc">AEOLUS_L2B_Mie</span></a></td>
@@ -410,7 +410,7 @@
 <tbody valign="top">
 <tr class="row-even"><td>data</td>
 <td>rayleigh, mie</td>
-<td>the type of profiles to ingest (rayleigh/mie)</td>
+<td>the type of profiles to ingest; option values are ‘rayleigh’ (default), ‘mie’</td>
 </tr>
 </tbody>
 </table>
@@ -593,8 +593,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>corrected</td>
-<td>false, ” (default)</td>
-<td>ingest the corrected or uncorrected data; option values are ‘false’, ‘’ (default, we ingest the corrected data)</td>
+<td>false</td>
+<td>ingest the corrected data (default) or uncorrected data (corrected=false)</td>
 </tr>
 </tbody>
 </table>
@@ -638,11 +638,11 @@
 <tbody valign="top">
 <tr class="row-even"><td>orbit</td>
 <td>ascending, descending</td>
-<td>the orbit of the L3 product to ingest; option values are ‘ascending’, ‘descending’</td>
+<td>the orbit of the L3 product to ingest; option values are ‘ascending’ (default), ‘descending’</td>
 </tr>
 <tr class="row-odd"><td>corrected</td>
-<td>false, ” (default)</td>
-<td>ingest the corrected or uncorrected data; option values are ‘false’, ‘’ (default, we ingest the corrected data)</td>
+<td>false</td>
+<td>ingest the corrected data (default) or uncorrected data (corrected=false)</td>
 </tr>
 </tbody>
 </table>
@@ -1471,8 +1471,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>AOD</td>
-<td>modeled, measured</td>
-<td>ingest the modeled (default) or measured aerosol optical depth properties</td>
+<td>measured</td>
+<td>ingest the modeled (default) or measured (AOD=measured) aerosol optical depth properties</td>
 </tr>
 </tbody>
 </table>
@@ -1631,8 +1631,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>AOD</td>
-<td>modeled, measured</td>
-<td>ingest the modeled (default) or measured aerosol optical depth properties</td>
+<td>measured</td>
+<td>ingest the modeled (default) or measured (AOD=measured) aerosol optical depth properties</td>
 </tr>
 </tbody>
 </table>
@@ -1823,8 +1823,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>AOD</td>
-<td>modeled, measured</td>
-<td>ingest the modeled (default) or measured aerosol optical depth properties</td>
+<td>measured</td>
+<td>ingest the modeled (default) or measured (AOD=measured) aerosol optical depth properties</td>
 </tr>
 </tbody>
 </table>
@@ -1934,7 +1934,7 @@
 </tr>
 <tr class="row-odd"><td>data</td>
 <td>sun_reference</td>
-<td>retrieve the measured radiances or the sun spectra; by default the measured radiances are retrieved</td>
+<td>retrieve the measured radiances (default) or the sun spectra (data=sun_reference)</td>
 </tr>
 </tbody>
 </table>
@@ -1987,7 +1987,7 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><a class="reference internal" href="GOME2_L1_radiance.html"><span class="doc">GOME2_L1_radiance</span></a></td>
-<td>data=radiance or data unset</td>
+<td>data unset</td>
 <td>GOME2 Level 1b radiance product</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="GOME2_L1_transmission.html"><span class="doc">GOME2_L1_transmission</span></a></td>
@@ -2023,8 +2023,8 @@
 <td>only include data from the specified band (‘band-1a’, ‘band-1b’, ‘band-2a’, ‘band-2b’, ‘band-3’, ‘band-4’); by default data from all bands is retrieved</td>
 </tr>
 <tr class="row-odd"><td>data</td>
-<td>radiance, transmission, sun, moon, sun_reference</td>
-<td>retrieve the measured radiances, the transmission spectra, the sun measurement spectra, the moon measurement spectra or the sun reference spectrum; by default the measured radiances are retrieved</td>
+<td>transmission, sun, moon, sun_reference</td>
+<td>retrieve the measured radiances (default), the transmission spectra (data=transmission), the sun measurement spectra (data=sun), the moon measurement spectra (data=moon) or the sun reference spectrum (data=sun_reference</td>
 </tr>
 </tbody>
 </table>
@@ -2447,15 +2447,15 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><a class="reference internal" href="NPP_SUOMI_L2_CRIMSS_EDR_MOISTURE.html"><span class="doc">NPP_SUOMI_L2_CRIMSS_EDR_MOISTURE</span></a></td>
-<td>&#160;</td>
+<td>dataset unset</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="NPP_SUOMI_L2_CRIMSS_EDR_TEMPERATURE.html"><span class="doc">NPP_SUOMI_L2_CRIMSS_EDR_TEMPERATURE</span></a></td>
-<td>&#160;</td>
+<td>dataset=temp</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE.html"><span class="doc">NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE</span></a></td>
-<td>&#160;</td>
+<td>dataset=pres</td>
 <td>&#160;</td>
 </tr>
 </tbody>
@@ -2475,8 +2475,8 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>dataset</td>
-<td>h2o, temp, press</td>
-<td>the dataset of the L2 product to ingest; option values are ‘h2o’ (h2o mass mixing ratio vs pressure, this is the default), ‘temp’ (temperature vs pressure)’, ‘press’ (pressure vs altitude)</td>
+<td>temp, press</td>
+<td>whether to ingest h2o mass mixing ratio vs pressure (default), temperature vs pressure (dataset=temp) or pressure vs altitude (dataset=pres)</td>
 </tr>
 </tbody>
 </table>

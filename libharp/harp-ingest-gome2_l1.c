@@ -1435,11 +1435,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/latitude";
     description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration "
         "time (limited to those bands that are ingested)";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/latitude";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 
     /* longitude_of_the_measurement */
     description = "center longitude of the measurement";
@@ -1450,11 +1450,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CENTRE_ACTUAL[INT_INDEX[band_id],]/longitude";
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested).";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CENTRE_ACTUAL/longitude";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 
     /* latitude_bounds */
     description = "corner latitudes for the ground pixel of the measurement";
@@ -1466,11 +1466,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/latitude";
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/latitude";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 
     /* longitude_bounds */
     description = "corner longitudes for the ground pixel of the measurement";
@@ -1482,11 +1482,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/CORNER_ACTUAL[INT_INDEX[band_id],,]/longitude";
     description =
         "The integration time index INT_INDEX[band_id] is the index of the band with the minimum integration time (limited to those bands that are ingested). The corners ABCD are reordered as BDCA.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/CORNER_ACTUAL[]/longitude";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 
     if (radiance)
     {
@@ -1580,11 +1580,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
     description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
         "integration time (limited to those bands that are ingested).";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_ZENITH_ACTUAL[1]";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 
     /* solar_azimuth_angle */
     description = "solar azimuth angle at top of atmosphere";
@@ -1595,11 +1595,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SOLAR_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
     description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
         "integration time (limited to those bands that are ingested).";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SOLAR_AZIMUTH_ACTUAL[1]";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 
     /* viewing_zenith_angle */
     description = "viewing zenith angle at top of atmosphere";
@@ -1610,11 +1610,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_ZENITH_ACTUAL[INT_INDEX[band_id],1,]";
     description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
         "integration time (limited to those bands that are ingested).";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_ZENITH_ACTUAL[1]";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 
     /* viewing_azimuth_angle */
     description = "viewing azimuth angle at top of atmosphere";
@@ -1625,11 +1625,11 @@ static void register_variables_radiance_transmittance_fields(harp_product_defini
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL/SAT_AZIMUTH_ACTUAL[INT_INDEX[band_id],1,]";
     description = "The integration time index INT_INDEX[band_id] is the index of the band with the minimum "
         "integration time (limited to those bands that are ingested).";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version < 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 12", path, description);
     path = "/MDR[]/Earthshine/GEO_EARTH_ACTUAL_k[]/SAT_AZIMUTH_ACTUAL[1]";
     description = "The integration time index k is the index (starting with 1) of the minimum integration time such "
         "that UNIQUE_INT[k-1] == min(INTEGRATION_TIMES[j]) for all bands j (0..9) that are ingeste.";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA version >= 12", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 12", path, description);
 }
 
 static void register_variables_irradiance_fields(harp_product_definition *product_definition)
@@ -2031,13 +2031,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         if (harp_ingestion_options_get_option(options, "data", &cp) == 0)
         {
-            if (strcmp(cp, "radiance") == 0)
-            {
-                info->ingestion_data = DATA_RADIANCE;
-                free(info->lightsource);
-                info->lightsource = strdup("Earthshine");
-            }
-            else if (strcmp(cp, "transmission") == 0)
+            if (strcmp(cp, "transmission") == 0)
             {
                 info->ingestion_data = DATA_TRANSMISSION;
                 free(info->lightsource);
@@ -2197,7 +2191,7 @@ int harp_ingestion_module_gome2_l1_init(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
-    const char *data_options[] = { "radiance", "transmission", "sun", "moon", "sun_reference" };
+    const char *data_options[] = { "transmission", "sun", "moon", "sun_reference" };
     const char *description;
 
     description = "GOME2 Level 1 data";
@@ -2206,12 +2200,13 @@ int harp_ingestion_module_gome2_l1_init(void)
     harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
                                    "'band-2a', 'band-2b', 'band-3', 'band-4'); by default data from all bands is "
                                    "retrieved", 6, band_name_as_option);
-    harp_ingestion_register_option(module, "data", "retrieve the measured radiances, the transmission spectra, the sun "
-                                   "measurement spectra, the moon measurement spectra or the sun reference spectrum; "
-                                   "by default the measured radiances are retrieved", 5, data_options);
+    harp_ingestion_register_option(module, "data", "retrieve the measured radiances (default), the transmission "
+                                   "spectra (data=transmission), the sun measurement spectra (data=sun), the moon "
+                                   "measurement spectra (data=moon) or the sun reference spectrum (data=sun_reference",
+                                   4, data_options);
 
     product_definition = register_measurement_product(module, "GOME2_L1_radiance", "GOME2 Level 1b radiance product",
-                                                      "data=radiance or data unset");
+                                                      "data unset");
     register_variables_radiance_transmittance_fields(product_definition, 1);
 
     product_definition = register_measurement_product(module, "GOME2_L1_transmission",

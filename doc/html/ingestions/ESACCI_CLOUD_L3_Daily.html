@@ -309,11 +309,11 @@
 <tbody valign="top">
 <tr class="row-even"><td>orbit</td>
 <td>ascending, descending</td>
-<td>the orbit of the L3 product to ingest; option values are ‘ascending’, ‘descending’</td>
+<td>the orbit of the L3 product to ingest; option values are ‘ascending’ (default), ‘descending’</td>
 </tr>
 <tr class="row-odd"><td>corrected</td>
-<td>false, ” (default)</td>
-<td>ingest the corrected or uncorrected data; option values are ‘false’, ‘’ (default, we ingest the corrected data)</td>
+<td>false</td>
+<td>ingest the corrected data (default) or uncorrected data (corrected=false)</td>
 </tr>
 </tbody>
 </table>
@@ -341,106 +341,202 @@
 <td><em>path</em></td>
 <td><strong>/lon[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_optical_depth</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_optical_depth</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cot_corrected_asc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=ascending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cot_asc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cot_corrected_desc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cot_desc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_optical_depth_uncertainty</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cot_corrected_asc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=ascending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cot_asc_unc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cot_corrected_desc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cot_desc_unc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_top_height</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_top_height</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_corrected_asc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=ascending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cth_asc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_corrected_desc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cth_desc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_top_height_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_top_height_uncertainty</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_corrected_asc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=ascending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cth_asc_unc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_corrected_desc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/cth_desc_unc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_top_pressure</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_top_pressure</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>/ctp_asc[,,]</strong></td>
+<td><strong>/ctp_corrected_asc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=ascending, corrected=false</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_asc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/cth_corrected_desc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctp_desc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_top_pressure_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_top_pressure_uncertainty</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctp_corrected_asc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=ascending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctp_asc_unc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctp_corrected_desc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctp_desc_unc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_top_temperature</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_top_temperature</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctt_corrected_asc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=ascending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctt_asc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctt_corrected_desc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctt_desc[,,]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><strong>cloud_top_temperature_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="8"><strong>cloud_top_temperature_uncertainty</strong></td>
 <td><em>condition</em></td>
-<td>orbit=ascending</td>
+<td>orbit=ascending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctt_corrected_asc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=ascending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctt_asc_unc[,,]</strong></td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>orbit=descending</td>
+<td>orbit=descending, corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/ctt_corrected_desc_unc[,,]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>orbit=descending, corrected=false</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/ctt_desc_unc[,,]</strong></td>

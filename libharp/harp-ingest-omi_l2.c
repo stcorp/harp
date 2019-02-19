@@ -2280,8 +2280,9 @@ static void register_ombro_product(void)
                                                  ingestion_init_ombro, ingestion_done);
 
     /* destriped ingestion option */
-    description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
+                                   "(default) or with destriping correction (destriped=true)", 1,
+                                   destriped_option_values);
 
     /* OMBRO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMBRO", NULL, read_dimensions);
@@ -2336,8 +2337,9 @@ static void register_omchocho_product(void)
                                                  ingestion_done);
 
     /* destriped ingestion option */
-    description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
+                                   "(default) or with destriping correction (destriped=true)", 1,
+                                   destriped_option_values);
 
     /* OMCHOCHO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCHOCHO", NULL, read_dimensions);
@@ -2393,8 +2395,8 @@ static void register_omcldo2_product(void)
                                                  ingestion_init_omcldo2, ingestion_done);
 
     /* clipped_cloud_fraction ingestion option */
-    description = "ingest clipped (to the range [0.0, 1.0]) cloud fractions";
-    harp_ingestion_register_option(module, "clipped_cloud_fraction", description, 1,
+    harp_ingestion_register_option(module, "clipped_cloud_fraction", "ingest regular cloud fraction values "
+                                   "(clipped_cloud_fraction=false) or clipped to the range [0.0, 1.0] (default)", 1,
                                    clipped_cloud_fraction_option_values);
 
     /* OMCLDO2 product */
@@ -2813,8 +2815,9 @@ static void register_omhcho_product(void)
                                                  "OMI L2 HCHO total column", ingestion_init_omhcho, ingestion_done);
 
     /* destriped ingestion option */
-    description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
+                                   "(default) or with destriping correction (destriped=true)", 1,
+                                   destriped_option_values);
 
     /* OMHCHO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMHCHO", NULL, read_dimensions);
@@ -3067,8 +3070,9 @@ static void register_omoclo_product(void)
                                                  "OMI L2 OClO slant column", ingestion_init_omoclo, ingestion_done);
 
     /* destriped ingestion option */
-    description = "ingest column densities with destriping correction";
-    harp_ingestion_register_option(module, "destriped", description, 1, destriped_option_values);
+    harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
+                                   "(default) or with destriping correction (destriped=true)", 1,
+                                   destriped_option_values);
 
     /* OMOCLO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMOCLO", NULL, read_dimensions);
@@ -3122,10 +3126,11 @@ static void register_omso2_product(void)
                                                  ingestion_init_omso2, ingestion_done);
 
     /* so2_column_variant ingestion option */
-    description = "for V2 products: 'pbl' (anthropogenic SO2 pollution at the planet boundary layer), '5km' (showing"
-        " passive degassing at 5km altitude), or '15km' (showing explosive eruptions at 15km); for V3"
-        " products: 'pbl' (planet boundary layer - 0.9km), 'trl' (lower troposphere - 2.5km), 'trm' (middle"
-        " troposphere - 7.5km), 'stl' (upper tropospheric and stratospheric - 17km)";
+    description = "for V2 products: anthropogenic SO2 pollution at the planet boundary layer (so2_column_variant=pbl, "
+        "default), showing passive degassing at 5km altitude (so2_column_variant=5km), or showing explosive eruptions "
+        "at 15km (so2_column_variant=15km); for V3 products: planet boundary layer - 0.9km (so2_column_variant=pbl, "
+        "default), lower troposphere - 2.5km (so2_column_variant=trl), middle troposphere - 7.5km "
+        "(so2_column_variant=trm), or upper tropospheric and stratospheric - 17km (so2_column_variant=stl)";
     harp_ingestion_register_option(module, "so2_column_variant", description, 6, so2_column_variant_option_values);
 
     /* OMSO2 product */
@@ -3226,7 +3231,8 @@ static void register_omto3_product(void)
                                                  "OMI L2 O3 total column (TOMS)", ingestion_init_omto3, ingestion_done);
 
     /* cloud_fraction_variant ingestion option */
-    description = "ingest effective or radiative cloud fraction (only applicable for V3 products)";
+    description = "ingest effective (cloud_fraction_variant=effective, default) or radiative cloud fraction "
+        "(cloud_fraction_variant=radiative); only applicable for V3 products";
     harp_ingestion_register_option(module, "cloud_fraction_variant", description, 2,
                                    cloud_fraction_variant_option_values);
 

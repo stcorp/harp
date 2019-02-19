@@ -416,12 +416,12 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>temperature</td>
-<td>local, model</td>
-<td>can be either ‘local’ or ‘model’; ‘local’ (the default) will retrieve the locally measured temperature and ‘model’ will return the temperature from the external model</td>
+<td>model</td>
+<td>retrieve the locally measured temperature (default) or the temperature from the external model (temperature=model)</td>
 </tr>
 <tr class="row-odd"><td>air</td>
-<td>local, model</td>
-<td>can be either ‘local’ or ‘model’; ‘local’ (the default) will retrieve the locally measured air density and ‘model’ will return the air density from the external model</td>
+<td>model</td>
+<td>retrieve the locally measured air density (default) or the air density from the external model (air=model)</td>
 </tr>
 </tbody>
 </table>
@@ -658,7 +658,7 @@
 </tr>
 <tr class="row-even"><td rowspan="4"><strong>temperature</strong></td>
 <td><em>condition</em></td>
-<td>temperature=local or temperature unset</td>
+<td>temperature unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nl_geolocation[]/local_temp</strong></td>
@@ -674,7 +674,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>temperature=local or temperature unset</td>
+<td>temperature unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nl_geolocation[]/local_temp_std</strong></td>
@@ -684,7 +684,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>air=local or air unset</td>
+<td>air unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nl_local_species_density[]/air</strong></td>
@@ -700,7 +700,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>air=local or air unset and CODA product version &lt; 2</td>
+<td>air unset and CODA product version &lt; 2</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/nl_local_species_density[]/air_std</strong></td>
@@ -709,7 +709,7 @@
 <td>values equal to 6553.5% will be set to NaN; value will be converted to an uncertainty by multiplying with the absolute value of the measured concentration</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>air=local or air unset and CODA product version &gt;= 2</td>
+<td>air unset and CODA product version &gt;= 2</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nl_local_species_density[]/air_std</strong></td>
@@ -722,7 +722,7 @@
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>air=local or air unset</td>
+<td>air unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/nl_local_species_density[]/pcd[3]</strong></td>

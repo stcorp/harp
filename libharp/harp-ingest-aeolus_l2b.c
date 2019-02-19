@@ -551,11 +551,12 @@ int harp_ingestion_module_aeolus_l2b_init(void)
     description = "AEOLUS Level 2B Product";
     module = harp_ingestion_register_module_coda("AEOLUS_L2B", "AEOLUS", "AEOLUS", "ALD_U_N_2B", description,
                                                  ingestion_init, ingestion_done);
-    harp_ingestion_register_option(module, "data", "the type of profiles to ingest (rayleigh/mie)", 2, dataset_options);
+    harp_ingestion_register_option(module, "data", "the type of profiles to ingest; option values are 'rayleigh' "
+                                   "(default), 'mie'", 2, dataset_options);
 
     description = "Rayleigh HLOS wind profile";
     product_definition = harp_ingestion_register_product(module, "AEOLUS_L2B_Rayleigh", description, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "data=rayleigh");
+    harp_product_definition_add_mapping(product_definition, NULL, "data=rayleigh or data unset");
     register_common_variables(product_definition, 1);
 
     description = "Mie HLOS wind profile";

@@ -1285,8 +1285,8 @@ int harp_ingestion_module_gome_l1_init(void)
                                    "'band-2a', 'band-2b', 'band-3', 'band-4', 'blind-1a', 'straylight-1a', "
                                    "'straylight-1b', 'straylight-2a'); by default data from all bands is retrieved", 10,
                                    band_options);
-    harp_ingestion_register_option(module, "data", "retrieve the measured radiances or the sun spectra; by default "
-                                   "the measured radiances are retrieved", 1, sun_reference_options);
+    harp_ingestion_register_option(module, "data", "retrieve the measured radiances (default) or the sun spectra "
+                                   "(data=sun_reference)", 1, sun_reference_options);
 
     register_nominal_product(module);
     register_sun_reference_product(module);

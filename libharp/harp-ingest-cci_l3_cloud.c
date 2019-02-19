@@ -466,18 +466,21 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (!harp_ingestion_options_has_option(options, "orbit"))
+
+    info->orbit = ORBIT_IS_ASCENDING;
+    if (harp_ingestion_options_has_option(options, "orbit"))
     {
-        ingestion_done(info);
-        harp_set_error(HARP_ERROR_INGESTION, "orbit ascending/descending not specified");
-        return -1;
+        if (harp_ingestion_options_get_option(options, "orbit", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "descending") == 0)
+        {
+            info->orbit = ORBIT_IS_DESCENDING;
+        }
     }
-    if (harp_ingestion_options_get_option(options, "orbit", &option_value) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-    if (strcmp(option_value, "ascending") == 0)
+    if (info->orbit == ORBIT_IS_ASCENDING)
     {
         if (coda_cursor_goto(&cursor, "/cot_asc") != 0)
         {
@@ -485,9 +488,8 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
             harp_set_error(HARP_ERROR_INGESTION, "this product does not contain data of ascending orbits");
             return -1;
         }
-        info->orbit = ORBIT_IS_ASCENDING;
     }
-    else if (strcmp(option_value, "descending") == 0)
+    else
     {
         if (coda_cursor_goto(&cursor, "/cot_desc") != 0)
         {
@@ -495,21 +497,8 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
             harp_set_error(HARP_ERROR_INGESTION, "this product does not contain data of descending orbits");
             return -1;
         }
-        info->orbit = ORBIT_IS_DESCENDING;
-    }
-    else
-    {
-        ingestion_done(info);
-        harp_set_error(HARP_ERROR_INGESTION, "orbit option must be ascending or descending");
-        return -1;
     }
 
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        ingestion_done(info);
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
     info->corrected = 1;
     if (harp_ingestion_options_has_option(options, "corrected"))
     {
@@ -523,22 +512,15 @@ static int ingestion_daily_l3u_init(const harp_ingestion_module *module, coda_pr
             info->corrected = 0;
         }
     }
-    if (info->corrected && (coda_cursor_goto(&cursor, "ctt_corrected_desc") != 0))
+    if (info->corrected && (coda_cursor_goto(&cursor, "/ctt_corrected_desc") != 0))
     {
         ingestion_done(info);
         harp_set_error(HARP_ERROR_INGESTION, "this product does not contain corrected data");
         return -1;
     }
 
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        ingestion_done(info);
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    info->qcflag_present = (coda_cursor_goto(&cursor, "qcflag_desc") == 0);
-    coda_cursor_goto_parent(&cursor);
-    info->stemp_present = (coda_cursor_goto(&cursor, "stemp_desc") == 0);
+    info->qcflag_present = (coda_cursor_goto(&cursor, "/qcflag_desc") == 0);
+    info->stemp_present = (coda_cursor_goto(&cursor, "/stemp_desc") == 0);
 
     if (init_dimensions(info) != 0)
     {
@@ -562,17 +544,15 @@ static void register_fields_for_daily_l3u_cloud_data(void)
     const char *description;
     const char *path;
     const char *orbit_options[] = { "ascending", "descending" };
-    const char *corrected_options[] = { "false", "\"\" (default)" };
+    const char *corrected_options[] = { "false" };
 
     module =
         harp_ingestion_register_module_coda("ESACCI_CLOUD_L3U", "Cloud CCI", "ESACCI_CLOUD", "L3_DAILY",
                                             "CCI L3U Cloud profile", ingestion_daily_l3u_init, ingestion_done);
-    harp_ingestion_register_option(module, "orbit",
-                                   "the orbit of the L3 product to ingest; option values are 'ascending', 'descending'",
-                                   2, orbit_options);
-    harp_ingestion_register_option(module, "corrected",
-                                   "ingest the corrected or uncorrected data; option values are 'false', '' (default, we ingest the corrected data)",
-                                   2, corrected_options);
+    harp_ingestion_register_option(module, "orbit", "the orbit of the L3 product to ingest; option values are "
+                                   "'ascending' (default), 'descending'", 2, orbit_options);
+    harp_ingestion_register_option(module, "corrected", "ingest the corrected data (default) or uncorrected data "
+                                   "(corrected=false)", 1, corrected_options);
 
     product_definition = harp_ingestion_register_product(module, "ESACCI_CLOUD_L3_Daily", NULL, read_dimensions);
 
@@ -602,10 +582,14 @@ static void register_fields_for_daily_l3u_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 2,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_optical_depth);
+    path = "/cot_corrected_asc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
     path = "/cot_asc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/cot_corrected_desc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/cot_desc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* cloud_optical_depth_uncertainty */
     description = "uncertainty of the cloud optical depth";
@@ -613,20 +597,28 @@ static void register_fields_for_daily_l3u_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_optical_depth_uncertainty);
+    path = "/cot_corrected_asc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
     path = "/cot_asc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/cot_corrected_desc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/cot_desc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* cloud_top_height */
     description = "cloud top height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 2,
                                                    dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
+    path = "/cth_corrected_asc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
     path = "/cth_asc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/cth_corrected_desc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/cth_desc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* cloud_top_height_uncertainty */
     description = "uncertainty of the cloud top height";
@@ -634,10 +626,14 @@ static void register_fields_for_daily_l3u_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_top_height_uncertainty);
+    path = "/cth_corrected_asc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
     path = "/cth_asc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/cth_corrected_desc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/cth_desc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* cloud_top_pressure */
     description = "cloud top pressure";
@@ -645,10 +641,14 @@ static void register_fields_for_daily_l3u_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 2,
                                                    dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure);
-    path = "/ctp_asc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    path = "/ctp_corrected_asc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
+    path = "/cth_asc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/cth_corrected_desc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/ctp_desc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* cloud_top_pressure_uncertainty */
     description = "uncertainty of the cloud top pressure";
@@ -656,10 +656,14 @@ static void register_fields_for_daily_l3u_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure_uncertainty);
+    path = "/ctp_corrected_asc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
     path = "/ctp_asc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/ctp_corrected_desc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/ctp_desc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* cloud_top_temperature */
     description = "cloud top temperature";
@@ -667,10 +671,14 @@ static void register_fields_for_daily_l3u_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_double, 2,
                                                    dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature);
+    path = "/ctt_corrected_asc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
     path = "/ctt_asc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/ctt_corrected_desc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/ctt_desc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* cloud_top_temperature_uncertainty */
     description = "uncertainty of the cloud top temperature";
@@ -678,10 +686,14 @@ static void register_fields_for_daily_l3u_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature_uncertainty);
+    path = "/ctt_corrected_asc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected unset", path, NULL);
     path = "/ctt_asc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=ascending, corrected=false", path, NULL);
+    path = "/ctt_corrected_desc_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected unset", path, NULL);
     path = "/ctt_desc_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "orbit=descending, corrected=false", path, NULL);
 
     /* validity */
     description = "validity of the measurement";
@@ -859,14 +871,13 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
     harp_dimension_type datetime_dimension_type[1] = { harp_dimension_time };
     const char *description;
     const char *path;
-    const char *corrected_options[] = { "false", "\"\" (default)" };
+    const char *corrected_options[] = { "false" };
 
     module =
         harp_ingestion_register_module_coda("ESACCI_CLOUD_L3C", "Cloud CCI", "ESACCI_CLOUD", "L3_MONTHLY",
                                             "CCI L3C Cloud profile", ingestion_monthly_l3c_init, ingestion_done);
-    harp_ingestion_register_option(module, "corrected",
-                                   "ingest the corrected or uncorrected data; option values are 'false', '' (default, we ingest the corrected data)",
-                                   2, corrected_options);
+    harp_ingestion_register_option(module, "corrected", "ingest the corrected data (default) or uncorrected data "
+                                   "(corrected=false)", 1, corrected_options);
 
     product_definition = harp_ingestion_register_product(module, "ESACCI_CLOUD_L3_Monthly", NULL, read_dimensions);
 
@@ -896,8 +907,10 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 2,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_optical_depth);
+    path = "/cot_corrected[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/cot[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* cloud_optical_depth_uncertainty */
     description = "uncertainty of the cloud optical depth";
@@ -905,16 +918,20 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_optical_depth_uncertainty);
+    path = "/cot_corrected_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/cot_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* cloud_top_height */
     description = "cloud top eight";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 2,
                                                    dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
+    path = "/cth_corrected[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/cth[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* cloud_top_height_uncertainty */
     description = "uncertainty of the cloud top height";
@@ -922,8 +939,10 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_top_height_uncertainty);
+    path = "/cth_corrected_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/cth_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* cloud_top_pressure */
     description = "cloud top pressure";
@@ -931,8 +950,10 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 2,
                                                    dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure);
+    path = "/ctp_corrected[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/ctp[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* cloud_top_pressure_uncertainty */
     description = "uncertainty of the cloud top pressure";
@@ -940,8 +961,10 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "hPa", NULL,
                                                    read_cloud_top_pressure_uncertainty);
+    path = "/ctp_corrected_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/ctp_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* cloud_top_temperature */
     description = "cloud top temperature";
@@ -949,8 +972,10 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_double, 2,
                                                    dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature);
+    path = "/ctt_corrected[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/ctt[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* cloud_top_temperature_uncertainty */
     description = "uncertainty of the cloud top temperature";
@@ -958,8 +983,10 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature_uncertainty);
+    path = "/ctt_corrected_unc[,,]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected unset", path, NULL);
     path = "/ctt_unc[,,]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "corrected=false", path, NULL);
 
     /* surface_temperature */
     description = "surface_temperature";
