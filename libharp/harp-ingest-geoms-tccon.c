@@ -550,11 +550,11 @@ static int read_surface_relative_humidity(void *user_data, harp_array data)
     return read_variable_float(user_data, "HUMIDITY_RELATIVE_SURFACE_INDEPENDENT", info->num_time, data);
 }
 
-static int read_column_number_density(void *user_data, harp_array data)
+static int read_number_density(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "COLUMN_PARTIAL_INDEPENDENT", info->num_time * info->num_vertical, data);
+    return read_variable_float(user_data, "NUMBER_DENSITY_INDEPENDENT", info->num_time * info->num_vertical, data);
 }
 
 static void ingestion_done(void *user_data)
@@ -1040,13 +1040,13 @@ static int init_product_definition(harp_ingestion_module *module, int version)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/HUMIDITY.RELATIVE.SURFACE_INDEPENDENT",
                                          NULL);
 
-    /* column_number_density */
-    description = "partial columns of air number densities";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "column_number_density",
+    /* number_density */
+    description = "independent air density profile";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "number_density",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      description, "molec/cm3", NULL,
-                                                                     read_column_number_density);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/COLUMN.PARTIAL_INDEPENDENT", NULL);
+                                                                     read_number_density);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/NUMBER.DENSITY_INDEPENDENT", NULL);
 
     return 0;
 }
