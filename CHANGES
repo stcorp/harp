@@ -7,6 +7,8 @@
 * Add derivation for tropospheric/stratospheric column from partial column
   profile and tropopause.
 
+* Corrected derivation for calculating tropopause altitude/pressure.
+
 * Added support for scene albedo/pressure/type variables.
 
 * Fix problem in matlab mex extension determination on linux when using the

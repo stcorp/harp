@@ -248,32 +248,34 @@ long harp_tropopause_index_from_altitude_and_temperature(long num_levels, const 
         /* A rate of 2 degC/km is the same is 0.002 K/m. */
         if (lapse_below > 0.002 && lapse_above <= 0.002)
         {
+            double lapse_sum = 0;
+            long count = 0;
             long k = i + 2;
 
             while (k < num_levels && altitude_profile[k] <= altitude_profile[i] + 2000)
             {
-                height = altitude_profile[k] - altitude_profile[i];
+                height = altitude_profile[k] - altitude_profile[k - 1];
                 if (height >= EPSILON)
                 {
-                    /* average lapse rate should not exceed 2 degC/km */
-                    if ((temperature_profile[i] - temperature_profile[k]) / height > 0.002)
-                    {
-                        k = -1;
-                        break;
-                    }
+                    lapse_sum += (temperature_profile[k - 1] - temperature_profile[k]) / height;
+                    count++;
                 }
                 k++;
             }
-            if (k > i)
+            if (count > 0)
             {
-                return i;
+                /* average lapse rate should not exceed 2 degC/km */
+                if (lapse_sum / count <= 0.002)
+                {
+                    return i;
+                }
             }
         }
         lapse_below = lapse_above;
         i++;
     }
 
-    /* we were not able to find the tropopause -> return NaN */
+    /* we were not able to find the tropopause */
     return -1;
 }
 

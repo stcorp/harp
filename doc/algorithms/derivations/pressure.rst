@@ -160,7 +160,7 @@ pressure derivations
          & 1 < i < N  & \wedge \\
          & 5000 <= p(i) <= 50000  & \wedge \\
          & \frac{T(i-1)-T(i)}{z(i)-z(i-1)} > 0.002 \wedge \frac{T(i)-T(i+1)}{z(i+1)-z(i)} <= 0.002 & \wedge \\
-         & \forall_{j, i < j <= N \wedge z(j)-z(i) <= 2000} \frac{T(i)-T(j)}{z(j)-z(i)} <= 0.002 &
+         & \frac{\sum_{j, i < j < N \wedge z(j+1)-z(i) <= 2000} \frac{T(j)-T(j+1)}{z(j+1)-z(j)}}{\sum_{j, i < j < N \wedge z(j+1)-z(i) <= 2000}{1}} <= 0.002 &
       \end{eqnarray}
 
    If no such :math:`i` can be found then :math:`p_{TP}` is set to `NaN`.

@@ -559,7 +559,7 @@ or no dimensions at all.</p>
    &amp; 1 &lt; i &lt; N  &amp; \wedge \\
    &amp; 5000 &lt;= p(i) &lt;= 50000  &amp; \wedge \\
    &amp; \frac{T(i-1)-T(i)}{z(i)-z(i-1)} &gt; 0.002 \wedge \frac{T(i)-T(i+1)}{z(i+1)-z(i)} &lt;= 0.002 &amp; \wedge \\
-   &amp; \forall_{j, i &lt; j &lt;= N \wedge z(j)-z(i) &lt;= 2000} \frac{T(i)-T(j)}{z(j)-z(i)} &lt;= 0.002 &amp;
+   &amp; \frac{\sum_{j, i &lt; j &lt; N \wedge z(j+1)-z(i) &lt;= 2000} \frac{T(j)-T(j+1)}{z(j+1)-z(j)}}{\sum_{j, i &lt; j &lt; N \wedge z(j+1)-z(i) &lt;= 2000}{1}} &lt;= 0.002 &amp;
 \end{eqnarray}</div><p>If no such <span class="math notranslate nohighlight">\(i\)</span> can be found then <span class="math notranslate nohighlight">\(z_{TP}\)</span> is set to <cite>NaN</cite>.</p>
 </li>
 </ol>
