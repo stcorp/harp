@@ -4485,10 +4485,10 @@ static void register_ch4_product(void)
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
-    /* CH4_column_volume_mixing_ratio_dry_air_avk */
+    /* CH4_column_number_density_avk */
     description = "column averaging kernel for methane retrieval";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_dry_air_avk",
+        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_number_density_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_column_averaging_kernel_inverted);
