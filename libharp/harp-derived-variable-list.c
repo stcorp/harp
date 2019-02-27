@@ -1210,8 +1210,8 @@ static int get_strato_column_from_partial_column_and_altitude(harp_variable *var
     {
         variable->data.double_data[i] =
             harp_profile_strato_column_from_partial_column_and_altitude
-                (num_levels, &source_variable[0]->data.double_data[i * num_levels],
-                 &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+            (num_levels, &source_variable[0]->data.double_data[i * num_levels],
+             &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
     }
 
     return 0;
@@ -1229,8 +1229,8 @@ static int get_strato_column_from_partial_column_and_pressure(harp_variable *var
     {
         variable->data.double_data[i] =
             harp_profile_strato_column_from_partial_column_and_pressure
-                (num_levels, &source_variable[0]->data.double_data[i * num_levels],
-                 &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+            (num_levels, &source_variable[0]->data.double_data[i * num_levels],
+             &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
     }
 
     return 0;
@@ -1276,7 +1276,7 @@ static int get_tropo_column_from_partial_column_and_altitude(harp_variable *vari
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] =
-        harp_profile_tropo_column_from_partial_column_and_altitude
+            harp_profile_tropo_column_from_partial_column_and_altitude
             (num_levels, &source_variable[0]->data.double_data[i * num_levels],
              &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
     }
@@ -1295,7 +1295,7 @@ static int get_tropo_column_from_partial_column_and_pressure(harp_variable *vari
     for (i = 0; i < variable->num_elements; i++)
     {
         variable->data.double_data[i] =
-        harp_profile_tropo_column_from_partial_column_and_pressure
+            harp_profile_tropo_column_from_partial_column_and_pressure
             (num_levels, &source_variable[0]->data.double_data[i * num_levels],
              &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
     }

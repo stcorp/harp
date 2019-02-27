@@ -533,7 +533,7 @@ double harp_profile_strato_column_from_partial_column_and_pressure(long num_leve
                 else
                 {
                     column += partial_column_profile[k] * log(tropopause_pressure / pressure_bounds[k * 2]) /
-                    log(pressure_bounds[k * 2 + 1] / pressure_bounds[k * 2]);
+                        log(pressure_bounds[k * 2 + 1] / pressure_bounds[k * 2]);
                 }
                 empty = 0;
             }
