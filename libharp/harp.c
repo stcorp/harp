@@ -824,14 +824,14 @@ LIBHARP_API int harp_export(const char *filename, const char *export_format, con
 #ifdef HAVE_HDF4
             return harp_export_hdf4(filename, product);
 #else
-            coda_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
+            harp_set_error(HARP_ERROR_NO_HDF4_SUPPORT, NULL);
             return -1;
 #endif
         case format_hdf5:
 #ifdef HAVE_HDF5
             return harp_export_hdf5(filename, product);
 #else
-            coda_set_error(HARP_ERROR_NO_HDF5_SUPPORT, NULL);
+            harp_set_error(HARP_ERROR_NO_HDF5_SUPPORT, NULL);
             return -1;
 #endif
         case format_netcdf:
