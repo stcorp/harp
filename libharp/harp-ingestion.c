@@ -2286,7 +2286,15 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
             }
             if (status == 0)
             {
-                print(" [OK]\n");
+                print(" (%d variables", info->product->num_variables);
+                for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+                {
+                    if (info->product->dimension[i] > 0)
+                    {
+                        print(", %s=%ld", harp_get_dimension_type_name(i), info->product->dimension[i]);
+                    }
+                }
+                print(") [OK]\n");
             }
             else
             {

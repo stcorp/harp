@@ -14,6 +14,8 @@
 * Fix problem in matlab mex extension determination on linux when using the
   configure script.
 
+* Added variable count and dimension sizes to output of harpcheck.
+
 * Added support for TCCON products in GEOMS format.
 
 * Updates to ESACCI_OZONE_L2_TC, QA4ECV, and S5P L2 product ingestions.

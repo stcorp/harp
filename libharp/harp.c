@@ -640,6 +640,7 @@ LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char 
     harp_product *product;
     file_format format;
     int result;
+    int i;
 
     print("product: %s\n", filename);
 
@@ -692,7 +693,15 @@ LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char 
         harp_product_delete(product);
         return 1;
     }
-    print(" [OK]\n");
+    print(" (%d variables", product->num_variables);
+    for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
+    {
+        if (product->dimension[i] > 0)
+        {
+            print(", %s=%ld", harp_get_dimension_type_name(i), product->dimension[i]);
+        }
+    }
+    print(") [OK]\n");
 
     harp_product_delete(product);
 
