@@ -2166,10 +2166,14 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
     harp_program *program;
     harp_ingestion_options *option_list;
     harp_ingestion_module *module;
+    const char *product_class = NULL;
+    const char *product_type = NULL;
+    coda_format format;
     int perform_conversions;
     int perform_boundary_checks;
     int num_options = 0;
     int *option_choice = NULL;
+    int version;
     int result;
     int depth, i;
 
@@ -2183,6 +2187,18 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
     {
         return -1;
     }
+
+    if (coda_recognize_file(filename, NULL, &format, &product_class, &product_type, &version) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    print("format: %s", coda_type_get_format_name(format));
+    if (product_class != NULL && product_type != NULL)
+    {
+        print(" %s/%s v%d", product_class, product_type, version);
+    }
+    print("\n");
 
     if (harp_program_new(&program) != 0)
     {

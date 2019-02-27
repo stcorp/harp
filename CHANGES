@@ -14,7 +14,7 @@
 * Fix problem in matlab mex extension determination on linux when using the
   configure script.
 
-* Added variable count and dimension sizes to output of harpcheck.
+* Added format, variable count, and dimension sizes to harpcheck output.
 
 * Added support for TCCON products in GEOMS format.
 
