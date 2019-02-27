@@ -18,7 +18,8 @@
 
 * Added support for TCCON products in GEOMS format.
 
-* Updates to ESACCI_OZONE_L2_TC, QA4ECV, and S5P L2 product ingestions.
+* Updates to ESACCI_OZONE_L2_TC, GOME2 L2, QA4ECV, and S5P L2 product
+  ingestions.
 
 1.5 2018-12-17
 ~~~~~~~~~~~~~~
