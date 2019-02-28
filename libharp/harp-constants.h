@@ -233,7 +233,6 @@
 #define CONST_MEAN_MOLAR_MASS_WET_AIR 28.940
 
 /* Atmospheric physics constants */
-#define CONST_DOBSON_UNIT 2.6868e20     /* [molec/m2] */
 #define CONST_STD_AIR_DENSITY 2.6867811e25      /* [molec/m3] Loschmidt constant = air density at standard T and p (CODATA 2014) */
 #define CONST_STD_PRESSURE 1.01325e5    /* [Pa] (standard pressure consistent with Loschmidt constant) */
 #define CONST_STD_TEMPERATURE 273.15    /* [K] (standard temperature consistent with Loschmidt constant)  */
