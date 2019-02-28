@@ -1,5 +1,5 @@
 
-These files are taken from Expat, Release 2.1.1.
+These files are taken from Expat, Release 2.2.6.
 
 The source files have been slightly modified in order to fit them into this
 build system. The changes that were made are:
@@ -10,11 +10,6 @@ build system. The changes that were made are:
  - expat_external.h includes harp_expat_mangle.h to name mangle all
    public symbols.
 
- - Checks for BYTEORDER have been replaced with checks for WORDS_BIGENDIAN.
+ - Add define for BYTEORDER based on WORDS_BIGENDIAN.
 
- - Added '(void)variable;' entries in many functions to eliminate
-  'unused parameter' warnings.
-
- - Added EMPTY_NORMAL_VTABLE macro to eliminate 'missing initializer'
-   warnings.
-
+ - Add define for XML_POOR_ENTROPY since we don't need high quality entropy.

@@ -274,6 +274,7 @@ libudunits2_la_SOURCES = \
 	expat/internal.h \
 	expat/latin1tab.h \
 	expat/nametab.h \
+	expat/siphash.h \
 	expat/utf8tab.h \
 	expat/xmlrole.h \
 	expat/xmltok.h \

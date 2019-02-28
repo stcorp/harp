@@ -1,5 +1,33 @@
-/* Copyright (c) 1998, 1999 Thai Open Source Software Center Ltd
-   See the file COPYING for copying permission.
+/*
+                            __  __            _
+                         ___\ \/ /_ __   __ _| |_
+                        / _ \\  /| '_ \ / _` | __|
+                       |  __//  \| |_) | (_| | |_
+                        \___/_/\_\ .__/ \__,_|\__|
+                                 |_| XML parser
+
+   Copyright (c) 1997-2000 Thai Open Source Software Center Ltd
+   Copyright (c) 2000-2017 Expat development team
+   Licensed under the MIT license:
+
+   Permission is  hereby granted,  free of charge,  to any  person obtaining
+   a  copy  of  this  software   and  associated  documentation  files  (the
+   "Software"),  to  deal in  the  Software  without restriction,  including
+   without  limitation the  rights  to use,  copy,  modify, merge,  publish,
+   distribute, sublicense, and/or sell copies of the Software, and to permit
+   persons  to whom  the Software  is  furnished to  do so,  subject to  the
+   following conditions:
+
+   The above copyright  notice and this permission notice  shall be included
+   in all copies or substantial portions of the Software.
+
+   THE  SOFTWARE  IS  PROVIDED  "AS  IS",  WITHOUT  WARRANTY  OF  ANY  KIND,
+   EXPRESS  OR IMPLIED,  INCLUDING  BUT  NOT LIMITED  TO  THE WARRANTIES  OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+   NO EVENT SHALL THE AUTHORS OR  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR  OTHER LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT,  TORT OR
+   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+   USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -7,6 +35,17 @@
 #endif
 
 #include <stddef.h>
+#include <string.h>  /* memcpy */
+
+#if defined(_MSC_VER) && (_MSC_VER <= 1700)
+  /* for vs2012/11.0/1700 and earlier Visual Studio compilers */
+# define bool   int
+# define false  0
+# define true   1
+#else
+# include <stdbool.h>
+#endif
+
 
 #include "expat_external.h"
 #include "internal.h"
@@ -23,7 +62,6 @@
   { PREFIX(prologTok), PREFIX(contentTok), \
     PREFIX(cdataSectionTok) IGNORE_SECTION_TOK_VTABLE }, \
   { PREFIX(attributeValueTok), PREFIX(entityValueTok) }, \
-  PREFIX(sameName), \
   PREFIX(nameMatchesAscii), \
   PREFIX(nameLength), \
   PREFIX(skipS), \
@@ -36,7 +74,7 @@
 #define VTABLE VTABLE1, PREFIX(toUtf8), PREFIX(toUtf16)
 
 #define UCS2_GET_NAMING(pages, hi, lo) \
-   (namingBitmap[(pages[hi] << 3) + ((lo) >> 5)] & (1 << ((lo) & 0x1F)))
+   (namingBitmap[(pages[hi] << 3) + ((lo) >> 5)] & (1u << ((lo) & 0x1F)))
 
 /* A 2 byte UTF-8 representation splits the characters 11 bits between
    the bottom 5 and 6 bits of the bytes.  We need 8 bits to index into
@@ -46,7 +84,7 @@
     (namingBitmap[((pages)[(((byte)[0]) >> 2) & 7] << 3) \
                       + ((((byte)[0]) & 3) << 1) \
                       + ((((byte)[1]) >> 5) & 1)] \
-         & (1 << (((byte)[1]) & 0x1F)))
+         & (1u << (((byte)[1]) & 0x1F)))
 
 /* A 3 byte UTF-8 representation splits the characters 16 bits between
    the bottom 4, 6 and 6 bits of the bytes.  We need 8 bits to index
@@ -59,7 +97,7 @@
                        << 3) \
                       + ((((byte)[1]) & 3) << 1) \
                       + ((((byte)[2]) >> 5) & 1)] \
-         & (1 << (((byte)[2]) & 0x1F)))
+         & (1u << (((byte)[2]) & 0x1F)))
 
 #define UTF8_GET_NAMING(pages, p, n) \
   ((n) == 2 \
@@ -112,62 +150,54 @@
     ((*p) == 0xF4 ? (p)[1] > 0x8F : ((p)[1] & 0xC0) == 0xC0)))
 
 static int PTRFASTCALL
-isNever(const ENCODING *enc, const char *p)
+isNever(const ENCODING *UNUSED_P(enc), const char *UNUSED_P(p))
 {
-  (void)enc; (void)p;   /* prevent unused warning */
   return 0;
 }
 
 static int PTRFASTCALL
-utf8_isName2(const ENCODING *enc, const char *p)
+utf8_isName2(const ENCODING *UNUSED_P(enc), const char *p)
 {
-  (void)enc;    /* prevent unused warning */
   return UTF8_GET_NAMING2(namePages, (const unsigned char *)p);
 }
 
 static int PTRFASTCALL
-utf8_isName3(const ENCODING *enc, const char *p)
+utf8_isName3(const ENCODING *UNUSED_P(enc), const char *p)
 {
-  (void)enc;    /* prevent unused warning */
   return UTF8_GET_NAMING3(namePages, (const unsigned char *)p);
 }
 
 #define utf8_isName4 isNever
 
 static int PTRFASTCALL
-utf8_isNmstrt2(const ENCODING *enc, const char *p)
+utf8_isNmstrt2(const ENCODING *UNUSED_P(enc), const char *p)
 {
-  (void)enc;    /* prevent unused warning */
   return UTF8_GET_NAMING2(nmstrtPages, (const unsigned char *)p);
 }
 
 static int PTRFASTCALL
-utf8_isNmstrt3(const ENCODING *enc, const char *p)
+utf8_isNmstrt3(const ENCODING *UNUSED_P(enc), const char *p)
 {
-  (void)enc;    /* prevent unused warning */
   return UTF8_GET_NAMING3(nmstrtPages, (const unsigned char *)p);
 }
 
 #define utf8_isNmstrt4 isNever
 
 static int PTRFASTCALL
-utf8_isInvalid2(const ENCODING *enc, const char *p)
+utf8_isInvalid2(const ENCODING *UNUSED_P(enc), const char *p)
 {
-  (void)enc;    /* prevent unused warning */
   return UTF8_INVALID2((const unsigned char *)p);
 }
 
 static int PTRFASTCALL
-utf8_isInvalid3(const ENCODING *enc, const char *p)
+utf8_isInvalid3(const ENCODING *UNUSED_P(enc), const char *p)
 {
-  (void)enc;    /* prevent unused warning */
   return UTF8_INVALID3((const unsigned char *)p);
 }
 
 static int PTRFASTCALL
-utf8_isInvalid4(const ENCODING *enc, const char *p)
+utf8_isInvalid4(const ENCODING *UNUSED_P(enc), const char *p)
 {
-  (void)enc;    /* prevent unused warning */
   return UTF8_INVALID4((const unsigned char *)p);
 }
 
@@ -220,16 +250,16 @@ struct normal_encoding {
  E ## isInvalid3, \
  E ## isInvalid4
 
-#define EMPTY_NORMAL_VTABLE \
-  NULL, \
-  NULL, \
-  NULL, \
-  NULL, \
-  NULL, \
-  NULL, \
-  NULL, \
-  NULL, \
-  NULL
+#define NULL_VTABLE \
+ /* isName2 */ NULL, \
+ /* isName3 */ NULL, \
+ /* isName4 */ NULL, \
+ /* isNmstrt2 */ NULL, \
+ /* isNmstrt3 */ NULL, \
+ /* isNmstrt4 */ NULL, \
+ /* isInvalid2 */ NULL, \
+ /* isInvalid3 */ NULL, \
+ /* isInvalid4 */ NULL
 
 static int FASTCALL checkCharRefNumber(int);
 
@@ -327,40 +357,104 @@ enum {  /* UTF8_cvalN is value of masked first byte of N byte sequence */
   UTF8_cval4 = 0xf0
 };
 
-static void PTRCALL
-utf8_toUtf8(const ENCODING *enc,
+void
+_INTERNAL_trim_to_complete_utf8_characters(const char * from, const char ** fromLimRef)
+{
+  const char * fromLim = *fromLimRef;
+  size_t walked = 0;
+  for (; fromLim > from; fromLim--, walked++) {
+    const unsigned char prev = (unsigned char)fromLim[-1];
+    if ((prev & 0xf8u) == 0xf0u) { /* 4-byte character, lead by 0b11110xxx byte */
+      if (walked + 1 >= 4) {
+        fromLim += 4 - 1;
+        break;
+      } else {
+        walked = 0;
+      }
+    } else if ((prev & 0xf0u) == 0xe0u) { /* 3-byte character, lead by 0b1110xxxx byte */
+      if (walked + 1 >= 3) {
+        fromLim += 3 - 1;
+        break;
+      } else {
+        walked = 0;
+      }
+    } else if ((prev & 0xe0u) == 0xc0u) { /* 2-byte character, lead by 0b110xxxxx byte */
+      if (walked + 1 >= 2) {
+        fromLim += 2 - 1;
+        break;
+      } else {
+        walked = 0;
+      }
+    } else if ((prev & 0x80u) == 0x00u) { /* 1-byte character, matching 0b0xxxxxxx */
+      break;
+    }
+  }
+  *fromLimRef = fromLim;
+}
+
+static enum XML_Convert_Result PTRCALL
+utf8_toUtf8(const ENCODING *UNUSED_P(enc),
             const char **fromP, const char *fromLim,
             char **toP, const char *toLim)
 {
-  char *to;
-  const char *from;
-  (void)enc;    /* prevent unused warning */
-  if (fromLim - *fromP > toLim - *toP) {
-    /* Avoid copying partial characters. */
-    for (fromLim = *fromP + (toLim - *toP); fromLim > *fromP; fromLim--)
-      if (((unsigned char)fromLim[-1] & 0xc0) != 0x80)
-        break;
+  bool input_incomplete = false;
+  bool output_exhausted = false;
+
+  /* Avoid copying partial characters (due to limited space). */
+  const ptrdiff_t bytesAvailable = fromLim - *fromP;
+  const ptrdiff_t bytesStorable = toLim - *toP;
+  if (bytesAvailable > bytesStorable) {
+    fromLim = *fromP + bytesStorable;
+    output_exhausted = true;
   }
-  for (to = *toP, from = *fromP; from != fromLim; from++, to++)
-    *to = *from;
-  *fromP = from;
-  *toP = to;
+
+  /* Avoid copying partial characters (from incomplete input). */
+  {
+    const char * const fromLimBefore = fromLim;
+    _INTERNAL_trim_to_complete_utf8_characters(*fromP, &fromLim);
+    if (fromLim < fromLimBefore) {
+      input_incomplete = true;
+    }
+  }
+
+  {
+    const ptrdiff_t bytesToCopy = fromLim - *fromP;
+    memcpy(*toP, *fromP, bytesToCopy);
+    *fromP += bytesToCopy;
+    *toP += bytesToCopy;
+  }
+
+  if (output_exhausted)  /* needs to go first */
+    return XML_CONVERT_OUTPUT_EXHAUSTED;
+  else if (input_incomplete)
+    return XML_CONVERT_INPUT_INCOMPLETE;
+  else
+    return XML_CONVERT_COMPLETED;
 }
 
-static void PTRCALL
+static enum XML_Convert_Result PTRCALL
 utf8_toUtf16(const ENCODING *enc,
              const char **fromP, const char *fromLim,
              unsigned short **toP, const unsigned short *toLim)
 {
+  enum XML_Convert_Result res = XML_CONVERT_COMPLETED;
   unsigned short *to = *toP;
   const char *from = *fromP;
-  while (from != fromLim && to != toLim) {
+  while (from < fromLim && to < toLim) {
     switch (((struct normal_encoding *)enc)->type[(unsigned char)*from]) {
     case BT_LEAD2:
+      if (fromLim - from < 2) {
+        res = XML_CONVERT_INPUT_INCOMPLETE;
+        goto after;
+      }
       *to++ = (unsigned short)(((from[0] & 0x1f) << 6) | (from[1] & 0x3f));
       from += 2;
       break;
     case BT_LEAD3:
+      if (fromLim - from < 3) {
+        res = XML_CONVERT_INPUT_INCOMPLETE;
+        goto after;
+      }
       *to++ = (unsigned short)(((from[0] & 0xf) << 12)
                                | ((from[1] & 0x3f) << 6) | (from[2] & 0x3f));
       from += 3;
@@ -368,8 +462,14 @@ utf8_toUtf16(const ENCODING *enc,
     case BT_LEAD4:
       {
         unsigned long n;
-        if (to + 1 == toLim)
+        if (toLim - to < 2) {
+          res = XML_CONVERT_OUTPUT_EXHAUSTED;
           goto after;
+        }
+        if (fromLim - from < 4) {
+          res = XML_CONVERT_INPUT_INCOMPLETE;
+          goto after;
+        }
         n = ((from[0] & 0x7) << 18) | ((from[1] & 0x3f) << 12)
             | ((from[2] & 0x3f) << 6) | (from[3] & 0x3f);
         n -= 0x10000;
@@ -384,9 +484,12 @@ utf8_toUtf16(const ENCODING *enc,
       break;
     }
   }
+  if (from < fromLim)
+    res = XML_CONVERT_OUTPUT_EXHAUSTED;
 after:
   *fromP = from;
   *toP = to;
+  return res;
 }
 
 #ifdef XML_NS
@@ -435,40 +538,43 @@ static const struct normal_encoding internal_utf8_encoding = {
   STANDARD_VTABLE(sb_) NORMAL_VTABLE(utf8_)
 };
 
-static void PTRCALL
-latin1_toUtf8(const ENCODING *enc,
+static enum XML_Convert_Result PTRCALL
+latin1_toUtf8(const ENCODING *UNUSED_P(enc),
               const char **fromP, const char *fromLim,
               char **toP, const char *toLim)
 {
-  (void)enc;    /* prevent unused warning */
   for (;;) {
     unsigned char c;
     if (*fromP == fromLim)
-      break;
+      return XML_CONVERT_COMPLETED;
     c = (unsigned char)**fromP;
     if (c & 0x80) {
       if (toLim - *toP < 2)
-        break;
+        return XML_CONVERT_OUTPUT_EXHAUSTED;
       *(*toP)++ = (char)((c >> 6) | UTF8_cval2);
       *(*toP)++ = (char)((c & 0x3f) | 0x80);
       (*fromP)++;
     }
     else {
       if (*toP == toLim)
-        break;
+        return XML_CONVERT_OUTPUT_EXHAUSTED;
       *(*toP)++ = *(*fromP)++;
     }
   }
 }
 
-static void PTRCALL
-latin1_toUtf16(const ENCODING *enc,
+static enum XML_Convert_Result PTRCALL
+latin1_toUtf16(const ENCODING *UNUSED_P(enc),
                const char **fromP, const char *fromLim,
                unsigned short **toP, const unsigned short *toLim)
 {
-  (void)enc;    /* prevent unused warning */
-  while (*fromP != fromLim && *toP != toLim)
+  while (*fromP < fromLim && *toP < toLim)
     *(*toP)++ = (unsigned char)*(*fromP)++;
+
+  if ((*toP == toLim) && (*fromP < fromLim))
+    return XML_CONVERT_OUTPUT_EXHAUSTED;
+  else
+    return XML_CONVERT_COMPLETED;
 }
 
 #ifdef XML_NS
@@ -479,8 +585,7 @@ static const struct normal_encoding latin1_encoding_ns = {
 #include "asciitab.h"
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(sb_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(sb_) NULL_VTABLE
 };
 
 #endif
@@ -493,18 +598,21 @@ static const struct normal_encoding latin1_encoding = {
 #undef BT_COLON
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(sb_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(sb_) NULL_VTABLE
 };
 
-static void PTRCALL
-ascii_toUtf8(const ENCODING *enc,
+static enum XML_Convert_Result PTRCALL
+ascii_toUtf8(const ENCODING *UNUSED_P(enc),
              const char **fromP, const char *fromLim,
              char **toP, const char *toLim)
 {
-  (void)enc;    /* prevent unused warning */
-  while (*fromP != fromLim && *toP != toLim)
+  while (*fromP < fromLim && *toP < toLim)
     *(*toP)++ = *(*fromP)++;
+
+  if ((*toP == toLim) && (*fromP < fromLim))
+    return XML_CONVERT_OUTPUT_EXHAUSTED;
+  else
+    return XML_CONVERT_COMPLETED;
 }
 
 #ifdef XML_NS
@@ -515,8 +623,7 @@ static const struct normal_encoding ascii_encoding_ns = {
 #include "asciitab.h"
 /* BT_NONXML == 0 */
   },
-  STANDARD_VTABLE(sb_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(sb_) NULL_VTABLE
 };
 
 #endif
@@ -529,8 +636,7 @@ static const struct normal_encoding ascii_encoding = {
 #undef BT_COLON
 /* BT_NONXML == 0 */
   },
-  STANDARD_VTABLE(sb_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(sb_) NULL_VTABLE
 };
 
 static int PTRFASTCALL
@@ -553,14 +659,14 @@ unicode_byte_type(char hi, char lo)
 }
 
 #define DEFINE_UTF16_TO_UTF8(E) \
-static void  PTRCALL \
-E ## toUtf8(const ENCODING *enc, \
+static enum XML_Convert_Result  PTRCALL \
+E ## toUtf8(const ENCODING *UNUSED_P(enc), \
             const char **fromP, const char *fromLim, \
             char **toP, const char *toLim) \
 { \
-  const char *from; \
-  (void)enc;    /* prevent unused warning */ \
-  for (from = *fromP; from != fromLim; from += 2) { \
+  const char *from = *fromP; \
+  fromLim = from + (((fromLim - from) >> 1) << 1);  /* shrink to even */ \
+  for (; from < fromLim; from += 2) { \
     int plane; \
     unsigned char lo2; \
     unsigned char lo = GET_LO(from); \
@@ -570,7 +676,7 @@ E ## toUtf8(const ENCODING *enc, \
       if (lo < 0x80) { \
         if (*toP == toLim) { \
           *fromP = from; \
-          return; \
+          return XML_CONVERT_OUTPUT_EXHAUSTED; \
         } \
         *(*toP)++ = lo; \
         break; \
@@ -580,7 +686,7 @@ E ## toUtf8(const ENCODING *enc, \
     case 0x4: case 0x5: case 0x6: case 0x7: \
       if (toLim -  *toP < 2) { \
         *fromP = from; \
-        return; \
+        return XML_CONVERT_OUTPUT_EXHAUSTED; \
       } \
       *(*toP)++ = ((lo >> 6) | (hi << 2) |  UTF8_cval2); \
       *(*toP)++ = ((lo & 0x3f) | 0x80); \
@@ -588,7 +694,7 @@ E ## toUtf8(const ENCODING *enc, \
     default: \
       if (toLim -  *toP < 3)  { \
         *fromP = from; \
-        return; \
+        return XML_CONVERT_OUTPUT_EXHAUSTED; \
       } \
       /* 16 bits divided 4, 6, 6 amongst 3 bytes */ \
       *(*toP)++ = ((hi >> 4) | UTF8_cval3); \
@@ -598,7 +704,11 @@ E ## toUtf8(const ENCODING *enc, \
     case 0xD8: case 0xD9: case 0xDA: case 0xDB: \
       if (toLim -  *toP < 4) { \
         *fromP = from; \
-        return; \
+        return XML_CONVERT_OUTPUT_EXHAUSTED; \
+      } \
+      if (fromLim - from < 4) { \
+        *fromP = from; \
+        return XML_CONVERT_INPUT_INCOMPLETE; \
       } \
       plane = (((hi & 0x3) << 2) | ((lo >> 6) & 0x3)) + 1; \
       *(*toP)++ = ((plane >> 2) | UTF8_cval4); \
@@ -614,21 +724,32 @@ E ## toUtf8(const ENCODING *enc, \
     } \
   } \
   *fromP = from; \
+  if (from < fromLim) \
+    return XML_CONVERT_INPUT_INCOMPLETE; \
+  else \
+    return XML_CONVERT_COMPLETED; \
 }
 
 #define DEFINE_UTF16_TO_UTF16(E) \
-static void  PTRCALL \
-E ## toUtf16(const ENCODING *enc, \
+static enum XML_Convert_Result  PTRCALL \
+E ## toUtf16(const ENCODING *UNUSED_P(enc), \
              const char **fromP, const char *fromLim, \
              unsigned short **toP, const unsigned short *toLim) \
 { \
+  enum XML_Convert_Result res = XML_CONVERT_COMPLETED; \
+  fromLim = *fromP + (((fromLim - *fromP) >> 1) << 1);  /* shrink to even */ \
   /* Avoid copying first half only of surrogate */ \
-  (void)enc;    /* prevent unused warning */ \
   if (fromLim - *fromP > ((toLim - *toP) << 1) \
-      && (GET_HI(fromLim - 2) & 0xF8) == 0xD8) \
+      && (GET_HI(fromLim - 2) & 0xF8) == 0xD8) { \
     fromLim -= 2; \
-  for (; *fromP != fromLim && *toP != toLim; *fromP += 2) \
+    res = XML_CONVERT_INPUT_INCOMPLETE; \
+  } \
+  for (; *fromP < fromLim && *toP < toLim; *fromP += 2) \
     *(*toP)++ = (GET_HI(*fromP) << 8) | GET_LO(*fromP); \
+  if ((*toP == toLim) && (*fromP < fromLim)) \
+    return XML_CONVERT_OUTPUT_EXHAUSTED; \
+  else \
+    return res; \
 }
 
 #define SET2(ptr, ch) \
@@ -735,28 +856,27 @@ little2_isNmstrtMin(const ENCODING *enc, const char *p)
 
 static const struct normal_encoding little2_encoding_ns = {
   { VTABLE, 2, 0,
-#ifdef WORDS_BIGENDIAN
-    0
-#else
+#if BYTEORDER == 1234
     1
+#else
+    0
 #endif
   },
   {
 #include "asciitab.h"
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(little2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(little2_) NULL_VTABLE
 };
 
 #endif
 
 static const struct normal_encoding little2_encoding = {
   { VTABLE, 2, 0,
-#ifdef WORDS_BIGENDIAN
-    0
-#else
+#if BYTEORDER == 1234
     1
+#else
+    0
 #endif
   },
   {
@@ -765,11 +885,10 @@ static const struct normal_encoding little2_encoding = {
 #undef BT_COLON
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(little2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(little2_) NULL_VTABLE
 };
 
-#if !defined(WORDS_BIGENDIAN)
+#if BYTEORDER != 4321
 
 #ifdef XML_NS
 
@@ -779,8 +898,7 @@ static const struct normal_encoding internal_little2_encoding_ns = {
 #include "iasciitab.h"
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(little2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(little2_) NULL_VTABLE
 };
 
 #endif
@@ -793,8 +911,7 @@ static const struct normal_encoding internal_little2_encoding = {
 #undef BT_COLON
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(little2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(little2_) NULL_VTABLE
 };
 
 #endif
@@ -880,7 +997,7 @@ big2_isNmstrtMin(const ENCODING *enc, const char *p)
 
 static const struct normal_encoding big2_encoding_ns = {
   { VTABLE, 2, 0,
-#ifdef WORDS_BIGENDIAN
+#if BYTEORDER == 4321
   1
 #else
   0
@@ -890,15 +1007,14 @@ static const struct normal_encoding big2_encoding_ns = {
 #include "asciitab.h"
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(big2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(big2_) NULL_VTABLE
 };
 
 #endif
 
 static const struct normal_encoding big2_encoding = {
   { VTABLE, 2, 0,
-#ifdef WORDS_BIGENDIAN
+#if BYTEORDER == 4321
   1
 #else
   0
@@ -910,11 +1026,10 @@ static const struct normal_encoding big2_encoding = {
 #undef BT_COLON
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(big2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(big2_) NULL_VTABLE
 };
 
-#if defined(WORDS_BIGENDIAN)
+#if BYTEORDER != 1234
 
 #ifdef XML_NS
 
@@ -924,8 +1039,7 @@ static const struct normal_encoding internal_big2_encoding_ns = {
 #include "iasciitab.h"
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(big2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(big2_) NULL_VTABLE
 };
 
 #endif
@@ -938,8 +1052,7 @@ static const struct normal_encoding internal_big2_encoding = {
 #undef BT_COLON
 #include "latin1tab.h"
   },
-  STANDARD_VTABLE(big2_)
-  EMPTY_NORMAL_VTABLE
+  STANDARD_VTABLE(big2_) NULL_VTABLE
 };
 
 #endif
@@ -955,7 +1068,11 @@ streqci(const char *s1, const char *s2)
     if (ASCII_a <= c1 && c1 <= ASCII_z)
       c1 += ASCII_A - ASCII_a;
     if (ASCII_a <= c2 && c2 <= ASCII_z)
-      c2 += ASCII_A - ASCII_a;
+      /* The following line will never get executed.  streqci() is
+       * only called from two places, both of which guarantee to put
+       * upper-case strings into s2.
+       */
+      c2 += ASCII_A - ASCII_a; /* LCOV_EXCL_LINE */
     if (c1 != c2)
       return 0;
     if (!c1)
@@ -965,10 +1082,9 @@ streqci(const char *s1, const char *s2)
 }
 
 static void PTRCALL
-initUpdatePosition(const ENCODING *enc, const char *ptr,
+initUpdatePosition(const ENCODING *UNUSED_P(enc), const char *ptr,
                    const char *end, POSITION *pos)
 {
-  (void)enc;    /* prevent unused warning */
   normal_updatePosition(&utf8_encoding.enc, ptr, end, pos);
 }
 
@@ -1228,7 +1344,7 @@ XmlUtf8Encode(int c, char *buf)
   };
 
   if (c < 0)
-    return 0;
+    return 0; /* LCOV_EXCL_LINE: this case is always eliminated beforehand */
   if (c < min2) {
     buf[0] = (char)(c | UTF8_cval1);
     return 1;
@@ -1251,7 +1367,7 @@ XmlUtf8Encode(int c, char *buf)
     buf[3] = (char)((c & 0x3f) | 0x80);
     return 4;
   }
-  return 0;
+  return 0; /* LCOV_EXCL_LINE: this case too is eliminated before calling */
 }
 
 int FASTCALL
@@ -1316,7 +1432,7 @@ unknown_isInvalid(const ENCODING *enc, const char *p)
   return (c & ~0xFFFF) || checkCharRefNumber(c) < 0;
 }
 
-static void PTRCALL
+static enum XML_Convert_Result PTRCALL
 unknown_toUtf8(const ENCODING *enc,
                const char **fromP, const char *fromLim,
                char **toP, const char *toLim)
@@ -1327,36 +1443,35 @@ unknown_toUtf8(const ENCODING *enc,
     const char *utf8;
     int n;
     if (*fromP == fromLim)
-      break;
+      return XML_CONVERT_COMPLETED;
     utf8 = uenc->utf8[(unsigned char)**fromP];
     n = *utf8++;
     if (n == 0) {
       int c = uenc->convert(uenc->userData, *fromP);
       n = XmlUtf8Encode(c, buf);
       if (n > toLim - *toP)
-        break;
+        return XML_CONVERT_OUTPUT_EXHAUSTED;
       utf8 = buf;
       *fromP += (AS_NORMAL_ENCODING(enc)->type[(unsigned char)**fromP]
                  - (BT_LEAD2 - 2));
     }
     else {
       if (n > toLim - *toP)
-        break;
+        return XML_CONVERT_OUTPUT_EXHAUSTED;
       (*fromP)++;
     }
-    do {
-      *(*toP)++ = *utf8++;
-    } while (--n != 0);
+    memcpy(*toP, utf8, n);
+    *toP += n;
   }
 }
 
-static void PTRCALL
+static enum XML_Convert_Result PTRCALL
 unknown_toUtf16(const ENCODING *enc,
                 const char **fromP, const char *fromLim,
                 unsigned short **toP, const unsigned short *toLim)
 {
   const struct unknown_encoding *uenc = AS_UNKNOWN_ENCODING(enc);
-  while (*fromP != fromLim && *toP != toLim) {
+  while (*fromP < fromLim && *toP < toLim) {
     unsigned short c = uenc->utf16[(unsigned char)**fromP];
     if (c == 0) {
       c = (unsigned short)
@@ -1368,6 +1483,11 @@ unknown_toUtf16(const ENCODING *enc,
       (*fromP)++;
     *(*toP)++ = c;
   }
+
+  if ((*toP == toLim) && (*fromP < fromLim))
+    return XML_CONVERT_OUTPUT_EXHAUSTED;
+  else
+    return XML_CONVERT_COMPLETED;
 }
 
 ENCODING *
@@ -1396,6 +1516,9 @@ XmlInitUnknownEncoding(void *mem,
     }
     else if (c < 0) {
       if (c < -4)
+        return 0;
+      /* Multi-byte sequences need a converter function */
+      if (!convert)
         return 0;
       e->normal.type[i] = (unsigned char)(BT_LEAD2 - (c + 2));
       e->utf8[i][0] = 0;
@@ -1531,7 +1654,7 @@ initScan(const ENCODING * const *encodingTable,
 {
   const ENCODING **encPtr;
 
-  if (ptr == end)
+  if (ptr >= end)
     return XML_TOK_NONE;
   encPtr = enc->encPtr;
   if (ptr + 1 == end) {
