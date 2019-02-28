@@ -1077,6 +1077,16 @@ static void sort_delete(harp_operation_sort *operation)
     {
         if (operation->variable_name != NULL)
         {
+            int i;
+
+            for (i = 0; i < operation->num_variables; i++)
+            {
+                if (operation->variable_name[i] != NULL)
+                {
+                    free(operation->variable_name[i]);
+                }
+            }
+
             free(operation->variable_name);
         }
 
@@ -2896,7 +2906,7 @@ int harp_operation_smooth_collocated_product_new(int num_variables, const char *
     return 0;
 }
 
-int harp_operation_sort_new(const char *variable_name, harp_operation **new_operation)
+int harp_operation_sort_new(int num_variables, const char **variable_name, harp_operation **new_operation)
 {
     harp_operation_sort *operation;
 
@@ -2910,15 +2920,33 @@ int harp_operation_sort_new(const char *variable_name, harp_operation **new_oper
         return -1;
     }
     operation->type = operation_sort;
+    operation->num_variables = num_variables;
     operation->variable_name = NULL;
 
-    operation->variable_name = strdup(variable_name);
-    if (operation->variable_name == NULL)
+    if (num_variables > 0)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        sort_delete(operation);
-        return -1;
+        int i;
+
+        operation->variable_name = (char **)malloc(num_variables * sizeof(char *));
+        if (operation->variable_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_variables * sizeof(char *), __FILE__, __LINE__);
+            sort_delete(operation);
+            return -1;
+        }
+
+        for (i = 0; i < num_variables; i++)
+        {
+            operation->variable_name[i] = strdup(variable_name[i]);
+            if (operation->variable_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                sort_delete(operation);
+                return -1;
+            }
+        }
     }
 
     *new_operation = (harp_operation *)operation;

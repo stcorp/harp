@@ -424,6 +424,9 @@ Supported functions:
     	should be one dimensional and the dimension that gets reordered is
     	this dimension of the referenced variable.
 
+    ``sort((variable, ...))``
+        Same as above, but use a list of variables for sorting.
+
     ``squash(dimension, variable)``
         Remove the given dimension for the variable, assuming that the
         content for all items in the given dimension is the same.

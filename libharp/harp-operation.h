@@ -457,7 +457,8 @@ typedef struct harp_operation_sort_struct
 {
     harp_operation_type type;
     /* parameters */
-    char *variable_name;
+    int num_variables;
+    char **variable_name;
 } harp_operation_sort;
 
 typedef struct harp_operation_squash_struct
@@ -598,7 +599,7 @@ int harp_operation_smooth_collocated_product_new(int num_variables, const char *
                                                  harp_dimension_type dimension_type, const char *axis_variable_name,
                                                  const char *axis_unit, const char *filename,
                                                  harp_operation **new_operation);
-int harp_operation_sort_new(const char *variable_name, harp_operation **new_operation);
+int harp_operation_sort_new(int num_variables, const char **variable_name, harp_operation **new_operation);
 int harp_operation_squash_new(harp_dimension_type dimension_type, int num_variables, const char **variable_name,
                               harp_operation **new_operation);
 int harp_operation_string_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,

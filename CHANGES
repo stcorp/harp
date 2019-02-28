@@ -1,6 +1,8 @@
 * Added squash() operation.
 
-* Allow bin() operation to be performed using a set of variables.
+* Allow bin() and sort() operations to be performed using a set of variables.
+
+* harp_product_sort() now takes a list of variables.
 
 * Besides using a polygon of >=3 vertices, a geospatial area can now also be
   defined via a bounding rect. Use e.g. 'latitude_bounds {time,2}' and

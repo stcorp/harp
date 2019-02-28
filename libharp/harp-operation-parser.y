@@ -1480,12 +1480,20 @@ operation:
             free($12);
         }
     | FUNC_SORT '(' identifier ')' {
-            if (harp_operation_sort_new($3, &$$) != 0)
+            if (harp_operation_sort_new(1, (const char **)&$3, &$$) != 0)
             {
                 free($3);
                 YYERROR;
             }
             free($3);
+        }
+    | FUNC_SORT '(' '(' identifier_array ')' ')' {
+            if (harp_operation_sort_new($4->num_elements, (const char **)$4->array.string_data, &$$) != 0)
+            {
+                harp_sized_array_delete($4);
+                YYERROR;
+            }
+            harp_sized_array_delete($4);
         }
     | FUNC_SQUASH '(' DIMENSION ',' identifier ')' {
             if (harp_operation_squash_new($3, 1, (const char **)&$5, &$$) != 0)

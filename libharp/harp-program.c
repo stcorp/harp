@@ -1100,7 +1100,7 @@ static int execute_smooth_collocated_product(harp_product *product, harp_operati
 
 static int execute_sort(harp_product *product, harp_operation_sort *operation)
 {
-    return harp_product_sort(product, operation->variable_name);
+    return harp_product_sort(product, operation->num_variables, (const char **)operation->variable_name);
 }
 
 static int execute_squash(harp_product *product, harp_operation_squash *operation)

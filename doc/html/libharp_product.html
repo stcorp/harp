@@ -692,10 +692,11 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv317harp_product_sortP12harp_productPKc">
-<span id="_CPPv217harp_product_sortP12harp_productPKc"></span><span id="harp_product_sort__harp_productP.cCP"></span><span class="target" id="group__harp__product_1gaf11651a038026b71a511a8f2f726b6f6"></span>int <code class="descname">harp_product_sort</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>variable_name</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Reorder a dimension for all variables in a product such that the variable with the given name ends up sorted.</p>
-<p>A variable for the provided variable_name should exist in the product and this variable should be a one dimensional variable. The dimension that will be reordered is this single dimension of the referenced variable.</p>
+<dt id="_CPPv317harp_product_sortP12harp_productiPPKc">
+<span id="_CPPv217harp_product_sortP12harp_productiPPKc"></span><span id="harp_product_sort__harp_productP.i.cCPP"></span><span class="target" id="group__harp__product_1gaa8c8de3f047d36f74579b9d8e5decb50"></span>int <code class="descname">harp_product_sort</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_product" title="harp_product">harp_product</a> *<em>product</em>, int <em>num_variables</em>, <em class="property">const</em> char **<em>variable_name</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Reorder a dimension for all variables in a product such that the variables with the given names ends up sorted.</p>
+<p>Variables for the provided variable_name list should exist in the product and the variables should be one dimensional variables, all using the same dimension. The dimension that will be reordered is this single dimension of the referenced variables.</p>
+<p>Only up to eight variables can be used for sorting.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -706,7 +707,8 @@
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">product</span></code>: HARP product </li>
-<li><code class="docutils literal notranslate"><span class="pre">variable_name</span></code>: Name of the variable to should end up sorted </li>
+<li><code class="docutils literal notranslate"><span class="pre">num_variables</span></code>: Number of variables to use for sorting (1 &lt;= num_variables &lt;= 8) </li>
+<li><code class="docutils literal notranslate"><span class="pre">variable_name</span></code>: Names of the variables to use for sorting </li>
 </ul>
 </dd>
 </dl>
