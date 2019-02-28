@@ -687,7 +687,7 @@ static int read_esc_error(ingest_info *info, species_type species, harp_array da
     return 0;
 }
 
-static int read_quality_flags(ingest_info *info, species_type species, harp_array data)
+static int read_quality_flags(ingest_info *info, species_type species, harp_data_type data_type, harp_array data)
 {
     long offset;
     long i;
@@ -701,9 +701,20 @@ static int read_quality_flags(ingest_info *info, species_type species, harp_arra
     }
 
     offset = info->window_for_species[species] * info->num_main;
-    for (i = 0; i < info->num_main; i++)
+    if (data_type == harp_type_int8)
     {
-        data.int8_data[i] = (int8_t)info->quality_flags_buffer.int32_data[offset + i];
+        for (i = 0; i < info->num_main; i++)
+        {
+            data.int8_data[i] = (int8_t)info->quality_flags_buffer.int32_data[offset + i];
+        }
+    }
+    else
+    {
+        assert(data_type == harp_type_int16);
+        for (i = 0; i < info->num_main; i++)
+        {
+            data.int16_data[i] = (int16_t)info->quality_flags_buffer.int32_data[offset + i];
+        }
     }
 
     return 0;
@@ -1407,49 +1418,248 @@ static int read_quality_flags_bro(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_quality_flags(info, species_type_bro, data);
+    return read_quality_flags(info, species_type_bro, harp_type_int8, data);
 }
 
 static int read_quality_flags_h2o(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_main;
+    harp_array flags;
+    long i;
 
-    return read_quality_flags(info, species_type_h2o, data);
+    if (read_quality_flags(info, species_type_h2o, harp_type_int8, data) != 0)
+    {
+        return -1;
+    }
+
+    flags.ptr = malloc(num_elements * sizeof(int32_t));
+    if (flags.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DETAILED_RESULTS/H2O/H2O_Flag", harp_type_int32, num_elements, flags) != 0)
+    {
+        free(flags.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int8_data[i] = (int8_t)((data.int8_data[i] & 15) + 16 * (flags.int32_data[i] & 3));
+    }
+
+    free(flags.ptr);
+
+    return 0;
 }
 
 static int read_quality_flags_hcho(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_quality_flags(info, species_type_hcho, data);
+    long num_elements = info->num_main;
+    harp_array flags;
+    long i;
+
+    if (read_quality_flags(info, species_type_hcho, harp_type_int16, data) != 0)
+    {
+        return -1;
+    }
+
+    flags.ptr = malloc(num_elements * sizeof(int32_t));
+    if (flags.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DETAILED_RESULTS/HCHO/HCHO_Flag", harp_type_int32, num_elements, flags) != 0)
+    {
+        free(flags.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int16_data[i] = (int16_t)((data.int16_data[i] & 15) + 16 * (flags.int32_data[i] & 15));
+    }
+
+    free(flags.ptr);
+
+    return 0;
 }
 
 static int read_quality_flags_no2(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_quality_flags(info, species_type_no2, data);
+    return read_quality_flags(info, species_type_no2, harp_type_int8, data);
+}
+
+static int read_quality_flags_tropo_no2(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_main;
+    harp_array flags;
+    long i;
+
+    flags.ptr = malloc(num_elements * sizeof(int32_t));
+    if (flags.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DETAILED_RESULTS/NO2/NO2Tropo_Flag", harp_type_int32, num_elements, flags) != 0)
+    {
+        free(flags.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int8_data[i] = (int8_t)flags.int32_data[i];
+    }
+
+    free(flags.ptr);
+
+    return 0;
 }
 
 static int read_quality_flags_o3(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_main;
+    harp_array flags;
+    long i;
 
-    return read_quality_flags(info, species_type_o3, data);
+    if (read_quality_flags(info, species_type_o3, harp_type_int8, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->product_version < 3)
+    {
+        return 0;
+    }
+
+    flags.ptr = malloc(num_elements * sizeof(int32_t));
+    if (flags.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DETAILED_RESULTS/O3/O3_Volcano_Flag", harp_type_int32, num_elements, flags) != 0)
+    {
+        free(flags.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int8_data[i] = (int8_t)((data.int8_data[i] & 15) + 16 * (flags.int32_data[i] & 1));
+    }
+
+    free(flags.ptr);
+
+    return 0;
 }
 
 static int read_quality_flags_oclo(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_main;
+    harp_array flags;
+    long i;
 
-    return read_quality_flags(info, species_type_oclo, data);
+    if (read_quality_flags(info, species_type_oclo, harp_type_int8, data) != 0)
+    {
+        return -1;
+    }
+
+    flags.ptr = malloc(num_elements * sizeof(int32_t));
+    if (flags.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DETAILED_RESULTS/OClO/OClO_Flag", harp_type_int32, num_elements, flags) != 0)
+    {
+        free(flags.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int8_data[i] = (int8_t)((data.int8_data[i] & 15) + 16 * (flags.int32_data[i] & 7));
+    }
+
+    free(flags.ptr);
+
+    return 0;
 }
 
 static int read_quality_flags_so2(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_main;
+    harp_array flags;
+    long i;
 
-    return read_quality_flags(info, species_type_so2, data);
+    if (read_quality_flags(info, species_type_so2, harp_type_int16, data) != 0)
+    {
+        return -1;
+    }
+
+    flags.ptr = malloc(num_elements * sizeof(int32_t));
+    if (flags.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DETAILED_RESULTS/SO2/SO2_Flag", harp_type_int32, num_elements, flags) != 0)
+    {
+        free(flags.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int16_data[i] = (int16_t)((data.int16_data[i] & 15) + 16 * (flags.int32_data[i] & 15));
+    }
+
+    if (info->product_version >= 3)
+    {
+        if (read_dataset(info, "DETAILED_RESULTS/SO2/SO2_Volcano_Flag", harp_type_int32, num_elements, flags) != 0)
+        {
+            free(flags.ptr);
+            return -1;
+        }
+
+        for (i = 0; i < num_elements; i++)
+        {
+            if (flags.int32_data[i] > 0)
+            {
+                data.int16_data[i] += 256 * (1 << (flags.int32_data[i] - 1));
+            }
+        }
+    }
+
+    free(flags.ptr);
+
+    return 0;
 }
 
 static int read_o3_temperature(void *user_data, harp_array data)
@@ -2443,8 +2653,9 @@ static void register_common_variables(harp_product_definition *product_definitio
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_h2o, read_quality_flags_h2o);
-    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
-    description = "window is the index in MainSpecies[] that has the value 'H2O'";
+    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/H2O/H2O_Flag";
+    description = "window is the index in MainSpecies[] that has the value 'H2O'; "
+        "validity = (QualityFlags & 15) + 16 * (H2O_Flag & 3)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* HCHO_column_number_density */
@@ -2481,10 +2692,11 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "quality flags for HCHO retrieval";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_validity",
-                                                   harp_type_int8, 1, dimension_type, NULL, description,
+                                                   harp_type_int16, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_hcho, read_quality_flags_hcho);
-    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
-    description = "window is the index in MainSpecies[] that has the value 'HCHO'";
+    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/HCHO/HCHO_Flag";
+    description = "window is the index in MainSpecies[] that has the value 'HCHO'; "
+        "validity = (QualityFlags & 15) + 16 * (HCHO_Flag & 15)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* NO2_column_number_density */
@@ -2557,6 +2769,17 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, NULL,
                                          "detailed_results=NO2 and CODA product version >= 2", path, NULL);
 
+    /* tropospheric_NO2_column_number_density_validity */
+    description = "quality flags for tropospheric NO2 retrieval";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_NO2_column_number_density_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   include_no2_details_v2, read_quality_flags_tropo_no2);
+    path = "/DETAILED_RESULTS/NO2/NO2Tropo_Flag";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=NO2 and CODA product version >=2",
+                                         path, NULL);
+
     /* O3_column_number_density */
     description = "O3 column number density";
     variable_definition =
@@ -2598,7 +2821,11 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    HARP_UNIT_DIMENSIONLESS, include_o3, read_quality_flags_o3);
     path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'O3'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
+    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/O3/O3_Volcano_Flag";
+    description = "window is the index in MainSpecies[] that has the value 'O3'; "
+        "validity = (QualityFlags & 15) + 16 * (O3_Volcano_Flag & 1)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, description);
 
     /* OClO_column_number_density */
     description = "OClO column number density";
@@ -2627,8 +2854,9 @@ static void register_common_variables(harp_product_definition *product_definitio
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_oclo, read_quality_flags_oclo);
-    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
-    description = "window is the index in MainSpecies[] that has the value 'OClO'";
+    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/OClO/OClO_Flag";
+    description = "window is the index in MainSpecies[] that has the value 'OClO'; "
+        "validity = (QualityFlags & 15) + 16 * (OClO_Flag & 7)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* SO2_column_number_density */
@@ -2659,11 +2887,17 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "quality flags for SO2 retrieval";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_validity",
-                                                   harp_type_int8, 1, dimension_type, NULL, description,
+                                                   harp_type_int16, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_so2, read_quality_flags_so2);
-    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[]";
-    description = "window is the index in MainSpecies[] that has the value 'SO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/SO2/SO2_Flag";
+    description = "window is the index in MainSpecies[] that has the value 'SO2'; "
+        "validity = (QualityFlags & 15) + 16 * (SO2_Flag & 15)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
+    path = "/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/SO2/SO2_Flag, "
+        "/DETAILED_RESULTS/SO2/SO2_Volcano_Flag";
+    description = "window is the index in MainSpecies[] that has the value 'SO2'; validity = (QualityFlags & 15) + "
+        "16 * (SO2_Flag & 15) + (SO2_Volcano_Flag > 0 ? 256 * 2^(SO2_Volcano_Flag - 1) : 0)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 3", path, description);
 
     /* BrO_column_number_density_amf */
     description = "BrO air mass factor";
