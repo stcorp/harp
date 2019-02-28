@@ -55,9 +55,11 @@ typedef struct ingest_info_struct
     int product_version;
     int window_for_species[7];
     int detailed_results_type;
-    int corrected_vcd;
+    int corrected_column;
     harp_array amf_buffer;
     harp_array amf_error_buffer;
+    harp_array esc_buffer;
+    harp_array esc_error_buffer;
     harp_array index_in_scan_buffer;
     harp_array quality_flags_buffer;
     long num_main;
@@ -475,6 +477,87 @@ static int init_amf_error(ingest_info *info)
     return 0;
 }
 
+static int init_esc(ingest_info *info)
+{
+    if (info->esc_buffer.ptr == NULL)
+    {
+        long dimension[2];
+        long num_elements;
+
+        dimension[0] = info->num_main;
+        dimension[1] = info->num_windows;
+        num_elements = harp_get_num_elements(2, dimension);
+
+        info->esc_buffer.ptr = malloc(num_elements * sizeof(double));
+        if (info->esc_buffer.ptr == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_elements * sizeof(double), __FILE__, __LINE__);
+            return -1;
+        }
+
+        if (read_dataset(info, "DETAILED_RESULTS/ESC", harp_type_double, num_elements, info->esc_buffer) != 0)
+        {
+            return -1;
+        }
+
+        /* Transpose such that all values for each window are contiguous in memory. */
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->esc_buffer) != 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int init_esc_error(ingest_info *info)
+{
+    if (init_esc(info) != 0)
+    {
+        return -1;
+    }
+
+    if (info->esc_error_buffer.ptr == NULL)
+    {
+        long dimension[2];
+        long num_elements;
+        long i;
+
+        dimension[0] = info->num_main;
+        dimension[1] = info->num_windows;
+        num_elements = harp_get_num_elements(2, dimension);
+
+        info->esc_error_buffer.ptr = malloc(num_elements * sizeof(double));
+        if (info->esc_error_buffer.ptr == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_elements * sizeof(double), __FILE__, __LINE__);
+            return -1;
+        }
+
+        if (read_dataset(info, "DETAILED_RESULTS/ESC_Error", harp_type_double, num_elements,
+                         info->esc_error_buffer) != 0)
+        {
+            return -1;
+        }
+
+        /* Transpose such that all values for each window are contiguous in memory. */
+        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->esc_error_buffer) != 0)
+        {
+            return -1;
+        }
+
+        /* Convert relative error (in percent) to standard deviation (unitless). */
+        for (i = 0; i < num_elements; i++)
+        {
+            info->esc_error_buffer.double_data[i] *= info->esc_buffer.double_data[i] * 0.01;
+        }
+    }
+
+    return 0;
+}
+
 static int init_index_in_scan(ingest_info *info)
 {
     if (info->index_in_scan_buffer.ptr == NULL)
@@ -564,6 +647,42 @@ static int read_amf_error(ingest_info *info, species_type species, harp_array da
 
     offset = info->window_for_species[species] * info->num_main;
     memcpy(data.double_data, &info->amf_error_buffer.double_data[offset], info->num_main * sizeof(double));
+
+    return 0;
+}
+
+static int read_esc(ingest_info *info, species_type species, harp_array data)
+{
+    long offset;
+
+    /* This function cannot be called for unavailable species (because of species specific include() functions). */
+    assert(info->window_for_species[species] >= 0);
+
+    if (init_esc(info) != 0)
+    {
+        return -1;
+    }
+
+    offset = info->window_for_species[species] * info->num_main;
+    memcpy(data.double_data, &info->esc_buffer.double_data[offset], info->num_main * sizeof(double));
+
+    return 0;
+}
+
+static int read_esc_error(ingest_info *info, species_type species, harp_array data)
+{
+    long offset;
+
+    /* This function cannot be called for unavailable species (because of species specific include() functions). */
+    assert(info->window_for_species[species] >= 0);
+
+    if (init_esc_error(info) != 0)
+    {
+        return -1;
+    }
+
+    offset = info->window_for_species[species] * info->num_main;
+    memcpy(data.double_data, &info->esc_error_buffer.double_data[offset], info->num_main * sizeof(double));
 
     return 0;
 }
@@ -813,7 +932,7 @@ static int read_bro_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_bro)
+    if (info->corrected_column && info->detailed_results_type == species_type_bro)
     {
         return read_dataset(info, "DETAILED_RESULTS/BrO/VCDCorrected", harp_type_double, info->num_main, data);
     }
@@ -825,7 +944,7 @@ static int read_bro_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_bro)
+    if (info->corrected_column && info->detailed_results_type == species_type_bro)
     {
         return read_dataset(info, "DETAILED_RESULTS/BrO/VCDCorrected_Error", harp_type_double, info->num_main, data);
     }
@@ -842,7 +961,7 @@ static int read_h2o_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_h2o)
+    if (info->corrected_column && info->detailed_results_type == species_type_h2o)
     {
         return read_dataset(info, "DETAILED_RESULTS/H2O/VCDCorrected", harp_type_double, info->num_main, data);
     }
@@ -854,7 +973,7 @@ static int read_h2o_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_h2o)
+    if (info->corrected_column && info->detailed_results_type == species_type_h2o)
     {
         return read_dataset(info, "DETAILED_RESULTS/H2O/VCDCorrected_Error", harp_type_double, info->num_main, data);
     }
@@ -866,7 +985,7 @@ static int read_hcho_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_hcho)
+    if (info->corrected_column && info->detailed_results_type == species_type_hcho)
     {
         return read_dataset(info, "DETAILED_RESULTS/HCHO/VCDCorrected", harp_type_double, info->num_main, data);
     }
@@ -878,7 +997,7 @@ static int read_hcho_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_hcho)
+    if (info->corrected_column && info->detailed_results_type == species_type_hcho)
     {
         return read_dataset(info, "DETAILED_RESULTS/HCHO/VCDCorrected_Error", harp_type_double, info->num_main, data);
     }
@@ -895,7 +1014,7 @@ static int read_no2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_no2)
+    if (info->corrected_column && info->detailed_results_type == species_type_no2)
     {
         return read_dataset(info, "DETAILED_RESULTS/NO2/VCDCorrected", harp_type_double, info->num_main, data);
     }
@@ -907,7 +1026,7 @@ static int read_no2_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_no2)
+    if (info->corrected_column && info->detailed_results_type == species_type_no2)
     {
         return read_dataset(info, "DETAILED_RESULTS/NO2/VCDCorrected_Error", harp_type_double, info->num_main, data);
     }
@@ -959,7 +1078,7 @@ static int read_o3_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_o3)
+    if (info->corrected_column && info->detailed_results_type == species_type_o3)
     {
         return read_dataset(info, "DETAILED_RESULTS/O3/VCDCorrected", harp_type_double, info->num_main, data);
     }
@@ -971,7 +1090,7 @@ static int read_o3_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->corrected_vcd && info->detailed_results_type == species_type_o3)
+    if (info->corrected_column && info->detailed_results_type == species_type_o3)
     {
         return read_dataset(info, "DETAILED_RESULTS/O3/VCDCorrected_Error", harp_type_double, info->num_main, data);
     }
@@ -1133,6 +1252,129 @@ static int read_amf_so2_error(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_amf_error(info, species_type_so2, data);
+}
+
+static int read_esc_bro(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->corrected_column && info->detailed_results_type == species_type_bro)
+    {
+        return read_dataset(info, "DETAILED_RESULTS/BrO/ESCCorrected", harp_type_double, info->num_main, data);
+    }
+
+    return read_esc(info, species_type_bro, data);
+}
+
+static int read_esc_bro_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc_error(info, species_type_bro, data);
+}
+
+static int read_esc_h2o(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->corrected_column && info->detailed_results_type == species_type_h2o)
+    {
+        return read_dataset(info, "DETAILED_RESULTS/H2O/ESCCorrected", harp_type_double, info->num_main, data);
+    }
+
+    return read_esc(info, species_type_h2o, data);
+}
+
+static int read_esc_h2o_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc_error(info, species_type_h2o, data);
+}
+
+static int read_esc_hcho(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->corrected_column && info->detailed_results_type == species_type_hcho)
+    {
+        return read_dataset(info, "DETAILED_RESULTS/HCHO/ESCCorrected", harp_type_double, info->num_main, data);
+    }
+
+    return read_esc(info, species_type_hcho, data);
+}
+
+static int read_esc_hcho_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc_error(info, species_type_hcho, data);
+}
+
+static int read_esc_no2(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc(info, species_type_no2, data);
+}
+
+static int read_esc_no2_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc_error(info, species_type_no2, data);
+}
+
+static int read_esc_o3(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc(info, species_type_o3, data);
+}
+
+static int read_esc_o3_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc_error(info, species_type_o3, data);
+}
+
+static int read_esc_oclo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->corrected_column && info->detailed_results_type == species_type_oclo)
+    {
+        return read_dataset(info, "DETAILED_RESULTS/OClO/ESCCorrected", harp_type_double, info->num_main, data);
+    }
+
+    return read_esc(info, species_type_oclo, data);
+}
+
+static int read_esc_oclo_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->corrected_column && info->detailed_results_type == species_type_oclo)
+    {
+        return read_dataset(info, "DETAILED_RESULTS/OClO/ESCCorrected_Error", harp_type_double, info->num_main, data);
+    }
+
+    return read_esc_error(info, species_type_oclo, data);
+}
+
+static int read_esc_so2(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc(info, species_type_so2, data);
+}
+
+static int read_esc_so2_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_esc_error(info, species_type_so2, data);
 }
 
 static int read_quality_flags_bro(void *user_data, harp_array data)
@@ -1668,15 +1910,15 @@ static int parse_options(ingest_info *info, const harp_ingestion_options *option
                     }
                     break;
                 case species_type_oclo:
-                    harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'corrected' not "
-                                   "supported for OClO");
-                    return -1;
+                    /* we will only have detailed results for product_version>=3, so no check needed */
+                    break;
                 case species_type_so2:
+                    /* we don't support this because of the 'heights' dimension that SO2 has for VCDCorrected */
                     harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'corrected' not "
                                    "supported for SO2");
                     return -1;
             }
-            info->corrected_vcd = 1;
+            info->corrected_column = 1;
         }
     }
     else if (harp_ingestion_options_has_option(options, "corrected"))
@@ -1703,6 +1945,16 @@ static void ingestion_done(void *user_data)
         if (info->amf_error_buffer.ptr != NULL)
         {
             free(info->amf_error_buffer.ptr);
+        }
+
+        if (info->esc_buffer.ptr != NULL)
+        {
+            free(info->esc_buffer.ptr);
+        }
+
+        if (info->esc_error_buffer.ptr != NULL)
+        {
+            free(info->esc_error_buffer.ptr);
         }
 
         if (info->index_in_scan_buffer.ptr != NULL)
@@ -1734,9 +1986,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product = product;
     info->product_version = -1;
     info->detailed_results_type = -1;
-    info->corrected_vcd = 0;
+    info->corrected_column = 0;
     info->amf_buffer.ptr = NULL;
     info->amf_error_buffer.ptr = NULL;
+    info->esc_buffer.ptr = NULL;
+    info->esc_error_buffer.ptr = NULL;
     info->index_in_scan_buffer.ptr = NULL;
     info->quality_flags_buffer.ptr = NULL;
     info->revision = 0;
@@ -1816,13 +2070,6 @@ static int include_no2(void *user_data)
     return ((ingest_info *)user_data)->window_for_species[species_type_no2] >= 0;
 }
 
-static int include_no2_v2(void *user_data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return info->product_version >= 2 && info->window_for_species[species_type_no2] >= 0;
-}
-
 static int include_o3(void *user_data)
 {
     return ((ingest_info *)user_data)->window_for_species[species_type_o3] >= 0;
@@ -1846,7 +2093,7 @@ static int include_hcho_column_error(void *user_data)
     {
         return 0;
     }
-    if (info->corrected_vcd && info->detailed_results_type == species_type_hcho && info->product_version < 3)
+    if (info->corrected_column && info->detailed_results_type == species_type_hcho && info->product_version < 3)
     {
         return 0;
     }
@@ -1889,25 +2136,96 @@ static int include_no2_column_tropospheric_error(void *user_data)
     return 1;
 }
 
-static int include_hcho_details(void *user_data)
+static int include_hcho_avk_apriori(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->product_version >= 3 && info->detailed_results_type == species_type_hcho;
 }
 
-static int include_no2_details(void *user_data)
+static int include_no2_avk_apriori(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->product_version >= 3 && info->detailed_results_type == species_type_no2;
 }
 
-static int include_o3_details(void *user_data)
+static int include_o3_temp(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return info->product_version >= 2 && info->detailed_results_type == species_type_o3;
+}
+
+static int include_bro_details(void *user_data)
+{
+    return ((ingest_info *)user_data)->detailed_results_type == species_type_bro;
+}
+
+static int include_bro_details_uncorrected(void *user_data)
+{
+    if (((ingest_info *)user_data)->corrected_column)
+    {
+        return 0;
+    }
+    return include_bro_details(user_data);
+}
+
+static int include_h2o_details(void *user_data)
+{
+    return ((ingest_info *)user_data)->detailed_results_type == species_type_h2o;
+}
+
+static int include_h2o_details_uncorrected(void *user_data)
+{
+    if (((ingest_info *)user_data)->corrected_column)
+    {
+        return 0;
+    }
+    return include_h2o_details(user_data);
+}
+
+static int include_hcho_details(void *user_data)
+{
+    return ((ingest_info *)user_data)->detailed_results_type == species_type_hcho;
+}
+
+static int include_hcho_details_uncorrected(void *user_data)
+{
+    if (((ingest_info *)user_data)->corrected_column)
+    {
+        return 0;
+    }
+    return include_hcho_details(user_data);
+}
+
+static int include_no2_details(void *user_data)
+{
+    return ((ingest_info *)user_data)->detailed_results_type == species_type_no2;
+}
+
+static int include_no2_details_v2(void *user_data)
+{
+    if (((ingest_info *)user_data)->product_version < 2)
+    {
+        return 0;
+    }
+    return include_no2_details(user_data);
+}
+
+static int include_o3_details(void *user_data)
+{
+    return ((ingest_info *)user_data)->detailed_results_type == species_type_o3;
+}
+
+static int include_oclo_details(void *user_data)
+{
+    return ((ingest_info *)user_data)->detailed_results_type == species_type_oclo;
+}
+
+static int include_so2_details(void *user_data)
+{
+    return ((ingest_info *)user_data)->detailed_results_type == species_type_so2;
 }
 
 static int include_pressure(void *user_data)
@@ -2319,93 +2637,95 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_bro, read_amf_bro);
+                                                   HARP_UNIT_DIMENSIONLESS, include_bro_details, read_amf_bro);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'BrO'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=BrO", path, description);
 
     /* BrO_column_number_density_amf_uncertainty */
     description = "uncertainty of the BrO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_bro, read_amf_bro_error);
+                                                   HARP_UNIT_DIMENSIONLESS, include_bro_details, read_amf_bro_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'BrO'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=BrO", path, description);
 
     /* H2O_column_number_density_amf */
     description = "H2O air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_h2o, read_amf_h2o);
+                                                   HARP_UNIT_DIMENSIONLESS, include_h2o_details, read_amf_h2o);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'H2O'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=H2O", path, description);
 
     /* H2O_column_number_density_amf_uncertainty */
     description = "uncertainty of the H2O air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_h2o, read_amf_h2o_error);
+                                                   HARP_UNIT_DIMENSIONLESS, include_h2o_details, read_amf_h2o_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'H2O'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=H2O", path, description);
 
     /* HCHO_column_number_density_amf */
     description = "HCHO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_hcho, read_amf_hcho);
+                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_details, read_amf_hcho);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'HCHO'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=HCHO", path, description);
 
     /* HCHO_column_number_density_amf_uncertainty */
     description = "uncertainty of the HCHO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_hcho, read_amf_hcho_error);
+                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_details, read_amf_hcho_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'HCHO'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=HCHO", path, description);
 
     /* NO2_column_number_density_amf */
     description = "NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_no2, read_amf_no2);
+                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details, read_amf_no2);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'NO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=NO2", path, description);
 
     /* NO2_column_number_density_amf_uncertainty */
     description = "uncertainty of the NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_no2, read_amf_no2_error);
+                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details, read_amf_no2_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'NO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "detailed_results=NO2", description);
 
     /* tropospheric_NO2_column_number_density_amf */
     description = "tropospheric NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_no2_v2, read_amf_no2_tropospheric);
+                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details_v2,
+                                                   read_amf_no2_tropospheric);
     path = "/DETAILED_RESULTS/NO2/AMFTropo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version >= 2", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL,
+                                         "detailed_results=NO2 and CODA product version >= 2", path, NULL);
 
     /* tropospheric_NO2_column_number_density_amf_uncertainty */
     description = "uncertainty of the tropospheric NO2 air mass factor";
@@ -2413,81 +2733,255 @@ static void register_common_variables(harp_product_definition *product_definitio
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_no2_v2,
+                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details_v2,
                                                    read_amf_no2_tropospheric_error);
     path = "/DETAILED_RESULTS/NO2/AMFTropo_Error[], /DETAILED_RESULTS/NO2/AMFTropo[]";
     description = "derived from the relative error in percent as: AMFTropo_Error[] * 0.01 * AMFTropo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "CODA product version >= 2", description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "detailed_results=NO2 and CODA product version >= 2", description);
 
     /* O3_column_number_density_amf */
     description = "O3 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_double,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   include_o3, read_amf_o3);
+                                                   include_o3_details, read_amf_o3);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'O3'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=O3", path, description);
 
     /* O3_column_number_density_amf_uncertainty */
     description = "uncertainty of the O3 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_o3, read_amf_o3_error);
+                                                   HARP_UNIT_DIMENSIONLESS, include_o3_details, read_amf_o3_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'O3'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=O3", path, description);
 
     /* OClO_column_number_density_amf */
     description = "OClO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_oclo, read_amf_oclo);
+                                                   HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_amf_oclo);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'OClO'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=OClO", path, description);
 
     /* OClO_column_number_density_amf_uncertainty */
     description = "uncertainty of the OClO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_oclo, read_amf_oclo_error);
+                                                   HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_amf_oclo_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'OClO'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=OClO", path, description);
 
     /* SO2_column_number_density_amf */
     description = "SO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_so2, read_amf_so2);
+                                                   HARP_UNIT_DIMENSIONLESS, include_so2_details, read_amf_so2);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2", path, description);
 
     /* SO2_column_number_density_amf_uncertainty */
     description = "uncertainty of the SO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_so2, read_amf_so2_error);
+                                                   HARP_UNIT_DIMENSIONLESS, include_so2_details, read_amf_so2_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
         "window is the index in MainSpecies[] that has the value 'SO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "detailed_results=SO2", description);
+
+    /* BrO_slant_column_number_density */
+    description = "BrO retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "BrO_slant_column_number_density",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_bro_details, read_esc_bro);
+    path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value 'BrO'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=BrO and corrected unset", path,
+                                         description);
+    path = "/DETAILED_RESULTS/BrO/ESCCorrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=BrO and corrected=true", path,
+                                         NULL);
+
+    /* BrO_slant_column_number_density_uncertainty */
+    description = "uncertainty of the BrO retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "BrO_slant_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_bro_details_uncorrected,
+                                                   read_esc_bro_error);
+    path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
+        "window is the index in MainSpecies[] that has the value 'BrO'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=BrO and corrected unset", path,
+                                         description);
+
+    /* H2O_slant_column_number_density */
+    description = "H2O retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_slant_column_number_density",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_h2o_details, read_esc_h2o);
+    path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value 'H2O'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=H2O and corrected unset", path,
+                                         description);
+    path = "/DETAILED_RESULTS/H2O/ESCCorrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=H2O and corrected=true", path,
+                                         NULL);
+
+    /* H2O_slant_column_number_density_uncertainty */
+    description = "uncertainty of the H2O retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_slant_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_h2o_details_uncorrected,
+                                                   read_esc_h2o_error);
+    path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
+        "window is the index in MainSpecies[] that has the value 'H2O'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=H2O and corrected unset", path,
+                                         description);
+
+    /* HCHO_slant_column_number_density */
+    description = "HCHO retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_details, read_esc_hcho);
+    path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value 'HCHO'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=HCHO and corrected unset", path,
+                                         description);
+    path = "/DETAILED_RESULTS/HCHO/ESCCorrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=HCHO and corrected=true", path,
+                                         NULL);
+
+    /* HCHO_slant_column_number_density_uncertainty */
+    description = "uncertainty of the HCHO retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_details_uncorrected,
+                                                   read_esc_hcho_error);
+    path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
+        "window is the index in MainSpecies[] that has the value 'HCHO'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=HCHO and corrected unset", path,
+                                         description);
+
+    /* NO2_slant_column_number_density */
+    description = "NO2 retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details, read_esc_no2);
+    path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value 'NO2'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=NO2", path, description);
+
+    /* NO2_slant_column_number_density_uncertainty */
+    description = "uncertainty of the NO2 retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details, read_esc_no2_error);
+    path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
+        "window is the index in MainSpecies[] that has the value 'NO2'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=NO2", path, description);
+
+    /* O3_slant_column_number_density */
+    description = "O3 retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_slant_column_number_density",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_o3_details, read_esc_o3);
+    path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value 'O3'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=O3", path, description);
+
+    /* O3_slant_column_number_density_uncertainty */
+    description = "uncertainty of the O3 retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_slant_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_o3_details, read_esc_o3_error);
+    path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
+        "window is the index in MainSpecies[] that has the value 'O3'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=O3", path, description);
+
+    /* OClO_slant_column_number_density */
+    description = "OClO retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_esc_oclo);
+    path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value 'OClO'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=OClO and corrected unset", path,
+                                         description);
+    path = "/DETAILED_RESULTS/OClO/ESCCorrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=OClO and corrected=true", path,
+                                         NULL);
+
+    /* OClO_slant_column_number_density_uncertainty */
+    description = "uncertainty of the OClO retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_esc_oclo_error);
+    path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
+        "window is the index in MainSpecies[] that has the value 'OClO'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=OClO and corrected unset", path,
+                                         description);
+    path = "/DETAILED_RESULTS/OClO/ESCCorrected_Error[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=OClO and corrected=true", path,
+                                         NULL);
+
+    /* SO2_slant_column_number_density */
+    description = "SO2 retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_so2_details, read_esc_so2);
+    path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "window is the index in MainSpecies[] that has the value 'SO2'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2", path, description);
+
+    /* SO2_slant_column_number_density_uncertainty */
+    description = "uncertainty of the SO2 retrieved effective slant column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density_uncertainty",
+                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_so2_details, read_esc_so2_error);
+    path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
+    description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
+        "window is the index in MainSpecies[] that has the value 'SO2'";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2", path, description);
 
     /* O3_effective_temperature */
     description = "fitted ozone temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_effective_temperature",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_o3_details, read_o3_temperature);
+                                                   HARP_UNIT_DIMENSIONLESS, include_o3_temp, read_o3_temperature);
     path = "/DETAILED_RESULTS/O3/O3Temperature";
     harp_variable_definition_add_mapping(variable_definition, "detailed_results=O3", "CODA product version >= 2", path,
                                          NULL);
@@ -2511,7 +3005,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_dry_air_apriori",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_VOLUME_MIXING_RATIO, include_hcho_details,
+                                                   HARP_UNIT_VOLUME_MIXING_RATIO, include_hcho_avk_apriori,
                                                    read_hcho_apriori);
     path = "/DETAILED_RESULTS/HCHO/AprioriHCHOProfile";
     description = "the vertical grid is inverted to make it ascending";
@@ -2523,7 +3017,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_details, read_hcho_avk);
+                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_avk_apriori, read_hcho_avk);
     path = "/DETAILED_RESULTS/HCHO/AveragingKernel";
     description = "the vertical grid is inverted to make it ascending";
     harp_variable_definition_add_mapping(variable_definition, "detailed_results=HCHO", "CODA product version >= 3",
@@ -2534,7 +3028,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_volume_mixing_ratio_dry_air_apriori",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_VOLUME_MIXING_RATIO, include_no2_details,
+                                                   HARP_UNIT_VOLUME_MIXING_RATIO, include_no2_avk_apriori,
                                                    read_no2_apriori);
     path = "/DETAILED_RESULTS/HCHO/AprioriNO2Profile";
     description = "the vertical grid is inverted to make it ascending";
@@ -2546,7 +3040,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_avk",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details, read_no2_avk);
+                                                   HARP_UNIT_DIMENSIONLESS, include_no2_avk_apriori, read_no2_avk);
     path = "/DETAILED_RESULTS/NO2/AveragingKernel";
     description = "the vertical grid is inverted to make it ascending";
     harp_variable_definition_add_mapping(variable_definition, "detailed_results=NO2", "CODA product version >= 3",
@@ -2762,10 +3256,10 @@ static void register_common_options(harp_ingestion_module *module)
     description = "include additional detailed results for the given species";
     harp_ingestion_register_option(module, "detailed_results", description, 7, detailed_results_option_values);
 
-    /* VCD corrected ingestion options */
-    description = "include corrected VCD (corrected=true) or uncorrected VCD (default); "
+    /* corrected VCD/ESC ingestion options */
+    description = "include corrected VCD and/or ESC (corrected=true) or uncorrected VCD/ESC (default); "
         "this only applies to the species for which additional detailed results are ingested "
-        "(detailed_results is set to one of BrO, H2O, HCHO, NO2, or O3)";
+        "(detailed_results is set to one of BrO, H2O, HCHO, NO2, O3, or OClO)";
     harp_ingestion_register_option(module, "corrected", description, 1, corrected_option_value);
 }
 
