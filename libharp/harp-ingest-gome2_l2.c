@@ -1083,7 +1083,11 @@ static int read_o3_column(void *user_data, harp_array data)
         return read_dataset(info, "DETAILED_RESULTS/O3/VCDCorrected", harp_type_double, info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/O3", harp_type_double, info->num_main, data);
+    if (read_dataset(info, "TOTAL_COLUMNS/O3", harp_type_double, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
 }
 
 static int read_o3_column_error(void *user_data, harp_array data)
@@ -1097,10 +1101,19 @@ static int read_o3_column_error(void *user_data, harp_array data)
 
     if (info->product_version < 3)
     {
-        return read_relative_uncertainty(info, "TOTAL_COLUMNS/O3", "TOTAL_COLUMNS/O3_Error", info->num_main, data);
+        if (read_relative_uncertainty(info, "TOTAL_COLUMNS/O3", "TOTAL_COLUMNS/O3_Error", info->num_main, data) != 0)
+        {
+            return -1;
+        }
     }
-
-    return read_dataset(info, "TOTAL_COLUMNS/O3_Error", harp_type_double, info->num_main, data);
+    else
+    {
+        if (read_dataset(info, "TOTAL_COLUMNS/O3_Error", harp_type_double, info->num_main, data) != 0)
+        {
+            return -1;
+        }
+    }
+    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
 }
 
 static int read_oclo_column(void *user_data, harp_array data)
@@ -1126,7 +1139,11 @@ static int read_so2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "TOTAL_COLUMNS/SO2", harp_type_double, info->num_main, data);
+    if (read_dataset(info, "TOTAL_COLUMNS/SO2", harp_type_double, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
 }
 
 static int read_so2_column_error(void *user_data, harp_array data)
@@ -1135,10 +1152,19 @@ static int read_so2_column_error(void *user_data, harp_array data)
 
     if (info->product_version < 3)
     {
-        return read_relative_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data);
+        if (read_relative_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data) != 0)
+        {
+            return -1;
+        }
     }
-
-    return read_dataset(info, "TOTAL_COLUMNS/SO2_Error", harp_type_double, info->num_main, data);
+    else
+    {
+        if (read_dataset(info, "TOTAL_COLUMNS/SO2_Error", harp_type_double, info->num_main, data) != 0)
+        {
+            return -1;
+        }
+    }
+    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
 }
 
 static int read_amf_bro(void *user_data, harp_array data)
@@ -2535,10 +2561,12 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "DU", include_o3, read_o3_column);
+                                                   dimension_type, NULL, description, "molec/cm2", include_o3,
+                                                   read_o3_column);
     path = "/TOTAL_COLUMNS/O3[]";
+    description = "unit is converted from DU to molec/cm2";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results!=O3 or corrected unset", path,
-                                         NULL);
+                                         description);
     path = "/DETAILED_RESULTS/O3/VDCCorrected[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=O3 and corrected=true", path,
                                          NULL);
@@ -2547,15 +2575,17 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "DU",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm2",
                                                    include_o3, read_o3_column_error);
     path = "/TOTAL_COLUMNS/O3_Error[], /TOTAL_COLUMNS/O3[]";
-    description = "derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]";
+    description = "derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]; "
+        "unit is converted from DU to molec/cm2";
     harp_variable_definition_add_mapping(variable_definition, NULL, "(detailed_results!=O3 or corrected unset) and "
                                          "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/O3_Error[]";
+    description = "unit is converted from DU to molec/cm2";
     harp_variable_definition_add_mapping(variable_definition, NULL, "(detailed_results!=O3 or corrected unset) and "
-                                         "CODA product version >= 3", path, NULL);
+                                         "CODA product version >= 3", path, description);
     path = "/DETAILED_RESULTS/O3/VDCCorrected_Error[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=O3 and corrected=true", path,
                                          NULL);
@@ -2605,22 +2635,25 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "SO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "DU", include_so2,
+                                                   dimension_type, NULL, description, "molec/cm2", include_so2,
                                                    read_so2_column);
     path = "/TOTAL_COLUMNS/SO2[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "unit is converted from DU to molec/cm2";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* SO2_column_number_density_uncertainty */
     description = "uncertainty of the SO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "DU",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm2",
                                                    include_so2, read_so2_column_error);
     path = "/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]";
-    description = "derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]";
+    description = "derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]; "
+        "unit is converted from DU to molec/cm2";
     harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
     path = "/TOTAL_COLUMNS/SO2_Error[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "product version >= 3", path, NULL);
+    description = "unit is converted from DU to molec/cm2";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "product version >= 3", path, description);
 
     /* SO2_column_number_density_validity */
     description = "quality flags for SO2 retrieval";
@@ -2807,8 +2840,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "BrO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_bro_details, read_esc_bro);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_bro_details, read_esc_bro);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'BrO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=BrO and corrected unset", path,
@@ -2821,9 +2854,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the BrO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_bro_details_uncorrected,
-                                                   read_esc_bro_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_bro_details_uncorrected, read_esc_bro_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'BrO'";
@@ -2834,8 +2866,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "H2O retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_h2o_details, read_esc_h2o);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_h2o_details, read_esc_h2o);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'H2O'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=H2O and corrected unset", path,
@@ -2848,9 +2880,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the H2O retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_h2o_details_uncorrected,
-                                                   read_esc_h2o_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_h2o_details_uncorrected, read_esc_h2o_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'H2O'";
@@ -2861,8 +2892,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "HCHO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_details, read_esc_hcho);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_hcho_details, read_esc_hcho);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'HCHO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=HCHO and corrected unset", path,
@@ -2875,9 +2906,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the HCHO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_details_uncorrected,
-                                                   read_esc_hcho_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_hcho_details_uncorrected, read_esc_hcho_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'HCHO'";
@@ -2888,8 +2918,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "NO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details, read_esc_no2);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_no2_details, read_esc_no2);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'NO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=NO2", path, description);
@@ -2898,8 +2928,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the NO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_no2_details, read_esc_no2_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_no2_details, read_esc_no2_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'NO2'";
@@ -2909,8 +2939,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "O3 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_o3_details, read_esc_o3);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_o3_details, read_esc_o3);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'O3'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=O3", path, description);
@@ -2919,8 +2949,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the O3 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_o3_details, read_esc_o3_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_o3_details, read_esc_o3_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'O3'";
@@ -2930,8 +2960,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "OClO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_esc_oclo);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_oclo_details, read_esc_oclo);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'OClO'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=OClO and corrected unset", path,
@@ -2944,8 +2974,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the OClO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_esc_oclo_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_oclo_details, read_esc_oclo_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'OClO'";
@@ -2959,8 +2989,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "SO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_so2_details, read_esc_so2);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_so2_details, read_esc_so2);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2", path, description);
@@ -2969,8 +2999,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "uncertainty of the SO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_so2_details, read_esc_so2_error);
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_so2_details, read_esc_so2_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'SO2'";
@@ -2981,7 +3011,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_effective_temperature",
                                                    harp_type_double, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_o3_temp, read_o3_temperature);
+                                                   HARP_UNIT_TEMPERATURE, include_o3_temp, read_o3_temperature);
     path = "/DETAILED_RESULTS/O3/O3Temperature";
     harp_variable_definition_add_mapping(variable_definition, "detailed_results=O3", "CODA product version >= 2", path,
                                          NULL);
