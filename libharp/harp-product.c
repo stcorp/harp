@@ -1932,6 +1932,8 @@ LIBHARP_API int harp_product_sort(harp_product *product, int num_variables, cons
                        num_variables, MAX_NUM_COMPARISON_VARIABLES);
         return -1;
     }
+
+    num_comparison_variables = num_variables;
     for (i = 0; i < num_variables; i++)
     {
         if (harp_product_get_variable_by_name(product, variable_name[i], &comparison_variable[i]) != 0)
