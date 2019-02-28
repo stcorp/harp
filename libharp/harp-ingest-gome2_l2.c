@@ -2476,7 +2476,8 @@ static int include_surface_albedo(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return info->product_version >= 2 && info->detailed_results_type >= 0;
+    /* since not all V2 products have the surface albedo, we only support it from V3 onwards */
+    return info->product_version >= 3 && info->detailed_results_type >= 0;
 }
 
 static void register_common_variables(harp_product_definition *product_definition)
@@ -3319,7 +3320,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/DETAILED_RESULTS/SurfaceAlbedo[,window], /META_DATA/MainSpecies[]";
     description =
         "window is the index in MainSpecies[] that has the value for which the detailed_restults opion is set";
-    harp_variable_definition_add_mapping(variable_definition, "detailed_results set", "CODA product version >= 2", path,
+    harp_variable_definition_add_mapping(variable_definition, "detailed_results set", "CODA product version >= 3", path,
                                          description);
 
     /* cloud_fraction */
