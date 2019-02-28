@@ -46,7 +46,7 @@ typedef enum harp_operation_type_enum
     operation_bin_collocated,
     operation_bin_full,
     operation_bin_spatial,
-    operation_bin_with_variable,
+    operation_bin_with_variables,
     operation_bit_mask_filter,
     operation_collocation_filter,
     operation_comparison_filter,
@@ -121,7 +121,7 @@ typedef enum harp_membership_operator_type_enum
  *   |-  harp_operation_bin_collocated
  *   |-  harp_operation_bin_full
  *   |-  harp_operation_bin_spatial
- *   |-  harp_operation_bin_with_variable
+ *   |-  harp_operation_bin_with_variables
  *   |-  harp_operation_derive_variable
  *   |-  harp_operation_derive_smoothed_column_collocated_dataset
  *   |-  harp_operation_derive_smoothed_column_collocated_product
@@ -228,12 +228,13 @@ typedef struct harp_operation_bin_spatial_struct
     double *longitude_edges;
 } harp_operation_bin_spatial;
 
-typedef struct harp_operation_bin_with_variable_struct
+typedef struct harp_operation_bin_with_variables_struct
 {
     harp_operation_type type;
     /* parameters */
-    char *variable_name;
-} harp_operation_bin_with_variable;
+    int num_variables;
+    char **variable_name;
+} harp_operation_bin_with_variables;
 
 typedef struct harp_operation_bit_mask_filter_struct
 {
@@ -540,7 +541,8 @@ int harp_operation_bin_collocated_new(const char *collocation_result, const char
 int harp_operation_bin_full_new(harp_operation **new_operation);
 int harp_operation_bin_spatial_new(long num_latitude_edges, double *latitude_edges, long num_longitude_edges,
                                    double *longitude_edges, harp_operation **new_operation);
-int harp_operation_bin_with_variable_new(const char *variable_name, harp_operation **new_operation);
+int harp_operation_bin_with_variables_new(int num_variables, const char **variable_name,
+                                          harp_operation **new_operation);
 int harp_operation_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type,
                                        uint32_t bit_mask, harp_operation **new_operation);
 int harp_operation_collocation_filter_new(const char *filename, harp_collocation_filter_type filter_type,

@@ -1711,7 +1711,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             case operation_bin_collocated:
             case operation_bin_full:
             case operation_bin_spatial:
-            case operation_bin_with_variable:
+            case operation_bin_with_variables:
             case operation_derive_variable:
             case operation_derive_smoothed_column_collocated_dataset:
             case operation_derive_smoothed_column_collocated_product:

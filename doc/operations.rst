@@ -112,6 +112,13 @@ Supported functions:
             | ``bin(index)``
             | ``bin(validity)``
 
+    ``bin((variable, ...))``
+        Same as above, but each bin is defined by the unique combinations
+        of values from the variables in the list.
+        Example:
+
+            | ``bin((year, month))``
+
     ``bin(collocation-result-file, a|b)``
         For all variables in a product perform an averaging in the time
         dimension such that all samples in the same bin get averaged.

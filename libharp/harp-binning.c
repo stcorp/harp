@@ -3002,119 +3002,169 @@ int harp_product_bin_with_collocated_dataset(harp_product *product, harp_colloca
     return 0;
 }
 
-/** Bin the product's variables such that all samples that have the same value in the given variable are averaged
- * together.
+/** Bin the product's variables such that all samples that have the same combination of values from the given variables
+ * are averaged together.
  *
  * \param product Product to regrid.
- * \param variable_name Name of the variable that defines the bins (based on equal value).
+ * \param num_variables Number of variables
+ * \param variable_name List of names of variables that define the bins (based on equal value combination).
  *
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-int harp_product_bin_with_variable(harp_product *product, const char *variable_name)
+int harp_product_bin_with_variable(harp_product *product, int num_variables, const char **variable_name)
 {
-    harp_variable *variable;
-    long *index;        /* contains index of first sample for each bin */
-    long *bin_index;
+    harp_variable **variable = NULL;
+    harp_variable **variable_copy = NULL;
+    int *check_nan = NULL;
+    long *index = NULL; /* contains index of first sample for each bin */
+    long *bin_index = NULL;
     long num_elements;
     long num_bins;
-    long i, j;
+    long i, j, k;
 
-    if (harp_product_get_variable_by_name(product, variable_name, &variable) != 0)
+    if (num_variables < 1)
     {
-        return -1;
-    }
-    if (variable->num_dimensions != 1 || variable->dimension_type[0] != harp_dimension_time)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' should be one dimensional and depend on time to be "
-                       "used for binning", variable_name);
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "binning requires at least one variable");
         return -1;
     }
 
-    num_elements = variable->num_elements;
+    variable = malloc(num_variables * sizeof(harp_variable *));
+    if (variable == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_variables * sizeof(harp_variable *), __FILE__, __LINE__);
+        goto error;
+    }
+    variable_copy = malloc(num_variables * sizeof(harp_variable *));
+    if (variable_copy == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_variables * sizeof(harp_variable *), __FILE__, __LINE__);
+        goto error;
+    }
+    for (k = 0; k < num_variables; k++)
+    {
+        variable[k] = NULL;
+        variable_copy[k] = NULL;
+    }
+
+    for (k = 0; k < num_variables; k++)
+    {
+        if (harp_product_get_variable_by_name(product, variable_name[k], &variable[k]) != 0)
+        {
+            goto error;
+        }
+        if (variable[k]->num_dimensions != 1 || variable[k]->dimension_type[0] != harp_dimension_time)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' should be one dimensional and depend on time to "
+                           "be used for binning", variable_name[k]);
+            goto error;
+        }
+    }
+
+    num_elements = variable[0]->num_elements;
 
     index = malloc(num_elements * sizeof(long));
     if (index == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        num_elements * sizeof(long), __FILE__, __LINE__);
-        return -1;
+        goto error;
     }
     bin_index = malloc(num_elements * sizeof(long));
     if (bin_index == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        num_elements * sizeof(long), __FILE__, __LINE__);
-        free(index);
-        return -1;
+        goto error;
+    }
+
+    check_nan = malloc(num_variables * sizeof(int));
+    if (check_nan == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_variables * sizeof(int), __FILE__, __LINE__);
+        goto error;
     }
 
     num_bins = 0;
     for (i = 0; i < num_elements; i++)
     {
-        int check_nan = 0;
-
-        if (variable->data_type == harp_type_float)
+        for (k = 0; k < num_variables; k++)
         {
-            check_nan = harp_isnan(variable->data.float_data[i]);
-        }
-        else if (variable->data_type == harp_type_double)
-        {
-            check_nan = harp_isnan(variable->data.double_data[i]);
+            check_nan[k] = 0;
+            if (variable[k]->data_type == harp_type_float)
+            {
+                check_nan[k] = harp_isnan(variable[k]->data.float_data[i]);
+            }
+            else if (variable[k]->data_type == harp_type_double)
+            {
+                check_nan[k] = harp_isnan(variable[k]->data.double_data[i]);
+            }
         }
         for (j = 0; j < num_bins; j++)
         {
-            int equal = 0;
+            for (k = 0; k < num_variables; k++)
+            {
+                int equal = 1;
 
-            switch (variable->data_type)
-            {
-                case harp_type_int8:
-                    equal = variable->data.int8_data[index[j]] == variable->data.int8_data[i];
+                switch (variable[k]->data_type)
+                {
+                    case harp_type_int8:
+                        equal = variable[k]->data.int8_data[index[j]] == variable[k]->data.int8_data[i];
+                        break;
+                    case harp_type_int16:
+                        equal = variable[k]->data.int16_data[index[j]] == variable[k]->data.int16_data[i];
+                        break;
+                    case harp_type_int32:
+                        equal = variable[k]->data.int32_data[index[j]] == variable[k]->data.int32_data[i];
+                        break;
+                    case harp_type_float:
+                        if (check_nan)
+                        {
+                            equal = harp_isnan(variable[k]->data.float_data[index[j]]);
+                        }
+                        else
+                        {
+                            equal = variable[k]->data.float_data[index[j]] == variable[k]->data.float_data[i];
+                        }
+                        break;
+                    case harp_type_double:
+                        if (check_nan)
+                        {
+                            equal = harp_isnan(variable[k]->data.double_data[index[j]]);
+                        }
+                        else
+                        {
+                            equal = variable[k]->data.double_data[index[j]] == variable[k]->data.double_data[i];
+                        }
+                        break;
+                    case harp_type_string:
+                        if (variable[k]->data.string_data[i] == NULL)
+                        {
+                            equal = variable[k]->data.string_data[index[j]] == NULL;
+                        }
+                        else if (variable[k]->data.string_data[index[j]] == NULL)
+                        {
+                            equal = 0;
+                        }
+                        else
+                        {
+                            equal = strcmp(variable[k]->data.string_data[index[j]],
+                                           variable[k]->data.string_data[i]) == 0;
+                        }
+                        break;
+                }
+                if (!equal)
+                {
                     break;
-                case harp_type_int16:
-                    equal = variable->data.int16_data[index[j]] == variable->data.int16_data[i];
-                    break;
-                case harp_type_int32:
-                    equal = variable->data.int32_data[index[j]] == variable->data.int32_data[i];
-                    break;
-                case harp_type_float:
-                    if (check_nan)
-                    {
-                        equal = harp_isnan(variable->data.float_data[index[j]]);
-                    }
-                    else
-                    {
-                        equal = variable->data.float_data[index[j]] == variable->data.float_data[i];
-                    }
-                    break;
-                case harp_type_double:
-                    if (check_nan)
-                    {
-                        equal = harp_isnan(variable->data.double_data[index[j]]);
-                    }
-                    else
-                    {
-                        equal = variable->data.double_data[index[j]] == variable->data.double_data[i];
-                    }
-                    break;
-                case harp_type_string:
-                    if (variable->data.string_data[i] == NULL)
-                    {
-                        equal = variable->data.string_data[index[j]] == NULL;
-                    }
-                    else if (variable->data.string_data[index[j]] == NULL)
-                    {
-                        equal = 0;
-                    }
-                    else
-                    {
-                        equal = strcmp(variable->data.string_data[index[j]], variable->data.string_data[i]) == 0;
-                    }
-                    break;
+                }
             }
-            if (equal)
+            if (k == num_variables)
             {
+                /* equal bin */
                 break;
             }
         }
@@ -3127,56 +3177,81 @@ int harp_product_bin_with_variable(harp_product *product, const char *variable_n
         bin_index[i] = j;
     }
 
-    if (get_binning_type(variable) == binning_remove)
-    {
-        harp_variable *original_variable = variable;
+    free(check_nan);
+    check_nan = NULL;
 
-        /* we always want to keep the variable that we bin on */
-        if (harp_variable_copy(original_variable, &variable) != 0)
-        {
-            free(bin_index);
-            free(index);
-            return -1;
-        }
-        if (harp_variable_rearrange_dimension(variable, 0, num_bins, index) != 0)
-        {
-            harp_variable_delete(variable);
-            free(bin_index);
-            free(index);
-            return -1;
-        }
-    }
-    else
+    for (k = 0; k < num_variables; k++)
     {
-        variable = NULL;
+        if (get_binning_type(variable[k]) == binning_remove)
+        {
+            /* we always want to keep the variable that we bin on */
+            if (harp_variable_copy(variable[k], &variable_copy[k]) != 0)
+            {
+                goto error;
+            }
+            if (harp_variable_rearrange_dimension(variable_copy[k], 0, num_bins, index) != 0)
+            {
+                goto error;
+            }
+        }
     }
 
     free(index);
+    index = NULL;
 
     if (harp_product_bin(product, num_bins, num_elements, bin_index) != 0)
     {
-        if (variable != NULL)
-        {
-            harp_variable_delete(variable);
-        }
-        free(bin_index);
-        return -1;
+        goto error;
     }
 
-    if (variable != NULL)
+    for (k = 0; k < num_variables; k++)
     {
-        if (harp_product_add_variable(product, variable) != 0)
+        if (variable_copy[k] != NULL)
         {
-            harp_variable_delete(variable);
-            free(bin_index);
-            return -1;
+            if (harp_product_add_variable(product, variable_copy[k]) != 0)
+            {
+                goto error;
+            }
+            variable_copy[k] = NULL;
         }
     }
 
     /* cleanup */
     free(bin_index);
-
+    free(variable);
+    free(variable_copy);
     return 0;
+
+  error:
+    if (check_nan != NULL)
+    {
+        free(check_nan);
+    }
+    if (index != NULL)
+    {
+        free(index);
+    }
+    if (bin_index != NULL)
+    {
+        free(bin_index);
+    }
+    if (variable != NULL)
+    {
+        free(variable);
+    }
+    if (variable_copy != NULL)
+    {
+        for (k = 0; k < num_variables; k++)
+        {
+            if (variable_copy[k] != NULL)
+            {
+                harp_variable_delete(variable_copy[k]);
+            }
+        }
+        free(variable_copy);
+    }
+
+    return -1;
 }
 
 /** Perform a spatial binning such that all samples end up in a single time bin.

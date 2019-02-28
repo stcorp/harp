@@ -645,9 +645,9 @@ static int execute_bin_spatial(harp_product *product, harp_operation_bin_spatial
                                          operation->num_longitude_edges, operation->longitude_edges);
 }
 
-static int execute_bin_with_variable(harp_product *product, harp_operation_bin_with_variable *operation)
+static int execute_bin_with_variables(harp_product *product, harp_operation_bin_with_variables *operation)
 {
-    return harp_product_bin_with_variable(product, operation->variable_name);
+    return harp_product_bin_with_variable(product, operation->num_variables, (const char **)operation->variable_name);
 }
 
 static int execute_derive_variable(harp_product *product, harp_operation_derive_variable *operation)
@@ -1229,8 +1229,8 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                     return -1;
                 }
                 break;
-            case operation_bin_with_variable:
-                if (execute_bin_with_variable(product, (harp_operation_bin_with_variable *)operation) != 0)
+            case operation_bin_with_variables:
+                if (execute_bin_with_variables(product, (harp_operation_bin_with_variables *)operation) != 0)
                 {
                     return -1;
                 }

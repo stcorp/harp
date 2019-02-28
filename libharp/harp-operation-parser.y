@@ -829,12 +829,20 @@ operation:
             }
         }
     | FUNC_BIN '(' identifier ')' {
-            if (harp_operation_bin_with_variable_new($3, &$$) != 0)
+            if (harp_operation_bin_with_variables_new(1, (const char **)&$3, &$$) != 0)
             {
                 free($3);
                 YYERROR;
             }
             free($3);
+        }
+    | FUNC_BIN '(' '(' identifier_array ')' ')' {
+            if (harp_operation_bin_with_variables_new($4->num_elements, (const char **)$4->array.string_data, &$$) != 0)
+            {
+                harp_sized_array_delete($4);
+                YYERROR;
+            }
+            harp_sized_array_delete($4);
         }
     | FUNC_BIN '(' STRING_VALUE ',' ID_A ')' {
             if (harp_operation_bin_collocated_new($3, 'a', &$$) != 0)

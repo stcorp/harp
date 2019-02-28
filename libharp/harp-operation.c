@@ -626,12 +626,22 @@ static void bin_spatial_delete(harp_operation_bin_spatial *operation)
     }
 }
 
-static void bin_with_variable_delete(harp_operation_bin_with_variable *operation)
+static void bin_with_variables_delete(harp_operation_bin_with_variables *operation)
 {
     if (operation != NULL)
     {
         if (operation->variable_name != NULL)
         {
+            int i;
+
+            for (i = 0; i < operation->num_variables; i++)
+            {
+                if (operation->variable_name[i] != NULL)
+                {
+                    free(operation->variable_name[i]);
+                }
+            }
+
             free(operation->variable_name);
         }
 
@@ -1196,8 +1206,8 @@ void harp_operation_delete(harp_operation *operation)
         case operation_bin_spatial:
             bin_spatial_delete((harp_operation_bin_spatial *)operation);
             break;
-        case operation_bin_with_variable:
-            bin_with_variable_delete((harp_operation_bin_with_variable *)operation);
+        case operation_bin_with_variables:
+            bin_with_variables_delete((harp_operation_bin_with_variables *)operation);
             break;
         case operation_bit_mask_filter:
             bit_mask_filter_delete((harp_operation_bit_mask_filter *)operation);
@@ -1647,29 +1657,47 @@ int harp_operation_bin_spatial_new(long num_latitude_edges, double *latitude_edg
     return 0;
 }
 
-int harp_operation_bin_with_variable_new(const char *variable_name, harp_operation **new_operation)
+int harp_operation_bin_with_variables_new(int num_variables, const char **variable_name, harp_operation **new_operation)
 {
-    harp_operation_bin_with_variable *operation;
+    harp_operation_bin_with_variables *operation;
 
     assert(variable_name != NULL);
 
-    operation = (harp_operation_bin_with_variable *)malloc(sizeof(harp_operation_bin_with_variable));
+    operation = (harp_operation_bin_with_variables *)malloc(sizeof(harp_operation_bin_with_variables));
     if (operation == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       sizeof(harp_operation_bin_with_variable), __FILE__, __LINE__);
+                       sizeof(harp_operation_bin_with_variables), __FILE__, __LINE__);
         return -1;
     }
-    operation->type = operation_bin_with_variable;
+    operation->type = operation_bin_with_variables;
+    operation->num_variables = num_variables;
     operation->variable_name = NULL;
 
-    operation->variable_name = strdup(variable_name);
-    if (operation->variable_name == NULL)
+    if (num_variables > 0)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        bin_with_variable_delete(operation);
-        return -1;
+        int i;
+
+        operation->variable_name = (char **)malloc(num_variables * sizeof(char *));
+        if (operation->variable_name == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_variables * sizeof(char *), __FILE__, __LINE__);
+            bin_with_variables_delete(operation);
+            return -1;
+        }
+
+        for (i = 0; i < num_variables; i++)
+        {
+            operation->variable_name[i] = strdup(variable_name[i]);
+            if (operation->variable_name[i] == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                               __LINE__);
+                bin_with_variables_delete(operation);
+                return -1;
+            }
+        }
     }
 
     *new_operation = (harp_operation *)operation;
