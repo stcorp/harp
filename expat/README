@@ -13,3 +13,6 @@ build system. The changes that were made are:
  - Add define for BYTEORDER based on WORDS_BIGENDIAN.
 
  - Add define for XML_POOR_ENTROPY since we don't need high quality entropy.
+
+ - Add '#undef' for uint8_t/uint32_t/uint64_t to prevent siphash.h compilation
+   problems on Windows.

@@ -273,6 +273,7 @@ libudunits2_la_SOURCES = \
 	expat/iasciitab.h \
 	expat/internal.h \
 	expat/latin1tab.h \
+	expat/loadlibrary.c \
 	expat/nametab.h \
 	expat/siphash.h \
 	expat/utf8tab.h \
