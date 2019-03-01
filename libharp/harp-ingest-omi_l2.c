@@ -1179,6 +1179,13 @@ static int read_no2_column_tropospheric_amf(void *user_data, harp_array data)
     return read_variable_double(info, &info->swath_cursor, "AmfTrop", 2, NULL, data);
 }
 
+static int read_no2_column_tropospheric_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(info, &info->swath_cursor, "VcdApTrop", 2, NULL, data);
+}
+
 static int read_no2_column_stratospheric(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1198,6 +1205,13 @@ static int read_no2_column_stratospheric_amf(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_double(info, &info->swath_cursor, "AmfStrat", 2, NULL, data);
+}
+
+static int read_no2_column_stratospheric_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(info, &info->swath_cursor, "VcdApStrat", 2, NULL, data);
 }
 
 static int read_no2_column_domino(void *user_data, harp_array data)
@@ -1582,6 +1596,16 @@ static int include_amf_strat(void *user_data)
 static int include_amf_trop(void *user_data)
 {
     return has_swath_variable((ingest_info *)user_data, "AmfTrop");
+}
+
+static int include_vcd_ap_strat(void *user_data)
+{
+    return has_swath_variable((ingest_info *)user_data, "VcdApStrat");
+}
+
+static int include_vcd_ap_trop(void *user_data)
+{
+    return has_swath_variable((ingest_info *)user_data, "VcdApTrop");
 }
 
 static int parse_option_clipped_cloud_fraction(ingest_info *info, const harp_ingestion_options *options)
@@ -3084,6 +3108,15 @@ static void register_omno2_product(void)
     path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfTrop[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* tropospheric_NO2_column_number_density_apriori */
+    description = "apriori of the NO2 tropospheric column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_apriori",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_vcd_ap_trop, read_no2_column_tropospheric_apriori);
+    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApTrop[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* stratospheric_NO2_column_number_density */
     description = "NO2 stratospheric column density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
@@ -3112,6 +3145,16 @@ static void register_omno2_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, include_amf_strat,
                                                    read_no2_column_stratospheric_amf);
     path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfStrat[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* stratospheric_NO2_column_number_density_apriori */
+    description = "apriori of the NO2 stratospheric column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "stratospheric_NO2_column_number_density_apriori", harp_type_double,
+                                                   1, dimension_type, NULL, description, "molec/cm^2",
+                                                   include_vcd_ap_strat, read_no2_column_stratospheric_apriori);
+    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApStrat[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* NO2_slant_column_number_density */

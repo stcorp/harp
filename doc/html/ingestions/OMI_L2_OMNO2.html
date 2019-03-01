@@ -252,23 +252,35 @@
 <td>[]</td>
 <td>air mass factor of the NO2 tropospheric column density</td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density</strong></td>
+<tr class="row-even"><td><strong>tropospheric_NO2_column_number_density_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[molec/cm^2]</td>
+<td>apriori of the NO2 tropospheric column density</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[molec/cm^2]</td>
 <td>NO2 stratospheric column density</td>
 </tr>
-<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[molec/cm^2]</td>
 <td>uncertainty of the NO2 stratospheric column density</td>
 </tr>
-<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>air mass factor of the NO2 stratospheric column density</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_apriori</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[molec/cm^2]</td>
+<td>apriori of the NO2 stratospheric column density</td>
 </tr>
 <tr class="row-odd"><td><strong>NO2_slant_column_number_density</strong></td>
 <td>double</td>
@@ -440,6 +452,13 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfTrop[]</strong></td>
 </tr>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_apriori</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApTrop[]</strong></td>
+</tr>
 <tr class="row-even"><td rowspan="2"><strong>stratospheric_NO2_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
@@ -460,6 +479,13 @@
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfStrat[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>stratospheric_NO2_column_number_density_apriori</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApStrat[]</strong></td>
 </tr>
 <tr class="row-even"><td rowspan="4"><strong>NO2_slant_column_number_density</strong></td>
 <td><em>condition</em></td>
