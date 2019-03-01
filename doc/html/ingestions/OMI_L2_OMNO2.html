@@ -246,6 +246,66 @@
 <td>[molec/cm^2]</td>
 <td>uncertainty of the NO2 tropospheric column density</td>
 </tr>
+<tr class="row-odd"><td><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>air mass factor of the NO2 tropospheric column density</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[molec/cm^2]</td>
+<td>NO2 stratospheric column density</td>
+</tr>
+<tr class="row-odd"><td><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[molec/cm^2]</td>
+<td>uncertainty of the NO2 stratospheric column density</td>
+</tr>
+<tr class="row-even"><td><strong>stratospheric_NO2_column_number_density_amf</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>air mass factor of the NO2 stratospheric column density</td>
+</tr>
+<tr class="row-odd"><td><strong>NO2_slant_column_number_density</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[molec/cm^2]</td>
+<td>NO2 slant column density</td>
+</tr>
+<tr class="row-even"><td><strong>NO2_slant_column_number_density_uncertainty</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[molec/cm^2]</td>
+<td>uncertainty of the NO2 slant column density</td>
+</tr>
+<tr class="row-odd"><td><strong>validity</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>Vertical column density quality flags</td>
+</tr>
+<tr class="row-even"><td><strong>tropopause_pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[hPa]</td>
+<td>Pressure of the tropopause</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[m]</td>
+<td>Terrain height</td>
+</tr>
+<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[hPa]</td>
+<td>Terrain pressure</td>
+</tr>
 <tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
@@ -279,13 +339,36 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">OMI_L2_OMNO2</span></code> products.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>destriped</td>
+<td>true</td>
+<td>ingest slant column densities without destriping correction (default) or with destriping correction (destriped=true)</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The shape and size of each ground pixel is not included in the product. HARP therefore provides its own approximation which is based on interpolation of the available center coordinates for each of the ground pixels. Each corner coordinate is determined by its four surrounding center coordinates. The corner coordinate is exactly at the intersection of the cross that can be made with these four points (each line of the cross is the great-circle distance from one center coordinate to the other). In situations where a corner coordinate is not surrounded by four center coordinates (i.e. at the boundaries) virtual center coordinates are created by means of extrapolation. The virtual center coordinate is placed such that the distance to its nearest real center coordinate equals the distance between that nearest real center coordinate and the next center coordinate going further inwards. In mathematical notation: when c(i,m+1) is the virtual center coordinate and c(i,m) and c(i,m-1) are real center coordinates, then ||c(i,m+1) - c(i,m)|| = ||c(i,m) - c(i,m-1)|| and all three coordinates should lie on the same great circle. The four virtual coordinates that lie in the utmost corners of the boundaries are calculated by extrapolating in a diagonal direction (e.g. c(n+1,m+1) is calculated from c(n,m) and c(n-1,m-1)).</p>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="35%" />
+<col width="36%" />
 <col width="9%" />
 <col width="55%" />
 </colgroup>
@@ -350,19 +433,86 @@
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2TropStd[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>tropospheric_NO2_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfTrop[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>stratospheric_NO2_column_number_density</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2Strat[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>stratospheric_NO2_column_number_density_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2StratStd[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><strong>stratospheric_NO2_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfStrat[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><strong>NO2_slant_column_number_density</strong></td>
+<td><em>condition</em></td>
+<td>destriped unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>destriped=true</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2Destriped[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>NO2_slant_column_number_density_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2Std[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>validity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdQualityFlags[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>tropopause_pressure</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TropopausePressure[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TerrainHeight[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TerrainPressure[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudFraction[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_fraction_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudFractionStd[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_pressure</strong></td>
+<tr class="row-odd"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudPressure[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_pressure_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudPressureStd[]</strong></td>
 </tr>
