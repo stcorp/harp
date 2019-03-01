@@ -2825,7 +2825,7 @@ static int read_o3_averaging_kernel_1d(void *user_data, harp_array data)
             {
                 data.float_data[j] = data.float_data[j + 1];
             }
-            data.float_data[(i + 1) * info->num_layers - 1] = harp_nan();
+            data.float_data[(i + 1) * info->num_layers - 1] = (float)harp_nan();
         }
     }
 
@@ -2860,7 +2860,7 @@ static int read_o3_ozone_profile_apriori(void *user_data, harp_array data)
                 {
                     data.float_data[j] = data.float_data[j + 1];
                 }
-                data.float_data[(i + 1) * info->num_layers - 1] = harp_nan();
+                data.float_data[(i + 1) * info->num_layers - 1] = (float)harp_nan();
             }
         }
     }
@@ -2906,7 +2906,7 @@ static int read_o3_pressure_bounds(void *user_data, harp_array data)
         {
             if (harp_isnan(data.float_data[(i + 1) * num_layers * 2 - 1]))
             {
-                data.float_data[(i + 1) * num_layers * 2 - 2] = harp_nan();
+                data.float_data[(i + 1) * num_layers * 2 - 2] = (float)harp_nan();
             }
         }
     }
@@ -2928,8 +2928,8 @@ static int read_o3_pressure_bounds(void *user_data, harp_array data)
                     data.float_data[j] = data.float_data[j + 2];
                     data.float_data[j + 1] = data.float_data[j + 3];
                 }
-                data.float_data[(i + 1) * info->num_layers * 2 - 2] = harp_nan();
-                data.float_data[(i + 1) * info->num_layers * 2 - 1] = harp_nan();
+                data.float_data[(i + 1) * info->num_layers * 2 - 2] = (float)harp_nan();
+                data.float_data[(i + 1) * info->num_layers * 2 - 1] = (float)harp_nan();
             }
         }
     }
