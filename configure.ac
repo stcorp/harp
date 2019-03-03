@@ -77,9 +77,6 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 /* need to include this before we redefine lseek, etc. */
 #include <io.h>
 
-/* redefine ELEMENT_TYPE for expat because it conflicts with io.h */
-#define ELEMENT_TYPE ELEMENT_TYPE_RENAMED
-
 /* include sys/stat.h because we are going to override stat */
 #include <sys/stat.h>
 
