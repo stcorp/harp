@@ -49,6 +49,10 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #if defined(__GNUC__) && defined(__i386__) && !defined(__MINGW32__)
 /* We'll use this version by default only where we know it helps.
 

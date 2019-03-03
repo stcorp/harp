@@ -12,3 +12,5 @@ build system. The changes that were made are:
 
  - Add '#undef' for uint8_t/uint32_t/uint64_t in siphash.h to prevent
    compilation problems on Windows.
+
+ - internal.h includes windows.h (since it can't be included in config.h).

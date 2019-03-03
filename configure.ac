@@ -74,9 +74,6 @@ int vsnprintf(const char *, size_t, const char *, va_list ap);
 
 #ifdef WIN32
 
-/* needed for expat */
-#include <windows.h>
-
 /* need to include this before we redefine lseek, etc. */
 #include <io.h>
 
