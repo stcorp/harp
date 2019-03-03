@@ -33,12 +33,6 @@
 #ifndef Expat_External_INCLUDED
 #define Expat_External_INCLUDED 1
 
-#ifdef WORDS_BIGENDIAN
-#define BYTEORDER 4321
-#else
-#define BYTEORDER 1234
-#endif
-#define XML_POOR_ENTROPY 1
 #include "harp_expat_mangle.h"
 
 /* External API definitions */

@@ -10,9 +10,5 @@ build system. The changes that were made are:
  - expat_external.h includes harp_expat_mangle.h to name mangle all
    public symbols.
 
- - Add define for BYTEORDER based on WORDS_BIGENDIAN.
-
- - Add define for XML_POOR_ENTROPY since we don't need high quality entropy.
-
- - Add '#undef' for uint8_t/uint32_t/uint64_t to prevent siphash.h compilation
-   problems on Windows.
+ - Add '#undef' for uint8_t/uint32_t/uint64_t in siphash.h to prevent
+   compilation problems on Windows.
