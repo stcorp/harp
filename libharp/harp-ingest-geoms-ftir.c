@@ -755,7 +755,8 @@ static int read_temperature_ind(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_double(user_data, "TEMPERATURE_INDEPENDENT", info->num_time * info->num_vertical, data);
+    return read_vertical_variable_double(user_data, "TEMPERATURE_INDEPENDENT", info->num_time * info->num_vertical,
+                                         data);
 }
 
 static int read_surface_pressure_ind(void *user_data, harp_array data)
@@ -1306,10 +1307,11 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
          HARP_UNIT_DIMENSIONLESS, NULL, read_column_avk);
+    description = "the vertical axis is re-ordered from surface to top-of-atmosphere";
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
-    harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, description);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_AVK", geoms_gas_name[gas]);
-    harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, description);
 
     /* <gas>_column_number_density_uncertainty_random */
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_random", harp_gas_name[gas]);
@@ -1392,7 +1394,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
          include_vmr_absorption, read_vmr);
-    description = "unit is converted to ppmv";
+    description = "unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR", geoms_gas_name[gas]);
@@ -1418,7 +1420,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
          include_vmr_absorption, read_vmr_apriori);
-    description = "unit is converted to ppmv";
+    description = "unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_APRIORI", geoms_gas_name[gas]);
@@ -1447,21 +1449,26 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
          HARP_UNIT_DIMENSIONLESS, include_vmr_absorption, read_vmr_avk);
+    description = "the vertical axis is re-ordered from surface to top-of-atmosphere";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_AVK", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.LUNAR_AVK", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
     else
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_AVK",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_AVK",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
 
     /* <gas>_volume_mixing_ratio_covariance */
@@ -1470,7 +1477,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
          include_vmr_absorption, read_vmr_covariance);
-    description = "unit is converted to (ppmv)2";
+    description = "unit is converted to (ppmv)2; the vertical axis is re-ordered from surface to top-of-atmosphere";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
@@ -1501,7 +1508,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
          include_vmr_absorption, read_vmr_uncertainty_random);
-    description = "the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv";
+    description = "the vertical axis is re-ordered from surface to top-of-atmosphere; "
+        "the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
@@ -1562,7 +1570,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "H2O_volume_mixing_ratio", harp_type_double, 2, dimension_type, NULL,
              "H2O volume mixing ratio", "ppmv", NULL, read_h2o_vmr);
-        description = "unit is converted to ppmv";
+        description = "unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere";
         if (version == 1)
         {
             harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement",
@@ -1585,7 +1593,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_double,
                                                                      2, dimension_type, NULL, description, "km", NULL,
                                                                      read_altitude);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE", NULL);
+    description = "the vertical axis is re-ordered from surface to top-of-atmosphere";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE", description);
 
     /* altitude_bounds */
     dimension_type[2] = harp_dimension_independent;
@@ -1593,21 +1602,21 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds",
                                                                      harp_type_double, 3, dimension_type, dimension,
                                                                      description, "km", NULL, read_altitude_bounds);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.BOUNDS", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.BOUNDS", description);
 
     /* pressure */
     description = "independent pressure profile";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double,
                                                                      2, dimension_type, NULL, description, "hPa", NULL,
                                                                      read_pressure_ind);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRESSURE_INDEPENDENT", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRESSURE_INDEPENDENT", description);
 
     /* temperature */
     description = "independent temperature profile";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "temperature",
                                                                      harp_type_double, 2, dimension_type, NULL,
                                                                      description, "K", NULL, read_temperature_ind);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE_INDEPENDENT", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE_INDEPENDENT", description);
 
     /* surface_pressure */
     description = "independent surface pressure";

@@ -356,9 +356,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="33%" />
-<col width="9%" />
-<col width="58%" />
+<col width="23%" />
+<col width="7%" />
+<col width="70%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -439,18 +439,24 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>unit is converted to molec/m2</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>HCl_column_number_density_avk</strong></td>
+<tr class="row-odd"><td rowspan="6"><strong>HCl_column_number_density_avk</strong></td>
 <td><em>condition</em></td>
 <td>solar measurement</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/HCl.COLUMN_ABSORPTION.SOLAR_AVK</strong></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
 <td>lunar measurement</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/HCl.COLUMN_ABSORPTION.LUNAR_AVK</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>HCl_column_number_density_uncertainty_random</strong></td>
 <td><em>condition</em></td>
@@ -520,7 +526,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.SOLAR</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>unit is converted to ppmv</td>
+<td>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
 <td>lunar measurement</td>
@@ -529,7 +535,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.LUNAR</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>unit is converted to ppmv</td>
+<td>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-even"><td rowspan="7"><strong>HCl_volume_mixing_ratio_apriori</strong></td>
 <td><em>available</em></td>
@@ -542,7 +548,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.SOLAR_APRIORI</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>unit is converted to ppmv</td>
+<td>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
 <td>lunar measurement</td>
@@ -551,9 +557,9 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.LUNAR_APRIORI</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>unit is converted to ppmv</td>
+<td>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><strong>HCl_volume_mixing_ratio_avk</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>HCl_volume_mixing_ratio_avk</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -563,11 +569,17 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.SOLAR_AVK</strong></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>lunar measurement</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.LUNAR_AVK</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-even"><td rowspan="7"><strong>HCl_volume_mixing_ratio_covariance</strong></td>
 <td><em>available</em></td>
@@ -580,7 +592,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>unit is converted to (ppmv)2</td>
+<td>unit is converted to (ppmv)2; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
 <td>lunar measurement</td>
@@ -589,7 +601,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>unit is converted to (ppmv)2</td>
+<td>unit is converted to (ppmv)2; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-odd"><td rowspan="7"><strong>HCl_volume_mixing_ratio_uncertainty_random</strong></td>
 <td><em>available</em></td>
@@ -602,7 +614,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
 <td>lunar measurement</td>
@@ -611,7 +623,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
 </tr>
 <tr class="row-even"><td rowspan="7"><strong>HCl_volume_mixing_ratio_uncertainty_systematic</strong></td>
 <td><em>available</em></td>
@@ -624,7 +636,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
 <td>lunar measurement</td>
@@ -633,7 +645,7 @@
 <td><strong>/HCl.MIXING.RATIO_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</td>
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>H2O_volume_mixing_ratio</strong></td>
 <td><em>condition</em></td>
@@ -643,7 +655,7 @@
 <td><strong>/H2O.MIXING.RATIO_ABSORPTION.SOLAR</strong></td>
 </tr>
 <tr class="row-odd"><td><em>description</em></td>
-<td>unit is converted to ppmv</td>
+<td>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
 <td>lunar measurement</td>
@@ -652,23 +664,35 @@
 <td><strong>/H2O.MIXING.RATIO_ABSORPTION.LUNAR</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>unit is converted to ppmv</td>
+<td>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>altitude</strong></td>
 <td><em>path</em></td>
 <td><strong>/ALTITUDE</strong></td>
 </tr>
-<tr class="row-even"><td><strong>altitude_bounds</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>the vertical axis is re-ordered from surface to top-of-atmosphere</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>altitude_bounds</strong></td>
 <td><em>path</em></td>
 <td><strong>/ALTITUDE.BOUNDS</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>lower and upper boundaries of the height layers</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRESSURE_INDEPENDENT</strong></td>
 </tr>
-<tr class="row-even"><td><strong>temperature</strong></td>
+<tr class="row-even"><td><em>description</em></td>
+<td>independent pressure profile</td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><strong>temperature</strong></td>
 <td><em>path</em></td>
 <td><strong>/TEMPERATURE_INDEPENDENT</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>independent temperature profile</td>
 </tr>
 <tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td><em>path</em></td>
