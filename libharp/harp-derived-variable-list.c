@@ -4930,7 +4930,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "column_density", harp_type_double,
-                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_COLUMN_MASS_DENSITY, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
