@@ -427,7 +427,7 @@ static int read_h2o_column(void *user_data, harp_array data)
         return -1;
     }
 
-    if (harp_convert_unit(info->column_unit, "molec/m2", info->num_time, data.double_data) != 0)
+    if (harp_convert_unit(info->h2o_column_unit, "molec/m2", info->num_time, data.double_data) != 0)
     {
         return -1;
     }
@@ -1281,10 +1281,11 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
          "molec/m2", NULL, read_column);
+    description = "unit is converted to molec/m2";
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR", geoms_gas_name[gas]);
-    harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, description);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR", geoms_gas_name[gas]);
-    harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, description);
 
     /* <gas>_column_number_density_apriori */
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_apriori", harp_gas_name[gas]);
@@ -1292,10 +1293,11 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
          "molec/m2", NULL, read_column_apriori);
+    description = "unit is converted to molec/m2";
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_APRIORI", geoms_gas_name[gas]);
-    harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, description);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_APRIORI", geoms_gas_name[gas]);
-    harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, description);
 
     /* <gas>_column_number_density_avk */
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_avk", harp_gas_name[gas]);
@@ -1316,23 +1318,28 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
          "molec/m2", NULL, read_column_uncertainty_random);
+    description = "unit is converted to molec/m2";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
     else
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.STANDARD",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
 
     /* <gas>_column_number_density_uncertainty_systematic */
@@ -1342,23 +1349,28 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description,
          "molec/m2", NULL, read_column_uncertainty_systematic);
+    description = "unit is converted to molec/m2";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
     else
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.STANDARD",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC.STANDARD",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
 
     if (gas != ftir_H2O)
@@ -1367,10 +1379,11 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "H2O_column_number_density", harp_type_double, 1, dimension_type, NULL,
              "total H2O vertical column", "molec/m2", NULL, read_h2o_column);
+        description = "unit is converted to molec/m2";
         harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement",
-                                             "/H2O.COLUMN_ABSORPTION.SOLAR", NULL);
+                                             "/H2O.COLUMN_ABSORPTION.SOLAR", description);
         harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement",
-                                             "/H2O.COLUMN_ABSORPTION.LUNAR", NULL);
+                                             "/H2O.COLUMN_ABSORPTION.LUNAR", description);
     }
 
     /* <gas>_volume_mixing_ratio */
@@ -1379,19 +1392,24 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
          include_vmr_absorption, read_vmr);
+    description = "unit is converted to ppmv";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.LUNAR", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
     else
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
 
     /* <gas>_volume_mixing_ratio_apriori */
@@ -1400,21 +1418,26 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
          include_vmr_absorption, read_vmr_apriori);
+    description = "unit is converted to ppmv";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_APRIORI", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.LUNAR_APRIORI", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
     else
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_APRIORI",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_APRIORI",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
 
     /* <gas>_volume_mixing_ratio_avk */
@@ -1447,23 +1470,28 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
          include_vmr_absorption, read_vmr_covariance);
+    description = "unit is converted to (ppmv)2";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM",
                  geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
     else
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement", gas_mapping_path,
+                                             description);
         snprintf(gas_mapping_path, MAX_PATH_LENGTH,
                  "/%s.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE", geoms_gas_name[gas]);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement", gas_mapping_path,
+                                             description);
     }
 
     /* <gas>_volume_mixing_ratio_uncertainty_random */
@@ -1473,7 +1501,7 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
          include_vmr_absorption, read_vmr_uncertainty_random);
-    description = "the uncertainty is the square root of the trace of the covariance";
+    description = "the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv";
     if (version == 1)
     {
         snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM",
@@ -1534,19 +1562,20 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, "H2O_volume_mixing_ratio", harp_type_double, 2, dimension_type, NULL,
              "H2O volume mixing ratio", "ppmv", NULL, read_h2o_vmr);
+        description = "unit is converted to ppmv";
         if (version == 1)
         {
             harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement",
-                                                 "/H2O.MIXING.RATIO_ABSORPTION.SOLAR", NULL);
+                                                 "/H2O.MIXING.RATIO_ABSORPTION.SOLAR", description);
             harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement",
-                                                 "/H2O.MIXING.RATIO_ABSORPTION.LUNAR", NULL);
+                                                 "/H2O.MIXING.RATIO_ABSORPTION.LUNAR", description);
         }
         else
         {
             harp_variable_definition_add_mapping(variable_definition, NULL, "solar measurement",
-                                                 "/H2O.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", NULL);
+                                                 "/H2O.MIXING.RATIO.VOLUME_ABSORPTION.SOLAR", description);
             harp_variable_definition_add_mapping(variable_definition, NULL, "lunar measurement",
-                                                 "H2O.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR", NULL);
+                                                 "H2O.MIXING.RATIO.VOLUME_ABSORPTION.LUNAR", description);
         }
     }
 
