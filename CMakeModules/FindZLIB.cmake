@@ -20,7 +20,7 @@ endif(ZLIB_INCLUDE_DIR)
 
 check_include_file(zlib.h HAVE_ZLIB_H)
 
-find_library(ZLIB_LIBRARY NAMES z zlibdll zlib PATHS ${ZLIB_LIBRARY_DIR})
+find_library(ZLIB_LIBRARY NAMES zlibdll zlib z PATHS ${ZLIB_LIBRARY_DIR})
 if(ZLIB_LIBRARY)
   check_library_exists(${ZLIB_LIBRARY} deflate "" HAVE_ZLIB_LIBRARY)
 endif(ZLIB_LIBRARY)
