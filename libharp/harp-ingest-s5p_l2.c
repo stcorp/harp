@@ -2696,6 +2696,22 @@ static int read_results_surface_albedo_fitted_crb_precision(void *user_data, har
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_surface_albedo_SWIR(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_SWIR", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_surface_albedo_SWIR_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_SWIR_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_water_total_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -4538,17 +4554,17 @@ static void register_ch4_product(void)
     description = "cloud fraction from VIIRS data in the SWIR channel for the instantaneous field of view";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "",
-                                                   NULL, read_input_cloud_fraction_viirs_swir);
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_viirs_swir);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_SWIR_IFOV[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* aerosol_height */
     description = "aerosol height parameter in the CH4 retrieval";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "m",
-                                                   NULL, read_results_aerosol_mid_altitude);
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_results_aerosol_mid_altitude);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_height[]";
@@ -4557,10 +4573,28 @@ static void register_ch4_product(void)
     /* aerosol_optical_depth */
     description = "aerosol optical thicknesss in the SWIR band";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "",
-                                                   NULL, read_results_aerosol_optical_thickness_swir);
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_aerosol_optical_thickness_swir);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_SWIR[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo in the SWIR channel";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_surface_albedo_SWIR);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo_uncertainty */
+    description = "precision of the surface albedo in the SWIR channel";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_surface_albedo_SWIR_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
