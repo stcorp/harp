@@ -1023,7 +1023,7 @@ def to_dict(product):
 
     return dictionary
 
-def import_product(filename, operations="", options=""):
+def import_product(filename, operations="", options="", post_operations=""):
     """Import a product from a file.
 
     This will first try to import the file as an HDF4, HDF5, or netCDF file that
@@ -1031,45 +1031,103 @@ def import_product(filename, operations="", options=""):
     format then it will try to import it using one of the available ingestion
     modules.
 
-    If the filename argument is a list of filenames or a globbing (glob.glob())
-    pattern then the harp.import_product() function will be called on each
-    individual file and the result of harp.concatenate() on the imported products
-    will be returned.
+    If the filename argument is a list of filenames, a globbing (glob.glob())
+    pattern, or a list of globbing patterns then the harp.import_product() function
+    will be called on each individual matching file. All imported products will then
+    be appended into a single merged product and that merged product will be returned.
 
     Arguments:
-    filename -- Filename, list of filenames or file pattern of the product(s) to import
+    filename -- Filename, file pattern, or list of filenames/patterns of the product(s)
+                to import
     operations -- Actions to apply as part of the import; should be specified as a
-                  semi-colon separated string of operations.
+                  semi-colon separated string of operations;
+                  in case a list of products is ingested these operations will be
+                  performed on each product individually before the data is merged.
     options -- Ingestion module specific options; should be specified as a semi-
-               colon separated string of key=value pairs; only used if the file is not
+               colon separated string of key=value pairs; only used if a file is not
                in HARP format.
-
+    post_operations -- Actions to apply after the list of products is merged; should be
+                       specified as a semi-colon separated string of operations;
+                       these operations will only be applied if the filename argument is
+                       a file pattern or a list of filenames/patterns.
     """
     filenames = None
     if not (isinstance(filename, bytes) or isinstance(filename, str)):
         # Assume this is a list of filenames or patterns
-        filenames = filename
-    if '*' in filename or '?' in filename:
+        filenames = []
+        for file in filename:
+            if '*' in file or '?' in file:
+                # This is a globbing pattern
+                filenames.extend(sorted(glob.glob(file)))
+            else:
+                filenames.append(file)
+    elif '*' in filename or '?' in filename:
         # This is a globbing pattern
         filenames = sorted(glob.glob(filename))
+
+    if filenames is not None:
         if len(filenames) == 0:
             raise Error("no files matching '%s'" % (filename))
-    if filenames is not None:
-        products = []
-        for file in filenames:
-            try:
-                product = import_product(file, operations, options)
-                products.append(product)
-            except NoDataError:
-                pass
-        if len(products) == 0:
+        # Return the merged concatenation of all products
+        merged_product_ptr = None
+        try:
+            for file in filenames:
+                c_product_ptr = _ffi.new("harp_product **")
+
+                # Import the product as a C product.
+                if _lib.harp_import(_encode_path(file), _encode_string(operations), _encode_string(options),
+                                    c_product_ptr) != 0:
+                    raise CLibraryError()
+                if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
+                    _lib.harp_product_delete(c_product_ptr[0])
+                elif merged_product_ptr is None:
+                    merged_product_ptr = c_product_ptr
+                    # if this remains the only product then make sure it still looks like it was the result of a merge
+                    if _lib.harp_product_append(merged_product_ptr[0], _ffi.NULL) != 0:
+                        raise CLibraryError()
+                else:
+                    try:
+                        if _lib.harp_product_append(merged_product_ptr[0], c_product_ptr[0]) != 0:
+                            raise CLibraryError()
+                    finally:
+                        _lib.harp_product_delete(c_product_ptr[0])
+        except:
+            if merged_product_ptr is not None:
+                _lib.harp_product_delete(merged_product_ptr[0])
+            raise
+
+        if merged_product_ptr is None:
             raise NoDataError()
-        return concatenate(products)
+
+        try:
+            if post_operations:
+                if _lib.harp_product_execute_operations(merged_product_ptr[0], _encode_string(post_operations)) != 0:
+                    raise CLibraryError()
+            # Convert the merged C product into its Python representation.
+            product = _import_product(merged_product_ptr[0])
+        finally:
+            _lib.harp_product_delete(merged_product_ptr[0])
+
+        if operations or options or post_operations:
+            # Update history
+            command = "harp.import_product('{0}'".format(filename)
+            if operations:
+                command += ",operations='{0}'".format(operations)
+            if options:
+                command += ",options='{0}'".format(options)
+            if post_operations:
+                command += ",post_operations='{0}'".format(post_operations)
+            command += ")"
+            _update_history(product, command)
+
+        return product
+
 
     c_product_ptr = _ffi.new("harp_product **")
 
     # Import the product as a C product.
-    if _lib.harp_import(_encode_path(filename), _encode_string(operations), _encode_string(options), c_product_ptr) != 0:
+    if _lib.harp_import(_encode_path(filename), _encode_string(operations), _encode_string(options),
+                        c_product_ptr) != 0:
         raise CLibraryError()
 
     try:

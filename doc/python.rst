@@ -341,7 +341,8 @@ Functions
 
 This section describes the functions defined by the HARP Python library.
 
-.. py:function:: harp.import_product(filename, operations="", options="")
+.. py:function:: harp.import_product(filename, operations="", options="", \
+                                     post_operations="")
 
    Import a product from a file.
  
@@ -350,18 +351,24 @@ This section describes the functions defined by the HARP Python library.
    format then it will try to import it using one of the available ingestion
    modules.
 
-   If the filename argument is a list of filenames or a globbing (glob.glob())
-   pattern then the harp.import_product() function will be called on each
-   individual file and the result of harp.concatenate() on the imported products
-   will be returned.
+   If the filename argument is a list of filenames, a globbing (glob.glob())
+   pattern, or a list of globbing patterns then the harp.import_product() function
+   will be called on each individual matching file. All imported products will then
+   be appended into a single merged product and that merged product will be returned.
 
-   :param str,list filename: Filename, list of filenames or file pattern of the
-                       product(s) to import
+   :param str,list filename: Filename, file pattern, or list of filenames/patterns
+                       of the product(s) to import
    :param str operations: Actions to apply as part of the import; should be
-                       specified as a semi-colon separated string of operations.
+                       specified as a semi-colon separated string of operations;
+                       in case a list of products is ingested these operations will be
+                       performed on each product individually before the data is merged.
    :param str options: Ingestion module specific options; should be specified as
                        a semi-colon separated string of key=value pairs; only
-                       used if the file is not in HARP format.
+                       used if a file is not in HARP format.
+   :param str post_operations: Actions to apply after the list of products is merged;
+                       should be specified as a semi-colon separated string of operations;
+                       these operations will only be applied if the filename argument is
+                       a file pattern or a list of filenames/patterns.
    :returns: Imported product.
    :rtype: harp.Product
 

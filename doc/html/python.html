@@ -625,28 +625,34 @@ considered to be invalid.</li>
 <p>This section describes the functions defined by the HARP Python library.</p>
 <dl class="function">
 <dt id="harp.import_product">
-<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em>, <em>options=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em>, <em>options=&quot;&quot;</em>, <em>post_operations=&quot;&quot;</em><span class="sig-paren">)</span></dt>
 <dd><p>Import a product from a file.</p>
 <p>This will first try to import the file as an HDF4, HDF5, or netCDF file that
 complies to the HARP Data Format. If the file is not stored using the HARP
 format then it will try to import it using one of the available ingestion
 modules.</p>
-<p>If the filename argument is a list of filenames or a globbing (glob.glob())
-pattern then the harp.import_product() function will be called on each
-individual file and the result of harp.concatenate() on the imported products
-will be returned.</p>
+<p>If the filename argument is a list of filenames, a globbing (glob.glob())
+pattern, or a list of globbing patterns then the harp.import_product() function
+will be called on each individual matching file. All imported products will then
+be appended into a single merged product and that merged product will be returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em><em>,</em><em>list</em>) – Filename, list of filenames or file pattern of the
-product(s) to import</li>
+<li><strong>filename</strong> (<em>str</em><em>,</em><em>list</em>) – Filename, file pattern, or list of filenames/patterns
+of the product(s) to import</li>
 <li><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the import; should be
-specified as a semi-colon separated string of operations.</li>
+specified as a semi-colon separated string of operations;
+in case a list of products is ingested these operations will be
+performed on each product individually before the data is merged.</li>
 <li><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
 a semi-colon separated string of key=value pairs; only
-used if the file is not in HARP format.</li>
+used if a file is not in HARP format.</li>
+<li><strong>post_operations</strong> (<em>str</em>) – Actions to apply after the list of products is merged;
+should be specified as a semi-colon separated string of operations;
+these operations will only be applied if the filename argument is
+a file pattern or a list of filenames/patterns.</li>
 </ul>
 </td>
 </tr>
