@@ -617,7 +617,7 @@ function(add_codadef name)
     endif(WIN32)
   else(CODADEF_DIR)
     file(GLOB CODADEF RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/definitions ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}-*.codadef)
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${CODADEF} DESTINATION ${CODADEF_PREFIX})
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${CODADEF}" DESTINATION ${CODADEF_PREFIX})
   endif(CODADEF_DIR)
 endfunction(add_codadef)
 
