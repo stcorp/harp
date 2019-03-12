@@ -511,7 +511,6 @@ LIBHARP_API int harp_product_verify(const harp_product *product);
 LIBHARP_API int harp_product_execute_operations(harp_product *product, const char *operations);
 LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int show_data,
                                     int (*print) (const char *, ...));
-LIBHARP_API int harp_product_get_metadata(harp_product *product, harp_product_metadata **new_metadata);
 
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
 LIBHARP_API int harp_product_sort(harp_product *product, int num_variables, const char **variable_name);
