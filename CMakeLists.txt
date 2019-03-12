@@ -603,7 +603,7 @@ function(add_codadef name)
   file(GLOB CODADEF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}/index.xml)
   if(CODADEF_DIR)
     if(WIN32)
-      message(FATAL_ERROR Cannot create codadef files on Windows, use the official source package of HARP)
+      message(FATAL_ERROR "Cannot create codadef files on Windows, use the official source package of HARP")
     else(WIN32)
       execute_process(COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh" "--date" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
         OUTPUT_VARIABLE "CODADEF_VERSION"
