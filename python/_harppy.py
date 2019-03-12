@@ -368,6 +368,7 @@ def _get_filesystem_encoding():
 def _init():
     """Initialize the HARP Python interface."""
     global _lib, _encoding, _py_dimension_type, _c_dimension_type, _py_data_type, _c_data_type_name
+    from platform import system as _system
 
     # Initialize the HARP C library
     clib = _get_c_library_filename()
@@ -376,16 +377,24 @@ def _init():
     if os.getenv('CODA_DEFINITION') is None:
         # Set coda definition path relative to C library
         relpath = "../share/coda/definitions"
-        _lib.harp_set_coda_definition_path_conditional(_encode_path(os.path.basename(clib)),
-                                                       _encode_path(os.path.dirname(clib)),
-                                                       _encode_path(relpath))
+        if _system() == "Windows":
+            _lib.harp_set_coda_definition_path_conditional(_encode_path(os.path.basename(clib)), _ffi.NULL,
+                                                           _encode_path(relpath))
+        else:
+            _lib.harp_set_coda_definition_path_conditional(_encode_path(os.path.basename(clib)),
+                                                           _encode_path(searchpath),
+                                                           _encode_path(relpath))
 
     if os.getenv('UDUNITS2_XML_PATH') is None:
         # Set udunits2 xml path relative to C library
         relpath = "../share/harp/udunits2.xml"
-        _lib.harp_set_udunits2_xml_path_conditional(_encode_path(os.path.basename(clib)),
-                                                    _encode_path(os.path.dirname(clib)),
-                                                    _encode_path(relpath))
+        if _system() == "Windows":
+            _lib.harp_set_udunits2_xml_path_conditional(_encode_path(os.path.basename(clib)), _ffi.NULL,
+                                                        _encode_path(relpath))
+        else:
+            _lib.harp_set_udunits2_xml_path_conditional(_encode_path(os.path.basename(clib)),
+                                                        _encode_path(searchpath),
+                                                        _encode_path(relpath))
 
     if _lib.harp_init() != 0:
         raise CLibraryError()

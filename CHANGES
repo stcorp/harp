@@ -13,15 +13,18 @@
   defined via a bounding rect. Use e.g. 'latitude_bounds {time,2}' and
   'longitude_bounds {time,2}' to define the min/max of the bounding rect.
 
-* Add derivation for tropospheric/stratospheric column from partial column
+* Added derivation for tropospheric/stratospheric column from partial column
   profile and tropopause.
 
 * Corrected derivation for calculating tropopause altitude/pressure.
 
 * Added support for scene albedo/pressure/type variables.
 
-* Fix problem in matlab mex extension determination on linux when using the
+* Fixed problem in matlab mex extension determination on linux when using the
   configure script.
+
+* Fixed setting of default CODA definition path and udunits2 xml path for
+  Python on Windows.
 
 * Added format, variable count, and dimension sizes to harpcheck output.
 
