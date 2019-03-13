@@ -106,7 +106,7 @@ Using Anaconda
 HARP is also available as a conda package for Windows, Linux, and macOS
 (only 64bit and Python3). You can install HARP using conda with::
 
-    $ conda install -c stcorp -c conda-forge harp
+    $ conda install -c stcorp harp
 
 
 Building the source package (Unix)
