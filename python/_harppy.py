@@ -382,7 +382,7 @@ def _init():
                                                            _encode_path(relpath))
         else:
             _lib.harp_set_coda_definition_path_conditional(_encode_path(os.path.basename(clib)),
-                                                           _encode_path(searchpath),
+                                                           _encode_path(os.path.dirname(clib)),
                                                            _encode_path(relpath))
 
     if os.getenv('UDUNITS2_XML_PATH') is None:
@@ -393,7 +393,7 @@ def _init():
                                                         _encode_path(relpath))
         else:
             _lib.harp_set_udunits2_xml_path_conditional(_encode_path(os.path.basename(clib)),
-                                                        _encode_path(searchpath),
+                                                        _encode_path(os.path.dirname(clib)),
                                                         _encode_path(relpath))
 
     if _lib.harp_init() != 0:
