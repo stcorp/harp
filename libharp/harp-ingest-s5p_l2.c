@@ -562,6 +562,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
     info->use_ch4_bias_corrected = 0;
+    info->use_co_nd_avk = 0;
     info->use_o3_tcl_csa = 0;
     info->so2_column_type = 0;
     info->num_times = 0;
