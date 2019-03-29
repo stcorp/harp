@@ -492,7 +492,8 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     description = "particle backscatter";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "backscatter_coefficient",
                                                                       harp_type_double, 2, dimension_type, NULL,
-                                                                      description, "(1e-6)/m/sr", NULL, read_backscatter);
+                                                                      description, "(1e-6)/m/sr", NULL,
+                                                                      read_backscatter);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/sca_optical_properties[]/sca_optical_properties[]/backscatter", NULL);
 
