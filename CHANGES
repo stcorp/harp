@@ -30,8 +30,8 @@
 
 * Added support for TCCON products in GEOMS format.
 
-* Updates to ESACCI_OZONE_L2_TC, GEOMS FTIR, GOME2 L2, OMI L2 NO2, QA4ECV, and
-  S5P L2 product ingestions.
+* Updates to AEOLUS L2A, ESACCI_OZONE_L2_TC, GEOMS FTIR, GOME2 L2, OMI L2 NO2,
+  QA4ECV, and S5P L2 product ingestions.
 
 * Updated embedded expat library to version 2.2.6.
 
