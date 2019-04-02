@@ -555,7 +555,10 @@ Formal definition
        'area_intersects_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
        'area_intersects_area', '(', stringvalue, ')' |
        'bin', '(', [variable], ')' |
+       'bin', '(', variablelist, ')' |
        'bin', '(', stringvalue, ',', ( 'a' | 'b' ), ')' |
+       'bin_spatial', '(', '(', floatvaluelist, ')', '(', floatvaluelist, ')', ')' |
+       'bin_spatial', '(', intvalue, ',', floatvalue, ',', floatvalue, ',', intvalue, ',', floatvalue, ',', floatvalue, ',', ')' |
        'collocate_left', '(', stringvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
        'derive', '(', variable, [datatype], [dimensionspec], [unit], ')' |
@@ -580,6 +583,9 @@ Formal definition
        'smooth', '(', variable, ',', dimension, ',', variable, unit, ',', stringvalue, ')' |
        'smooth', '(', '(', variablelist, ')', ',', dimension, ',', variable, unit, ',', stringvalue, ')' |
        'sort', '(', variable, ')' |
+       'sort', '(', variablelist, ')' |
+       'squash', '(', dimension, ',', variable, ')' |
+       'squash', '(', dimension, ',', variablelist, ')' |
        'valid', '(', variable, ')' |
        'wrap', '(', variable, [unit], ',', floatvalue, ',', floatvalue, ')' ;
 
