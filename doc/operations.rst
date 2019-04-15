@@ -345,6 +345,10 @@ Supported functions:
         add/remove prefixes (such as surface/tropospheric/etc.) to allow
         the variable to be used in a more specific (with prefix) or
         generic (without prefix) way.
+        If a product does not have a variable with the source name but
+        already has a variable with the target name then the rename
+        operation will do nothing (assuming that the target state is
+        already satisfied).
         Example:
 
             ``rename(surface_temperature, temperature)``

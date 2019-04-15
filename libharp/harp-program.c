@@ -942,6 +942,16 @@ static int execute_rename(harp_product *product, harp_operation_rename *operatio
     harp_variable *variable = NULL;
     char *new_name;
 
+    if (!harp_product_has_variable(product, operation->variable_name) &&
+        harp_product_has_variable(product, operation->new_variable_name))
+    {
+        /* if the source variable does not exists but a variable with the target name does
+         * then we already have the required target state
+         * we then just return success without doing anything
+         */
+        return 0;
+    }
+
     if (harp_product_get_variable_by_name(product, operation->variable_name, &variable) != 0)
     {
         return -1;

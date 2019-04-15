@@ -4,6 +4,9 @@
 
 * harp_product_sort() now takes a list of variables.
 
+* The rename() operation no longer fails if the source variable does not exist
+  but a variable with the target name already exists.
+
 * The python harp.import_product() function now uses the C library to perform
   the contactenation of products.
 
