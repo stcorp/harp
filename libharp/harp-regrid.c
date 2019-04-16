@@ -425,7 +425,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     {
         source_num_time_elements = 1;
 
-        /* Derive the source grid (will give doubles because unit is passed) */
+        /* Derive the source grid */
         if (harp_product_get_derived_variable(product, target_grid->name, &target_grid->data_type, target_grid->unit, 1,
                                               target_grid->dimension_type, &source_grid) != 0)
         {
@@ -449,7 +449,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         grid_dim_type[0] = harp_dimension_time;
         grid_dim_type[1] = dimension_type;
 
-        /* Derive the source grid (will give doubles because unit is passed) */
+        /* Derive the source grid */
         /* Try time independent */
         if (harp_product_get_derived_variable(product, target_grid->name, &target_grid->data_type, target_grid->unit, 1,
                                               &grid_dim_type[1], &source_grid) != 0)
