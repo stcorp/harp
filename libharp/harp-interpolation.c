@@ -840,6 +840,7 @@ void harp_interval_interpolate_array_linear(long source_length, const double *so
 }
 
 /* Determine boundary intervals based on linear inter-/extrapolation of mid points.
+ * Any trailing NaN values in the mid point array will be ignored (and corresponding bounds values will be set to NaN).
  * The bounds array will be treated as a [num_midpoints,2] array and should thus be allocated
  * to hold '2 * num_midpoints' values.
  * If num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
@@ -851,6 +852,13 @@ void harp_interval_interpolate_array_linear(long source_length, const double *so
 void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoints, int extrapolate, double *bounds)
 {
     long i;
+
+    while (num_midpoints > 0 && harp_isnan(midpoints[num_midpoints - 1]))
+    {
+        num_midpoints--;
+        bounds[num_midpoints * 2] = harp_nan();
+        bounds[num_midpoints * 2 + 1] = harp_nan();
+    }
 
     if (num_midpoints < 1)
     {
@@ -883,6 +891,7 @@ void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoin
 }
 
 /* Determine boundary intervals based on loglinear inter-/extrapolation of mid points.
+ * Any trailing NaN values in the mid point array will be ignored (and corresponding bounds values will be set to NaN).
  * The bounds array will be treated as a [num_midpoints,2] array and should thus be allocated
  * to hold '2 * num_midpoints' values.
  * If num_midpoints equals 1, the two bounds values will be set equal to the midpoint value.
@@ -894,6 +903,13 @@ void harp_bounds_from_midpoints_linear(long num_midpoints, const double *midpoin
 void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midpoints, int extrapolate, double *bounds)
 {
     long i;
+
+    while (num_midpoints > 0 && harp_isnan(midpoints[num_midpoints - 1]))
+    {
+        num_midpoints--;
+        bounds[num_midpoints * 2] = harp_nan();
+        bounds[num_midpoints * 2 + 1] = harp_nan();
+    }
 
     if (num_midpoints < 1)
     {
