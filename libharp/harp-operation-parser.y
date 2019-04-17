@@ -223,6 +223,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_AREA_INTERSECTS_AREA
 %token                  FUNC_BIN
 %token                  FUNC_BIN_SPATIAL
+%token                  FUNC_CLAMP
 %token                  FUNC_COLLOCATE_LEFT
 %token                  FUNC_COLLOCATE_RIGHT
 %token                  FUNC_DERIVE
@@ -288,6 +289,7 @@ reserved_identifier:
     | FUNC_AREA_INTERSECTS_AREA { $$ = "area_intersects_area"; }
     | FUNC_BIN { $$ = "bin"; }
     | FUNC_BIN_SPATIAL { $$ = "bin_spatial"; }
+    | FUNC_CLAMP { $$ = "clamp"; }
     | FUNC_COLLOCATE_LEFT { $$ = "collocate_left"; }
     | FUNC_COLLOCATE_RIGHT { $$ = "collocate_right"; }
     | FUNC_DERIVE { $$ = "derive"; }
@@ -912,6 +914,16 @@ operation:
             }
             harp_sized_array_delete(lat_array);
             harp_sized_array_delete(lon_array);
+        }
+    | FUNC_CLAMP '(' DIMENSION ',' identifier UNIT ',' '(' double_value ',' double_value ')' ')' {
+            if (harp_operation_clamp_new($3, $5, $6, $9, $11, &$$) != 0)
+            {
+                free($5);
+                free($6);
+                YYERROR;
+            }
+            free($5);
+            free($6);
         }
     | FUNC_COLLOCATE_LEFT '(' STRING_VALUE ')' {
             if (harp_operation_collocation_filter_new($3, harp_collocation_left, &$$) != 0)

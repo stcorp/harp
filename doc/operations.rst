@@ -149,6 +149,23 @@ Supported functions:
             | ``bin_spatial(7, -90, 30, 3, -180, 180)``
             | (this is the same as ``bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))``)
 
+    ``clamp(dimension, axis-variable unit, (lower_bound, upper_bound))``
+        Reduce the given dimension such that values of the given axis-variable
+        and associated <axis-variable>_bounds fall within the given lower and
+        upper bounds.
+        The operation will use a
+        ``derive(axis-variable {[time,]dimension} unit)`` and
+        ``derive(<axis-variable>_bounds {[time,]dimension} unit)`` to
+        determine the current grid and boundaries. These grid+boundaries
+        are then updated to fall within the given lower and upper limits.
+        The updated grid+boundaries are then used to regrid the product
+        in the given dimension. The values ``+inf`` and ``-inf`` can be
+        used to indicate an unbound edge.
+        Example:
+
+            | ``clamp(vertical, altitude [km], (-inf, 60)``
+            | ``clamp(vertical, pressure [hPa], (+inf, 200)``
+
     ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset A.

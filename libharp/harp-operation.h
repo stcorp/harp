@@ -48,6 +48,7 @@ typedef enum harp_operation_type_enum
     operation_bin_spatial,
     operation_bin_with_variables,
     operation_bit_mask_filter,
+    operation_clamp,
     operation_collocation_filter,
     operation_comparison_filter,
     operation_derive_variable,
@@ -122,6 +123,7 @@ typedef enum harp_membership_operator_type_enum
  *   |-  harp_operation_bin_full
  *   |-  harp_operation_bin_spatial
  *   |-  harp_operation_bin_with_variables
+ *   |-  harp_operation_clamp
  *   |-  harp_operation_derive_variable
  *   |-  harp_operation_derive_smoothed_column_collocated_dataset
  *   |-  harp_operation_derive_smoothed_column_collocated_product
@@ -245,6 +247,16 @@ typedef struct harp_operation_bit_mask_filter_struct
     harp_bit_mask_operator_type operator_type;
     uint32_t bit_mask;
 } harp_operation_bit_mask_filter;
+
+typedef struct harp_operation_clamp_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    harp_dimension_type dimension_type;
+    char *axis_variable_name;
+    char *axis_unit;
+    double bounds[2];
+} harp_operation_clamp;
 
 typedef struct harp_operation_collocation_filter_struct
 {
@@ -546,6 +558,8 @@ int harp_operation_bin_with_variables_new(int num_variables, const char **variab
                                           harp_operation **new_operation);
 int harp_operation_bit_mask_filter_new(const char *variable_name, harp_bit_mask_operator_type operator_type,
                                        uint32_t bit_mask, harp_operation **new_operation);
+int harp_operation_clamp_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
+                             double lower_bound, double upper_bound, harp_operation **new_operation);
 int harp_operation_collocation_filter_new(const char *filename, harp_collocation_filter_type filter_type,
                                           harp_operation **new_operation);
 int harp_operation_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,

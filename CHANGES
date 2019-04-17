@@ -1,4 +1,4 @@
-* Added squash() operation.
+* Added clamp() and squash() operations.
 
 * Allow bin() and sort() operations to be performed using a set of variables.
 

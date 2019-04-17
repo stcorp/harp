@@ -184,6 +184,9 @@ int harp_product_bin_spatial_full(harp_product *product, long num_latitude_edges
                                   long num_longitude_edges, double *longitude_edges);
 int harp_product_bin_with_collocated_dataset(harp_product *product, harp_collocation_result *collocation_result);
 int harp_product_bin_with_variable(harp_product *product, int num_variables, const char **variable_name);
+int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dimension_type,
+                                 const char *grid_variable_name, const char *unit, double lower_bound,
+                                 double upper_bound);
 
 /* Import */
 #ifdef HAVE_HDF4

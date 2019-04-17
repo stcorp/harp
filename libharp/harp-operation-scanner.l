@@ -94,6 +94,7 @@ WHITESPACE   [[:space:]]+
 "area_intersects_area"  return FUNC_AREA_INTERSECTS_AREA;
 "bin"                   return FUNC_BIN;
 "bin_spatial"           return FUNC_BIN_SPATIAL;
+"clamp"                 return FUNC_CLAMP;
 "collocate_left"        return FUNC_COLLOCATE_LEFT;
 "collocate_right"       return FUNC_COLLOCATE_RIGHT;
 "derive"                return FUNC_DERIVE;

@@ -326,6 +326,26 @@ Example:</p>
 </div>
 </div></blockquote>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">clamp(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(lower_bound,</span> <span class="pre">upper_bound))</span></code></dt>
+<dd><p class="first">Reduce the given dimension such that values of the given axis-variable
+and associated &lt;axis-variable&gt;_bounds fall within the given lower and
+upper bounds.
+The operation will use a
+<code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">derive(&lt;axis-variable&gt;_bounds</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to
+determine the current grid and boundaries. These grid+boundaries
+are then updated to fall within the given lower and upper limits.
+The updated grid+boundaries are then used to regrid the product
+in the given dimension. The values <code class="docutils literal notranslate"><span class="pre">+inf</span></code> and <code class="docutils literal notranslate"><span class="pre">-inf</span></code> can be
+used to indicate an unbound edge.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">clamp(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(-inf,</span> <span class="pre">60)</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">clamp(vertical,</span> <span class="pre">pressure</span> <span class="pre">[hPa],</span> <span class="pre">(+inf,</span> <span class="pre">200)</span></code></div>
+</div>
+</div></blockquote>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">collocate_left(collocation-result-file)</span></code></dt>
 <dd>Apply the specified collocation result file as an index
 filter assuming the product is part of dataset A.</dd>

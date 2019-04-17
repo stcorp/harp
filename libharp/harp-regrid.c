@@ -287,6 +287,255 @@ static int get_bounds_for_grid_from_variable(harp_variable *grid, harp_variable 
     return 0;
 }
 
+int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dimension_type,
+                                 const char *grid_variable_name, const char *unit, double lower_bound,
+                                 double upper_bound)
+{
+    harp_variable *target_grid;
+    harp_variable *target_bounds;
+    harp_data_type data_type = harp_type_double;
+    long num_time_elements;
+    long max_local_dim_length = 0;
+    long dim_length;
+    long i, j;
+
+    /* make sure lower_bound is the minimum and upper_bound is the maximum value */
+    if (lower_bound > upper_bound)
+    {
+        double temp = lower_bound;
+
+        lower_bound = upper_bound;
+        upper_bound = temp;
+    }
+
+    if (harp_product_get_derived_variable(product, grid_variable_name, &data_type, unit, 1, &dimension_type,
+                                          &target_grid) != 0)
+    {
+        harp_dimension_type grid_dim_type[2];
+
+        if (dimension_type == harp_dimension_time)
+        {
+            return -1;
+        }
+
+        /* Failed to derive time independent. Try time dependent. */
+        grid_dim_type[0] = harp_dimension_time;
+        grid_dim_type[1] = dimension_type;
+        if (harp_product_get_derived_variable(product, grid_variable_name, &data_type, unit, 2, grid_dim_type,
+                                              &target_grid) != 0)
+        {
+            return -1;
+        }
+    }
+
+    if (harp_product_get_derived_bounds_for_grid(product, target_grid, &target_bounds) != 0)
+    {
+        harp_variable_delete(target_grid);
+        return -1;
+    }
+
+    if (target_grid->num_dimensions == 2)
+    {
+        num_time_elements = target_grid->dimension[0];
+        dim_length = target_grid->dimension[1];
+    }
+    else
+    {
+        num_time_elements = 1;
+        dim_length = target_grid->dimension[0];
+    }
+
+    /* adapt target_grid/target_bounds to match the clamp min/max */
+    for (i = 0; i < num_time_elements; i++)
+    {
+        long offset = i * dim_length;
+        long local_dim_length;
+        long index;
+        int ascend;
+
+        local_dim_length = get_unpadded_length(&target_grid->data.double_data[offset], dim_length);
+        if (local_dim_length == 0)
+        {
+            continue;
+        }
+
+        ascend = (target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1] >=
+                  target_bounds->data.double_data[offset * 2]);
+
+        /* clamp lower boundary */
+        if (harp_isfinite(ascend ? lower_bound : upper_bound))
+        {
+            index = -1;
+            if (ascend)
+            {
+                if (target_bounds->data.double_data[offset * 2] < lower_bound)
+                {
+                    index = 0;
+                    while (index < local_dim_length &&
+                           target_bounds->data.double_data[(offset + index) * 2 + 1] <= lower_bound)
+                    {
+                        index++;
+                    }
+                }
+            }
+            else
+            {
+                if (target_bounds->data.double_data[offset * 2] > upper_bound)
+                {
+                    index = 0;
+                    while (index < local_dim_length &&
+                           target_bounds->data.double_data[(offset + index) * 2 + 1] >= upper_bound)
+                    {
+                        index++;
+                    }
+                }
+            }
+
+            /* index equals -1 if clamp value is before lower bound */
+            /* index equals local_dim_length if clamp value is after upper bound */
+            if (index >= 0)
+            {
+                if (index > 0)
+                {
+                    /* remove lower points */
+                    local_dim_length -= index;
+                    for (j = 0; j < local_dim_length; j++)
+                    {
+                        target_grid->data.double_data[offset + j] = target_grid->data.double_data[offset + j + index];
+                        target_bounds->data.double_data[(offset + j) * 2] =
+                            target_bounds->data.double_data[(offset + j + index) * 2];
+                        target_bounds->data.double_data[(offset + j) * 2 + 1] =
+                            target_bounds->data.double_data[(offset + j + index) * 2 + 1];
+                    }
+                    for (j = local_dim_length; j < dim_length; j++)
+                    {
+                        target_grid->data.double_data[offset + j] = harp_nan();
+                        target_bounds->data.double_data[(offset + j) * 2] = harp_nan();
+                        target_bounds->data.double_data[(offset + j) * 2 + 1] = harp_nan();
+                    }
+                    if (local_dim_length == 0)
+                    {
+                        continue;
+                    }
+                }
+                /* clamp lower bound */
+                target_bounds->data.double_data[offset * 2] = ascend ? lower_bound : upper_bound;
+                /* set lowest axis coordinate value to mid-point of new lower bounds */
+                if (dimension_type == harp_dimension_vertical && strcmp(grid_variable_name, "pressure") == 0)
+                {
+                    target_grid->data.double_data[offset] =
+                        exp((log(target_bounds->data.double_data[offset * 2]) +
+                             log(target_bounds->data.double_data[offset * 2 + 1])) / 2.0);
+                }
+                else
+                {
+                    target_grid->data.double_data[offset] =
+                        (target_bounds->data.double_data[offset * 2] +
+                         target_bounds->data.double_data[offset * 2 + 1]) / 2.0;
+                }
+            }
+        }
+
+        /* clamp upper boundary */
+        if (harp_isfinite(ascend ? upper_bound : lower_bound))
+        {
+            index = local_dim_length;
+            if (ascend)
+            {
+                if (target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1] > upper_bound)
+                {
+                    index = local_dim_length - 1;
+                    while (index >= 0 && target_bounds->data.double_data[(offset + index) * 2] >= upper_bound)
+                    {
+                        index--;
+                    }
+                }
+            }
+            else
+            {
+                if (target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1] < lower_bound)
+                {
+                    index = local_dim_length - 1;
+                    while (index >= 0 && target_bounds->data.double_data[(offset + index) * 2] <= lower_bound)
+                    {
+                        index--;
+                    }
+                }
+            }
+
+            /* index equals local_dim_length if clamp value is after upper bound */
+            /* index equals -1 if clamp value is before lower bound */
+            if (index < local_dim_length)
+            {
+                /* remove upper points */
+                for (j = index + 1; j < local_dim_length; j++)
+                {
+                    target_grid->data.double_data[offset + j] = harp_nan();
+                    target_bounds->data.double_data[(offset + j) * 2] = harp_nan();
+                    target_bounds->data.double_data[(offset + j) * 2 + 1] = harp_nan();
+                }
+                local_dim_length = index + 1;
+                if (local_dim_length == 0)
+                {
+                    continue;
+                }
+                /* clamp upper bound */
+                target_bounds->data.double_data[(offset + index) * 2 + 1] = ascend ? upper_bound : lower_bound;
+                /* set uppermost axis coordinate value to mid-point of new upper bounds */
+                if (dimension_type == harp_dimension_vertical && strcmp(grid_variable_name, "pressure") == 0)
+                {
+                    target_grid->data.double_data[(offset + index)] =
+                        exp((log(target_bounds->data.double_data[(offset + index) * 2]) +
+                             log(target_bounds->data.double_data[(offset + index) * 2 + 1])) / 2.0);
+                }
+                else
+                {
+                    target_grid->data.double_data[(offset + index)] =
+                        (target_bounds->data.double_data[(offset + index) * 2] +
+                         target_bounds->data.double_data[(offset + index) * 2 + 1]) / 2.0;
+                }
+            }
+        }
+
+        if (max_local_dim_length < local_dim_length)
+        {
+            max_local_dim_length = local_dim_length;
+        }
+    }
+
+    if (max_local_dim_length < dim_length)
+    {
+        if (harp_variable_resize_dimension(target_grid, target_grid->num_dimensions - 1, max_local_dim_length) != 0)
+        {
+            harp_variable_delete(target_grid);
+            harp_variable_delete(target_bounds);
+            return -1;
+        }
+        if (harp_variable_resize_dimension(target_bounds, target_bounds->num_dimensions - 2, max_local_dim_length) != 0)
+        {
+            harp_variable_delete(target_grid);
+            harp_variable_delete(target_bounds);
+            return -1;
+        }
+    }
+
+    harp_variable_print(target_bounds, 1, printf);
+    harp_variable_print_data(target_bounds, printf);
+
+    /* regrid product using the clamped axis variables */
+    if (harp_product_regrid_with_axis_variable(product, target_grid, target_bounds) != 0)
+    {
+        harp_variable_delete(target_grid);
+        harp_variable_delete(target_bounds);
+        return -1;
+    }
+
+    harp_variable_delete(target_grid);
+    harp_variable_delete(target_bounds);
+
+    return 0;
+}
+
 /** \addtogroup harp_product
  * @{
  */

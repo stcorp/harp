@@ -662,6 +662,23 @@ static void bit_mask_filter_delete(harp_operation_bit_mask_filter *operation)
     }
 }
 
+static void clamp_delete(harp_operation_clamp *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->axis_variable_name != NULL)
+        {
+            free(operation->axis_variable_name);
+        }
+        if (operation->axis_unit != NULL)
+        {
+            free(operation->axis_unit);
+        }
+
+        free(operation);
+    }
+}
+
 static void collocation_filter_delete(harp_operation_collocation_filter *operation)
 {
     if (operation != NULL)
@@ -1222,6 +1239,9 @@ void harp_operation_delete(harp_operation *operation)
         case operation_bit_mask_filter:
             bit_mask_filter_delete((harp_operation_bit_mask_filter *)operation);
             break;
+        case operation_clamp:
+            clamp_delete((harp_operation_clamp *)operation);
+            break;
         case operation_collocation_filter:
             collocation_filter_delete((harp_operation_collocation_filter *)operation);
             break;
@@ -1740,6 +1760,50 @@ int harp_operation_bit_mask_filter_new(const char *variable_name, harp_bit_mask_
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
                        __LINE__);
         bit_mask_filter_delete(operation);
+        return -1;
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_clamp_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
+                             double lower_bound, double upper_bound, harp_operation **new_operation)
+{
+    harp_operation_clamp *operation;
+
+    assert(axis_variable_name != NULL);
+    assert(axis_unit != NULL);
+
+    operation = (harp_operation_clamp *)malloc(sizeof(harp_operation_clamp));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_clamp), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_clamp;
+    operation->dimension_type = dimension_type;
+    operation->axis_variable_name = NULL;
+    operation->axis_unit = NULL;
+    operation->bounds[0] = lower_bound;
+    operation->bounds[1] = upper_bound;
+
+    operation->axis_variable_name = strdup(axis_variable_name);
+    if (operation->axis_variable_name == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        clamp_delete(operation);
+        return -1;
+    }
+
+    operation->axis_unit = strdup(axis_unit);
+    if (operation->axis_unit == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        clamp_delete(operation);
         return -1;
     }
 

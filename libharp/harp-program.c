@@ -650,6 +650,12 @@ static int execute_bin_with_variables(harp_product *product, harp_operation_bin_
     return harp_product_bin_with_variable(product, operation->num_variables, (const char **)operation->variable_name);
 }
 
+static int execute_clamp(harp_product *product, harp_operation_clamp *operation)
+{
+    return harp_product_clamp_dimension(product, operation->dimension_type, operation->axis_variable_name,
+                                        operation->axis_unit, operation->bounds[0], operation->bounds[1]);
+}
+
 static int execute_derive_variable(harp_product *product, harp_operation_derive_variable *operation)
 {
     if (!operation->has_dimensions)
@@ -1241,6 +1247,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                 break;
             case operation_bin_with_variables:
                 if (execute_bin_with_variables(product, (harp_operation_bin_with_variables *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_clamp:
+                if (execute_clamp(product, (harp_operation_clamp *)operation) != 0)
                 {
                     return -1;
                 }
