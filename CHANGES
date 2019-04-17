@@ -23,6 +23,9 @@
 
 * Added support for scene albedo/pressure/type variables.
 
+* Fixed issue where regridding in the vertical dimension using pressure as axis
+  could end up with wrong pressure_bounds values.
+
 * Fixed problem in matlab mex extension determination on linux when using the
   configure script.
 

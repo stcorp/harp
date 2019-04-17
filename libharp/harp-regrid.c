@@ -967,9 +967,28 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         harp_variable_delete(variable);
         goto error;
     }
-    /* add axis bounds variable if either we derived it or if it was provided explicitly */
-    if (source_bounds != NULL || local_target_bounds != NULL)
+    /* add axis bounds variable if either it was provided explicitly or if we derived it */
+    if (target_bounds != NULL)
     {
+        if (harp_variable_copy(target_bounds, &variable) != 0)
+        {
+            goto error;
+        }
+        if (harp_product_add_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            goto error;
+        }
+    }
+    else if (local_target_bounds != NULL)
+    {
+        if (dimension_type == harp_dimension_vertical && strcmp(local_target_grid->name, "pressure") == 0)
+        {
+            for (i = 0; i < local_target_bounds->num_elements; i++)
+            {
+                local_target_bounds->data.double_data[i] = exp(local_target_bounds->data.double_data[i]);
+            }
+        }
         if (harp_variable_copy(local_target_bounds, &variable) != 0)
         {
             goto error;
