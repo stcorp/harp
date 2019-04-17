@@ -519,9 +519,6 @@ int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dime
         }
     }
 
-    harp_variable_print(target_bounds, 1, printf);
-    harp_variable_print_data(target_bounds, printf);
-
     /* regrid product using the clamped axis variables */
     if (harp_product_regrid_with_axis_variable(product, target_grid, target_bounds) != 0)
     {
