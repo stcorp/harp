@@ -1641,7 +1641,7 @@ static int get_optional_variable_availability(ingest_info *info)
         }
         else
         {
-            info->has_aod = (coda_cursor_goto(&cursor, "/AEROSOL_OPTICAL_DEPTH_STRATOSPHERIC_SCATTER_SOLAR_OFFAXIS") ==
+            info->has_aod = (coda_cursor_goto(&cursor, "/AEROSOL_OPTICAL_DEPTH_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS") ==
                              0);
         }
     }
