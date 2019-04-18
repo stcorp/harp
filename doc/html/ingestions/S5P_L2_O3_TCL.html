@@ -264,19 +264,13 @@
 <td>[m]</td>
 <td>averaged surface height above mean sea level</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_top_pressure_min</strong></td>
+<tr class="row-even"><td><strong>pressure_bounds</strong></td>
 <td>float</td>
-<td>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</td>
+<td>{<em>time</em>, <em>latitude</em>, <em>longitude</em>, 2}</td>
 <td>[Pa]</td>
-<td>minimum cloud top pressure</td>
+<td>pressure range of the retrieved ozone</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_top_pressure_max</strong></td>
-<td>float</td>
-<td>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</td>
-<td>[Pa]</td>
-<td>maximum cloud top pressure</td>
-</tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -313,9 +307,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="36%" />
-<col width="7%" />
-<col width="57%" />
+<col width="32%" />
+<col width="6%" />
+<col width="62%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -507,7 +501,7 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_altitude[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>cloud_top_pressure_min</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>pressure_bounds</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -515,17 +509,7 @@
 <td>o3=csa</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>cloud_top_pressure_max</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>o3=csa</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[]</strong></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]</strong></td>
 </tr>
 </tbody>
 </table>

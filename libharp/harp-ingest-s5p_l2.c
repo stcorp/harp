@@ -2954,20 +2954,28 @@ static int read_o3_pressure_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_o3_tcl_cloud_top_pressure_min(void *user_data, harp_array data)
+static int read_o3_tcl_pressure_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    harp_array buffer;
+    long dimension[2];
 
-    return read_dataset(info->detailed_results_cursor, "cloud_top_pressure_min", harp_type_float,
-                        info->num_latitudes * info->num_longitudes, data);
-}
+    if (read_dataset(info->detailed_results_cursor, "cloud_top_pressure_max", harp_type_float,
+                     info->num_latitudes * info->num_longitudes, data) != 0)
+    {
+        return -1;
+    }
+    buffer.float_data = &data.float_data[info->num_latitudes * info->num_longitudes];
+    if (read_dataset(info->detailed_results_cursor, "cloud_top_pressure_min", harp_type_float,
+                     info->num_latitudes * info->num_longitudes, buffer) != 0)
+    {
+        return -1;
+    }
 
-static int read_o3_tcl_cloud_top_pressure_max(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "cloud_top_pressure_max", harp_type_float,
-                        info->num_latitudes * info->num_longitudes, data);
+    /* change {2,latxlon} dimension ordering to {latxlon,2} */
+    dimension[0] = 2;
+    dimension[1] = info->num_latitudes * info->num_longitudes;
+    return harp_array_transpose(harp_type_float, 2, dimension, NULL, data);
 }
 
 static int read_o3_tcl_time_value(void *user_data, const char *path, harp_array data)
@@ -5447,7 +5455,9 @@ static void register_o3_tcl_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
+    harp_dimension_type dimension_type[4] =
+        { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_independent };
+    long pressure_bounds_dimension[4] = { -1, -1, -1, 2 };
 
     module = harp_ingestion_register_module_coda("S5P_L2_O3_TCL", "Sentinel-5P", "Sentinel5P", "L2__O3_TCL",
                                                  "Sentinel-5P L2 O3 tropospheric column", ingestion_init,
@@ -5635,23 +5645,16 @@ static void register_o3_tcl_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
-    /* cloud_top_pressure_min */
-    description = "minimum cloud top pressure";
+    /* pressure_bounds */
+    description = "pressure range of the retrieved ozone";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_min", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "Pa", include_o3_tcl_csa,
-                                                   read_o3_tcl_cloud_top_pressure_min);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]";
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 4,
+                                                   dimension_type, pressure_bounds_dimension, description, "Pa",
+                                                   include_o3_tcl_csa, read_o3_tcl_pressure_bounds);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=csa", NULL, path, NULL);
 
-    /* cloud_top_pressure_max */
-    description = "maximum cloud top pressure";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_max", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "Pa", include_o3_tcl_csa,
-                                                   read_o3_tcl_cloud_top_pressure_max);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3=csa", NULL, path, NULL);
 }
 
 static void register_o3_tpr_product(void)
