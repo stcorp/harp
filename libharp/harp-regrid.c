@@ -368,11 +368,13 @@ int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dime
             index = -1;
             if (ascend)
             {
-                if (target_bounds->data.double_data[offset * 2] < lower_bound)
+                if (target_bounds->data.double_data[offset * 2] < lower_bound ||
+                    harp_isnan(target_bounds->data.double_data[offset * 2]))
                 {
                     index = 0;
                     while (index < local_dim_length &&
-                           target_bounds->data.double_data[(offset + index) * 2 + 1] <= lower_bound)
+                           (target_bounds->data.double_data[(offset + index) * 2 + 1] <= lower_bound ||
+                            harp_isnan(target_bounds->data.double_data[(offset + index) * 2 + 1])))
                     {
                         index++;
                     }
@@ -380,11 +382,13 @@ int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dime
             }
             else
             {
-                if (target_bounds->data.double_data[offset * 2] > upper_bound)
+                if (target_bounds->data.double_data[offset * 2] > upper_bound ||
+                    harp_isnan(target_bounds->data.double_data[offset * 2]))
                 {
                     index = 0;
                     while (index < local_dim_length &&
-                           target_bounds->data.double_data[(offset + index) * 2 + 1] >= upper_bound)
+                           (target_bounds->data.double_data[(offset + index) * 2 + 1] >= upper_bound ||
+                            harp_isnan(target_bounds->data.double_data[(offset + index) * 2 + 1])))
                     {
                         index++;
                     }
@@ -442,10 +446,13 @@ int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dime
             index = local_dim_length;
             if (ascend)
             {
-                if (target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1] > upper_bound)
+                if (target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1] > upper_bound ||
+                    harp_isnan(target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1]))
                 {
                     index = local_dim_length - 1;
-                    while (index >= 0 && target_bounds->data.double_data[(offset + index) * 2] >= upper_bound)
+                    while (index >= 0 &&
+                           (target_bounds->data.double_data[(offset + index) * 2] >= upper_bound ||
+                            harp_isnan(target_bounds->data.double_data[(offset + index) * 2])))
                     {
                         index--;
                     }
@@ -453,10 +460,13 @@ int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dime
             }
             else
             {
-                if (target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1] < lower_bound)
+                if (target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1] < lower_bound ||
+                    harp_isnan(target_bounds->data.double_data[(offset + local_dim_length) * 2 - 1]))
                 {
                     index = local_dim_length - 1;
-                    while (index >= 0 && target_bounds->data.double_data[(offset + index) * 2] <= lower_bound)
+                    while (index >= 0 &&
+                           (target_bounds->data.double_data[(offset + index) * 2] <= lower_bound ||
+                            harp_isnan(target_bounds->data.double_data[(offset + index) * 2])))
                     {
                         index--;
                     }
