@@ -46,7 +46,7 @@ typedef struct conversion_info_struct
     const char *variable_name;
     int num_dimensions;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    uint8_t *skip;  /* 1: variable cannot be created at all; 2: variable cannot be used because of cyclic dependency */
+    uint8_t *skip;      /* 1: variable cannot be created; 2: variable cannot be used because of cyclic dependency */
     int depth;
     int max_depth;
     harp_variable *variable;
