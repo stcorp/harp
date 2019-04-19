@@ -46,7 +46,7 @@ typedef struct conversion_info_struct
     const char *variable_name;
     int num_dimensions;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
-    uint8_t *skip;
+    uint8_t *skip;  /* 1: variable cannot be created at all; 2: variable cannot be used because of cyclic dependency */
     int depth;
     int max_depth;
     harp_variable *variable;
@@ -393,10 +393,12 @@ static void print_source_variable(const harp_source_variable_definition *source_
                                   int (*print) (const char *, ...), int indent);
 
 /* return: 0: possible, 1: not possible (no cycle), 2: not possible (cycle) */
-static int find_source_variables(conversion_info *info, harp_source_variable_definition *source_definition)
+static int find_source_variables(conversion_info *info, harp_source_variable_definition *source_definition,
+                                 double *best_cost)
 {
     harp_variable *variable;
     harp_variable_conversion_list *conversion_list;
+    harp_variable_conversion *best_conversion = NULL;
     int has_cycle = 0;
     int index;
     int i;
@@ -407,6 +409,7 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
                                 source_definition->independent_dimension_length))
         {
             /* variable is present in the product */
+            *best_cost = 0;
             return 0;
         }
     }
@@ -428,7 +431,7 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
     }
     if (info->skip[index])
     {
-        has_cycle = info->skip[index] == 1;
+        has_cycle = info->skip[index] == 2;
         return 1 + has_cycle;
     }
 
@@ -436,6 +439,7 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
     for (i = 0; i < conversion_list->num_conversions; i++)
     {
         harp_variable_conversion *conversion = conversion_list->conversion[i];
+        double total_cost = 1;
         int j;
 
         if (conversion->enabled != NULL && !conversion->enabled())
@@ -456,15 +460,16 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
             continue;
         }
 
-        info->skip[index] = 1;
+        info->skip[index] = 2;
         info->depth++;
 
         for (j = 0; j < conversion->num_source_variables; j++)
         {
+            double cost;
             int result;
 
             /* recursively find the source variables for creating this variable */
-            result = find_source_variables(info, &conversion->source_definition[j]);
+            result = find_source_variables(info, &conversion->source_definition[j], &cost);
             if (result != 0)
             {
                 /* source not found */
@@ -474,6 +479,7 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
                 }
                 break;
             }
+            total_cost += cost;
         }
 
         info->depth--;
@@ -482,13 +488,22 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
         if (j == conversion->num_source_variables)
         {
             /* the conversion is possible */
-            return 0;
+            if (best_conversion == NULL || total_cost < *best_cost)
+            {
+                best_conversion = conversion;
+                *best_cost = total_cost;
+            }
         }
+    }
+
+    if (best_conversion != NULL)
+    {
+        return 0;
     }
 
     if (!has_cycle)
     {
-        info->skip[index] = 2;
+        info->skip[index] = 1;
     }
 
     /* no conversion found */
@@ -504,11 +519,14 @@ static int find_and_execute_conversion(conversion_info *info)
     {
         harp_variable_conversion_list *conversion_list =
             harp_derived_variable_conversions->conversions_for_variable[index];
+        harp_variable_conversion *best_conversion = NULL;
+        double best_cost;
         int i;
 
         for (i = 0; i < conversion_list->num_conversions; i++)
         {
             harp_variable_conversion *conversion = conversion_list->conversion[i];
+            double total_cost = 0;
             int j;
 
             if (conversion->enabled != NULL && !conversion->enabled())
@@ -520,49 +538,44 @@ static int find_and_execute_conversion(conversion_info *info)
                 continue;
             }
 
-            /* check if conversion has the right dimensions */
-            if (conversion->num_dimensions != info->num_dimensions)
-            {
-                continue;
-            }
-            for (j = 0; j < conversion->num_dimensions; j++)
-            {
-                if (conversion->dimension_type[j] != info->dimension_type[j])
-                {
-                    break;
-                }
-            }
-            if (j < conversion->num_dimensions)
-            {
-                continue;
-            }
-
-            info->skip[index] = 1;
+            info->skip[index] = 2;
 
             for (j = 0; j < conversion->num_source_variables; j++)
             {
                 int result;
+                double cost;
 
-                result = find_source_variables(info, &conversion->source_definition[j]);
+                result = find_source_variables(info, &conversion->source_definition[j], &cost);
                 if (result != 0)
                 {
                     /* source not found */
                     break;
                 }
+                total_cost += cost;
             }
 
             if (j == conversion->num_source_variables)
             {
-                int result;
-
                 /* conversion should be possible */
-                info->conversion = conversion;
-                result = perform_conversion(info);
-                info->skip[index] = 0;
-                return result;
+                if (best_conversion == NULL || total_cost < best_cost)
+                {
+                    best_conversion = conversion;
+                    best_cost = total_cost;
+                }
             }
 
             info->skip[index] = 0;
+        }
+
+        if (best_conversion != NULL)
+        {
+            int result;
+
+            info->conversion = best_conversion;
+            info->skip[index] = 2;
+            result = perform_conversion(info);
+            info->skip[index] = 0;
+            return result;
         }
     }
 
@@ -581,11 +594,14 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
     {
         harp_variable_conversion_list *conversion_list =
             harp_derived_variable_conversions->conversions_for_variable[index];
+        harp_variable_conversion *best_conversion = NULL;
+        double best_cost;
         int i;
 
         for (i = 0; i < conversion_list->num_conversions; i++)
         {
             harp_variable_conversion *conversion = conversion_list->conversion[i];
+            double total_cost = 0;
             int j;
 
             if (conversion->enabled != NULL && !conversion->enabled())
@@ -597,30 +613,42 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
                 continue;
             }
 
-            info->skip[index] = 1;
+            info->skip[index] = 2;
 
             for (j = 0; j < conversion->num_source_variables; j++)
             {
                 int result;
+                double cost;
 
-                result = find_source_variables(info, &conversion->source_definition[j]);
+                result = find_source_variables(info, &conversion->source_definition[j], &cost);
                 if (result != 0)
                 {
                     /* source not found */
                     break;
                 }
+                total_cost += cost;
             }
 
             if (j == conversion->num_source_variables)
             {
                 /* all source variables were found, conversion should be possible */
-                info->conversion = conversion;
-                print_conversion(info, print);
-                info->skip[index] = 0;
-                return 0;
+                if (best_conversion == NULL || total_cost < best_cost)
+                {
+                    best_conversion = conversion;
+                    best_cost = total_cost;
+                }
             }
 
             info->skip[index] = 0;
+        }
+
+        if (best_conversion != NULL)
+        {
+            info->conversion = best_conversion;
+            info->skip[index] = 2;
+            print_conversion(info, print);
+            info->skip[index] = 0;
+            return 0;
         }
     }
 
@@ -1044,9 +1072,15 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const cha
     for (i = 0; i < harp_derived_variable_conversions->num_variables; i++)
     {
         harp_variable_conversion_list *conversion_list = harp_derived_variable_conversions->conversions_for_variable[i];
-        int is_possible = 0;
+        harp_variable_conversion *best_conversion = NULL;
+        double best_cost;
 
         assert(conversion_list->num_conversions > 0);
+
+        if (variable_name != NULL && strcmp(conversion_list->conversion[0]->variable_name, variable_name) != 0)
+        {
+            continue;
+        }
 
         /* initialize based on first conversion in the list */
         if (conversion_info_set_variable(&info, conversion_list->conversion[0]->variable_name,
@@ -1062,13 +1096,8 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const cha
         {
             harp_variable_conversion *conversion = conversion_list->conversion[j];
             harp_variable *variable;
+            double total_cost = 0;
             int k;
-
-            if (variable_name != NULL && strcmp(conversion->variable_name, variable_name) != 0)
-            {
-                info.skip[i] = 0;
-                continue;
-            }
 
             if (conversion->enabled != NULL && !conversion->enabled())
             {
@@ -1086,34 +1115,42 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const cha
 
             for (k = 0; k < conversion->num_source_variables; k++)
             {
+                double cost;
                 int result;
 
-                result = find_source_variables(&info, &conversion->source_definition[k]);
+                result = find_source_variables(&info, &conversion->source_definition[k], &cost);
                 if (result != 0)
                 {
                     /* source not found */
                     break;
                 }
+                total_cost += cost;
             }
 
             if (k == conversion->num_source_variables)
             {
                 /* all sources are found, conversion should be possible */
-                info.conversion = conversion;
-                print_conversion_variable(conversion, print);
-                info.depth++;
-                print_conversion(&info, print);
-                info.depth--;
-                print("\n");
-                /* don't show any remaining results */
-                is_possible = 1;
-                break;
+                if (best_conversion == NULL || total_cost < best_cost)
+                {
+                    best_conversion = conversion;
+                    best_cost = total_cost;
+                }
             }
         }
 
-        if (is_possible)
+        if (best_conversion != NULL)
         {
+            info.conversion = best_conversion;
+            print_conversion_variable(best_conversion, print);
+            info.depth++;
+            print_conversion(&info, print);
+            info.depth--;
+            print("\n");
             info.skip[i] = 0;
+        }
+        else
+        {
+            info.skip[i] = 1;
         }
     }
 
