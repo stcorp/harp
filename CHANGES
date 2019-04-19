@@ -21,6 +21,9 @@
 
 * Corrected derivation for calculating tropopause altitude/pressure.
 
+* Deriving a variable will now use the conversion that requires the minimum
+  amount of intermediate variables to be calculated.
+
 * Added support for scene albedo/pressure/type variables.
 
 * Fixed issue where regridding in the vertical dimension using pressure as axis
