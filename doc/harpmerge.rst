@@ -10,6 +10,11 @@ the time dimension and storing the result into a single output file.
       harpmerge [options] <file|dir> [<file|dir> ...] <output product file>
           Concatenate all products as specified by the file and directory paths
           into a single product.
+          If a directory is specified then all files (recursively) from that
+          directory are included.
+          If a file is a .pth file then the file paths from that text file
+          (one per line) are included. These file paths can be absolute or
+          relative and can point to files, directories, or other .pth files.
 
           Options:
               -a, --operations <operation list>

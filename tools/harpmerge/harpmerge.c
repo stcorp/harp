@@ -62,6 +62,11 @@ static void print_help()
     printf("    harpmerge [options] <file|dir> [<file|dir> ...] <output product file>\n");
     printf("        Concatenate all products as specified by the file and directory paths\n");
     printf("        into a single product.\n");
+    printf("        If a directory is specified then all files (recursively) from that\n");
+    printf("        directory are included.\n");
+    printf("        If a file is a .pth file then the file paths from that text file\n");
+    printf("        (one per line) are included. These file paths can be absolute or\n");
+    printf("        relative and can point to files, directories, or other .pth files.\n");
     printf("\n");
     printf("        Options:\n");
     printf("            -a, --operations <operation list>\n");

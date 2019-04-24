@@ -10,8 +10,13 @@ HARP compliant netCDF files.
       harpcollocate [options] <path-a> <path-b> <outputpath>
           Find matching sample pairs between two datasets of HARP files.
           The path for a dataset can be either a single file or a directory
-          containing files. The result will be write as a comma separate value
-          (csv) file to the provided output path
+          containing files. The result will be written as a comma separate
+          value (csv) file to the provided output path
+          If a directory is specified then all files (recursively) from that
+          directory are used for a dataset.
+          If a file is a .pth file then the file paths from that text file
+          (one per line) are used. These file paths can be absolute or
+          relative and can point to files, directories, or other .pth files.
 
           Options:
               -d '<diffvariable> <value> [unit]'

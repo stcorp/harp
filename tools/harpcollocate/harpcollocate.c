@@ -68,6 +68,11 @@ static void print_help(void)
     printf("        The path for a dataset can be either a single file or a directory\n");
     printf("        containing files. The result will be write as a comma separate value\n");
     printf("        (csv) file to the provided output path\n");
+    printf("        If a directory is specified then all files (recursively) from that\n");
+    printf("        directory are used for a dataset.\n");
+    printf("        If a file is a .pth file then the file paths from that text file\n");
+    printf("        (one per line) are used. These file paths can be absolute or\n");
+    printf("        relative and can point to files, directories, or other .pth files.\n");
     printf("\n");
     printf("        Options:\n");
     printf("            -d '<diffvariable> <value> [unit]'\n");
