@@ -3119,9 +3119,21 @@ static int read_o3_tcl_ozone_tropospheric_mixing_ratio_precision(void *user_data
 static int read_o3_tcl_ozone_tropospheric_mixing_ratio_flag(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    int result;
 
-    return read_dataset(info->product_cursor, "ozone_upper_tropospheric_mixing_ratio_flag", harp_type_int32,
-                        info->num_latitudes * info->num_longitudes, data);
+    if (info->use_o3_tcl_csa)
+    {
+        return read_dataset(info->product_cursor, "ozone_upper_tropospheric_mixing_ratio_flag", harp_type_int32,
+                            info->num_latitudes * info->num_longitudes, data);
+    }
+
+    /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
+    coda_set_option_perform_conversions(0);
+    result = read_dataset(info->product_cursor, "qa_value", harp_type_int32, info->num_latitudes * info->num_longitudes,
+                          data);
+    coda_set_option_perform_conversions(1);
+
+    return result;
 }
 
 static int read_o3_tcl_ozone_tropospheric_vertical_column(void *user_data, harp_array data)
@@ -3901,6 +3913,12 @@ static int include_o3_tcl_csa(void *user_data)
 static int include_o3_tcl_ccd(void *user_data)
 {
     return !((ingest_info *)user_data)->use_o3_tcl_csa;
+}
+
+static int include_o3_tcl_qa_value(void *user_data)
+{
+    /* the qa_value for CCD is only available since processor version 1.0.0 */
+    return ((ingest_info *)user_data)->use_o3_tcl_csa || ((ingest_info *)user_data)->processor_version >= 10000;
 }
 
 static int include_so2_apriori_profile(void *user_data)
@@ -5551,8 +5569,11 @@ static void register_o3_tcl_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_O3_column_volume_mixing_ratio_dry_air_validity",
                                                    harp_type_int32, 3, dimension_type, NULL, description, NULL,
-                                                   include_o3_tcl_csa,
+                                                   include_o3_tcl_qa_value,
                                                    read_o3_tcl_ozone_tropospheric_mixing_ratio_flag);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", "processor version >= 01.00.00",
+                                         path, NULL);
     path = "/PRODUCT/ozone_upper_tropospheric_mixing_ratio_flag[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=csa", NULL, path, NULL);
 
