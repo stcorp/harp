@@ -91,6 +91,7 @@ typedef struct collocation_info_struct
     /* state */
     long *sorted_index_a;       /* indices of products sorted by datetime_start/datetime_stop */
     long *sorted_index_b;
+    long product_a_index;
     harp_product *product_a;    /* we only have one product of dataset A loaded at any moment */
     harp_product **product_b;   /* for dataset B we may have multiple products loaded */
     harp_dataset *dataset_a;
@@ -367,6 +368,7 @@ static int collocation_info_new(collocation_info **new_info)
     info->collocation_result = NULL;
     info->sorted_index_a = NULL;
     info->sorted_index_b = NULL;
+    info->product_a_index = -1;
     info->product_a = NULL;
     info->product_b = NULL;
     info->dataset_a = NULL;
@@ -1025,6 +1027,11 @@ static int perform_matchup_on_products(collocation_info *info, long product_b_in
         {
             if (perform_matchup_on_measurements(info, i, product_b_index, j) != 0)
             {
+                harp_add_error_message(" (comparing %s [index=%ld] against %s [index=%ld])",
+                                       info->dataset_a->metadata[info->product_a_index]->filename,
+                                       info->variables_a.index->data.int32_data[i],
+                                       info->dataset_b->metadata[product_b_index]->filename,
+                                       info->variables_b.index->data.int32_data[j]);
                 return -1;
             }
         }
@@ -1347,6 +1354,7 @@ static int perform_matchup(collocation_info *info)
         double datetime_stop_a = info->dataset_a->metadata[index_a]->datetime_stop;
 
         /* import product of dataset A */
+        info->product_a_index = index_a;
         if (harp_import(info->dataset_a->metadata[index_a]->filename, info->operations_a, info->ingest_options_a,
                         &info->product_a) != 0)
         {
