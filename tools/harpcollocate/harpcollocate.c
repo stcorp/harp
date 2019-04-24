@@ -66,8 +66,8 @@ static void print_help(void)
     printf("    harpcollocate [options] <path-a> <path-b> <outputpath>\n");
     printf("        Find matching sample pairs between two datasets of HARP files.\n");
     printf("        The path for a dataset can be either a single file or a directory\n");
-    printf("        containing files. The result will be write as a comma separate value\n");
-    printf("        (csv) file to the provided output path\n");
+    printf("        containing files. The results will be written as a comma separated\n");
+    printf("        value (csv) file to the provided output path.\n");
     printf("        If a directory is specified then all files (recursively) from that\n");
     printf("        directory are used for a dataset.\n");
     printf("        If a file is a .pth file then the file paths from that text file\n");
