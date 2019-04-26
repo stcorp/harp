@@ -2196,7 +2196,7 @@ static int include_add_diag(void *user_data)
     return ((ingest_info *)user_data)->has_extended_diag;
 }
 
-static void register_common_nadir_cloud_variables(harp_product_definition *product_definition, const char *dataset)
+static void register_common_nadir_variables(harp_product_definition *product_definition, const char *dataset)
 {
     const char *scan_direction_type_values[] = { "forward", "backward", "mixed" };
     const char *condition_no_coadding = "No co-adding needed";
@@ -2367,6 +2367,16 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
         "outproduct of the unit vector of the first corner and the unit vector of the second corner is negative "
         "(otherwise it is part of a forward (0) scan)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+}
+
+static void register_common_nadir_cloud_variables(harp_product_definition *product_definition)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1];
+    const char *description;
+    const char *path;
+
+    dimension_type[0] = harp_dimension_time;
 
     /* cloud_fraction */
     description = "average cloud fraction of footprint";
@@ -2374,7 +2384,7 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                       harp_type_double, 1, dimension_type, NULL,
                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                       read_cloud_fraction);
-    snprintf(path, MAX_PATH_LENGTH, "/clouds_aerosol[]/cl_frac");
+    path = "/clouds_aerosol[]/cl_frac";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -2549,7 +2559,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv0_o3 or dataset unset");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv0_o3");
+    register_common_nadir_variables(product_definition, "nad_uv0_o3");
 
     /* O3_column_number_density */
     description = "ozone vertical column density";
@@ -2577,13 +2587,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv0_o3[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_uv1_no2 ***/
     description = "total column data retrieved from UV window 1 (NO2)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV1_NO2", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv1_no2");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv1_no2");
+    register_common_nadir_variables(product_definition, "nad_uv1_no2");
 
     /* NO2_column_number_density */
     description = "NO2 vertical column density";
@@ -2611,13 +2623,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv1_no2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_uv3_bro ***/
     description = "total column data retrieved from UV window 3 (BrO)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV3_BRO", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv3_bro");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv3_bro");
+    register_common_nadir_variables(product_definition, "nad_uv3_bro");
 
     /* BrO_column_number_density */
     description = "BrO vertical column density";
@@ -2645,13 +2659,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv3_bro[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_uv4_h2co ***/
     description = "total column data retrieved from UV window 4 (H2CO)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV4_H2CO", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv4_h2co");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv4_h2co");
+    register_common_nadir_variables(product_definition, "nad_uv4_h2co");
 
     /* HCHO_column_number_density */
     description = "HCHO vertical column density";
@@ -2679,13 +2695,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv4_h2co[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_uv5_so2 ***/
     description = "total column data retrieved from UV window 5 (SO2)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV5_SO2", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv5_so2");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv5_so2");
+    register_common_nadir_variables(product_definition, "nad_uv5_so2");
 
     /* SO2_column_number_density */
     description = "SO2 vertical column density";
@@ -2713,13 +2731,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv5_so2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_uv6_oclo ***/
     description = "total column data retrieved from UV window 6 (OClO)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV6_OCLO", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv6_oclo");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv6_oclo");
+    register_common_nadir_variables(product_definition, "nad_uv6_oclo");
 
     /* OClO_column_number_density */
     description = "OClO vertical column density";
@@ -2747,20 +2767,22 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv6_oclo[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_uv7_so2 ***/
     description = "total column data retrieved from UV window 7 (SO2)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV7_SO2", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv7_so2");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv7_so2");
+    register_common_nadir_variables(product_definition, "nad_uv7_so2");
 
     /* SO2_column_number_density */
     description = "SO2 vertical column density";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SO2_column_number_density",
                                                                       harp_type_double, 1, dimension_type, NULL,
                                                                       description, "molec/cm^2", NULL, read_vcd);
-    path = "/nad_uv5_so2[]/vcd[0]";
+    path = "/nad_uv7_so2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* SO2_column_number_density_uncertainty */
@@ -2769,7 +2791,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "SO2_column_number_density_uncertainty",
                                                                       harp_type_double, 1, dimension_type, NULL,
                                                                       description, "molec/cm^2", NULL, read_vcd_error);
-    path = "/nad_uv5_so2[]/vcd_err[0], /nad_uv5_so2[]/vcd[0]";
+    path = "/nad_uv7_so2[]/vcd_err[0], /nad_uv7_so2[]/vcd[0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, error_mapping);
 
     /* SO2_column_number_density_validity */
@@ -2778,8 +2800,10 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       "SO2_column_number_density_validity",
                                                                       harp_type_int32, 1, dimension_type, NULL,
                                                                       description, NULL, NULL, read_vcd_flag);
-    path = "/nad_uv5_so2[]/flag_vcd_flags";
+    path = "/nad_uv7_so2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_common_nadir_cloud_variables(product_definition);
 
     /*** nad_uv8_h2o ***/
     description = "total column data retrieved from UV window 8 (H2O)";
@@ -2787,7 +2811,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv8_h2o");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv8_h2o");
+    register_common_nadir_variables(product_definition, "nad_uv8_h2o");
 
     /* H2O_column_number_density */
     description = "H2O vertical column density";
@@ -2815,13 +2839,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv8_h2o[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_uv9_chocho ***/
     description = "total column data retrieved from UV window 9 (CHOCHO)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_UV9_CHOCHO", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_uv9_chocho");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_uv9_chocho");
+    register_common_nadir_variables(product_definition, "nad_uv9_chocho");
 
     /* C2H2O2_column_number_density */
     description = "C2H2O2 vertical column density";
@@ -2850,13 +2876,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_uv9_chocho[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_ir0_h2o ***/
     description = "total column data retrieved from IR window 0 (H2O)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_IR0_H2O", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_ir0_h2o");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_ir0_h2o");
+    register_common_nadir_variables(product_definition, "nad_ir0_h2o");
 
     /* H2O_column_number_density */
     description = "H2O vertical column density";
@@ -2884,13 +2912,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_ir0_h2o[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_ir1_ch4 ***/
     description = "total column data retrieved from IR window 1 (CH4)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_IR1_CH4", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_ir1_ch4");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_ir1_ch4");
+    register_common_nadir_variables(product_definition, "nad_ir1_ch4");
 
     /* CH4_column_number_density */
     description = "CH4 vertical column density";
@@ -2918,13 +2948,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_ir1_ch4[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_ir2_n2o ***/
     description = "total column data retrieved from IR window 2 (N2O)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_IR2_N2O", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_ir2_n2o");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_ir2_n2o");
+    register_common_nadir_variables(product_definition, "nad_ir2_n2o");
 
     /* N2O_column_number_density */
     description = "N2O vertical column density";
@@ -2952,13 +2984,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_ir2_n2o[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_ir3_co ***/
     description = "total column data retrieved from IR window 3 (CO)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_IR3_CO", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_ir3_co");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_ir3_co");
+    register_common_nadir_variables(product_definition, "nad_ir3_co");
 
     /* CO_column_number_density */
     description = "CO vertical column density";
@@ -2986,13 +3020,15 @@ int harp_ingestion_module_sciamachy_l2_init(void)
     path = "/nad_ir3_co[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    register_common_nadir_cloud_variables(product_definition);
+
     /*** nad_ir4_co2 ***/
     description = "total column data retrieved from IR window 4 (CO2)";
     product_definition = harp_ingestion_register_product(module, "SCIAMACHY_L2_NADIR_IR4_CO2", description,
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=nad_ir4_co2");
 
-    register_common_nadir_cloud_variables(product_definition, "nad_ir4_co2");
+    register_common_nadir_variables(product_definition, "nad_ir4_co2");
 
     /* CO2_column_number_density */
     description = "CO2 vertical column density";
@@ -3019,6 +3055,8 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                                       description, NULL, NULL, read_vcd_flag);
     path = "/nad_ir4_co2[]/flag_vcd_flags";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_common_nadir_cloud_variables(product_definition);
 
     /*** lim_uv0_o3 ***/
     description = "limb profile data retrieved from UV window 0 (O3)";
@@ -3242,7 +3280,9 @@ int harp_ingestion_module_sciamachy_l2_init(void)
                                                          read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "dataset=clouds_aerosol");
 
-    register_common_nadir_cloud_variables(product_definition, "clouds_aerosol");
+    register_common_nadir_variables(product_definition, "clouds_aerosol");
+
+    register_common_nadir_cloud_variables(product_definition);
 
     /* cloud_top_pressure */
     description = "cloud top pressure";

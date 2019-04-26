@@ -234,29 +234,29 @@
 <td>&#160;</td>
 <td>scan direction for each measurement; enumeration values: forward (0), backward (1), mixed (2)</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[]</td>
-<td>average cloud fraction of footprint</td>
-</tr>
-<tr class="row-even"><td><strong>BrO_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>BrO_column_number_density</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[molec/cm^2]</td>
 <td>BrO vertical column density</td>
 </tr>
-<tr class="row-odd"><td><strong>BrO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><strong>BrO_column_number_density_uncertainty</strong></td>
 <td>double</td>
 <td>{<em>time</em>}</td>
 <td>[molec/cm^2]</td>
 <td>error on the BrO vertical column density</td>
 </tr>
-<tr class="row-even"><td><strong>BrO_column_number_density_validity</strong></td>
+<tr class="row-odd"><td><strong>BrO_column_number_density_validity</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>flag describing the BrO vertical column density</td>
+</tr>
+<tr class="row-even"><td><strong>cloud_fraction</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[]</td>
+<td>average cloud fraction of footprint</td>
 </tr>
 <tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
@@ -512,24 +512,24 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>When the integration time is higher than 1s we are dealing with a mixed (2) pixel, otherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward (0) scan)</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
-<td><em>path</em></td>
-<td><strong>/clouds_aerosol[]/cl_frac</strong></td>
-</tr>
-<tr class="row-even"><td><strong>BrO_column_number_density</strong></td>
+<tr class="row-odd"><td><strong>BrO_column_number_density</strong></td>
 <td><em>path</em></td>
 <td><strong>/nad_uv3_bro[]/vcd[0]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>BrO_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>BrO_column_number_density_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/nad_uv3_bro[]/vcd_err[0], /nad_uv3_bro[]/vcd[0]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>relative error is converted to absolute error by multiplying with measured value</td>
 </tr>
-<tr class="row-odd"><td><strong>BrO_column_number_density_validity</strong></td>
+<tr class="row-even"><td><strong>BrO_column_number_density_validity</strong></td>
 <td><em>path</em></td>
 <td><strong>/nad_uv3_bro[]/flag_vcd_flags</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
+<td><em>path</em></td>
+<td><strong>/clouds_aerosol[]/cl_frac</strong></td>
 </tr>
 </tbody>
 </table>
