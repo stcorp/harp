@@ -1,3 +1,6 @@
+1.6 2019-04-29
+~~~~~~~~~~~~~~
+
 * Added clamp() and squash() operations.
 
 * Allow bin() and sort() operations to be performed using a set of variables.
