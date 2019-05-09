@@ -1293,6 +1293,14 @@ static int read_input_cloud_base_pressure_precision(void *user_data, harp_array 
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_fraction", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_cloud_fraction_viirs_swir(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2662,6 +2670,14 @@ static int read_results_sulfurdioxide_slant_column_corrected(void *user_data, ha
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "sulfurdioxide_slant_column_corrected", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -4441,6 +4457,33 @@ static void register_aer_lh_product(void)
                                                    read_results_aerosol_optical_thickness_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   include_from_010300, read_results_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.03.00", path, NULL);
+
+    /* cloud_fraction */
+    description = "cloud fraction from the cloud product";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   include_from_010300, read_input_cloud_fraction);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.03.00", path, NULL);
+
+    /* absorbing_aerosol_index */
+    description = "aerosol index";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index_354_388);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388", NULL);
 
     register_snow_ice_flag_variables(product_definition, 0);
 }
