@@ -790,6 +790,16 @@ static int collocation_info_update(collocation_info *info)
     return 0;
 }
 
+static void reindex_collocation_indices(harp_collocation_result *collocation_result)
+{
+    long i;
+
+    for (i = 0; i < collocation_result->num_pairs; i++)
+    {
+        collocation_result->pair[i]->collocation_index = i;
+    }
+}
+
 static int perform_matchup_on_measurements(collocation_info *info, long index_a, long product_b_index, long index_b)
 {
     double *longitude_bounds_a;
@@ -1584,6 +1594,7 @@ int matchup(int argc, char *argv[])
             collocation_info_delete(info);
             return -1;
         }
+        reindex_collocation_indices(info->collocation_result);
     }
 
     if (harp_collocation_result_write(argv[argc - 1], info->collocation_result) != 0)
