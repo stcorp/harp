@@ -1036,27 +1036,24 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
  * The previous value (if any) will be freed.
  * The base name of the product path is the filename of the product without any directory name components.
  * \param product Product for which to set the source product attribute.
- * \param product_path Relative or absolute path to the product or just the product filename.
+ * \param product_path Relative or absolute path to the product or just the product filename (can be NULL).
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_product_set_source_product(harp_product *product, const char *product_path)
 {
-    char *source_product;
+    char *new_source_product = NULL;
 
-    if (product_path == NULL)
+    if (product_path != NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "product_path is NULL (%s:%u)", __FILE__, __LINE__);
-        return -1;
-    }
-
-    source_product = strdup(harp_basename(product_path));
-    if (source_product == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
+        new_source_product = strdup(harp_basename(product_path));
+        if (new_source_product == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            return -1;
+        }
     }
 
     if (product->source_product != NULL)
@@ -1064,7 +1061,7 @@ LIBHARP_API int harp_product_set_source_product(harp_product *product, const cha
         free(product->source_product);
     }
 
-    product->source_product = source_product;
+    product->source_product = new_source_product;
 
     return 0;
 }
@@ -1073,27 +1070,24 @@ LIBHARP_API int harp_product_set_source_product(harp_product *product, const cha
  * Store a copy of \a history as the value of the history attribute of the specified product. The previous value (if
  * any) will be freed.
  * \param product Product for which to set the history attribute.
- * \param history New value for the history attribute.
+ * \param history New value for the history attribute (can be NULL).
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_product_set_history(harp_product *product, const char *history)
 {
-    char *history_copy;
+    char *new_history = NULL;
 
-    if (history == NULL)
+    if (history != NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "history is NULL (%s:%u)", __FILE__, __LINE__);
-        return -1;
-    }
-
-    history_copy = strdup(history);
-    if (history_copy == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                       __LINE__);
-        return -1;
+        new_history = strdup(history);
+        if (new_history == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            return -1;
+        }
     }
 
     if (product->history != NULL)
@@ -1101,7 +1095,7 @@ LIBHARP_API int harp_product_set_history(harp_product *product, const char *hist
         free(product->history);
     }
 
-    product->history = history_copy;
+    product->history = new_history;
 
     return 0;
 }

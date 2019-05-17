@@ -102,6 +102,9 @@ static void print_help()
     printf("                Set data compression level for storing in HDF5 format.\n");
     printf("                0=disabled, 1=low, ..., 9=high.\n");
     printf("\n");
+    printf("            --no-history\n");
+    printf("                Do not update the global history attribute.\n");
+    printf("\n");
     printf("        If the merged product is empty, a warning will be printed and the\n");
     printf("        tool will return with exit code 2 (without writing a file).\n");
     printf("\n");
@@ -168,6 +171,7 @@ static int merge(int argc, char *argv[])
     const char *options = NULL;
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
+    int update_history = 1;
     int verbose = 0;
     int i;
 
@@ -211,6 +215,10 @@ static int merge(int argc, char *argv[])
                 return -1;
             }
             i++;
+        }
+        else if (strcmp(argv[i], "--no-history") == 0)
+        {
+            update_history = 0;
         }
         else if (argv[i][0] != '-')
         {
@@ -279,11 +287,14 @@ static int merge(int argc, char *argv[])
         }
     }
 
-    /* update the product history */
-    if (harp_product_update_history(merged_product, "harpmerge", argc, argv) != 0)
+    if (update_history)
     {
-        harp_product_delete(merged_product);
-        return -1;
+        /* Update the product history */
+        if (harp_product_update_history(merged_product, "harpmerge", argc, argv) != 0)
+        {
+            harp_product_delete(merged_product);
+            return -1;
+        }
     }
 
     /* export the product */

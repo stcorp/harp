@@ -29,6 +29,9 @@ Inspect the contents of a file that can be imported by HARP.
               -d, --data
                   Show data values for each variable.
 
+              --no-history
+                  Do not show the global history attribute.
+
       harpdump --dataset [options] <file|dir> [<file|dir> ...]
           Print metadata for all files in the dataset in csv format.
 

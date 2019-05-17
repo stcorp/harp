@@ -1,3 +1,8 @@
+* Added --no-history option to harpconvert, hardump, and harpmerge.
+
+* harp_product_set_history() and harp_product_set_source_product() now accept
+  NULL as argument to clear the current value.
+
 * Update to S5P L2 product ingestion.
 
 1.6 2019-04-29

@@ -89,6 +89,9 @@ static void print_help()
     printf("                Set data compression level for storing in HDF5 format.\n");
     printf("                0=disabled, 1=low, ..., 9=high.\n");
     printf("\n");
+    printf("            --no-history\n");
+    printf("                Do not update the global history attribute.\n");
+    printf("\n");
     printf("        If the imported product is empty, a warning will be printed and the\n");
     printf("        tool will return with exit code 2 (without writing a file).\n");
     printf("\n");
@@ -141,6 +144,7 @@ static int convert(int argc, char *argv[])
     const char *output_filename = NULL;
     const char *output_format = "netcdf";
     const char *input_filename = NULL;
+    int update_history = 1;
     int i;
 
     for (i = 1; i < argc; i++)
@@ -172,6 +176,10 @@ static int convert(int argc, char *argv[])
                 return -1;
             }
             i++;
+        }
+        else if (strcmp(argv[i], "--no-history") == 0)
+        {
+            update_history = 0;
         }
         else if (argv[i][0] != '-')
         {
@@ -207,11 +215,14 @@ static int convert(int argc, char *argv[])
         return -2;
     }
 
-    /* Update the product */
-    if (harp_product_update_history(product, "harpconvert", argc, argv) != 0)
+    if (update_history)
     {
-        harp_product_delete(product);
-        return -1;
+        /* Update the product history */
+        if (harp_product_update_history(product, "harpconvert", argc, argv) != 0)
+        {
+            harp_product_delete(product);
+            return -1;
+        }
     }
 
     /* Export the product */

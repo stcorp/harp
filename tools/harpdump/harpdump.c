@@ -83,6 +83,9 @@ static void print_help()
     printf("            -d, --data\n");
     printf("                Show data values for each variable.\n");
     printf("\n");
+    printf("            --no-history\n");
+    printf("                Do not show the global history attribute.\n");
+    printf("\n");
     printf("    harpdump --dataset [options] <file|dir> [<file|dir> ...]\n");
     printf("        Print metadata for all files in the dataset in csv format.\n");
     printf("\n");
@@ -246,6 +249,7 @@ static int dump(int argc, char *argv[])
     const char *operations = NULL;
     const char *options = NULL;
     harp_product *product;
+    int show_history = 1;
     int data = 0;
     int list = 0;
     int i;
@@ -273,6 +277,10 @@ static int dump(int argc, char *argv[])
         {
             data = 1;
         }
+        else if (strcmp(argv[i], "--no-history") == 0)
+        {
+            show_history = 0;
+        }
         else if (argv[i][0] != '-')
         {
             /* assume all arguments from here on are files */
@@ -298,10 +306,21 @@ static int dump(int argc, char *argv[])
         return -1;
     }
 
-    if (operations != NULL || options != NULL)
+    if (show_history)
     {
-        /* update history attribute for traceability */
-        if (harp_product_update_history(product, "harpdump", argc, argv) != 0)
+        if (operations != NULL || options != NULL)
+        {
+            /* update history attribute for traceability */
+            if (harp_product_update_history(product, "harpdump", argc, argv) != 0)
+            {
+                harp_product_delete(product);
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        if (harp_product_set_history(product, NULL) != 0)
         {
             harp_product_delete(product);
             return -1;
