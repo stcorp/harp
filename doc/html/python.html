@@ -724,6 +724,16 @@ a single ‘harp.Product()’ instance or a list of ‘harp.Product()’ instanc
 the ‘operations’ on each product has been performed.</p>
 <p>If a ‘post_operations’ parameter is provided then these operations will be applied to
 the concatenated/merged product before it is returned.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Note that this function will first export all products to the HARP
+C library and will import the final result back from the C library to the Python
+domain. This can have a considerable performance impact when products are large.
+You should therefore only use this function if the operation cannot be performed
+easily within the Python domain itself. Also, when using this function try to
+pass a ‘harp.Product()’ instance that contains the minimal set of variables that
+are needed to execute the operations.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -765,9 +775,9 @@ The function will return a copy of the values with converted units.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>from_unit</strong> (<em>str</em>) – Existing unit of the data that should be converted
 (use udunits2 compliant units)</li>
-<li><strong>post_operations</strong> (<em>str</em>) – Unit to which the data should be converted
+<li><strong>to_unit</strong> (<em>str</em>) – Unit to which the data should be converted
 (use udunits2 compliant units).</li>
-<li><strong>data</strong> – an array with values on which unit conversion needs to be applied</li>
+<li><strong>values</strong> – an array with values on which unit conversion needs to be applied</li>
 </ul>
 </td>
 </tr>
