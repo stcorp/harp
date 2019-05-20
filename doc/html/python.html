@@ -716,6 +716,69 @@ attribute set.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="harp.execute_operations">
+<code class="descclassname">harp.</code><code class="descname">execute_operations</code><span class="sig-paren">(</span><em>productlist</em>, <em>operations=&quot;&quot;</em>, <em>post_operations=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<dd><p>Apply operations on the given list of products. ‘productlist’ can be either
+a single ‘harp.Product()’ instance or a list of ‘harp.Product()’ instances.</p>
+<p>If a list of products is provided then the products will be concatenated/merged after
+the ‘operations’ on each product has been performed.</p>
+<p>If a ‘post_operations’ parameter is provided then these operations will be applied to
+the concatenated/merged product before it is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>productlist</strong> (<em>list</em>) – List of harp.Product objects or single harp.Product object.</li>
+<li><strong>operations</strong> (<em>str</em>) – Actions to apply on the product(s); should be
+specified as a semi-colon separated string of operations;
+in case a list of products is provided these operations will be
+performed on each product individually before the data is merged.</li>
+<li><strong>post_operations</strong> (<em>str</em>) – Actions to apply after the list of products is merged;
+should be specified as a semi-colon separated string of operations;
+these operations will only be applied if the productlist parameter
+is a list of harp.Product objects.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Single product containing concatenated content with operations being performed.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="harp.convert_unit">
+<code class="descclassname">harp.</code><code class="descname">convert_unit</code><span class="sig-paren">(</span><em>from_unit</em>, <em>to_unit</em>, <em>values</em><span class="sig-paren">)</span></dt>
+<dd><p>Perform unit conversion on the list of values.
+The list of values will be converted to an array of double values after which the
+HARP C library is used to convert the values from ‘from_unit’ to ‘to_unit’.
+The function will return a copy of the values with converted units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>from_unit</strong> (<em>str</em>) – Existing unit of the data that should be converted
+(use udunits2 compliant units)</li>
+<li><strong>post_operations</strong> (<em>str</em>) – Unit to which the data should be converted
+(use udunits2 compliant units).</li>
+<li><strong>data</strong> – an array with values on which unit conversion needs to be applied</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Numpy array of unit converted values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="harp.to_dict">
 <code class="descclassname">harp.</code><code class="descname">to_dict</code><span class="sig-paren">(</span><em>product</em><span class="sig-paren">)</span></dt>
 <dd><p>Convert a <a class="reference internal" href="#harp.Product" title="harp.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">harp.Product</span></code></a> instance to an <code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code>.</p>

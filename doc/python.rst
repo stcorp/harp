@@ -405,6 +405,51 @@ This section describes the functions defined by the HARP Python library.
    :returns: Single product containing concatenated content.
    :rtype: harp.Product
 
+.. py:function:: harp.execute_operations(productlist, operations="", post_operations="")
+
+   Apply operations on the given list of products. 'productlist' can be either
+   a single 'harp.Product()' instance or a list of 'harp.Product()' instances.
+
+   If a list of products is provided then the products will be concatenated/merged after
+   the 'operations' on each product has been performed.
+   
+   If a 'post_operations' parameter is provided then these operations will be applied to
+   the concatenated/merged product before it is returned.
+
+   .. warning::Note that this function will first export all products to the HARP
+      C library and will import the final result back from the C library to the Python
+      domain. This can have a considerable performance impact when products are large.
+      You should therefore only use this function if the operation cannot be performed
+      easily within the Python domain itself and when you use this function then make sure
+      to pass a 'harp.Product()' instance that contains the minimal set of variables that
+      are needed to execute the operations.
+
+   :param list productlist: List of harp.Product objects or single harp.Product object.
+   :param str operations: Actions to apply on the product(s); should be
+                       specified as a semi-colon separated string of operations;
+                       in case a list of products is provided these operations will be
+                       performed on each product individually before the data is merged.
+   :param str post_operations: Actions to apply after the list of products is merged;
+                       should be specified as a semi-colon separated string of operations;
+                       these operations will only be applied if the productlist parameter
+                       is a list of harp.Product objects.
+   :returns: Single product containing concatenated content with operations being performed.
+   :rtype: harp.Product
+
+.. py:function:: harp.convert_unit(from_unit, to_unit, values)
+
+   Perform unit conversion on the list of values.
+   The list of values will be converted to an array of double values after which the
+   HARP C library is used to convert the values from 'from_unit' to 'to_unit'.
+   The function will return a copy of the values with converted units.
+
+   :param str from_unit: Existing unit of the data that should be converted
+                       (use udunits2 compliant units)
+   :param str post_operations: Unit to which the data should be converted
+                       (use udunits2 compliant units).
+   :param data: an array with values on which unit conversion needs to be applied
+   :returns: Numpy array of unit converted values
+
 .. py:function:: harp.to_dict(product)
 
    Convert a :py:class:`harp.Product` instance to an ``OrderedDict``.

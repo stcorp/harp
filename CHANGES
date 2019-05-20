@@ -1,5 +1,7 @@
 * Added --no-history option to harpconvert, hardump, and harpmerge.
 
+* Added harp.execute_operations() and harp.convert_unit() to Python interface.
+
 * harp_product_set_history() and harp_product_set_source_product() now accept
   NULL as argument to clear the current value.
 

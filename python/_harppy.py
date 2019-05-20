@@ -48,7 +48,8 @@ except ImportError:
 from harp._harpc import ffi as _ffi
 
 __all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensionError", "Variable", "Product",
-           "get_encoding", "set_encoding", "version", "import_product", "export_product", "concatenate", "to_dict"]
+           "get_encoding", "set_encoding", "version", "import_product", "export_product", "concatenate",
+           "execute_operations", "convert_unit", "to_dict"]
 
 class Error(Exception):
     """Exception base class for all HARP Python interface errors."""
@@ -1293,6 +1294,80 @@ def concatenate(products):
                         _extend_variable_for_dim(source_variable, i, target_variable.data.shape[i])
                 target_variable.data = numpy.append(target_variable.data, source_variable.data, axis=0)
     return target_product
+
+
+def execute_operations(products, operations="", post_operations=""):
+    if isinstance(products, Product):
+        if not operations:
+            return products
+
+        # Create C product.
+        c_product_ptr = _ffi.new("harp_product **")
+        if _lib.harp_product_new(c_product_ptr) != 0:
+            raise harp.CLibraryError()
+        try:
+            _export_product(products, c_product_ptr[0])
+            if _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
+                raise CLibraryError()
+            product = _import_product(c_product_ptr[0])
+            return product
+        finally:
+            _lib.harp_product_delete(c_product_ptr[0])
+    else:
+        # Return the merged concatenation of all products
+        merged_product_ptr = None
+        try:
+            for product in products:
+                c_product_ptr = _ffi.new("harp_product **")
+                if _lib.harp_product_new(c_product_ptr) != 0:
+                    raise CLibraryError()
+                try:
+                    _export_product(product, c_product_ptr[0])
+                    if _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
+                        raise CLibraryError()
+                except:
+                    _lib.harp_product_delete(c_product_ptr[0])
+
+                if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
+                    _lib.harp_product_delete(c_product_ptr[0])
+                elif merged_product_ptr is None:
+                    merged_product_ptr = c_product_ptr
+                    # if this remains the only product then make sure it still looks like it was the result of a merge
+                    if _lib.harp_product_append(merged_product_ptr[0], _ffi.NULL) != 0:
+                        raise CLibraryError()
+                else:
+                    try:
+                        if _lib.harp_product_append(merged_product_ptr[0], c_product_ptr[0]) != 0:
+                            raise CLibraryError()
+                    finally:
+                        _lib.harp_product_delete(c_product_ptr[0])
+        except:
+            if merged_product_ptr is not None:
+                _lib.harp_product_delete(merged_product_ptr[0])
+            raise
+
+        if merged_product_ptr is None:
+            raise NoDataError()
+
+        try:
+            if post_operations:
+                if _lib.harp_product_execute_operations(merged_product_ptr[0], _encode_string(post_operations)) != 0:
+                    raise CLibraryError()
+            # Convert the merged C product into its Python representation.
+            product = _import_product(merged_product_ptr[0])
+        finally:
+            _lib.harp_product_delete(merged_product_ptr[0])
+
+        return product
+
+
+def convert_unit(from_unit, to_unit, values):
+    values = numpy.array(values, dtype=numpy.double)
+    c_data = _ffi.cast("double *", values.ctypes.data)
+    if _lib.harp_convert_unit(_encode_string(from_unit), _encode_string(to_unit), numpy.size(values), c_data) != 0:
+        raise CLibraryError()
+    return values
+
 
 #
 # Initialize the HARP Python interface.
