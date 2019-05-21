@@ -8,6 +8,8 @@
 * harp_product_set_history() and harp_product_set_source_product() now accept
   NULL as argument to clear the current value.
 
+* Appending/merging products now automatically adds missing *_count variables.
+
 * Update to S5P L2 product ingestion.
 
 1.6 2019-04-29

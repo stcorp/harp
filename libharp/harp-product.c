@@ -915,6 +915,54 @@ LIBHARP_API int harp_product_copy(const harp_product *other_product, harp_produc
     return 0;
 }
 
+static int add_missing_count_variables(harp_product *product, harp_product *other_product)
+{
+    harp_variable *count_variable;
+    int i;
+
+    if (!harp_product_has_variable(product, "count"))
+    {
+        /* we cannot add specific '*_count' variables of the product does not have a global 'count' variable */
+        return 0;
+    }
+
+    if (harp_product_get_variable_by_name(product, "count", &count_variable) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < other_product->num_variables; i++)
+    {
+        harp_variable *variable = other_product->variable[i];
+        int length = strlen(variable->name);
+
+        if (length > 6 && strcmp(&variable->name[length - 6], "_count") == 0)
+        {
+             if (!harp_product_has_variable(product, variable->name))
+             {
+                 harp_variable *new_variable;
+
+                 if (harp_variable_copy(count_variable, &new_variable) != 0)
+                 {
+                     return -1;
+                 }
+                 if (harp_variable_rename(new_variable, variable->name) != 0)
+                 {
+                     harp_variable_delete(new_variable);
+                     return -1;
+                 }
+                 if (harp_product_add_variable(product, new_variable) != 0)
+                 {
+                     harp_variable_delete(new_variable);
+                     return -1;
+                 }
+             }
+        }
+    }
+
+    return 0;
+}
+
 /** Append one product to another.
  * The 'index' variable, if present, will be removed.
  * All variables in both products will have a 'time' dimension introduced as first dimension.
@@ -965,6 +1013,16 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
         {
             return -1;
         }
+    }
+
+    /* add '*_count' variables where needed */
+    if (add_missing_count_variables(product, other_product) != 0)
+    {
+        return -1;
+    }
+    if (add_missing_count_variables(other_product, product) != 0)
+    {
+        return -1;
     }
 
     /* now check if both products have the same variables */
