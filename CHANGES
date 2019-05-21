@@ -2,6 +2,9 @@
 
 * Added harp.execute_operations() and harp.convert_unit() to Python interface.
 
+* Added optional min_collocation_index/max_collocation_index arguments to
+  collocate_left()/collocate_right() operations.
+
 * harp_product_set_history() and harp_product_set_source_product() now accept
   NULL as argument to clear the current value.
 

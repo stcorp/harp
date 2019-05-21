@@ -926,7 +926,23 @@ operation:
             free($6);
         }
     | FUNC_COLLOCATE_LEFT '(' STRING_VALUE ')' {
-            if (harp_operation_collocation_filter_new($3, harp_collocation_left, &$$) != 0)
+            if (harp_operation_collocation_filter_new($3, harp_collocation_left, -1, -1, &$$) != 0)
+            {
+                free($3);
+                YYERROR;
+            }
+            free($3);
+        }
+    | FUNC_COLLOCATE_LEFT '(' STRING_VALUE ',' int32_value ')' {
+            if (harp_operation_collocation_filter_new($3, harp_collocation_left, $5, -1, &$$) != 0)
+            {
+                free($3);
+                YYERROR;
+            }
+            free($3);
+        }
+    | FUNC_COLLOCATE_LEFT '(' STRING_VALUE ',' int32_value ',' int32_value ')' {
+            if (harp_operation_collocation_filter_new($3, harp_collocation_left, $5, $7, &$$) != 0)
             {
                 free($3);
                 YYERROR;
@@ -934,7 +950,23 @@ operation:
             free($3);
         }
     | FUNC_COLLOCATE_RIGHT '(' STRING_VALUE ')' {
-            if (harp_operation_collocation_filter_new($3, harp_collocation_right, &$$) != 0)
+            if (harp_operation_collocation_filter_new($3, harp_collocation_right, -1, -1, &$$) != 0)
+            {
+                free($3);
+                YYERROR;
+            }
+            free($3);
+        }
+    | FUNC_COLLOCATE_RIGHT '(' STRING_VALUE ',' int32_value ')' {
+            if (harp_operation_collocation_filter_new($3, harp_collocation_right, $5, -1, &$$) != 0)
+            {
+                free($3);
+                YYERROR;
+            }
+            free($3);
+        }
+    | FUNC_COLLOCATE_RIGHT '(' STRING_VALUE ',' int32_value ',' int32_value ')' {
+            if (harp_operation_collocation_filter_new($3, harp_collocation_right, $5, $7, &$$) != 0)
             {
                 free($3);
                 YYERROR;

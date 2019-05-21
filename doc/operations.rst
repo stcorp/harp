@@ -170,9 +170,25 @@ Supported functions:
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset A.
 
+    ``collocate_left(collocation-result-file, min_collocation_index)``
+        Same as regular ``collocation_left`` operation but only include
+        collocations where collocation_index >= min_collocation_index
+
+    ``collocate_left(collocation-result-file, min_collocation_index, max_collocation_index)``
+        Same as regular ``collocation_left`` operation but only include
+        collocations where min_collocation_index <= collocation_index <= max_collocation_index
+
     ``collocate_right(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset B.
+
+    ``collocate_right(collocation-result-file, min_collocation_index)``
+        Same as regular ``collocate_right`` operation but only include
+        collocations where collocation_index >= min_collocation_index
+
+    ``collocate_right(collocation-result-file, min_collocation_index, max_collocation_index)``
+        Same as regular ``collocate_right`` operation but only include
+        collocations where min_collocation_index <= collocation_index <= max_collocation_index
 
     ``derive(variable [datatype] [unit])``
         The derive operation *without* a dimension specification can be
@@ -581,7 +597,11 @@ Formal definition
        'bin_spatial', '(', '(', floatvaluelist, ')', '(', floatvaluelist, ')', ')' |
        'bin_spatial', '(', intvalue, ',', floatvalue, ',', floatvalue, ',', intvalue, ',', floatvalue, ',', floatvalue, ',', ')' |
        'collocate_left', '(', stringvalue, ')' |
+       'collocate_left', '(', stringvalue, ',', intvalue, ')' |
+       'collocate_left', '(', stringvalue, ',', intvalue, ',', intvalue, ')' |
        'collocate_right', '(', stringvalue, ')' |
+       'collocate_right', '(', stringvalue, ',', intvalue, ')' |
+       'collocate_right', '(', stringvalue, ',', intvalue, ',', intvalue, ')' |
        'derive', '(', variable, [datatype], [dimensionspec], [unit], ')' |
        'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',', variable, unit, ',', stringvalue, ',', ( 'a' | 'b' ), ',', stringvalue, ')' |
        'derive_smoothed_column', '(', variable, dimensionspec, [unit], ',', variable, unit, ',', stringvalue, ')' |

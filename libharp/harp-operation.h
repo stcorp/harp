@@ -265,6 +265,8 @@ typedef struct harp_operation_collocation_filter_struct
     /* parameters */
     char *filename;
     harp_collocation_filter_type filter_type;
+    long min_collocation_index;
+    long max_collocation_index;
     /* extra */
     harp_collocation_mask *collocation_mask;
     /* extra (for membership filter that is only used for the ingestion phase) */
@@ -561,6 +563,7 @@ int harp_operation_bit_mask_filter_new(const char *variable_name, harp_bit_mask_
 int harp_operation_clamp_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                              double lower_bound, double upper_bound, harp_operation **new_operation);
 int harp_operation_collocation_filter_new(const char *filename, harp_collocation_filter_type filter_type,
+                                          long min_collocation_index, long max_collocation_index,
                                           harp_operation **new_operation);
 int harp_operation_comparison_filter_new(const char *variable_name, harp_comparison_operator_type operator_type,
                                          double value, const char *unit, harp_operation **new_operation);

@@ -1812,6 +1812,7 @@ int harp_operation_clamp_new(harp_dimension_type dimension_type, const char *axi
 }
 
 int harp_operation_collocation_filter_new(const char *filename, harp_collocation_filter_type filter_type,
+                                          long min_collocation_index, long max_collocation_index,
                                           harp_operation **new_operation)
 {
     harp_operation_collocation_filter *operation;
@@ -1827,6 +1828,8 @@ int harp_operation_collocation_filter_new(const char *filename, harp_collocation
     operation->eval = eval_collocation;
     operation->filename = NULL;
     operation->filter_type = filter_type;
+    operation->min_collocation_index = min_collocation_index;
+    operation->max_collocation_index = max_collocation_index;
     operation->collocation_mask = NULL;
     operation->num_values = 0;
     operation->value = NULL;
@@ -3346,6 +3349,7 @@ int harp_operation_prepare_collocation_filter(harp_operation *operation, const c
 {
     harp_operation_collocation_filter *collocation_operation = (harp_operation_collocation_filter *)operation;
     harp_collocation_mask *collocation_mask;
+    int num_pairs;
     int i;
 
     /* make sure we start with a clean state */
@@ -3367,6 +3371,25 @@ int harp_operation_prepare_collocation_filter(harp_operation *operation, const c
         return -1;
     }
     collocation_operation->collocation_mask = collocation_mask;
+
+    /* only include pairs whose collocation_index falls within the given min/max range */
+    num_pairs = 0;
+    for (i = 0; i < collocation_mask->num_index_pairs; i++)
+    {
+        if (collocation_operation->min_collocation_index >= 0 &&
+            collocation_mask->index_pair[i].collocation_index < collocation_operation->min_collocation_index)
+        {
+            continue;
+        }
+        if (collocation_operation->max_collocation_index >= 0 &&
+            collocation_mask->index_pair[i].collocation_index > collocation_operation->max_collocation_index)
+        {
+            continue;
+        }
+        collocation_mask->index_pair[num_pairs] = collocation_mask->index_pair[i];
+        num_pairs++;
+    }
+    collocation_mask->num_index_pairs = num_pairs;
 
     collocation_operation->value = (int32_t *)malloc(collocation_mask->num_index_pairs * sizeof(int32_t));
     if (collocation_operation->value == NULL)
