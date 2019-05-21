@@ -108,7 +108,7 @@ int harp_csv_parse_long(char **str, long *value)
     return 0;
 }
 
-void harp_csv_parse_string(char **str, char **value)
+int harp_csv_parse_string(char **str, char **value)
 {
     char *cursor = *str;
     int stringlength = 0;
@@ -126,6 +126,11 @@ void harp_csv_parse_string(char **str, char **value)
     }
     if (cursor[stringlength] == '\0')
     {
+        if (stringlength == 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "could not parse string value from csv element");
+            return -1;
+        }
         *str = &cursor[stringlength];
     }
     else
@@ -134,6 +139,8 @@ void harp_csv_parse_string(char **str, char **value)
         *str = &cursor[stringlength + 1];
     }
     *value = cursor;
+
+    return 0;
 }
 
 int harp_csv_parse_variable_name_and_unit(char **str, char **variable_name, char **unit)

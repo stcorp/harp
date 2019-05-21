@@ -38,7 +38,7 @@
 
 int harp_csv_parse_double(char **str, double *value);
 int harp_csv_parse_long(char **str, long *value);
-void harp_csv_parse_string(char **str, char **value);
+int harp_csv_parse_string(char **str, char **value);
 int harp_csv_parse_variable_name_and_unit(char **str, char **variable_name, char **unit);
 int harp_csv_get_num_lines(FILE *file, const char *filename, long *new_num_lines);
 void harp_csv_rtrim(char *str);

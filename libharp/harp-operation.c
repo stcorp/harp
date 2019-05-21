@@ -3349,7 +3349,6 @@ int harp_operation_prepare_collocation_filter(harp_operation *operation, const c
 {
     harp_operation_collocation_filter *collocation_operation = (harp_operation_collocation_filter *)operation;
     harp_collocation_mask *collocation_mask;
-    int num_pairs;
     int i;
 
     /* make sure we start with a clean state */
@@ -3366,30 +3365,13 @@ int harp_operation_prepare_collocation_filter(harp_operation *operation, const c
     collocation_operation->value = NULL;
 
     if (harp_collocation_mask_import(collocation_operation->filename, collocation_operation->filter_type,
+                                     collocation_operation->min_collocation_index,
+                                     collocation_operation->max_collocation_index,
                                      source_product, &collocation_mask) != 0)
     {
         return -1;
     }
     collocation_operation->collocation_mask = collocation_mask;
-
-    /* only include pairs whose collocation_index falls within the given min/max range */
-    num_pairs = 0;
-    for (i = 0; i < collocation_mask->num_index_pairs; i++)
-    {
-        if (collocation_operation->min_collocation_index >= 0 &&
-            collocation_mask->index_pair[i].collocation_index < collocation_operation->min_collocation_index)
-        {
-            continue;
-        }
-        if (collocation_operation->max_collocation_index >= 0 &&
-            collocation_mask->index_pair[i].collocation_index > collocation_operation->max_collocation_index)
-        {
-            continue;
-        }
-        collocation_mask->index_pair[num_pairs] = collocation_mask->index_pair[i];
-        num_pairs++;
-    }
-    collocation_mask->num_index_pairs = num_pairs;
 
     collocation_operation->value = (int32_t *)malloc(collocation_mask->num_index_pairs * sizeof(int32_t));
     if (collocation_operation->value == NULL)

@@ -221,10 +221,13 @@ static int collocation_mask_from_result(const harp_collocation_result *collocati
 }
 
 int harp_collocation_mask_import(const char *filename, harp_collocation_filter_type filter_type,
+                                 long min_collocation_index, long max_collocation_index,
                                  const char *source_product, harp_collocation_mask **new_mask)
 {
     harp_collocation_result *collocation_result;
     harp_collocation_mask *mask;
+    const char *source_product_a = NULL;
+    const char *source_product_b = NULL;
 
     if (filename == NULL)
     {
@@ -232,7 +235,16 @@ int harp_collocation_mask_import(const char *filename, harp_collocation_filter_t
         return -1;
     }
 
-    if (harp_collocation_result_read(filename, &collocation_result) != 0)
+    if (filter_type == harp_collocation_left)
+    {
+        source_product_a = source_product;
+    }
+    else
+    {
+        source_product_b = source_product;
+    }
+    if (harp_collocation_result_read_range(filename, min_collocation_index, max_collocation_index,
+                                           source_product_a, source_product_b, &collocation_result) != 0)
     {
         return -1;
     }

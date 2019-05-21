@@ -48,6 +48,7 @@ typedef struct harp_collocation_mask_struct
 
 void harp_collocation_mask_delete(harp_collocation_mask *mask);
 int harp_collocation_mask_import(const char *filename, harp_collocation_filter_type filter_type,
+                                 long min_collocation_index, long max_collocation_index,
                                  const char *original_filename, harp_collocation_mask **new_mask);
 
 int harp_product_apply_collocation_mask(harp_product *product, harp_collocation_mask *collocation_mask);

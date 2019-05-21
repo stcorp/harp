@@ -355,6 +355,9 @@ void harp_bounds_from_midpoints_loglinear(long num_midpoints, const double *midp
                                           double *intervals);
 
 /* Collocation */
+int harp_collocation_result_read_range(const char *collocation_result_filename, long min_collocation_index,
+                                       long max_collocation_index, const char *source_product_a,
+                                       const char *source_product_b, harp_collocation_result **new_collocation_result);
 int harp_collocation_result_shallow_copy(const harp_collocation_result *collocation_result,
                                          harp_collocation_result **new_result);
 void harp_collocation_result_shallow_delete(harp_collocation_result *collocation_result);

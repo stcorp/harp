@@ -792,31 +792,46 @@ static int read_header(FILE *file, harp_collocation_result *collocation_result)
     }
     line[length] = '\0';
 
-    harp_csv_parse_string(&cursor, &string);
+    if (harp_csv_parse_string(&cursor, &string) != 0)
+    {
+        return -1;
+    }
     if (strcmp(string, "collocation_index") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'collocation_index' in header");
         return -1;
     }
-    harp_csv_parse_string(&cursor, &string);
+    if (harp_csv_parse_string(&cursor, &string) != 0)
+    {
+        return -1;
+    }
     if (strcmp(string, "source_product_a") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'source_product_a' in header");
         return -1;
     }
-    harp_csv_parse_string(&cursor, &string);
+    if (harp_csv_parse_string(&cursor, &string) != 0)
+    {
+        return -1;
+    }
     if (strcmp(string, "index_a") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'index_a' in header");
         return -1;
     }
-    harp_csv_parse_string(&cursor, &string);
+    if (harp_csv_parse_string(&cursor, &string) != 0)
+    {
+        return -1;
+    }
     if (strcmp(string, "source_product_b") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'source_product_b' in header");
         return -1;
     }
-    harp_csv_parse_string(&cursor, &string);
+    if (harp_csv_parse_string(&cursor, &string) != 0)
+    {
+        return -1;
+    }
     if (strcmp(string, "index_b") != 0)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading 'index_b' in header");
@@ -840,7 +855,9 @@ static int read_header(FILE *file, harp_collocation_result *collocation_result)
     return 0;
 }
 
-static int read_pair(FILE *file, harp_collocation_result *collocation_result)
+static int read_pair(FILE *file, long min_collocation_index, long max_collocation_index,
+                     const char *source_product_a_filter, const char *source_product_b_filter,
+                     harp_collocation_result *collocation_result)
 {
     char line[HARP_CSV_LINE_LENGTH];
     char *cursor = line;
@@ -854,18 +871,61 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
 
     if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line");
+        if (ferror(file))
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line");
+            return -1;
+        }
+        /* EOF */
+        return 1;
+    }
+
+    if (harp_csv_parse_long(&cursor, &collocation_index) != 0)
+    {
         return -1;
     }
 
-    harp_csv_rtrim(line);
+    /* skip line if collocation_index is outside the requested range */
+    if (min_collocation_index >= 0 && collocation_index < min_collocation_index)
+    {
+        return 0;
+    }
+    if (max_collocation_index >= 0 && collocation_index > max_collocation_index)
+    {
+        return 0;
+    }
 
-    /* Parse line */
-    harp_csv_parse_long(&cursor, &collocation_index);
-    harp_csv_parse_string(&cursor, &source_product_a);
-    harp_csv_parse_long(&cursor, &index_a);
-    harp_csv_parse_string(&cursor, &source_product_b);
-    harp_csv_parse_long(&cursor, &index_b);
+    /* read pair and add it to the collocation_result */
+    if (harp_csv_parse_string(&cursor, &source_product_a) != 0)
+    {
+        return -1;
+    }
+    if (source_product_a_filter != NULL)
+    {
+        if (strcmp(source_product_a, source_product_a_filter) != 0)
+        {
+            return 0;
+        }
+    }
+    if (harp_csv_parse_long(&cursor, &index_a) != 0)
+    {
+        return -1;
+    }
+    if (harp_csv_parse_string(&cursor, &source_product_b) != 0)
+    {
+        return -1;
+    }
+    if (source_product_b_filter != NULL)
+    {
+        if (strcmp(source_product_b, source_product_b_filter) != 0)
+        {
+            return 0;
+        }
+    }
+    if (harp_csv_parse_long(&cursor, &index_b) != 0)
+    {
+        return -1;
+    }
 
     if (collocation_result->num_differences > 0)
     {
@@ -905,25 +965,13 @@ static int read_pair(FILE *file, harp_collocation_result *collocation_result)
     return 0;
 }
 
-/** \addtogroup harp_collocation
- * @{
- */
-
-/** Read collocation result set from a csv file
- * The csv file should follow the HARP format for collocation result files.
- * \param collocation_result_filename Full file path to the csv file.
- * \param new_collocation_result Pointer to the C variable where the new result set will be stored.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
- */
-LIBHARP_API int harp_collocation_result_read(const char *collocation_result_filename,
-                                             harp_collocation_result **new_collocation_result)
+int harp_collocation_result_read_range(const char *collocation_result_filename, long min_collocation_index,
+                                       long max_collocation_index, const char *source_product_a,
+                                       const char *source_product_b, harp_collocation_result **new_collocation_result)
 {
     harp_collocation_result *collocation_result = NULL;
     FILE *file;
-    long i;
-    long num_lines;
+    int result = 0;
 
     if (collocation_result_filename == NULL)
     {
@@ -939,30 +987,11 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
         return -1;
     }
 
-    /* Get number of lines */
-    if (harp_csv_get_num_lines(file, collocation_result_filename, &num_lines) != 0)
-    {
-        fclose(file);
-        return -1;
-    }
-
     /* Start new collocation result */
     if (harp_collocation_result_new(&collocation_result, 0, NULL, NULL) != 0)
     {
         fclose(file);
         return -1;
-    }
-
-    /* Exclude the header line */
-    num_lines--;
-    if (num_lines < 1)
-    {
-        /* No lines to read */
-        fclose(file);
-
-        /* Return an empty collocation result */
-        *new_collocation_result = collocation_result;
-        return 0;
     }
 
     /* Initialize the collocation result and update the collocation differences with the information in the header */
@@ -974,26 +1003,41 @@ LIBHARP_API int harp_collocation_result_read(const char *collocation_result_file
     }
 
     /* Read the matching pairs */
-    for (i = 0; i < num_lines; i++)
+    while (result == 0)
     {
-        if (read_pair(file, collocation_result) != 0)
-        {
-            harp_collocation_result_delete(collocation_result);
-            fclose(file);
-            return -1;
-        }
+        result = read_pair(file, min_collocation_index, max_collocation_index, source_product_a, source_product_b,
+                           collocation_result);
     }
-
-    /* Close the collocation result file */
-    if (fclose(file) != 0)
+    if (result < 0)
     {
-        harp_set_error(HARP_ERROR_FILE_CLOSE, "error closing collocation result file");
         harp_collocation_result_delete(collocation_result);
+        fclose(file);
         return -1;
     }
 
+    /* Close the collocation result file */
+    fclose(file);
+
     *new_collocation_result = collocation_result;
     return 0;
+}
+
+/** \addtogroup harp_collocation
+ * @{
+ */
+
+/** Read collocation result set from a csv file
+ * The csv file should follow the HARP format for collocation result files.
+ * \param collocation_result_filename Full file path to the csv file.
+ * \param new_collocation_result Pointer to the C variable where the new result set will be stored.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_collocation_result_read(const char *collocation_result_filename,
+                                             harp_collocation_result **new_collocation_result)
+{
+    return harp_collocation_result_read_range(collocation_result_filename, -1, -1, NULL, NULL, new_collocation_result);
 }
 
 /**
@@ -1087,11 +1131,7 @@ LIBHARP_API int harp_collocation_result_write(const char *collocation_result_fil
     }
 
     /* Close the collocation result file */
-    if (fclose(file) != 0)
-    {
-        harp_set_error(HARP_ERROR_FILE_READ, "error closing collocation result file");
-        return -1;
-    }
+    fclose(file);
 
     return 0;
 }

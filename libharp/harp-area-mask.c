@@ -427,12 +427,7 @@ int harp_area_mask_read(const char *filename, harp_area_mask **new_area_mask)
         return -1;
     }
 
-    if (fclose(stream) != 0)
-    {
-        harp_set_error(HARP_ERROR_FILE_CLOSE, "cannot close area mask file '%s'", filename);
-        harp_area_mask_delete(area_mask);
-        return -1;
-    }
+    fclose(stream);
 
     *new_area_mask = area_mask;
     return 0;
