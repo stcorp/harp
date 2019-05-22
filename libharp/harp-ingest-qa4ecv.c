@@ -1495,7 +1495,7 @@ static void register_no2_product(void)
 
     harp_ingestion_register_option(module, "stratospheric_column", "whether to use the default NO2 stratospheric "
                                    "column (default) or the stratospheric column estimated with the STREAM method "
-                                   "(stratospheric_column=stream)", 2, stratospheric_column_options);
+                                   "(stratospheric_column=stream)", 1, stratospheric_column_options);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
