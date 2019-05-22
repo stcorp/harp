@@ -10,6 +10,8 @@
 
 * Appending/merging products now automatically adds missing *_count variables.
 
+* Fixed potential crash during initialization of HARP ingestion module.
+
 * Update to S5P L2 product ingestion.
 
 1.6 2019-04-29
