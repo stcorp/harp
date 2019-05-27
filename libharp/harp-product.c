@@ -938,25 +938,25 @@ static int add_missing_count_variables(harp_product *product, harp_product *othe
 
         if (length > 6 && strcmp(&variable->name[length - 6], "_count") == 0)
         {
-             if (!harp_product_has_variable(product, variable->name))
-             {
-                 harp_variable *new_variable;
+            if (!harp_product_has_variable(product, variable->name))
+            {
+                harp_variable *new_variable;
 
-                 if (harp_variable_copy(count_variable, &new_variable) != 0)
-                 {
-                     return -1;
-                 }
-                 if (harp_variable_rename(new_variable, variable->name) != 0)
-                 {
-                     harp_variable_delete(new_variable);
-                     return -1;
-                 }
-                 if (harp_product_add_variable(product, new_variable) != 0)
-                 {
-                     harp_variable_delete(new_variable);
-                     return -1;
-                 }
-             }
+                if (harp_variable_copy(count_variable, &new_variable) != 0)
+                {
+                    return -1;
+                }
+                if (harp_variable_rename(new_variable, variable->name) != 0)
+                {
+                    harp_variable_delete(new_variable);
+                    return -1;
+                }
+                if (harp_product_add_variable(product, new_variable) != 0)
+                {
+                    harp_variable_delete(new_variable);
+                    return -1;
+                }
+            }
         }
     }
 
