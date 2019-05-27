@@ -412,7 +412,7 @@ This section describes the functions defined by the HARP Python library.
 
    If a list of products is provided then the products will be concatenated/merged after
    the 'operations' on each product has been performed.
-   
+
    If a 'post_operations' parameter is provided then these operations will be applied to
    the concatenated/merged product before it is returned.
 
