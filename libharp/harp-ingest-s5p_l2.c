@@ -98,6 +98,7 @@ typedef struct ingest_info_struct
     int use_ch4_bias_corrected;
     int use_co_nd_avk;
     int use_o3_tcl_csa;
+    int use_o3_tcl_strat_reference;
     int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
 
     s5p_product_type product_type;
@@ -564,6 +565,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_ch4_bias_corrected = 0;
     info->use_co_nd_avk = 0;
     info->use_o3_tcl_csa = 0;
+    info->use_o3_tcl_strat_reference = 0;
     info->so2_column_type = 0;
     info->num_times = 0;
     info->num_scanlines = 0;
@@ -630,6 +632,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         {
             info->use_o3_tcl_csa = 1;
         }
+    }
+    if (harp_ingestion_options_has_option(options, "o3_strat"))
+    {
+        info->use_o3_tcl_strat_reference = 1;
     }
     if (harp_ingestion_options_has_option(options, "so2_column"))
     {
@@ -3078,6 +3084,27 @@ static int read_o3_tcl_ozone_stratospheric_vertical_column(void *user_data, harp
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->use_o3_tcl_strat_reference)
+    {
+        long i, j;
+
+        if (read_dataset(info->detailed_results_cursor, "ozone_stratospheric_vertical_column_reference",
+                         harp_type_float, info->num_latitudes, data) != 0)
+        {
+            return -1;
+        }
+        /* replicate values accross longitude dimension */
+        for (i = info->num_latitudes - 1; i >= 0; i--)
+        {
+            float value = data.float_data[i];
+
+            for (j = 0; j < info->num_longitudes; j++)
+            {
+                data.float_data[i * info->num_longitudes + j] = value;
+            }
+        }
+        return 0;
+    }
     return read_dataset(info->detailed_results_cursor, "ozone_stratospheric_vertical_column", harp_type_float,
                         info->num_latitudes * info->num_longitudes, data);
 }
@@ -3086,6 +3113,27 @@ static int read_o3_tcl_ozone_stratospheric_vertical_column_precision(void *user_
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->use_o3_tcl_strat_reference)
+    {
+        long i, j;
+
+        if (read_dataset(info->detailed_results_cursor, "ozone_stratospheric_vertical_column_reference_precision",
+                         harp_type_float, info->num_latitudes, data) != 0)
+        {
+            return -1;
+        }
+        /* replicate values accross longitude dimension */
+        for (i = info->num_latitudes - 1; i >= 0; i--)
+        {
+            float value = data.float_data[i];
+
+            for (j = 0; j < info->num_longitudes; j++)
+            {
+                data.float_data[i * info->num_longitudes + j] = value;
+            }
+        }
+        return 0;
+    }
     return read_dataset(info->detailed_results_cursor, "ozone_stratospheric_vertical_column_precision", harp_type_float,
                         info->num_latitudes * info->num_longitudes, data);
 }
@@ -5511,6 +5559,7 @@ static void register_o3_pr_product(void)
 static void register_o3_tcl_product(void)
 {
     const char *o3_options[] = { "ccd", "csa" };
+    const char *o3_strat_options[] = { "reference" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -5527,6 +5576,10 @@ static void register_o3_tcl_product(void)
     harp_ingestion_register_option(module, "o3", "whether to ingest the tropical tropospheric ozone column with the "
                                    "Convective Cloud Differential (CCD) method (o3=ccd, default) or with the "
                                    "Cloud Slicing Algorithm (CSA) (o3=csa)", 2, o3_options);
+
+    harp_ingestion_register_option(module, "o3_strat", "whether to ingest the ozone_stratospheric_vertical_column "
+                                   "(default), or ozone_stratospheric_vertical_column_reference (o3_strat=reference); "
+                                   "this option only applies if CCD data is ingested", 1, o3_strat_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O3_TCL", NULL, read_dimensions);
 
@@ -5659,7 +5712,11 @@ static void register_o3_tcl_product(void)
                                                    harp_type_float, 3, dimension_type, NULL, description, "mol/m2",
                                                    include_o3_tcl_ccd, read_o3_tcl_ozone_stratospheric_vertical_column);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "(o3=ccd or o3 unset) and o3_strat unset", NULL, path,
+                                         NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_reference[]";
+    harp_variable_definition_add_mapping(variable_definition, "(o3=ccd or o3 unset) and o3_strat=reference", NULL, path,
+                                         "the data is replicated along the longitude axis");
 
     /* stratospheric_O3_column_number_density_precision */
     description = "uncertainty of the average stratospheric ozone column number density";
@@ -5670,7 +5727,11 @@ static void register_o3_tcl_product(void)
                                                    include_o3_tcl_ccd,
                                                    read_o3_tcl_ozone_stratospheric_vertical_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "(o3=ccd or o3 unset) and o3_strat unset", NULL, path,
+                                         NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_reference_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "(o3=ccd or o3 unset) and o3_strat=reference", NULL, path,
+                                         "the data is replicated along the longitude axis");
 
     /* O3_column_number_density */
     description = "average total ozone column number density";

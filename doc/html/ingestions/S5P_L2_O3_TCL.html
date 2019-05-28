@@ -299,6 +299,10 @@
 <td>ccd, csa</td>
 <td>whether to ingest the tropical tropospheric ozone column with the Convective Cloud Differential (CCD) method (o3=ccd, default) or with the Cloud Slicing Algorithm (CSA) (o3=csa)</td>
 </tr>
+<tr class="row-odd"><td>o3_strat</td>
+<td>reference</td>
+<td>whether to ingest the ozone_stratospheric_vertical_column (default), or ozone_stratospheric_vertical_column_reference (o3_strat=reference); this option only applies if CCD data is ingested</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -307,8 +311,8 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="32%" />
-<col width="6%" />
+<col width="31%" />
+<col width="7%" />
 <col width="62%" />
 </colgroup>
 <thead valign="bottom">
@@ -447,25 +451,43 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/ozone_tropospheric_vertical_column_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>stratospheric_O3_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="6"><strong>stratospheric_O3_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>o3=ccd or o3 unset</td>
+<td>(o3=ccd or o3 unset) and o3_strat unset</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>stratospheric_O3_column_number_density_uncertainty</strong></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>(o3=ccd or o3 unset) and o3_strat=reference</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_reference[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the data is replicated along the longitude axis</td>
+</tr>
+<tr class="row-even"><td rowspan="6"><strong>stratospheric_O3_column_number_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>o3=ccd or o3 unset</td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>(o3=ccd or o3 unset) and o3_strat unset</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>(o3=ccd or o3 unset) and o3_strat=reference</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_stratospheric_vertical_column_reference_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>the data is replicated along the longitude axis</td>
 </tr>
 <tr class="row-even"><td rowspan="3"><strong>O3_column_number_density</strong></td>
 <td><em>available</em></td>
