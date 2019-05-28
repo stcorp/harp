@@ -18,6 +18,8 @@
 * Fixed invalid results when using bin_spatial with latitude_bounds {time,2}
   and longitude_bounds {time,2} variables (i.e. range instead of polygon).
 
+* Fixed invalid array transpose in HARP MATLAB interface.
+
 * Update to S5P L2 product ingestion.
 
 1.6 2019-04-29
