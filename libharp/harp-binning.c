@@ -851,7 +851,7 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
             poly_latitude[2] = poly_latitude[1];
             poly_longitude[2] = poly_longitude[1];
             poly_latitude[1] = poly_latitude[0];
-            poly_latitude[3] = poly_latitude[1];
+            poly_latitude[3] = poly_latitude[2];
             poly_longitude[3] = poly_longitude[0];
             num_vertices = 4;
         }
