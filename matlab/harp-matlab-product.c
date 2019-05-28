@@ -1,21 +1,32 @@
 /*
- * Copyright (C) 2002-2016 S[&]T, The Netherlands.
+ * Copyright (C) 2015-2019 S[&]T, The Netherlands.
+ * All rights reserved.
  *
- * This file is part of HARP.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * HARP is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- * HARP is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- * You should have received a copy of the GNU General Public License
- * along with HARP; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 3. Neither the name of the copyright holder nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "harp-matlab.h"
@@ -24,7 +35,6 @@
 
 static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_product **product, int index)
 {
-
     harp_variable *variable = (**product).variable[index];
     harp_data_type type = variable->data_type;
     const char *variable_name = variable->name;
@@ -42,7 +52,7 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
     int num_dims = variable->num_dimensions;
     long num_elements = variable->num_elements;
     long i;
-    short variable_is_scalar = false;
+    int variable_is_scalar = 0;
 
     mxArray *mx_data = NULL;
     mxArray *struct_data = NULL;
@@ -62,8 +72,7 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
     mxAssert(num_dims <= HARP_MAX_NUM_DIMS, "Number of dimensions is too high");
     mxAssert(num_elements > 0, "Number of elements in array is zero");
 
-
-    for (i = 0; i < HARP_MAX_NUM_DIMS; i++)
+    for (i = 0; i < num_dims; i++)
     {
         dim[i] = variable->dimension[i];
         if (dim[i] > 0)
@@ -100,7 +109,7 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
 
     for (i = 0; i < num_dims; i++)
     {
-        matlabdim[i] = (mwSize) dim[i];
+        matlabdim[i] = (mwSize) dim[num_dims - i -1];
     }
 
     matlabdim_type[0] = num_dims;
@@ -115,37 +124,25 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
 
         for (i = 0; i < num_dims; i++)
         {
-            switch (dim_type[i])
+            switch (dim_type[num_dims - i - 1])
             {
                 case -1:
-                    {
-                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("independent"));
-                    }
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("independent"));
                     break;
                 case 0:
-                    {
-                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("time"));
-                    }
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("time"));
                     break;
                 case 1:
-                    {
-                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("latitude"));
-                    }
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("latitude"));
                     break;
                 case 2:
-                    {
-                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("longitude"));
-                    }
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("longitude"));
                     break;
                 case 3:
-                    {
-                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("vertical"));
-                    }
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("vertical"));
                     break;
                 case 4:
-                    {
-                        mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("spectral"));
-                    }
+                    mxSetCell(dim_info_type, (mwIndex) i, mxCreateString("spectral"));
                     break;
             }
 
@@ -157,117 +154,24 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
     switch (type)
     {
         case harp_type_int8:
-            {
-                long counter = 0;
-                int8_t *data;
-
-                mx_data = mxCreateNumericArray(num_dims, matlabdim, mxINT8_CLASS, mxREAL);
-                data = mxGetData(mx_data);
-
-                while (counter < num_elements)
-                {
-                    mwSize j, k;
-
-                    for (j = 0; j < num_elements / matlabdim[num_dims - 1]; j++)
-                    {
-                        for (k = 0; k < matlabdim[num_dims - 1]; k++)
-                        {
-                            data[j + k * num_elements / matlabdim[num_dims - 1]] = variable_data.int8_data[counter++];
-                        }
-                    }
-                }
-
-            }
+            mx_data = mxCreateNumericArray(num_dims, matlabdim, mxINT8_CLASS, mxREAL);
+            memcpy(mxGetData(mx_data), variable_data.int8_data, num_elements * sizeof(int8_t));
             break;
         case harp_type_int16:
-            {
-                long counter = 0;
-                int16_t *data;
-
-                mx_data = mxCreateNumericArray(num_dims, matlabdim, mxINT16_CLASS, mxREAL);
-                data = mxGetData(mx_data);
-
-                while (counter < num_elements)
-                {
-                    mwSize j, k;
-
-                    for (j = 0; j < num_elements / matlabdim[num_dims - 1]; j++)
-                    {
-                        for (k = 0; k < matlabdim[num_dims - 1]; k++)
-                        {
-                            data[j + k * num_elements / matlabdim[num_dims - 1]] = variable_data.int16_data[counter++];
-                        }
-                    }
-                }
-            }
+            mx_data = mxCreateNumericArray(num_dims, matlabdim, mxINT16_CLASS, mxREAL);
+            memcpy(mxGetData(mx_data), variable_data.int16_data, num_elements * sizeof(int16_t));
             break;
         case harp_type_int32:
-            {
-                long counter = 0;
-                int32_t *data;
-
-                mx_data = mxCreateNumericArray(num_dims, matlabdim, mxINT32_CLASS, mxREAL);
-                data = mxGetData(mx_data);
-
-                while (counter < num_elements)
-                {
-                    mwSize j, k;
-
-                    for (j = 0; j < num_elements / matlabdim[num_dims - 1]; j++)
-                    {
-                        for (k = 0; k < matlabdim[num_dims - 1]; k++)
-                        {
-                            data[j + k * num_elements / matlabdim[num_dims - 1]] = variable_data.int32_data[counter++];
-                        }
-                    }
-                }
-            }
-            break;
-        case harp_type_double:
-            {
-                long counter = 0;
-                double *data;
-
-                mx_data = mxCreateNumericArray(num_dims, matlabdim, mxDOUBLE_CLASS, mxREAL);
-                data = mxGetData(mx_data);
-
-                while (counter < num_elements)
-                {
-                    mwSize j, k;
-
-                    for (j = 0; j < num_elements / matlabdim[num_dims - 1]; j++)
-                    {
-                        for (k = 0; k < matlabdim[num_dims - 1]; k++)
-                        {
-                            data[j + k * num_elements / matlabdim[num_dims - 1]] = variable_data.double_data[counter++];
-                        }
-                    }
-                }
-
-            }
+            mx_data = mxCreateNumericArray(num_dims, matlabdim, mxINT32_CLASS, mxREAL);
+            memcpy(mxGetData(mx_data), variable_data.int32_data, num_elements * sizeof(int32_t));
             break;
         case harp_type_float:
-            {
-                long counter = 0;
-                float *data;
-
-                mx_data = mxCreateNumericArray(num_dims, matlabdim, mxSINGLE_CLASS, mxREAL);
-                data = mxGetData(mx_data);
-
-                while (counter < num_elements)
-                {
-                    mwSize j, k;
-
-                    for (j = 0; j < num_elements / matlabdim[num_dims - 1]; j++)
-                    {
-                        for (k = 0; k < matlabdim[num_dims - 1]; k++)
-                        {
-                            data[j + k * num_elements / matlabdim[num_dims - 1]] = variable_data.float_data[counter++];
-                        }
-                    }
-                }
-
-            }
+            mx_data = mxCreateNumericArray(num_dims, matlabdim, mxSINGLE_CLASS, mxREAL);
+            memcpy(mxGetData(mx_data), variable_data.float_data, num_elements * sizeof(float));
+            break;
+        case harp_type_double:
+            mx_data = mxCreateNumericArray(num_dims, matlabdim, mxDOUBLE_CLASS, mxREAL);
+            memcpy(mxGetData(mx_data), variable_data.double_data, num_elements * sizeof(double));
             break;
         case harp_type_string:
             if (num_dims == 0)
@@ -279,23 +183,18 @@ static void harp_matlab_add_harp_product_variable(mxArray *mx_struct, harp_produ
                 mx_data = mxCreateCellArray(num_dims, matlabdim);
                 for (i = 0; i < num_elements; i++)
                 {
-                    mxSetCell(mx_data, coda_c_index_to_fortran_index(num_dims, dim, i),
-                              mxCreateString(variable_data.string_data[i]));
+                    mxSetCell(mx_data, i, mxCreateString(variable_data.string_data[i]));
                 }
             }
             break;
     }
 
-
-
     mxAddField(struct_data, "data");
     mxSetField(struct_data, 0, "data", mx_data);
-
 
     /* back to the top-level again */
     mxAddField(mx_struct, variable_name);
     mxSetField(mx_struct, 0, variable_name, struct_data);
-
 }
 
 mxArray *harp_matlab_get_product(harp_product **product)
