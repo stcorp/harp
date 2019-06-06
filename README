@@ -20,14 +20,14 @@ The main functionalities of HARP are:
    - Aura OMI/TES/MLS/HIRDLS L2 + OMI L3
    - CALIPSO (Lidar L2)
    - CLOUDNET classification L2
-   - AERLINET L2
+   - AERLINET
    - ECMF GRIB (includes CAMS global model data)
    - ENVISAT GOMOS/MIPAS/SCIAMACHY L1/L2
    - ERS GOME L1/L2
    - ESA CCI Aerosol/Cloud/GHG/Ozone
+   - GEOMS FTIR/Lidar/MWR/Sonde/UVVIS-DOAS data (NDACC/EVDC)
    - GOSAT FTS L1/L2
    - Metop GOME-2/IASI L1/L2
-   - NDACC FTIR/Lidar/MWR/UVVIS-DOAS data (GEOMS format)
    - NPP Suomi (CrIS/OMPS/VIIRS) L2
    - ODIN OSIRIS/SMR L2
    - QA4ECV NO2/HCHO L2
