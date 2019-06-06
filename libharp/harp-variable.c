@@ -1690,8 +1690,13 @@ LIBHARP_API int harp_variable_set_unit(harp_variable *variable, const char *unit
 
     if (unit != NULL)
     {
-        unit_copy = strdup(unit);
+        if (!harp_unit_is_valid(unit))
+        {
+            harp_set_error(HARP_ERROR_INVALID_VARIABLE, "invalid unit '%s'", unit);
+            return -1;
+        }
 
+        unit_copy = strdup(unit);
         if (unit_copy == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
