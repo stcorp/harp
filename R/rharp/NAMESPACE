@@ -1,0 +1,4 @@
+useDynLib(Rharp, .registration = TRUE, .fixes = "C_")
+
+export(import, export)
+
