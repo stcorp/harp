@@ -48,42 +48,49 @@ void var_error(const char *varname, char *msg) {
 // create R variable from harp variable
 SEXP rharp_import_variable(harp_variable *hv) {
     // create variable (named list)
-    const char *varfields[] = {"name", "description", "unit", "data", "dimension", ""};
-    int protected = 5;
+    const char *varfields[] = {"name", "description", "unit", "data", "dimension", "type", ""};
+    int protected = 6;
     SEXP var = PROTECT(mkNamed(VECSXP, varfields));
     SEXP array;
+    const char *datatype;
 
-    // convert data (reversing dimensions, because of row-major/minor mismatch)
+    // reverse dimensions because of row-major/minor mismatch
     SEXP dim;
     PROTECT(dim = Rf_allocVector(INTSXP, hv->num_dimensions));
     for(unsigned int k=0; k<hv->num_dimensions; k++) {
         INTEGER(dim)[hv->num_dimensions-1-k] = hv->dimension[k];
     }
 
-    if(hv->data_type == harp_type_int8) { // TODO sep func
+    // convert data
+    if(hv->data_type == harp_type_int8) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int8_data[k];
+        datatype = "integer";
     }
     else if(hv->data_type == harp_type_int16) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int16_data[k];
+        datatype = "integer";
     }
     else if(hv->data_type == harp_type_int32) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int32_data[k];
+        datatype = "integer";
     }
     else if(hv->data_type == harp_type_float) {
         PROTECT(array = Rf_allocArray(REALSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            REAL(array)[k] = hv->data.float_data[k];
+        datatype = "real";
     }
     else if(hv->data_type == harp_type_double) {
         PROTECT(array = Rf_allocArray(REALSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            REAL(array)[k] = hv->data.double_data[k];
+        datatype = "real";
     }
     else
         error("unsupported data type");
@@ -96,6 +103,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
         SET_VECTOR_ELT(var, 1, mkstring(hv->description));
         protected += 1;
     }
+    SET_VECTOR_ELT(var, 0, mkstring(hv->name));
 
     // set unit
     if(hv->unit) {
@@ -113,6 +121,10 @@ SEXP rharp_import_variable(harp_variable *hv) {
                mkChar(dimension_name[hv->dimension_type[k]+1]));
     }
     SET_VECTOR_ELT(var, 4, dimension);
+
+    // set type
+    SEXP sdatatype = mkstring(datatype);
+    SET_VECTOR_ELT(var, 5, sdatatype);
 
     UNPROTECT(protected);
     return var;
