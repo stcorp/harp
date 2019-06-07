@@ -270,8 +270,8 @@ SEXP rharp_import_product(SEXP sname, SEXP soperations, SEXP soptions) {
     productfields[hp->num_variables+2] = "";
 
     SEXP product = PROTECT(mkNamed(VECSXP, productfields));
-    SET_VECTOR_ELT(product, 0, mkstring("sourceproduct"));
-    SET_VECTOR_ELT(product, 1, mkstring("niks gebeurd!"));
+    SET_VECTOR_ELT(product, 0, mkstring(hp->source_product));
+    SET_VECTOR_ELT(product, 1, mkstring(hp->history));
 
     // add variables
     for(unsigned int i=0; i<hp->num_variables; i++) {
