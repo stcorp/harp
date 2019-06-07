@@ -48,8 +48,8 @@ void var_error(const char *varname, char *msg) {
 // create R variable from harp variable
 SEXP rharp_import_variable(harp_variable *hv) {
     // create variable (named list)
-    const char *varfields[] = {"name", "description", "unit", "data", "dimension", "type", ""};
-    int protected = 6;
+    const char *varfields[] = {"name", "description", "unit", "data", "dimension", "type", "enum", ""};
+    int protected = 7;
     SEXP var = PROTECT(mkNamed(VECSXP, varfields));
     SEXP array;
     const char *datatype;
@@ -126,6 +126,15 @@ SEXP rharp_import_variable(harp_variable *hv) {
     SEXP sdatatype = mkstring(datatype);
     SET_VECTOR_ELT(var, 5, sdatatype);
 
+    // set enum
+    if(hv->num_enum_values) {
+        SEXP senum = PROTECT(allocVector(STRSXP, hv->num_enum_values));
+        protected += 1;
+        for(unsigned int k=0; k<hv->num_enum_values; k++)
+            SET_STRING_ELT(senum, k, mkChar(hv->enum_name[k]));
+        SET_VECTOR_ELT(var, 6, senum);
+    }
+
     UNPROTECT(protected);
     return var;
 }
@@ -178,10 +187,17 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     if(sdimension == R_NilValue)
         var_error(name, "no 'dimension' field");
     if (TYPEOF(sdimension) != STRSXP)
-        var_error(name, "'dimension' element not a string");
+        var_error(name, "'dimension' field not a string vector");
     num_dims = length(sdimension);
     if(num_dims == 0)
         var_error(name, "empty 'dimension' vector");
+
+    // check 'enum' field
+    SEXP senum = rharp_named_element(var, "enum");
+    if(senum != R_NilValue) {
+        if (TYPEOF(senum) != STRSXP)
+            var_error(name, "'enum' field not a string vector");
+    }
 
     // get dimension types (reversing dimensions)
     for(unsigned int j = 0; j < num_dims; j++) {
@@ -237,6 +253,16 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     if(unit) {
         if(harp_variable_set_unit(hv, unit) != 0)
             rharp_error();
+    }
+
+    // set enum
+    if(length(senum)) {
+        const char **enumvals = (const char **)malloc(length(senum)*sizeof(const char *));
+        for(unsigned int i=0; i<length(senum); i++)
+            enumvals[i] = CHAR(STRING_ELT(senum, i));
+        if(harp_variable_set_enumeration_values(hv, length(senum), enumvals) != 0)
+            rharp_error();
+        free(enumvals);
     }
 
     return hv;
