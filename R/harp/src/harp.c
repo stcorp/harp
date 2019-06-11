@@ -47,8 +47,8 @@ void var_error(const char *varname, char *msg) {
 // create R variable from harp variable
 SEXP rharp_import_variable(harp_variable *hv) {
     // create variable (named list)
-    const char *varfields[] = {"name", "description", "unit", "data", "dimension", "type", "enum", ""};
-    int protected = 7;
+    const char *varfields[] = {"name", "description", "unit", "data", "dimension", "type", "enum", "valid_min", "valid_max", ""};
+    int protected = 6;
     SEXP var = PROTECT(mkNamed(VECSXP, varfields));
     SEXP array;
     const char *datatype;
@@ -60,36 +60,49 @@ SEXP rharp_import_variable(harp_variable *hv) {
         INTEGER(dim)[hv->num_dimensions-1-k] = hv->dimension[k];
     }
 
+    int int_valid_min, int_valid_max;
+    double double_valid_min, double_valid_max;
+
     // convert data
     if(hv->data_type == harp_type_int8) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int8_data[k];
         datatype = "integer";
+        int_valid_min = hv->valid_min.int8_data;
+        int_valid_max = hv->valid_max.int8_data;
     }
     else if(hv->data_type == harp_type_int16) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int16_data[k];
         datatype = "integer";
+        int_valid_min = hv->valid_min.int16_data;
+        int_valid_max = hv->valid_max.int16_data;
     }
     else if(hv->data_type == harp_type_int32) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int32_data[k];
         datatype = "integer";
+        int_valid_min = hv->valid_min.int32_data;
+        int_valid_max = hv->valid_max.int32_data;
     }
     else if(hv->data_type == harp_type_float) {
         PROTECT(array = Rf_allocArray(REALSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            REAL(array)[k] = hv->data.float_data[k];
         datatype = "real";
+        double_valid_min = hv->valid_min.float_data;
+        double_valid_max = hv->valid_max.float_data;
     }
     else if(hv->data_type == harp_type_double) {
         PROTECT(array = Rf_allocArray(REALSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            REAL(array)[k] = hv->data.double_data[k];
         datatype = "real";
+        double_valid_min = hv->valid_min.double_data;
+        double_valid_max = hv->valid_max.double_data;
     }
     else
         error("unsupported data type");
@@ -102,7 +115,6 @@ SEXP rharp_import_variable(harp_variable *hv) {
         SET_VECTOR_ELT(var, 1, mkstring(hv->description));
         protected += 1;
     }
-    SET_VECTOR_ELT(var, 0, mkstring(hv->name));
 
     // set unit
     if(hv->unit) {
@@ -122,8 +134,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
     SET_VECTOR_ELT(var, 4, dimension);
 
     // set type
-    SEXP sdatatype = mkstring(datatype);
-    SET_VECTOR_ELT(var, 5, sdatatype);
+    SET_VECTOR_ELT(var, 5, mkstring(datatype));
 
     // set enum
     if(hv->num_enum_values) {
@@ -132,6 +143,30 @@ SEXP rharp_import_variable(harp_variable *hv) {
         for(unsigned int k=0; k<hv->num_enum_values; k++)
             SET_STRING_ELT(senum, k, mkChar(hv->enum_name[k]));
         SET_VECTOR_ELT(var, 6, senum);
+    }
+
+    // set valid min/max
+    if(hv->data_type == harp_type_float || hv->data_type == harp_type_double) {
+        SEXP svalidmin = PROTECT(allocVector(REALSXP, 1));
+        protected += 1;
+        REAL(svalidmin)[0] = double_valid_min;
+        SET_VECTOR_ELT(var, 7, svalidmin);
+
+        SEXP svalidmax = PROTECT(allocVector(REALSXP, 1));
+        protected += 1;
+        REAL(svalidmax)[0] = double_valid_max;
+        SET_VECTOR_ELT(var, 8, svalidmax);
+    }
+    else {
+        SEXP svalidmin = PROTECT(allocVector(INTSXP, 1));
+        protected += 1;
+        INTEGER(svalidmin)[0] = int_valid_min;
+        SET_VECTOR_ELT(var, 7, svalidmin);
+
+        SEXP svalidmax = PROTECT(allocVector(INTSXP, 1));
+        protected += 1;
+        INTEGER(svalidmax)[0] = int_valid_max;
+        SET_VECTOR_ELT(var, 8, svalidmax);
     }
 
     UNPROTECT(protected);
