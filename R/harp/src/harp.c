@@ -260,8 +260,10 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
 
     // convert data
     datatype = TYPEOF(sdata);
-    if(datatype == INTSXP) {
-        harp_data_type hdatatype = harp_type_int32; // R has no smaller datatypes
+    harp_data_type hdatatype;
+
+    if(datatype == INTSXP) { // TODO check valid_min/max to determine datatype
+        hdatatype = harp_type_int32; // R has no smaller datatypes
 
         // use smallest datatype for enums
         if(length(senum)) {
@@ -286,7 +288,9 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
         }
     }
     else if (datatype == REALSXP) {
-        if(harp_variable_new(name, harp_type_double, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
+        hdatatype = harp_type_double; // R has no smaller datatype
+
+        if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
             rharp_error();
 
         for(unsigned int j=0; j<num_elements; j++)
@@ -315,6 +319,47 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
         if(harp_variable_set_enumeration_values(hv, length(senum), enumvals) != 0)
             rharp_error();
         free(enumvals);
+    }
+
+    // TODO check if hdatatype matches with valid_min/max data
+
+    // check 'valid_min' field
+    SEXP svalidmin = rharp_named_element(var, "valid_min");
+
+    // check 'valid_max' field
+    SEXP svalidmax = rharp_named_element(var, "valid_max");
+
+
+    // set valid min/max
+    if(hdatatype == harp_type_int8) {
+        if(svalidmin != R_NilValue)
+            hv->valid_min.int8_data = INTEGER(svalidmin)[0];
+        if(svalidmax != R_NilValue)
+            hv->valid_max.int8_data = INTEGER(svalidmax)[0];
+    }
+    else if(hdatatype == harp_type_int16) {
+        if(svalidmin != R_NilValue)
+            hv->valid_min.int16_data = INTEGER(svalidmin)[0];
+        if(svalidmax != R_NilValue)
+            hv->valid_max.int16_data = INTEGER(svalidmax)[0];
+    }
+    else if(hdatatype == harp_type_int32) {
+        if(svalidmin != R_NilValue)
+            hv->valid_min.int32_data = INTEGER(svalidmin)[0];
+        if(svalidmax != R_NilValue)
+            hv->valid_max.int32_data = INTEGER(svalidmax)[0];
+    }
+    else if(hdatatype == harp_type_float) {
+        if(svalidmin != R_NilValue)
+            hv->valid_min.float_data = REAL(svalidmin)[0];
+        if(svalidmax != R_NilValue)
+            hv->valid_max.float_data = REAL(svalidmax)[0];
+    }
+    else if(hdatatype == harp_type_double) {
+        if(svalidmin != R_NilValue)
+            hv->valid_min.double_data = REAL(svalidmin)[0];
+        if(svalidmax != R_NilValue)
+            hv->valid_max.double_data = REAL(svalidmax)[0];
     }
 
     return hv;
