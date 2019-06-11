@@ -4,7 +4,6 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 
-// TODO avoid dependency on enum order
 const char *dimension_name[6] = {
     "independent",
     "time",
@@ -227,14 +226,32 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     // convert data
     datatype = TYPEOF(sdata);
     if(datatype == INTSXP) {
-        if(harp_variable_new(name, harp_type_int32, num_dims, dim_type, dim, &hv) != 0) // TODO int8/16?
+        harp_data_type hdatatype = harp_type_int32; // R has no smaller datatypes
+
+        // use smallest datatype for enums
+        if(length(senum)) {
+            if(length(senum) < 1<<8)
+                hdatatype = harp_type_int8;
+            else if(length(senum) < 1<<16)
+                hdatatype = harp_type_int16;
+            else
+                hdatatype = harp_type_int32;
+        }
+
+        // create variable
+        if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0)
             rharp_error();
 
-        for(unsigned int j=0; j<num_elements; j++)
-            hv->data.int32_data[j] = INTEGER(sdata)[j];
+        // copy over data
+        for(unsigned int j=0; j<num_elements; j++) {
+            if(hdatatype == harp_type_int8)
+                hv->data.int8_data[j] = INTEGER(sdata)[j];
+            else
+                hv->data.int32_data[j] = INTEGER(sdata)[j];
+        }
     }
     else if (datatype == REALSXP) {
-        if(harp_variable_new(name, harp_type_double, num_dims, dim_type, dim, &hv) != 0) // TODO float?
+        if(harp_variable_new(name, harp_type_double, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
             rharp_error();
 
         for(unsigned int j=0; j<num_elements; j++)
