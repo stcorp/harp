@@ -19,8 +19,9 @@ Contents
    ingestions/index
    libharp
    idl
-   matlab 
+   matlab
    python
+   R
    tools
 
 What is HARP?
@@ -115,6 +116,13 @@ documentation`_ for details on how to install the cffi package.
 .. _cffi documentation: http://cffi.readthedocs.org/en/latest/installation.html
 
 .. _command-line-tools:
+
+R interface
+-----------
+
+The :doc:`HARP R interface <R>` provides a set of functions to import
+and export HARP products, and to ingest non-HARP products of a type supported by
+HARP from R.
 
 Command line tools
 ------------------
