@@ -1,4 +1,4 @@
 useDynLib(harp, .registration = TRUE, .fixes = "C_")
 
-export(import, export)
+export(import, export, version)
 

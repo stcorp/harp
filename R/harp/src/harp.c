@@ -484,6 +484,12 @@ SEXP rharp_export_product(SEXP product, SEXP sfilename, SEXP sformat) {
     return R_NilValue;
 }
 
+SEXP rharp_version() {
+    SEXP sversion = mkstring(libharp_version);
+    UNPROTECT(1);
+    return sversion;
+}
+
 SEXP rharp_init() {
     harp_init();
     return R_NilValue;
