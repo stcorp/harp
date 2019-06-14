@@ -233,6 +233,12 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
             var_error(name, "'enum' field not a string vector");
     }
 
+    // check 'valid_min' field
+    SEXP svalidmin = rharp_named_element(var, "valid_min");
+
+    // check 'valid_max' field
+    SEXP svalidmax = rharp_named_element(var, "valid_max");
+
     // get dimension types (reversing dimensions)
     for(unsigned int j = 0; j < num_dims; j++) {
         const char *dimname = CHAR(STRING_ELT(sdimension, j));
@@ -262,18 +268,39 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     datatype = TYPEOF(sdata);
     harp_data_type hdatatype;
 
-    if(datatype == INTSXP) { // TODO check valid_min/max to determine datatype
+    if(datatype == INTSXP) {
         hdatatype = harp_type_int32; // R has no smaller datatypes
 
-        // use smallest datatype for enums
-        if(length(senum)) {
-            if(length(senum) < 1<<8)
-                hdatatype = harp_type_int8;
-            else if(length(senum) < 1<<16)
-                hdatatype = harp_type_int16;
-            else
-                hdatatype = harp_type_int32;
+        // determine smallest fitting storage size
+        int min_value = 0;
+        int max_value = 0;
+
+        for(unsigned int j=0; j<num_elements; j++) {
+            int value = INTEGER(sdata)[j];
+            if(value < min_value)
+                min_value = value;
+            if(value > max_value)
+                max_value = value;
         }
+
+        if(svalidmin != R_NilValue) {
+            int validmin = INTEGER(svalidmin)[0];
+            if(validmin < min_value)
+                min_value = validmin;
+        }
+
+        if(svalidmax != R_NilValue) {
+            int validmax = INTEGER(svalidmax)[0];
+            if(validmax > max_value)
+                max_value = validmax;
+        }
+
+        if(min_value >= -128 && max_value <= 127)
+            hdatatype = harp_type_int8;
+        else if(min_value >= -32768 && max_value <= 32767)
+            hdatatype = harp_type_int16;
+        else
+            hdatatype = harp_type_int32;
 
         // create variable
         if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0)
@@ -283,6 +310,8 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
         for(unsigned int j=0; j<num_elements; j++) {
             if(hdatatype == harp_type_int8)
                 hv->data.int8_data[j] = INTEGER(sdata)[j];
+            else if(hdatatype == harp_type_int16)
+                hv->data.int16_data[j] = INTEGER(sdata)[j];
             else
                 hv->data.int32_data[j] = INTEGER(sdata)[j];
         }
@@ -320,15 +349,6 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
             rharp_error();
         free(enumvals);
     }
-
-    // TODO check if hdatatype matches with valid_min/max data
-
-    // check 'valid_min' field
-    SEXP svalidmin = rharp_named_element(var, "valid_min");
-
-    // check 'valid_max' field
-    SEXP svalidmax = rharp_named_element(var, "valid_max");
-
 
     // set valid min/max
     if(hdatatype == harp_type_int8) {
