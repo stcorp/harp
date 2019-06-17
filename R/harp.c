@@ -528,11 +528,13 @@ SEXP rharp_export_product(SEXP product, SEXP sfilename, SEXP sformat) {
 
         // set history
         else if(strcmp(attrname, "history") == 0) {
-            if(TYPEOF(elmt) != STRSXP || LENGTH(elmt) != 1)
-                error("'history' field not a string");
+            if(elmt != R_NilValue) {
+                if(TYPEOF(elmt) != STRSXP || LENGTH(elmt) != 1)
+                    error("'history' field not a string");
 
-            if(harp_product_set_history(hp, CHAR(STRING_ELT(elmt, 0))) != 0)
-                rharp_var_error(attrname);
+                if(harp_product_set_history(hp, CHAR(STRING_ELT(elmt, 0))) != 0)
+                    rharp_var_error(attrname);
+            }
         }
 
         // set variable
