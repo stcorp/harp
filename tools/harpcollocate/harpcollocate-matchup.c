@@ -627,75 +627,81 @@ static int collocation_info_update(collocation_info *info)
     }
 
     /* initialize sorted indices */
-    info->sorted_index_a = malloc(info->dataset_a->num_products * sizeof(long));
-    if (info->sorted_index_a == NULL)
+    if (info->dataset_a->num_products > 0)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->dataset_a->num_products * sizeof(long), __FILE__, __LINE__);
-        return -1;
-    }
-    for (i = 0; i < info->dataset_a->num_products; i++)
-    {
-        /* start with source_product ordering */
-        info->sorted_index_a[i] = info->dataset_a->sorted_index[i];
-
-        /* bubble down to make it sorted on datetime start/stop */
-        for (j = i; j > 0; j--)
+        info->sorted_index_a = malloc(info->dataset_a->num_products * sizeof(long));
+        if (info->sorted_index_a == NULL)
         {
-            harp_product_metadata *metadata = info->dataset_a->metadata[info->sorted_index_a[j]];
-            harp_product_metadata *metadata_prev = info->dataset_a->metadata[info->sorted_index_a[j - 1]];
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           info->dataset_a->num_products * sizeof(long), __FILE__, __LINE__);
+            return -1;
+        }
+        for (i = 0; i < info->dataset_a->num_products; i++)
+        {
+            /* start with source_product ordering */
+            info->sorted_index_a[i] = info->dataset_a->sorted_index[i];
 
-            if (metadata->datetime_start < metadata_prev->datetime_start ||
-                (metadata->datetime_start == metadata_prev->datetime_start &&
-                 metadata->datetime_stop < metadata_prev->datetime_stop))
+            /* bubble down to make it sorted on datetime start/stop */
+            for (j = i; j > 0; j--)
             {
-                long index = info->sorted_index_a[j - 1];
+                harp_product_metadata *metadata = info->dataset_a->metadata[info->sorted_index_a[j]];
+                harp_product_metadata *metadata_prev = info->dataset_a->metadata[info->sorted_index_a[j - 1]];
 
-                info->sorted_index_a[j - 1] = info->sorted_index_a[j];
-                info->sorted_index_a[j] = index;
+                if (metadata->datetime_start < metadata_prev->datetime_start ||
+                    (metadata->datetime_start == metadata_prev->datetime_start &&
+                     metadata->datetime_stop < metadata_prev->datetime_stop))
+                {
+                    long index = info->sorted_index_a[j - 1];
+
+                    info->sorted_index_a[j - 1] = info->sorted_index_a[j];
+                    info->sorted_index_a[j] = index;
+                }
             }
         }
     }
 
-    info->sorted_index_b = malloc(info->dataset_b->num_products * sizeof(long));
-    if (info->sorted_index_b == NULL)
+    if (info->dataset_b->num_products > 0)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->dataset_b->num_products * sizeof(long), __FILE__, __LINE__);
-        return -1;
-    }
-    for (i = 0; i < info->dataset_b->num_products; i++)
-    {
-        info->sorted_index_b[i] = info->dataset_b->sorted_index[i];
-
-        for (j = i; j > 0; j--)
+        info->sorted_index_b = malloc(info->dataset_b->num_products * sizeof(long));
+        if (info->sorted_index_b == NULL)
         {
-            harp_product_metadata *metadata = info->dataset_b->metadata[info->sorted_index_b[j]];
-            harp_product_metadata *metadata_prev = info->dataset_b->metadata[info->sorted_index_b[j - 1]];
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           info->dataset_b->num_products * sizeof(long), __FILE__, __LINE__);
+            return -1;
+        }
+        for (i = 0; i < info->dataset_b->num_products; i++)
+        {
+            info->sorted_index_b[i] = info->dataset_b->sorted_index[i];
 
-            if (metadata->datetime_start < metadata_prev->datetime_start ||
-                (metadata->datetime_start == metadata_prev->datetime_start &&
-                 metadata->datetime_stop < metadata_prev->datetime_stop))
+            for (j = i; j > 0; j--)
             {
-                long index = info->sorted_index_b[j - 1];
+                harp_product_metadata *metadata = info->dataset_b->metadata[info->sorted_index_b[j]];
+                harp_product_metadata *metadata_prev = info->dataset_b->metadata[info->sorted_index_b[j - 1]];
 
-                info->sorted_index_b[j - 1] = info->sorted_index_b[j];
-                info->sorted_index_b[j] = index;
+                if (metadata->datetime_start < metadata_prev->datetime_start ||
+                    (metadata->datetime_start == metadata_prev->datetime_start &&
+                     metadata->datetime_stop < metadata_prev->datetime_stop))
+                {
+                    long index = info->sorted_index_b[j - 1];
+
+                    info->sorted_index_b[j - 1] = info->sorted_index_b[j];
+                    info->sorted_index_b[j] = index;
+                }
             }
         }
-    }
 
-    /* initialized product_b array */
-    info->product_b = malloc(info->dataset_b->num_products * sizeof(harp_product *));
-    if (info->product_b == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->dataset_b->num_products * sizeof(harp_product *), __FILE__, __LINE__);
-        return -1;
-    }
-    for (i = 0; i < info->dataset_b->num_products; i++)
-    {
-        info->product_b[i] = NULL;
+        /* initialized product_b array */
+        info->product_b = malloc(info->dataset_b->num_products * sizeof(harp_product *));
+        if (info->product_b == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           info->dataset_b->num_products * sizeof(harp_product *), __FILE__, __LINE__);
+            return -1;
+        }
+        for (i = 0; i < info->dataset_b->num_products; i++)
+        {
+            info->product_b[i] = NULL;
+        }
     }
 
     /* set the differences for the collocation result */
@@ -1555,14 +1561,14 @@ int matchup(int argc, char *argv[])
         return -1;
     }
 
+    if (collocation_info_update(info) != 0)
+    {
+        collocation_info_delete(info);
+        return -1;
+    }
+
     if (info->dataset_a->num_products > 0 && info->dataset_b->num_products > 0)
     {
-        if (collocation_info_update(info) != 0)
-        {
-            collocation_info_delete(info);
-            return -1;
-        }
-
         if (perform_matchup(info) != 0)
         {
             collocation_info_delete(info);
