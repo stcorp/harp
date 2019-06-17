@@ -1,7 +1,9 @@
+import codecs
 import os
 import subprocess
 import time
 import unittest
+import sys
 
 import numpy
 
@@ -42,8 +44,8 @@ class TestRBindings(unittest.TestCase):
         """)
 
         self.assertEqual(len(out), 2)
-        self.assertEqual(out[0], '[1] "unittest.nc"')
-        self.assertEqual(out[1], 'NULL') # TODO why does export do this
+        self.assertEqual(out[0], b'[1] "unittest.nc"')
+        self.assertEqual(out[1], b'NULL') # TODO why does export do this
 
         # EXPORT
         with self.assertRaises(harp.NoDataError): # TODO why the exception..?
@@ -65,11 +67,11 @@ class TestRBindings(unittest.TestCase):
         """)
 
         self.assertEqual(len(out), 5)
-        self.assertEqual(out[0], '[1] "temp"')
-        self.assertEqual(out[1], '[1] "time"')
-        self.assertEqual(out[2], '[1] "float"')
-        self.assertEqual(out[3], '[1]  7.7  8.7  9.7 10.7')
-        self.assertEqual(out[4], 'NULL') # TODO why does export do this
+        self.assertEqual(out[0], b'[1] "temp"')
+        self.assertEqual(out[1], b'[1] "time"')
+        self.assertEqual(out[2], b'[1] "float"')
+        self.assertEqual(out[3], b'[1]  7.7  8.7  9.7 10.7')
+        self.assertEqual(out[4], b'NULL') # TODO why does export do this
 
         # EXPORT
         product = harp.import_product("export.nc")
@@ -87,6 +89,8 @@ class TestRBindings(unittest.TestCase):
         product = harp.Product()
         product.strings = harp.Variable(numpy.array(("foo", "bar", "baz")), ["time"])
         harp.export_product(product, "unittest.nc")
+
+        # IMPORT
         out, err = self.import_export("""
             print(p$strings$name)
             print(p$strings$dimension)
@@ -95,11 +99,11 @@ class TestRBindings(unittest.TestCase):
         """)
 
         self.assertEqual(len(out), 5)
-        self.assertEqual(out[0], '[1] "strings"')
-        self.assertEqual(out[1], '[1] "time"')
-        self.assertEqual(out[2], '[1] "string"')
-        self.assertEqual(out[3], '[1] "foo" "bar" "baz"')
-        self.assertEqual(out[4], 'NULL') # TODO why does export do this
+        self.assertEqual(out[0], b'[1] "strings"')
+        self.assertEqual(out[1], b'[1] "time"')
+        self.assertEqual(out[2], b'[1] "string"')
+        self.assertEqual(out[3], b'[1] "foo" "bar" "baz"')
+        self.assertEqual(out[4], b'NULL') # TODO why does export do this
 
         # EXPORT
         product = harp.import_product("export.nc")
@@ -109,3 +113,33 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(var.data[0], 'foo')
         self.assertEqual(var.data[1], 'bar')
         self.assertEqual(var.data[2], 'baz')
+
+    def testUnicode(self):
+        """Check unicode support"""
+
+        if sys.hexversion < 0x03000000:
+            raise unittest.SkipTest("no automatic encoding/decoding for python2")
+
+        harp.set_encoding('utf-8')
+
+        toshio, maeda = u'\u524d\u7530', u'\u4fca\u592b'
+
+        product = harp.Product()
+        product.strings = harp.Variable(numpy.array((toshio, maeda)), ["time"])
+        harp.export_product(product, "unittest.nc")
+
+        # IMPORT
+        out, err = self.import_export("""
+            print(p$strings$data)
+        """)
+
+        self.assertEqual(len(out), 2)
+        self.assertEqual(out[0], codecs.encode('[1] "%s" "%s"' % (toshio, maeda)), 'utf-8')
+        self.assertEqual(out[1], b'NULL')
+
+        # EXPORT
+        product = harp.import_product("export.nc")
+        var = product.strings
+        self.assertEqual(var.data.size, 2)
+        self.assertEqual(var.data[0], toshio)
+        self.assertEqual(var.data[1], maeda)
