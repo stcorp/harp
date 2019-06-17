@@ -1,4 +1,6 @@
-1.7 2019-05-28
+* Update to GEOMS MWR product ingestion.
+
+1.7 2019-06-06
 ~~~~~~~~~~~~~~
 
 * Added --no-history option to harpconvert, hardump, and harpmerge.
@@ -18,7 +20,8 @@
 * Fixed invalid results when using bin_spatial with latitude_bounds {time,2}
   and longitude_bounds {time,2} variables (i.e. range instead of polygon).
 
-* Fixed invalid array transpose in HARP MATLAB interface.
+* Fixed array ordering in MATLAB interface. Multi-dimensional arrays are now
+  represented from fastest running to slowest (=fortran ordering) as intended.
 
 * Update to S5P L2 product ingestion.
 

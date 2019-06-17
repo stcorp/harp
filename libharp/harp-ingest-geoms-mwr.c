@@ -818,7 +818,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic standard deviation of the %s volume mixing ratio",
              gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description,
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description,
          version == 1 ? "ppv" : "ppmv", NULL,
          version == 1 ? read_vmr_relerr_systematic : read_vmr_uncertainty_systematic);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.MIXING.RATIO%s_EMISSION_UNCERTAINTY.SYSTEMATIC%s", gas_name[gas],
