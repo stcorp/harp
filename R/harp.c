@@ -13,6 +13,14 @@ const char *dimension_name[6] = {
     "spectral",
 };
 
+const char *data_types[5] = {
+    "int8",
+    "int16",
+    "int32",
+    "float",
+    "double",
+};
+
 // make R "string" (string vector of length 1)
 SEXP mkstring(const char *x) {
     SEXP str = PROTECT(allocVector(STRSXP, 1));
@@ -240,13 +248,21 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     // check 'valid_max' field
     SEXP svalidmax = rharp_named_element(var, "valid_max");
 
-    // check 'data' field
+    // check 'type' field
     SEXP stype = rharp_named_element(var, "type");
     if(stype != R_NilValue) {
-       if (TYPEOF(stype) != STRSXP || LENGTH(stype) != 1)
+        if (TYPEOF(stype) != STRSXP || LENGTH(stype) != 1)
             var_error(name, "'type' field not a string");
         dtype = CHAR(STRING_ELT(stype, 0));
-        // TODO check valid
+        int found = 0;
+        for(unsigned int k = 0; k < 5; k++) {
+            if(strcmp(dtype, data_types[k]) == 0) {
+                found = 1;
+                break;
+            }
+        }
+        if(!found)
+            var_error(name, "unknown data type");
     }
 
     // get dimension types (reversing dimensions)
@@ -257,6 +273,7 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
             if(strcmp(dimname, dimension_name[k]) == 0) {
                 dim_type[num_dims-1-j] = k-1;
                 found = 1;
+                break;
             }
         }
         if(!found)
@@ -408,6 +425,7 @@ SEXP rharp_import_product(SEXP sname, SEXP soperations, SEXP soptions) {
     const char *filename;
     const char *operations = NULL;
     const char *options = NULL;
+    int protected = 1;
 
     // check filename
     if(TYPEOF(sname) != STRSXP || LENGTH(sname) != 1)
@@ -442,8 +460,14 @@ SEXP rharp_import_product(SEXP sname, SEXP soperations, SEXP soptions) {
     productfields[hp->num_variables+2] = "";
 
     SEXP product = PROTECT(mkNamed(VECSXP, productfields));
-    SET_VECTOR_ELT(product, 0, mkstring(hp->source_product));
-    SET_VECTOR_ELT(product, 1, mkstring(hp->history));
+    if(hp->source_product) {
+        SET_VECTOR_ELT(product, 0, mkstring(hp->source_product));
+        protected += 1;
+    }
+    if(hp->history) {
+        SET_VECTOR_ELT(product, 1, mkstring(hp->history));
+        protected += 1;
+    }
 
     // add variables
     for(unsigned int i=0; i<hp->num_variables; i++) {
@@ -453,7 +477,7 @@ SEXP rharp_import_product(SEXP sname, SEXP soperations, SEXP soptions) {
     }
 
     // cleanup
-    UNPROTECT(3);
+    UNPROTECT(protected);
     free(productfields);
 
     return product;
