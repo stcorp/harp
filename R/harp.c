@@ -369,6 +369,16 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
                 hv->data.double_data[j] = REAL(sdata)[j];
         }
     }
+    else if (datatype == STRSXP) {
+        hdatatype = harp_type_string;
+
+        if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
+            rharp_error();
+
+        for(unsigned int j=0; j<num_elements; j++) {
+            hv->data.string_data[j] = strdup(CHAR(STRING_ELT(sdata, j)));
+        }
+    }
     else
         var_error(name, "unsupported data type");
 
