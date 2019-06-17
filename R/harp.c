@@ -68,7 +68,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int8_data[k];
-        datatype = "integer";
+        datatype = "int8";
         int_valid_min = hv->valid_min.int8_data;
         int_valid_max = hv->valid_max.int8_data;
     }
@@ -76,7 +76,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int16_data[k];
-        datatype = "integer";
+        datatype = "int16";
         int_valid_min = hv->valid_min.int16_data;
         int_valid_max = hv->valid_max.int16_data;
     }
@@ -84,7 +84,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
         PROTECT(array = Rf_allocArray(INTSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            INTEGER(array)[k] = hv->data.int32_data[k];
-        datatype = "integer";
+        datatype = "int32";
         int_valid_min = hv->valid_min.int32_data;
         int_valid_max = hv->valid_max.int32_data;
     }
@@ -92,7 +92,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
         PROTECT(array = Rf_allocArray(REALSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            REAL(array)[k] = hv->data.float_data[k];
-        datatype = "real";
+        datatype = "float";
         double_valid_min = hv->valid_min.float_data;
         double_valid_max = hv->valid_max.float_data;
     }
@@ -100,7 +100,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
         PROTECT(array = Rf_allocArray(REALSXP, dim));
         for(int k=0; k<hv->num_elements; k++)
            REAL(array)[k] = hv->data.double_data[k];
-        datatype = "real";
+        datatype = "double";
         double_valid_min = hv->valid_min.double_data;
         double_valid_max = hv->valid_max.double_data;
     }
@@ -180,6 +180,7 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     harp_dimension_type dim_type[HARP_MAX_NUM_DIMS];
     int num_dims = 0;
     const char *description = NULL;
+    const char *dtype;
     const char *unit = NULL;
     int num_elements = 0;
     int datatype;
@@ -238,6 +239,15 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
 
     // check 'valid_max' field
     SEXP svalidmax = rharp_named_element(var, "valid_max");
+
+    // check 'data' field
+    SEXP stype = rharp_named_element(var, "type");
+    if(stype != R_NilValue) {
+       if (TYPEOF(stype) != STRSXP || LENGTH(stype) != 1)
+            var_error(name, "'type' field not a string");
+        dtype = CHAR(STRING_ELT(stype, 0));
+        // TODO check valid
+    }
 
     // get dimension types (reversing dimensions)
     for(unsigned int j = 0; j < num_dims; j++) {
@@ -319,11 +329,18 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     else if (datatype == REALSXP) {
         hdatatype = harp_type_double; // R has no smaller datatype
 
+        if (stype != R_NilValue && strcmp(dtype, "float") == 0)
+            hdatatype = harp_type_float;
+
         if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
             rharp_error();
 
-        for(unsigned int j=0; j<num_elements; j++)
-            hv->data.double_data[j] = REAL(sdata)[j];
+        for(unsigned int j=0; j<num_elements; j++) {
+            if(hdatatype == harp_type_float)
+                hv->data.float_data[j] = REAL(sdata)[j];
+            else
+                hv->data.double_data[j] = REAL(sdata)[j];
+        }
     }
     else
         var_error(name, "unsupported data type");
