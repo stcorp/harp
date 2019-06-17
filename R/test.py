@@ -22,7 +22,7 @@ class TestRBindings(unittest.TestCase):
         f.write('library(harp)\n')
         f.write('p <- harp::import("unittest.nc")\n')
         f.write(code)
-        f.write('harp::export(p, "export.nc")\n')
+        f.write('x <- harp::export(p, "export.nc")\n') # x captures NULL from stdout
         f.close()
 
         p = subprocess.Popen(['Rscript', 'script.R'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -43,9 +43,8 @@ class TestRBindings(unittest.TestCase):
             print(p$source_product)
         """)
 
-        self.assertEqual(len(out), 2)
+        self.assertEqual(len(out), 1)
         self.assertEqual(out[0], b'[1] "unittest.nc"')
-        self.assertEqual(out[1], b'NULL') # TODO why does export do this
 
         # EXPORT
         with self.assertRaises(harp.NoDataError): # TODO why the exception..?
@@ -66,12 +65,11 @@ class TestRBindings(unittest.TestCase):
             print(p$temp$data)
         """)
 
-        self.assertEqual(len(out), 5)
+        self.assertEqual(len(out), 4)
         self.assertEqual(out[0], b'[1] "temp"')
         self.assertEqual(out[1], b'[1] "time"')
         self.assertEqual(out[2], b'[1] "float"')
         self.assertEqual(out[3], b'[1]  7.7  8.7  9.7 10.7')
-        self.assertEqual(out[4], b'NULL') # TODO why does export do this
 
         # EXPORT
         product = harp.import_product("export.nc")
@@ -98,12 +96,11 @@ class TestRBindings(unittest.TestCase):
             print(p$strings$data)
         """)
 
-        self.assertEqual(len(out), 5)
+        self.assertEqual(len(out), 4)
         self.assertEqual(out[0], b'[1] "strings"')
         self.assertEqual(out[1], b'[1] "time"')
         self.assertEqual(out[2], b'[1] "string"')
         self.assertEqual(out[3], b'[1] "foo" "bar" "baz"')
-        self.assertEqual(out[4], b'NULL') # TODO why does export do this
 
         # EXPORT
         product = harp.import_product("export.nc")
@@ -133,9 +130,8 @@ class TestRBindings(unittest.TestCase):
             print(p$strings$data)
         """)
 
-        self.assertEqual(len(out), 2)
+        self.assertEqual(len(out), 1)
         self.assertEqual(out[0], codecs.encode('[1] "%s" "%s"' % (toshio, maeda)), 'utf-8')
-        self.assertEqual(out[1], b'NULL')
 
         # EXPORT
         product = harp.import_product("export.nc")
