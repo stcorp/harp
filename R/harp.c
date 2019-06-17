@@ -13,12 +13,13 @@ const char *dimension_name[6] = {
     "spectral",
 };
 
-const char *data_types[5] = {
+const char *data_types[6] = {
     "int8",
     "int16",
     "int32",
     "float",
     "double",
+    "string",
 };
 
 // make R "string" (string vector of length 1)
@@ -112,6 +113,12 @@ SEXP rharp_import_variable(harp_variable *hv) {
         double_valid_min = hv->valid_min.double_data;
         double_valid_max = hv->valid_max.double_data;
     }
+    else if(hv->data_type == harp_type_string) {
+        PROTECT(array = Rf_allocArray(STRSXP, dim));
+        for(int k=0; k<hv->num_elements; k++)
+           SET_STRING_ELT(array, k, mkChar(hv->data.string_data[k]));
+        datatype = "string";
+    }
     else
         error("unsupported data type");
 
@@ -154,7 +161,8 @@ SEXP rharp_import_variable(harp_variable *hv) {
     }
 
     // set valid min/max
-    if(hv->data_type == harp_type_float || hv->data_type == harp_type_double) {
+    if(hv->data_type == harp_type_float ||
+       hv->data_type == harp_type_double) {
         SEXP svalidmin = PROTECT(allocVector(REALSXP, 1));
         protected += 1;
         REAL(svalidmin)[0] = double_valid_min;
@@ -165,7 +173,9 @@ SEXP rharp_import_variable(harp_variable *hv) {
         REAL(svalidmax)[0] = double_valid_max;
         SET_VECTOR_ELT(var, 8, svalidmax);
     }
-    else {
+    else if (hv->data_type == harp_type_int8 ||
+             hv->data_type == harp_type_int16 ||
+             hv->data_type == harp_type_int32) {
         SEXP svalidmin = PROTECT(allocVector(INTSXP, 1));
         protected += 1;
         INTEGER(svalidmin)[0] = int_valid_min;
@@ -255,7 +265,7 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
             var_error(name, "'type' field not a string");
         dtype = CHAR(STRING_ELT(stype, 0));
         int found = 0;
-        for(unsigned int k = 0; k < 5; k++) {
+        for(unsigned int k = 0; k < 6; k++) {
             if(strcmp(dtype, data_types[k]) == 0) {
                 found = 1;
                 break;

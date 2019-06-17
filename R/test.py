@@ -14,7 +14,7 @@ class TestRBindings(unittest.TestCase):
     def teardown(self):
         os.system('rm -f unittest.nc script.R')
 
-    def check_R(self, code):
+    def import_R(self, code):
         f = open("script.R", "w")
         f.write('library(harp)\n')
         f.write('p <- harp::import("unittest.nc")\n')
@@ -28,14 +28,14 @@ class TestRBindings(unittest.TestCase):
         return out.splitlines(), err.splitlines()
 
     def testSimplestProduct(self):
-        """check simplest product"""
+        """Check simplest product"""
 
         # create empty product
         product = harp.Product()
         harp.export_product(product, "unittest.nc")
 
-        # import/export from R
-        out, err = self.check_R("""
+        # import from R
+        out, err = self.import_R("""
             print(p$source_product)
         """)
 
@@ -43,14 +43,14 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(out[0], '[1] "unittest.nc"')
 
     def testSimplestVariable(self):
-        """check simplest variable"""
+        """Check simplest variable"""
 
         product = harp.Product()
         product.temp = harp.Variable(numpy.array([7.7,8.7,9.7,10.7], dtype=numpy.float32), ["time"])
         harp.export_product(product, "unittest.nc")
 
-        # import/export from R
-        out, err = self.check_R("""
+        # import from R
+        out, err = self.import_R("""
             print(p$temp$name)
             print(p$temp$dimension)
             print(p$temp$type)
@@ -64,12 +64,12 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(out[3], '[1]  7.7  8.7  9.7 10.7')
 
     def testStringVariable(self):
-        """check string variable"""
+        """Check string variable"""
 
         product = harp.Product()
         product.strings = harp.Variable(numpy.array(("foo", "bar", "baz")), ["time"])
         harp.export_product(product, "unittest.nc")
-        out, err = self.check_R("""
+        out, err = self.import_R("""
             print(p$strings$name)
             print(p$strings$dimension)
             print(p$strings$type)
