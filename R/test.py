@@ -1,5 +1,6 @@
 import os
 import subprocess
+import time
 import unittest
 
 import numpy
@@ -35,7 +36,7 @@ class TestRBindings(unittest.TestCase):
         product = harp.Product()
         harp.export_product(product, "unittest.nc")
 
-        # check import
+        # IMPORT
         out, err = self.import_export("""
             print(p$source_product)
         """)
@@ -44,6 +45,10 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(out[0], '[1] "unittest.nc"')
         self.assertEqual(out[1], 'NULL') # TODO why does export do this
 
+        # EXPORT
+        with self.assertRaises(harp.NoDataError): # TODO why the exception..?
+            harp.import_product("export.nc")
+
     def testSimplestVariable(self):
         """Check simplest variable"""
 
@@ -51,7 +56,7 @@ class TestRBindings(unittest.TestCase):
         product.temp = harp.Variable(numpy.array([7.7,8.7,9.7,10.7], dtype=numpy.float32), ["time"])
         harp.export_product(product, "unittest.nc")
 
-        # check import
+        # IMPORT
         out, err = self.import_export("""
             print(p$temp$name)
             print(p$temp$dimension)
@@ -65,6 +70,16 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(out[2], '[1] "float"')
         self.assertEqual(out[3], '[1]  7.7  8.7  9.7 10.7')
         self.assertEqual(out[4], 'NULL') # TODO why does export do this
+
+        # EXPORT
+        product = harp.import_product("export.nc")
+        var = product.temp
+        self.assertEqual(var.dimension, ['time'])
+        self.assertEqual(var.data.size, 4)
+        self.assertLess(abs(var.data[0]-7.7), 0.001)
+        self.assertLess(abs(var.data[1]-8.7), 0.001)
+        self.assertLess(abs(var.data[2]-9.7), 0.001)
+        self.assertLess(abs(var.data[3]-10.7), 0.001)
 
     def testStringVariable(self):
         """Check string variable"""
@@ -85,3 +100,12 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(out[2], '[1] "string"')
         self.assertEqual(out[3], '[1] "foo" "bar" "baz"')
         self.assertEqual(out[4], 'NULL') # TODO why does export do this
+
+        # EXPORT
+        product = harp.import_product("export.nc")
+        var = product.strings
+        self.assertEqual(var.dimension, ['time'])
+        self.assertEqual(var.data.size, 3)
+        self.assertEqual(var.data[0], 'foo')
+        self.assertEqual(var.data[1], 'bar')
+        self.assertEqual(var.data[2], 'baz')
