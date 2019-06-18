@@ -28,7 +28,7 @@ class TestRBindings(unittest.TestCase):
         out, err = p.communicate()
         self.assertEqual(p.returncode, 0)
 
-        return out.splitlines(), err.splitlines()
+        return [l.strip() for l in out.splitlines()], [l.strip() for l in err.splitlines()]
 
     def testSimplestProduct(self):
         """Check simplest product"""
@@ -163,3 +163,29 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(var.data.size, 24)
         for x in range(24):
             self.assertEqual(var.data[x], x+1)
+
+    def testMultiDimensional(self):
+        """Check multiple dimensions"""
+
+        product = harp.Product()
+        product.blah = harp.Variable(numpy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]], dtype=numpy.int32),
+                                                    ["time", "vertical", "latitude"])
+        harp.export_product(product, "unittest.nc")
+
+        # IMPORT
+        out, err = self.run_script("""
+            p <- harp::import("unittest.nc")
+            print(p$blah$name)
+            print(p$blah$type)
+            print(p$blah$dimension)
+            print(dim(p$blah$data))
+            print(p$blah$data[1, 2, 2])
+            x <- harp::export(p, "export.nc")
+        """)
+
+        self.assertEqual(len(out), 5)
+        self.assertEqual(out[0], b'[1] "blah"')
+        self.assertEqual(out[1], b'[1] "int32"')
+        self.assertEqual(out[2], b'[1] "latitude" "vertical" "time"') # swapped because of row-major-minor mismatch
+        self.assertEqual(out[3], b'[1] 2 2 2')
+        self.assertEqual(out[4], b'[1] 7')
