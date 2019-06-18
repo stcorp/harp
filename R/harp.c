@@ -59,68 +59,103 @@ SEXP rharp_import_variable(harp_variable *hv) {
     const char *varfields[] = {"name", "description", "unit", "data", "dimension", "type", "enum", "valid_min", "valid_max", ""};
     int protected = 6;
     SEXP var = PROTECT(mkNamed(VECSXP, varfields));
-    SEXP array;
+    SEXP data;
     const char *datatype;
-
-    // reverse dimensions because of row-major/minor mismatch
-    SEXP dim;
-    PROTECT(dim = Rf_allocVector(INTSXP, hv->num_dimensions));
-    for(unsigned int k=0; k<hv->num_dimensions; k++) {
-        INTEGER(dim)[hv->num_dimensions-1-k] = hv->dimension[k];
-    }
-
     int int_valid_min, int_valid_max;
     double double_valid_min, double_valid_max;
 
-    // convert data
     if(hv->data_type == harp_type_int8) {
-        PROTECT(array = Rf_allocArray(INTSXP, dim));
-        for(int k=0; k<hv->num_elements; k++)
-           INTEGER(array)[k] = hv->data.int8_data[k];
-        datatype = "int8";
         int_valid_min = hv->valid_min.int8_data;
         int_valid_max = hv->valid_max.int8_data;
-    }
-    else if(hv->data_type == harp_type_int16) {
-        PROTECT(array = Rf_allocArray(INTSXP, dim));
-        for(int k=0; k<hv->num_elements; k++)
-           INTEGER(array)[k] = hv->data.int16_data[k];
-        datatype = "int16";
+        datatype = "int8";
+    } else if(hv->data_type == harp_type_int16) {
         int_valid_min = hv->valid_min.int16_data;
         int_valid_max = hv->valid_max.int16_data;
-    }
-    else if(hv->data_type == harp_type_int32) {
-        PROTECT(array = Rf_allocArray(INTSXP, dim));
-        for(int k=0; k<hv->num_elements; k++)
-           INTEGER(array)[k] = hv->data.int32_data[k];
-        datatype = "int32";
+        datatype = "int16";
+    } else if(hv->data_type == harp_type_int32) {
         int_valid_min = hv->valid_min.int32_data;
         int_valid_max = hv->valid_max.int32_data;
-    }
-    else if(hv->data_type == harp_type_float) {
-        PROTECT(array = Rf_allocArray(REALSXP, dim));
-        for(int k=0; k<hv->num_elements; k++)
-           REAL(array)[k] = hv->data.float_data[k];
-        datatype = "float";
+        datatype = "int32";
+    } else if(hv->data_type == harp_type_float) {
         double_valid_min = hv->valid_min.float_data;
         double_valid_max = hv->valid_max.float_data;
-    }
-    else if(hv->data_type == harp_type_double) {
-        PROTECT(array = Rf_allocArray(REALSXP, dim));
-        for(int k=0; k<hv->num_elements; k++)
-           REAL(array)[k] = hv->data.double_data[k];
-        datatype = "double";
+        datatype = "float";
+    } else if(hv->data_type == harp_type_double) {
         double_valid_min = hv->valid_min.double_data;
         double_valid_max = hv->valid_max.double_data;
-    }
-    else if(hv->data_type == harp_type_string) {
-        PROTECT(array = Rf_allocArray(STRSXP, dim));
-        for(int k=0; k<hv->num_elements; k++)
-           SET_STRING_ELT(array, k, mkChar(hv->data.string_data[k]));
+        datatype = "double";
+    } else if(hv->data_type == harp_type_string) {
         datatype = "string";
     }
     else
-        error("unsupported data type");
+        var_error(hv->name, "unsupported data type");
+
+    if(hv->num_dimensions == 0) {
+        // scalar
+        // TODO check num_elements
+        if(hv->num_elements != 1)
+            var_error(hv->name, "not exactly 1 element for scalar");
+
+        if(hv->data_type == harp_type_int8) {
+            data = PROTECT(allocVector(INTSXP, 1));
+            INTEGER(data)[0] = hv->data.int8_data[0];
+        } else if(hv->data_type == harp_type_int16) {
+            data = PROTECT(allocVector(INTSXP, 1));
+            INTEGER(data)[0] = hv->data.int16_data[0];
+        } else if(hv->data_type == harp_type_int32) {
+            data = PROTECT(allocVector(INTSXP, 1));
+            INTEGER(data)[0] = hv->data.int32_data[0];
+        } else if(hv->data_type == harp_type_float) {
+            data = PROTECT(allocVector(REALSXP, 1));
+            REAL(data)[0] = hv->data.double_data[0];
+        } else if(hv->data_type == harp_type_double) {
+            data = PROTECT(allocVector(REALSXP, 1));
+            REAL(data)[0] = hv->data.double_data[0];
+        } else if(hv->data_type == harp_type_int8) {
+            data = PROTECT(allocVector(STRSXP, 1));
+            SET_STRING_ELT(data, 0, mkChar(hv->data.string_data[0]));
+        }
+
+    } else {
+        // array: reverse dimensions because of row-major/minor mismatch
+        SEXP dim;
+        PROTECT(dim = Rf_allocVector(INTSXP, hv->num_dimensions));
+        for(unsigned int k=0; k<hv->num_dimensions; k++) {
+            INTEGER(dim)[hv->num_dimensions-1-k] = hv->dimension[k];
+        }
+
+        // convert data
+        if(hv->data_type == harp_type_int8) {
+            PROTECT(data = Rf_allocArray(INTSXP, dim));
+            for(int k=0; k<hv->num_elements; k++)
+               INTEGER(data)[k] = hv->data.int8_data[k];
+        }
+        else if(hv->data_type == harp_type_int16) {
+            PROTECT(data = Rf_allocArray(INTSXP, dim));
+            for(int k=0; k<hv->num_elements; k++)
+               INTEGER(data)[k] = hv->data.int16_data[k];
+        }
+        else if(hv->data_type == harp_type_int32) {
+            PROTECT(data = Rf_allocArray(INTSXP, dim));
+            for(int k=0; k<hv->num_elements; k++)
+               INTEGER(data)[k] = hv->data.int32_data[k];
+        }
+        else if(hv->data_type == harp_type_float) {
+            PROTECT(data = Rf_allocArray(REALSXP, dim));
+            for(int k=0; k<hv->num_elements; k++)
+               REAL(data)[k] = hv->data.float_data[k];
+        }
+        else if(hv->data_type == harp_type_double) {
+            PROTECT(data = Rf_allocArray(REALSXP, dim));
+            for(int k=0; k<hv->num_elements; k++)
+               REAL(data)[k] = hv->data.double_data[k];
+        }
+        else if(hv->data_type == harp_type_string) {
+            PROTECT(data = Rf_allocArray(STRSXP, dim));
+            for(int k=0; k<hv->num_elements; k++)
+               SET_STRING_ELT(data, k, mkChar(hv->data.string_data[k]));
+        }
+    }
 
     // set name
     SET_VECTOR_ELT(var, 0, mkstring(hv->name));
@@ -138,7 +173,7 @@ SEXP rharp_import_variable(harp_variable *hv) {
     }
 
     // set data 
-    SET_VECTOR_ELT(var, 3, array);
+    SET_VECTOR_ELT(var, 3, data);
 
     // set dimension
     SEXP dimension = PROTECT(allocVector(STRSXP, hv->num_dimensions));

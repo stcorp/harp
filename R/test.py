@@ -84,6 +84,23 @@ class TestRBindings(unittest.TestCase):
         self.assertLess(abs(var.data[2]-9.7), 0.001)
         self.assertLess(abs(var.data[3]-10.7), 0.001)
 
+    def testExportNewProduct(self):
+        """Check new product generation"""
+
+        # EXPORT
+        self.run_script("""
+            p <- list(myvar=list(dimension=c("time"), data=array(1:24)))
+            harp::export(p, "export.nc")
+        """)
+
+        product = harp.import_product("export.nc")
+
+        var = product.myvar
+        self.assertEqual(var.dimension, ['time'])
+        self.assertEqual(var.data.size, 24)
+        for x in range(24):
+            self.assertEqual(var.data[x], x+1)
+
     def testStringVariable(self):
         """Check string variable"""
 
@@ -116,7 +133,7 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(var.data[1], 'bar')
         self.assertEqual(var.data[2], 'baz')
 
-    def testUnicode(self):
+    def testUnicode(self): # TODO force/convert utf-8 on export
         """Check unicode support"""
 
         if sys.hexversion < 0x03000000:
@@ -147,25 +164,8 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(var.data[0], toshio)
         self.assertEqual(var.data[1], maeda)
 
-    def testExportNewProduct(self):
-        """Check new product generation"""
-
-        # EXPORT
-        self.run_script("""
-            p <- list(myvar=list(dimension=c("time"), data=array(1:24)))
-            harp::export(p, "export.nc")
-        """)
-
-        product = harp.import_product("export.nc")
-
-        var = product.myvar
-        self.assertEqual(var.dimension, ['time'])
-        self.assertEqual(var.data.size, 24)
-        for x in range(24):
-            self.assertEqual(var.data[x], x+1)
-
     def testMultiDimensional(self):
-        """Check multiple dimensions"""
+        """Check multi-dimensional variable"""
 
         product = harp.Product()
         product.blah = harp.Variable(numpy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]], dtype=numpy.int32),
@@ -189,3 +189,23 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(out[2], b'[1] "latitude" "vertical" "time"') # swapped because of row-major-minor mismatch
         self.assertEqual(out[3], b'[1] 2 2 2')
         self.assertEqual(out[4], b'[1] 7')
+
+        # TODO export
+
+    def testZeroDimensional(self):
+        """Check zero-dimensional variable"""
+
+        product = harp.Product()
+        product.datetime_length = harp.Variable(numpy.array(12.13, dtype=numpy.double), [], unit='s')
+        harp.export_product(product, "unittest.nc")
+
+        # IMPORT
+        out, err = self.run_script("""
+            p <- harp::import("unittest.nc")
+            print(p$datetime_length$data)
+        """)
+
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0], b'[1] 12.13')
+
+        # TODO export
