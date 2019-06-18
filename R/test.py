@@ -17,12 +17,11 @@ class TestRBindings(unittest.TestCase):
     def teardown(self):
         os.system('rm -f unittest.nc export.nc script.R')
 
-    def import_export(self, code):
+    def run_script(self, code):
         f = open("script.R", "w")
         f.write('library(harp)\n')
-        f.write('p <- harp::import("unittest.nc")\n')
-        f.write(code)
-        f.write('x <- harp::export(p, "export.nc")\n') # x captures NULL from stdout
+        for line in code.splitlines():
+            f.write(line+'\n')
         f.close()
 
         p = subprocess.Popen(['Rscript', 'script.R'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -39,8 +38,10 @@ class TestRBindings(unittest.TestCase):
         harp.export_product(product, "unittest.nc")
 
         # IMPORT
-        out, err = self.import_export("""
+        out, err = self.run_script("""
+            p <- harp::import("unittest.nc")
             print(p$source_product)
+            x <- harp::export(p, "export.nc")
         """)
 
         self.assertEqual(len(out), 1)
@@ -58,11 +59,13 @@ class TestRBindings(unittest.TestCase):
         harp.export_product(product, "unittest.nc")
 
         # IMPORT
-        out, err = self.import_export("""
+        out, err = self.run_script("""
+            p <- harp::import("unittest.nc")
             print(p$temp$name)
             print(p$temp$dimension)
             print(p$temp$type)
             print(p$temp$data)
+            x <- harp::export(p, "export.nc")
         """)
 
         self.assertEqual(len(out), 4)
@@ -89,11 +92,13 @@ class TestRBindings(unittest.TestCase):
         harp.export_product(product, "unittest.nc")
 
         # IMPORT
-        out, err = self.import_export("""
+        out, err = self.run_script("""
+            p <- harp::import("unittest.nc")
             print(p$strings$name)
             print(p$strings$dimension)
             print(p$strings$type)
             print(p$strings$data)
+            x <- harp::export(p, "export.nc")
         """)
 
         self.assertEqual(len(out), 4)
@@ -126,8 +131,10 @@ class TestRBindings(unittest.TestCase):
         harp.export_product(product, "unittest.nc")
 
         # IMPORT
-        out, err = self.import_export("""
+        out, err = self.run_script("""
+            p <- harp::import("unittest.nc")
             print(p$strings$data)
+            x <- harp::export(p, "export.nc")
         """)
 
         self.assertEqual(len(out), 1)
@@ -139,3 +146,20 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(var.data.size, 2)
         self.assertEqual(var.data[0], toshio)
         self.assertEqual(var.data[1], maeda)
+
+    def testExportNewProduct(self):
+        """Check new product generation"""
+
+        # EXPORT
+        self.run_script("""
+            p <- list(myvar=list(dimension=c("time"), data=array(1:24)))
+            harp::export(p, "export.nc")
+        """)
+
+        product = harp.import_product("export.nc")
+
+        var = product.myvar
+        self.assertEqual(var.dimension, ['time'])
+        self.assertEqual(var.data.size, 24)
+        for x in range(24):
+            self.assertEqual(var.data[x], x+1)
