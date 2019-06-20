@@ -190,7 +190,10 @@ class TestRBindings(unittest.TestCase):
         self.assertEqual(out[3], b'[1] 2 2 2')
         self.assertEqual(out[4], b'[1] 7')
 
-        # TODO export
+        # EXPORT
+        product = harp.import_product("export.nc")
+        self.assertEqual(product.blah.data.tolist(), [[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        self.assertEqual(product.blah.dimension, ["time", "vertical", "latitude"])
 
     def testScalar(self):
         """Check scalar variable"""
