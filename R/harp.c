@@ -284,8 +284,6 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     SEXP sdata = rharp_named_element(var, "data");
     if(sdata == R_NilValue)
         var_error(name, "no 'data' field");
-    if(!isArray(sdata))
-        var_error(name, "'data' field not an array");
 
     // check 'dimension' field
     SEXP sdimension = rharp_named_element(var, "dimension");
@@ -294,8 +292,6 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     if (TYPEOF(sdimension) != STRSXP)
         var_error(name, "'dimension' field not a string vector");
     num_dims = length(sdimension);
-    if(num_dims == 0)
-        var_error(name, "empty 'dimension' vector");
 
     // check 'enum' field
     SEXP senum = rharp_named_element(var, "enum");
@@ -343,12 +339,17 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     }
 
     // get dimension lengths (reversing dimensions)
-    SEXP dimlens = getAttrib(sdata, R_DimSymbol);
-    if(LENGTH(dimlens) != num_dims)
+    SEXP sdimlens = getAttrib(sdata, R_DimSymbol);
+    unsigned int dimlens;
+    if(sdimlens == R_NilValue)
+        dimlens = 0;
+    else
+        dimlens = LENGTH(sdimlens);
+    if(dimlens != num_dims)
         var_error(name, "'data' dimensions inconsistent with 'dimensions'");
 
-    for(unsigned int j=0; j<LENGTH(dimlens); j++) {
-        int dimlen = INTEGER(dimlens)[j];
+    for(unsigned int j=0; j<dimlens; j++) {
+        int dimlen = INTEGER(sdimlens)[j];
         dim[num_dims-1-j] = dimlen;
         num_elements = (num_elements?num_elements:1) * dimlen;
     }
@@ -357,82 +358,109 @@ harp_variable *rharp_export_variable(SEXP var, const char *name) {
     datatype = TYPEOF(sdata);
     harp_data_type hdatatype;
 
-    if(datatype == INTSXP) {
-        hdatatype = harp_type_int32; // R has no smaller datatypes
-
-        // determine smallest fitting storage size
-        int min_value = 0;
-        int max_value = 0;
-
-        for(unsigned int j=0; j<num_elements; j++) {
-            int value = INTEGER(sdata)[j];
-            if(value < min_value)
-                min_value = value;
-            if(value > max_value)
-                max_value = value;
-        }
-
-        if(svalidmin != R_NilValue) {
-            int validmin = INTEGER(svalidmin)[0];
-            if(validmin < min_value)
-                min_value = validmin;
-        }
-
-        if(svalidmax != R_NilValue) {
-            int validmax = INTEGER(svalidmax)[0];
-            if(validmax > max_value)
-                max_value = validmax;
-        }
-
-        if(min_value >= -128 && max_value <= 127)
-            hdatatype = harp_type_int8;
-        else if(min_value >= -32768 && max_value <= 32767)
-            hdatatype = harp_type_int16;
-        else
+    if(num_dims==0) { // scalar
+        if(datatype == INTSXP) {
             hdatatype = harp_type_int32;
+            if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0)
+                rharp_error();
+            hv->data.int32_data[0] = INTEGER(sdata)[0];
+        }
+        else if(datatype == REALSXP) {
+            hdatatype = harp_type_double;
+            if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0)
+                rharp_error();
+            hv->data.double_data[0] = REAL(sdata)[0];
+        }
+        else if(datatype == STRSXP) {
+            hdatatype = harp_type_string;
+            if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0)
+                rharp_error();
+            hv->data.string_data[0] = strdup(CHAR(STRING_ELT(sdata, 0)));
+        }
+        else
+            var_error(name, "unsupported data type");
+    }
+    else { // array
+        if(!isArray(sdata))
+            var_error(name, "'data' field not an array");
 
-        // create variable
-        if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0)
-            rharp_error();
+        if(datatype == INTSXP) {
+            hdatatype = harp_type_int32; // R has no smaller datatypes
 
-        // copy over data
-        for(unsigned int j=0; j<num_elements; j++) {
-            if(hdatatype == harp_type_int8)
-                hv->data.int8_data[j] = INTEGER(sdata)[j];
-            else if(hdatatype == harp_type_int16)
-                hv->data.int16_data[j] = INTEGER(sdata)[j];
+            // determine smallest fitting storage size
+            int min_value = 0;
+            int max_value = 0;
+
+            for(unsigned int j=0; j<num_elements; j++) {
+                int value = INTEGER(sdata)[j];
+                if(value < min_value)
+                    min_value = value;
+                if(value > max_value)
+                    max_value = value;
+            }
+
+            if(svalidmin != R_NilValue) {
+                int validmin = INTEGER(svalidmin)[0];
+                if(validmin < min_value)
+                    min_value = validmin;
+            }
+
+            if(svalidmax != R_NilValue) {
+                int validmax = INTEGER(svalidmax)[0];
+                if(validmax > max_value)
+                    max_value = validmax;
+            }
+
+            if(min_value >= -128 && max_value <= 127)
+                hdatatype = harp_type_int8;
+            else if(min_value >= -32768 && max_value <= 32767)
+                hdatatype = harp_type_int16;
             else
-                hv->data.int32_data[j] = INTEGER(sdata)[j];
+                hdatatype = harp_type_int32;
+
+            // create variable
+            if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0)
+                rharp_error();
+
+            // copy over data
+            for(unsigned int j=0; j<num_elements; j++) {
+                if(hdatatype == harp_type_int8)
+                    hv->data.int8_data[j] = INTEGER(sdata)[j];
+                else if(hdatatype == harp_type_int16)
+                    hv->data.int16_data[j] = INTEGER(sdata)[j];
+                else
+                    hv->data.int32_data[j] = INTEGER(sdata)[j];
+            }
         }
-    }
-    else if (datatype == REALSXP) {
-        hdatatype = harp_type_double; // R has no smaller datatype
+        else if (datatype == REALSXP) {
+            hdatatype = harp_type_double; // R has no smaller datatype
 
-        if (stype != R_NilValue && strcmp(dtype, "float") == 0)
-            hdatatype = harp_type_float;
+            if (stype != R_NilValue && strcmp(dtype, "float") == 0)
+                hdatatype = harp_type_float;
 
-        if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
-            rharp_error();
+            if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
+                rharp_error();
 
-        for(unsigned int j=0; j<num_elements; j++) {
-            if(hdatatype == harp_type_float)
-                hv->data.float_data[j] = REAL(sdata)[j];
-            else
-                hv->data.double_data[j] = REAL(sdata)[j];
+            for(unsigned int j=0; j<num_elements; j++) {
+                if(hdatatype == harp_type_float)
+                    hv->data.float_data[j] = REAL(sdata)[j];
+                else
+                    hv->data.double_data[j] = REAL(sdata)[j];
+            }
         }
-    }
-    else if (datatype == STRSXP) {
-        hdatatype = harp_type_string;
+        else if (datatype == STRSXP) {
+            hdatatype = harp_type_string;
 
-        if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
-            rharp_error();
+            if(harp_variable_new(name, hdatatype, num_dims, dim_type, dim, &hv) != 0) // R has no smaller datatype
+                rharp_error();
 
-        for(unsigned int j=0; j<num_elements; j++) {
-            hv->data.string_data[j] = strdup(CHAR(STRING_ELT(sdata, j)));
+            for(unsigned int j=0; j<num_elements; j++) {
+                hv->data.string_data[j] = strdup(CHAR(STRING_ELT(sdata, j)));
+            }
         }
+        else
+            var_error(name, "unsupported data type");
     }
-    else
-        var_error(name, "unsupported data type");
 
     // set description
     if(description) {

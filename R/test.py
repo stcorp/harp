@@ -192,8 +192,8 @@ class TestRBindings(unittest.TestCase):
 
         # TODO export
 
-    def testZeroDimensional(self):
-        """Check zero-dimensional variable"""
+    def testScalar(self):
+        """Check scalar variable"""
 
         product = harp.Product()
         product.datetime_length = harp.Variable(numpy.array(12.13, dtype=numpy.double), [], unit='s')
@@ -203,9 +203,12 @@ class TestRBindings(unittest.TestCase):
         out, err = self.run_script("""
             p <- harp::import("unittest.nc")
             print(p$datetime_length$data)
+            x <- harp::export(p, "export.nc")
         """)
 
         self.assertEqual(len(out), 1)
         self.assertEqual(out[0], b'[1] 12.13')
 
-        # TODO export
+        # EXPORT
+        product = harp.import_product("export.nc")
+        self.assertEqual(product.datetime_length.data, 12.13)
