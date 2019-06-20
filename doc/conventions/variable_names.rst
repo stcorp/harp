@@ -22,11 +22,18 @@ aerosol_base_height                                                           X 
 aerosol_base_pressure                                                         X            X
 aerosol_extinction_coefficient                surface                         X       X    X       X
 aerosol_height                                                                X            X
+aerosol_number_density                                                        X       X    X
+aerosol_column_number_density                                                 X       X    X
 aerosol_optical_depth                         stratospheric,                  X       X    X       X     this is equal to 'aerosol optical thickness'
                                               tropospheric
 aerosol_pressure                                                              X            X
 aerosol_top_height                                                            X            X
 aerosol_top_pressure                                                          X            X
+<aerosol_size>_aerosol_number_density                                         X       X    X
+<aerosol_size>_aerosol_column_number_density                                  X       X    X
+<aerosol_size>_aerosol_extinction_coefficient surface                         X       X    X       X
+<aerosol_size>_aerosol_optical_depth          stratospheric,                  X       X    X       X     this is equal to 'aerosol optical thickness'
+                                              tropospheric
 <aerosol_type>_aerosol_base_height                                            X            X
 <aerosol_type>_aerosol_base_pressure                                          X            X
 <aerosol_type>_aerosol_extinction_coefficient surface                         X       X    X       X
@@ -192,6 +199,16 @@ O3_effective_temperature                                                      X 
 <species>_volume_mixing_ratio_dry_air         surface         apriori, avk,   X       X    X
                                                               dfs, sic
 ============================================= =============== =============== ======= ==== ======= ===== =======================================================================
+
+The supported aerosol sizes are:
+
+============ ====================================================
+Aerosol size Description
+============ ====================================================
+ultrafine    particles < 0.1 um
+fine         particles < threshold, 0.5 um <= threshold <= 2.5 um
+coarse       particles > threshold, 0.5 um <= threshold <= 2.5 um
+============ ====================================================
 
 The supported aerosol types are:
 

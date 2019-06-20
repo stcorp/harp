@@ -254,6 +254,24 @@ for it.</p>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
+<tr class="row-even"><td>aerosol_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>aerosol_column_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
 <tr class="row-even"><td>aerosol_optical_depth</td>
 <td>stratospheric,
 tropospheric</td>
@@ -290,6 +308,43 @@ tropospheric</td>
 <td>X</td>
 <td>&#160;</td>
 <td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;aerosol_size&gt;_aerosol_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;aerosol_size&gt;_aerosol_column_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;aerosol_size&gt;_aerosol_extinction_coefficient</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;aerosol_size&gt;_aerosol_optical_depth</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>this is equal to ‘aerosol optical thickness’</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_type&gt;_aerosol_base_height</td>
 <td>&#160;</td>
@@ -1570,6 +1625,29 @@ dfs, sic</td>
 <td>X</td>
 <td>&#160;</td>
 <td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>The supported aerosol sizes are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Aerosol size</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ultrafine</td>
+<td>particles &lt; 0.1 um</td>
+</tr>
+<tr class="row-odd"><td>fine</td>
+<td>particles &lt; threshold, 0.5 um &lt;= threshold &lt;= 2.5 um</td>
+</tr>
+<tr class="row-even"><td>coarse</td>
+<td>particles &gt; threshold, 0.5 um &lt;= threshold &lt;= 2.5 um</td>
 </tr>
 </tbody>
 </table>
