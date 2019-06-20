@@ -2,7 +2,9 @@
 
 .onLoad <- function(libname, pkgname)
 {
-    .Call("rharp_init")
+    pkgdir <- paste(libname, pkgname, sep="/")
+
+    .Call("rharp_init", pkgdir)
 }
 
 .onUnload <- function(libpath)

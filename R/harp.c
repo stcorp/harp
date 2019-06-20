@@ -608,8 +608,16 @@ SEXP rharp_version() {
     return sversion;
 }
 
-SEXP rharp_init() {
+SEXP rharp_init(SEXP spath) {
     harp_init();
+
+    if (getenv("CODA_DEFINITION") == NULL || getenv("UDUNITS2_XML_PATH") == NULL) {
+        const char *path = CHAR(STRING_ELT(spath, 0));
+
+        harp_set_coda_definition_path_conditional("DESCRIPTION", path, "../../../../share/coda/definitions/");
+        harp_set_udunits2_xml_path_conditional("DESCRIPTION", path, "../../../../share/harp/udunits2.xml");
+    }
+
     return R_NilValue;
 }
 
