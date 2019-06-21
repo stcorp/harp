@@ -3825,12 +3825,12 @@ static int read_so2_surface_albedo(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_snow_ice_type(void *user_data, harp_array data)
+static int read_snow_ice_type_from_flag(void *user_data, const char *variable_name, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long i;
 
-    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_int8, info->num_scanlines * info->num_pixels,
+    if (read_dataset(info->input_data_cursor, variable_name, harp_type_int8, info->num_scanlines * info->num_pixels,
                      data) != 0)
     {
         return -1;
@@ -3872,12 +3872,22 @@ static int read_snow_ice_type(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_sea_ice_fraction(void *user_data, harp_array data)
+static int read_snow_ice_type(void *user_data, harp_array data)
+{
+    return read_snow_ice_type_from_flag(user_data, "snow_ice_flag", data);
+}
+
+static int read_snow_ice_type_nise(void *user_data, harp_array data)
+{
+    return read_snow_ice_type_from_flag(user_data, "snow_ice_flag_nise", data);
+}
+
+static int read_sea_ice_fraction_from_flag(void *user_data, const char *variable_name, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long i;
 
-    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_float, info->num_scanlines * info->num_pixels,
+    if (read_dataset(info->input_data_cursor, variable_name, harp_type_float, info->num_scanlines * info->num_pixels,
                      data) != 0)
     {
         return -1;
@@ -3895,6 +3905,16 @@ static int read_sea_ice_fraction(void *user_data, harp_array data)
     }
 
     return 0;
+}
+
+static int read_sea_ice_fraction(void *user_data, harp_array data)
+{
+    return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag", data);
+}
+
+static int read_sea_ice_fraction_nise(void *user_data, harp_array data)
+{
+    return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag_nise", data);
 }
 
 static int parse_option_wavelength_ratio(ingest_info *info, const harp_ingestion_options *options)
@@ -4345,21 +4365,28 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
     const char *description;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    int (*read_snow_ice_type_function) (void *, harp_array);
+    int (*read_sea_ice_fraction_function) (void *, harp_array);
 
     if (nise_extension)
     {
         path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]";
+        read_snow_ice_type_function = read_snow_ice_type_nise;
+        read_sea_ice_fraction_function = read_sea_ice_fraction_nise;
     }
     else
     {
         path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
+        read_snow_ice_type_function = read_snow_ice_type;
+        read_sea_ice_fraction_function = read_sea_ice_fraction;
     }
 
     /* snow_ice_type */
     description = "surface snow/ice type";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_snow_ice_type);
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_snow_ice_type_function);
     harp_variable_definition_set_enumeration_values(variable_definition, 5, snow_ice_type_values);
     description = "0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), "
         "other values map to -1";
@@ -4369,7 +4396,8 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
     description = "sea-ice concentration (as a fraction)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "", NULL, read_sea_ice_fraction);
+                                                   dimension_type, NULL, description, "", NULL,
+                                                   read_sea_ice_fraction_function);
     description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
