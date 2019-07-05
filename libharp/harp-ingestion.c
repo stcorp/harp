@@ -928,9 +928,14 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
         num_operations++;
     }
 
-    if (variable_def->unit != NULL)
+    for (k = 0; k < num_operations; k++)
     {
-        for (k = 0; k < num_operations; k++)
+        if (harp_operation_set_valid_range(program->operation[program->current_index + k], variable_def->data_type,
+                                           variable_def->valid_min, variable_def->valid_max) != 0)
+        {
+            return -1;
+        }
+        if (variable_def->unit != NULL)
         {
             if (harp_operation_set_value_unit(program->operation[program->current_index + k], variable_def->unit) != 0)
             {

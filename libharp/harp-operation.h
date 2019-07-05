@@ -536,6 +536,8 @@ int harp_operation_is_point_filter(const harp_operation *operation);
 int harp_operation_is_polygon_filter(const harp_operation *operation);
 int harp_operation_is_string_value_filter(const harp_operation *operation);
 int harp_operation_is_value_filter(const harp_operation *operation);
+int harp_operation_set_valid_range(harp_operation *operation, harp_data_type data_type, harp_scalar valid_min,
+                                   harp_scalar valid_max);
 int harp_operation_set_value_unit(harp_operation *operation, const char *unit);
 
 /* Specific operations */

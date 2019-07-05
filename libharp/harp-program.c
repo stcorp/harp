@@ -158,9 +158,14 @@ static int execute_value_filter(harp_product *product, harp_program *program)
     }
     data_type_size = harp_get_size_for_type(variable->data_type);
 
-    if (variable->unit != NULL)
+    for (k = 0; k < num_operations; k++)
     {
-        for (k = 0; k < num_operations; k++)
+        if (harp_operation_set_valid_range(program->operation[program->current_index + k], variable->data_type,
+                                           variable->valid_min, variable->valid_max) != 0)
+        {
+            return -1;
+        }
+        if (variable->unit != NULL)
         {
             if (harp_operation_set_value_unit(program->operation[program->current_index + k], variable->unit) != 0)
             {

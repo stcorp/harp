@@ -3406,6 +3406,11 @@ int harp_operation_set_valid_range(harp_operation *operation, harp_data_type dat
 {
     double double_min, double_max;
 
+    if (operation->type != operation_valid_range_filter)
+    {
+        return 0;
+    }
+
     switch (data_type)
     {
         case harp_type_int8:
@@ -3431,12 +3436,6 @@ int harp_operation_set_valid_range(harp_operation *operation, harp_data_type dat
         default:
             assert(0);
             exit(1);
-    }
-
-    if (operation->type != operation_valid_range_filter)
-    {
-        harp_set_error(HARP_ERROR_OPERATION, "operation has no valid range");
-        return -1;
     }
 
     ((harp_operation_valid_range_filter *)operation)->valid_min = double_min;
