@@ -1,3 +1,5 @@
+* Improved derivation for tropopause altitude/pressure (to not return NaN).
+
 * Fixed valid() operation to properly use valid_min/valid_max attribute values.
 
 * Update to GEOMS MWR and S5P L2 product ingestions.

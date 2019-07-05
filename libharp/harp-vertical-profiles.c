@@ -262,13 +262,10 @@ long harp_tropopause_index_from_altitude_and_temperature(long num_levels, const 
                 }
                 k++;
             }
-            if (count > 0)
+            /* average lapse rate should not exceed 2 degC/km */
+            if (count == 0 || lapse_sum / count <= 0.002)
             {
-                /* average lapse rate should not exceed 2 degC/km */
-                if (lapse_sum / count <= 0.002)
-                {
-                    return i;
-                }
+                return i;
             }
         }
         lapse_below = lapse_above;
