@@ -918,7 +918,7 @@ LIBHARP_API int harp_product_copy(const harp_product *other_product, harp_produc
 static int add_missing_count_variables(harp_product *product, harp_product *other_product)
 {
     harp_variable *count_variable;
-    int i;
+    int i, j;
 
     if (!harp_product_has_variable(product, "count"))
     {
@@ -930,6 +930,11 @@ static int add_missing_count_variables(harp_product *product, harp_product *othe
     {
         return -1;
     }
+    if (count_variable->num_dimensions != 1 || count_variable->dimension_type[0] != harp_dimension_time)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid 'count' variable (expected single time dimension)");
+        return -1;
+    }
 
     for (i = 0; i < other_product->num_variables; i++)
     {
@@ -938,6 +943,12 @@ static int add_missing_count_variables(harp_product *product, harp_product *othe
 
         if (length > 6 && strcmp(&variable->name[length - 6], "_count") == 0)
         {
+            if (variable->num_dimensions < 1 || variable->dimension_type[0] != harp_dimension_time)
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                               "invalid 'count' variable (first dimension should be the time dimension)");
+                return -1;
+            }
             if (!harp_product_has_variable(product, variable->name))
             {
                 harp_variable *new_variable;
@@ -950,6 +961,15 @@ static int add_missing_count_variables(harp_product *product, harp_product *othe
                 {
                     harp_variable_delete(new_variable);
                     return -1;
+                }
+                for (j = 1; j < variable->num_dimensions; j++)
+                {
+                    if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j],
+                                                    variable->dimension[j]) != 0)
+                    {
+                        harp_variable_delete(new_variable);
+                        return -1;
+                    }
                 }
                 if (harp_product_add_variable(product, new_variable) != 0)
                 {
