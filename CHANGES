@@ -5,7 +5,7 @@
 * Fixed issue in adding *_count variable in append/merge when count variable
   had more than one dimension.
 
-* Update to GEOMS MWR and S5P L2 product ingestions.
+* Update to ECMWF GRIB, GEOMS MWR, and S5P L2 product ingestions.
 
 1.7 2019-06-06
 ~~~~~~~~~~~~~~

@@ -1924,16 +1924,16 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         if (info->grid_grib_version != grib_version)
         {
             /* since GRIB1 and GRIB2 use different resolutions we need to compare with a tollerance of 1000 */
-            if (fabs((double)(longitudeOfFirstGridPoint - info->longitudeOfFirstGridPoint)) > 1e3 ||
-                fabs((double)(longitudeOfLastGridPoint - info->longitudeOfLastGridPoint)) > 1e3 ||
-                fabs((double)(iDirectionIncrement - info->iDirectionIncrement)) > 1e3)
+            if (fabs((double)longitudeOfFirstGridPoint - (double)info->longitudeOfFirstGridPoint) > 1e3 ||
+                fabs((double)longitudeOfLastGridPoint - (double)info->longitudeOfLastGridPoint) > 1e3 ||
+                fabs((double)iDirectionIncrement - (double)info->iDirectionIncrement) > 1e3)
             {
                 harp_set_error(HARP_ERROR_INGESTION, "not all longitude grids in the GRIB file are the same");
                 return -1;
             }
-            if (fabs((double)(latitudeOfFirstGridPoint - info->latitudeOfFirstGridPoint)) > 1e3 ||
-                fabs((double)(latitudeOfLastGridPoint - info->latitudeOfLastGridPoint)) > 1e3 ||
-                fabs((double)(jDirectionIncrement - info->jDirectionIncrement)) > 1e3 || N != info->N)
+            if (fabs((double)latitudeOfFirstGridPoint - (double)info->latitudeOfFirstGridPoint) > 1e3 ||
+                fabs((double)latitudeOfLastGridPoint - (double)info->latitudeOfLastGridPoint) > 1e3 ||
+                fabs((double)jDirectionIncrement - (double)info->jDirectionIncrement) > 1e3 || N != info->N)
             {
                 harp_set_error(HARP_ERROR_INGESTION, "not all latitude grids in the GRIB file are the same");
                 return -1;
