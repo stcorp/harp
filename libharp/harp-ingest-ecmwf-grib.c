@@ -1940,6 +1940,8 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
             }
             if (grib_version == 2)
             {
+                int k;
+
                 /* prefer more accurate GRIB2 grid over that of less accurate GRIB1 grid */
                 info->latitudeOfFirstGridPoint = latitudeOfFirstGridPoint;
                 info->longitudeOfFirstGridPoint = longitudeOfFirstGridPoint;
@@ -1948,6 +1950,23 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
                 info->iDirectionIncrement = iDirectionIncrement;
                 info->jDirectionIncrement = jDirectionIncrement;
                 info->grid_grib_version = grib_version;
+
+                /* update lat/lon grid values */
+                info->longitude[0] = longitudeOfFirstGridPoint * 1e-6;
+                info->longitude[info->num_longitudes - 1] = longitudeOfLastGridPoint * 1e-6;
+                for (k = 1; k < info->num_longitudes - 1; k++)
+                {
+                    info->longitude[k] = info->longitude[k - 1] + iDirectionIncrement * 1e-6;
+                }
+                if (!is_gaussian)
+                {
+                    info->latitude[0] = latitudeOfLastGridPoint * 1e-6;
+                    info->latitude[info->num_latitudes - 1] = latitudeOfFirstGridPoint * 1e-6;
+                    for (k = info->num_latitudes - 2; k > 0; k--)
+                    {
+                        info->latitude[k] = info->latitude[k + 1] - iDirectionIncrement * 1e-6;
+                    }
+                }
             }
         }
         else
