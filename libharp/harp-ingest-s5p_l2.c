@@ -93,6 +93,7 @@ static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = { 2, 0, 2, 2, 
 typedef struct ingest_info_struct
 {
     coda_product *product;
+    int use_aerosol_pressure_not_clipped;
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
     int use_ch4_bias_corrected;
@@ -560,6 +561,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
 
     info->product = product;
+    info->use_aerosol_pressure_not_clipped = 0;
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
     info->use_ch4_bias_corrected = 0;
@@ -597,6 +599,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
 
+    if (harp_ingestion_options_has_option(options, "aerosol_pressure"))
+    {
+        info->use_aerosol_pressure_not_clipped = 1;
+    }
     if (harp_ingestion_options_has_option(options, "total_column"))
     {
         if (harp_ingestion_options_get_option(options, "total_column", &option_value) != 0)
@@ -1846,14 +1852,6 @@ static int read_product_aerosol_mid_height_precision(void *user_data, harp_array
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_product_aerosol_mid_pressure(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
 static int read_product_aerosol_mid_pressure_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2748,6 +2746,20 @@ static int read_results_water_total_column_precision(void *user_data, harp_array
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "water_total_column_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_aer_lh_aerosol_mid_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_aerosol_pressure_not_clipped)
+    {
+        return read_dataset(info->detailed_results_cursor, "aerosol_mid_pressure_not_clipped", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
+    return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -3972,6 +3984,12 @@ static int include_offl(void *user_data)
     return !((ingest_info *)user_data)->is_nrti;
 }
 
+static int include_aer_lh_aerosol_pressure(void *user_data)
+{
+    return !((ingest_info *)user_data)->use_aerosol_pressure_not_clipped ||
+        ((ingest_info *)user_data)->processor_version >= 20000;
+}
+
 static int include_co_nd_avk(void *user_data)
 {
     return ((ingest_info *)user_data)->use_co_nd_avk;
@@ -4462,9 +4480,14 @@ static void register_aer_lh_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    const char *aerosol_pressure_option_values[1] = { "unclipped" };
 
     module = harp_ingestion_register_module_coda("S5P_L2_AER_LH", "Sentinel-5P", "Sentinel5P", "L2__AER_LH",
                                                  "Sentinel-5P L2 aerosol layer height", ingestion_init, ingestion_done);
+
+    description =  "ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) "
+        "or the unclipped variant (aerosol_pressure=unclipped)";
+    harp_ingestion_register_option(module, "aerosol_pressure", description, 1, aerosol_pressure_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_LH", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh]);
@@ -4502,10 +4525,13 @@ static void register_aer_lh_product(void)
     description = "pressure at center of aerosol layer";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "Pa", NULL,
-                                                   read_product_aerosol_mid_pressure);
+                                                   dimension_type, NULL, description, "Pa",
+                                                   include_aer_lh_aerosol_pressure, read_aer_lh_aerosol_mid_pressure);
     path = "/PRODUCT/aerosol_mid_pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "aerosol_pressure unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_pressure_not_clipped[]";
+    harp_variable_definition_add_mapping(variable_definition, "aerosol_pressure=unclipped",
+                                         "processor version >= 02.00.00", path, NULL);
 
     /* aerosol_pressure_uncertainty */
     description = "uncertainty of pressure at center of aerosol layer";
