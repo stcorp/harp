@@ -6726,7 +6726,7 @@ static void register_fresco_product(void)
                                                    include_from_010000, read_input_surface_pressure);
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
 
-    register_snow_ice_flag_variables(product_definition, 1);
+    register_snow_ice_flag_variables(product_definition, 0);
 }
 
 int harp_ingestion_module_s5p_l2_init(void)
