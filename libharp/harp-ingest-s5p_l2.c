@@ -1876,6 +1876,7 @@ static int read_input_tropopause_pressure(void *user_data, harp_array data)
 
     return 0;
 }
+
 static int read_product_air_mass_factor_total(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -4464,7 +4465,7 @@ static void register_surface_variables(harp_product_definition *product_definiti
     if (include_surface_winds)
     {
         const char *processor_description;
-        int (*include_func)(void *);
+        int (*include_func) (void *);
 
         if (include_surface_winds == 1)
         {
@@ -4604,7 +4605,7 @@ static void register_aer_lh_product(void)
     module = harp_ingestion_register_module_coda("S5P_L2_AER_LH", "Sentinel-5P", "Sentinel5P", "L2__AER_LH",
                                                  "Sentinel-5P L2 aerosol layer height", ingestion_init, ingestion_done);
 
-    description =  "ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) "
+    description = "ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) "
         "or the unclipped variant (aerosol_pressure=unclipped)";
     harp_ingestion_register_option(module, "aerosol_pressure", description, 1, aerosol_pressure_option_values);
 
