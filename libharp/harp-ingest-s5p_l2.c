@@ -1776,6 +1776,106 @@ static int read_input_tm5_pressure(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_input_tropopause_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array hybride_coef_a;
+    harp_array hybride_coef_b;
+    harp_array layer_index;
+    long num_profiles;
+    long num_layers;
+    long i;
+
+    num_profiles = info->num_scanlines * info->num_pixels;
+    num_layers = info->num_layers;
+
+    layer_index.ptr = malloc(num_profiles * sizeof(int32_t));
+    if (layer_index.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_profiles * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    hybride_coef_a.ptr = malloc(num_layers * sizeof(double));
+    if (hybride_coef_a.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * sizeof(double), __FILE__, __LINE__);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    hybride_coef_b.ptr = malloc(num_layers * sizeof(double));
+    if (hybride_coef_b.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * sizeof(double), __FILE__, __LINE__);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_tropopause_layer_index", harp_type_int32, num_profiles, layer_index)
+        != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_constant_a", harp_type_double, num_layers, hybride_coef_a) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_constant_b", harp_type_double, num_layers, hybride_coef_b) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "surface_pressure", harp_type_double, num_profiles, data) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        long index = layer_index.int32_data[i];
+
+        if (index >= 0 && index < num_layers - 1)
+        {
+            double surface_pressure = data.double_data[i];      /* surface pressure at specific (time, lat, lon) */
+            double layer_pressure, upper_layer_pressure;
+
+            /* the tropause level is the upper boundary of the layer defined by layer_index */
+            layer_pressure = hybride_coef_a.double_data[index] + hybride_coef_b.double_data[index] * surface_pressure;
+            upper_layer_pressure = hybride_coef_a.double_data[index + 1] +
+                hybride_coef_b.double_data[index + 1] * surface_pressure;
+            data.double_data[i] = exp((log(layer_pressure) + log(upper_layer_pressure)) / 2.0);
+        }
+        else
+        {
+            data.double_data[i] = harp_nan();
+        }
+    }
+
+    free(hybride_coef_b.ptr);
+    free(hybride_coef_a.ptr);
+    free(layer_index.ptr);
+
+    return 0;
+}
 static int read_product_air_mass_factor_total(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -5097,6 +5197,20 @@ static void register_hcho_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1, 2);
+
+    /* tropopause_pressure */
+    description = "tropopause pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "Pa", include_from_020000,
+                                                                     read_input_tropopause_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
+        "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
+        "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_o3_product(void)
@@ -6345,6 +6459,20 @@ static void register_so2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     register_surface_variables(product_definition, 1, 2);
+
+    /* tropopause_pressure */
+    description = "tropopause pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "Pa", include_from_020000,
+                                                                     read_input_tropopause_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
+        "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
+        "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_cloud_cal_variables(harp_product_definition *product_definition)
