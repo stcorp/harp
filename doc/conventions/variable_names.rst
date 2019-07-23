@@ -234,18 +234,18 @@ PM10  particulate matter with d < 10 um
 
 The supported species are:
 
-======== ============================ ===========================
-Name     Description                  Aliases (not used by HARP)
-======== ============================ ===========================
+======== ============================= ===========================
+Name     Description                   Aliases (not used by HARP)
+======== ============================= ===========================
 dry_air  dry air
 BrO      bromine oxide
 BrO2     bromine dioxide
-CCl2F2   dichlorodifluoromethane      freon-12, CFC-12, R-12, F12
-CCl3F    trichlorofluoromethane       freon-11, CFC-11, R-11, F11
+CCl2F2   dichlorodifluoromethane       freon-12, CFC-12, R-12, F12
+CCl3F    trichlorofluoromethane        freon-11, CFC-11, R-11, F11
 CCl4     tetrachloromethane
-CF4      tetrafluoromethane           CFC-14, F14
-CHClF2   chlorodifluoromethane        HCFC-22, R-22, F22
-CH3Cl    chloromethane,               HCC-40, R-40
+CF4      tetrafluoromethane            CFC-14, F14
+CHClF2   chlorodifluoromethane         HCFC-22, R-22, F22
+CH3Cl    chloromethane,                HCC-40, R-40
          methyl chloride
 CH3CN    acetonitrile,
          methyl cyanide
@@ -253,18 +253,18 @@ CH3OH    methanol
 CH4      methane
 CO       carbon monoxide
 COF2     carbonyl fluoride
-COS      carbonyl sulfide             OCS
+COS      carbonyl sulfide              OCS
 CO2      carbon dioxide
-C2H2     acetylene                    HCCH
-C2H2O2   glyoxal                      OCHCHO, CHOCHO
-C2H3NO5  peroxyacetyl nitrate         PAN
+C2H2     acetylene                     HCCH
+C2H2O2   glyoxal                       OCHCHO, CHOCHO
+C2H3NO5  peroxyacetyl nitrate          PAN
 C2H6     ethane
 C3H8     propane
 C5H8     isoprene
 ClNO3    chlorine nitrate
 ClO      chlorine monoxide
-HCHO     formaldehyde                 CH2O, H2CO
-HCOOH    formic acid                  HCO2H
+HCHO     formaldehyde                  CH2O, H2CO
+HCOOH    formic acid                   HCO2H
 HCN      hydrogen cyanide
 HCl      hydrogen chloride
 HF       hydrogen fluoride
@@ -275,24 +275,24 @@ HOCl     hypochlorous acid
 HO2      hydroperoxyl
 H2O      water
 H2O_161  water (H1/O16/H1 isotopes)
-H2O_162  water (H1/O16/H2 isotopes)   HDO
+H2O_162  water (H1/O16/H2 isotopes)    HDO
 H2O_171  water (H1/O17/H1 isotopes)
 H2O_181  water (H1/O18/H1 isotopes)
 H2O2     hydrogen peroxide
 IO       hypoiodite
 IWC      ice water content;
-         H2O in ice state
+         H2O in clouds in ice state
 LWC      liquid water content;
-         H2O in liquid state
+         H2O in clouds in liquid state
 NH3      ammonia
 NO       nitric oxide
 NOCl     nitrosyl chloride
 NO2      nitrogen dioxide
 NO3      nitrate
 N2       nitrogen gas
-N2O      nitrous oxide                NOS
+N2O      nitrous oxide                 NOS
 N2O5     dinitrogen pentoxide
-OClO     chlorine dioxide             ClO2
+OClO     chlorine dioxide              ClO2
 OH       hydroxyl
 O2       oxygen
 O3       ozone
@@ -301,9 +301,13 @@ O3_667   ozone (O16/O16/O17 isotopes)
 O3_668   ozone (O16/O16/O18 isotopes)
 O3_686   ozone (O16/O18/O16 isotopes)
 O4       tetraoxygen, oxozone
+RWC      rain water content;
+         H2O as rain
 SF6      sulfur hexafluoride
 SO2      sulfur dioxide
-======== ============================ ===========================
+SWC      snow water content;
+         H2O as snow/ice
+======== ============================= ===========================
 
 Variables for which a prefix and/or postfix is provided can have any of the given prefixes and/or any of the given
 postfixes (separated by underscores). It is not allowed to provide more than one prefix or more than one postfix.

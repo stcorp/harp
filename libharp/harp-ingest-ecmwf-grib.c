@@ -47,6 +47,8 @@
 typedef enum grib_parameter_enum
 {
     grib_param_unknown = -1,
+    grib_param_crwc,    /* 75: Specific rain water content [kg/kg] */
+    grib_param_cswc,    /* 76: Specific snow water content [kg/kg] */
     grib_param_tclw,    /* 78: Total column cloud liquid water [kg/m2] */
     grib_param_tciw,    /* 79: Total column cloud ice water [kg/m2] */
     grib_param_z,       /* 129: Geopotential [m2/s2] (at the surface: orography) */
@@ -108,6 +110,8 @@ typedef enum grib_parameter_enum
 #define NUM_GRIB_PARAMETERS (grib_param_tc_c3h8 + 1)
 
 const char *param_name[NUM_GRIB_PARAMETERS] = {
+    "crwc",
+    "cswc",
     "tclw",
     "tciw",
     "z",
@@ -167,6 +171,8 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
 };
 
 int param_is_profile[NUM_GRIB_PARAMETERS] = {
+    1,  /* crwc */
+    1,  /* cswc */
     0,  /* tclw */
     0,  /* tciw */
     0,  /* z */
@@ -362,6 +368,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
         case 128:
             switch (indicatorOfParameter)
             {
+                case 75:
+                    return grib_param_crwc;
+                case 76:
+                    return grib_param_cswc;
                 case 78:
                     return grib_param_tclw;
                 case 79:
@@ -634,6 +644,10 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                             return grib_param_clwc;
                         case 84:
                             return grib_param_ciwc;
+                        case 85:
+                            return grib_param_crwc;
+                        case 86:
+                            return grib_param_cswc;
                     }
                     break;
                 case 2:
@@ -916,6 +930,16 @@ static int read_wavelengths(void *user_data, harp_array data)
     }
 
     return 0;
+}
+
+static int read_crwc(void *user_data, long index, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_crwc, index, data);
+}
+
+static int read_cswc(void *user_data, long index, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_cswc, index, data);
 }
 
 static int read_tclw(void *user_data, long index, harp_array data)
@@ -2692,6 +2716,16 @@ static int include_wavelengths(void *user_data)
     return ((ingest_info *)user_data)->num_wavelengths > 0;
 }
 
+static int include_crwc(void *user_data)
+{
+    return ((ingest_info *)user_data)->has_parameter[grib_param_crwc];
+}
+
+static int include_cswc(void *user_data)
+{
+    return ((ingest_info *)user_data)->has_parameter[grib_param_cswc];
+}
+
 static int include_tclw(void *user_data)
 {
     return ((ingest_info *)user_data)->has_parameter[grib_param_tclw];
@@ -3045,6 +3079,22 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     description = "the values are based on the available AODs; possible values are: 469, 550, 670, 865, 1240";
     harp_variable_definition_add_mapping(variable_definition, NULL, "one or more AOD quantities are present", NULL,
                                          description);
+
+    /* crwc: RWC_mass_mixing_ratio */
+    description = "specific rain water content";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "RWC_mass_mixing_ratio",
+                                                                      harp_type_float, 3, &dimension_type[1], NULL,
+                                                                      description, "kg/kg", include_crwc, read_crwc);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,75)",
+                               "(discipline,category,number) = (0,1,85)");
+
+    /* cswc: SWC_mass_mixing_ratio */
+    description = "specific snow water content";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SWC_mass_mixing_ratio",
+                                                                      harp_type_float, 3, &dimension_type[1], NULL,
+                                                                      description, "kg/kg", include_cswc, read_cswc);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,76)",
+                               "(discipline,category,number) = (0,1,86)");
 
     /* tclw: LWC_column_density */
     description = "total column cloud liquid water";

@@ -97,8 +97,10 @@ static const char *chemical_species_names[] = {
     "O3_668",
     "O3_686",
     "O4",
+    "RWC",
     "SF6",
     "SO2",
+    "SWC",
     "unknown"
 };
 
@@ -163,8 +165,10 @@ double chemical_species_molar_mass[] = {
     CONST_MOLAR_MASS_O3_668,
     CONST_MOLAR_MASS_O3_686,
     CONST_MOLAR_MASS_O4,
+    CONST_MOLAR_MASS_H2O,       /* rain has H2O molar mass */
     CONST_MOLAR_MASS_SF6,
     CONST_MOLAR_MASS_SO2,
+    CONST_MOLAR_MASS_H2O,       /* snow has H2O molar mass */
     0   /* value for 'unknown' */
 };
 
