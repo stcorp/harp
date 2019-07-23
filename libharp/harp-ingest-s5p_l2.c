@@ -2933,6 +2933,62 @@ static int read_hcho_cloud_fraction_precision(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_hcho_column_tropospheric_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array layer_data;
+    long i, j;
+
+    if (read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->processor_version < 2000)
+    {
+        /* we only have a tm5_tropopause_index since processor version 02.00.00 */
+        /* just give the unmasked avk back for older versions of the product */
+        return 0;
+    }
+
+    layer_data.int32_data = malloc(info->num_scanlines * info->num_pixels * sizeof(int32_t));
+    if (layer_data.int32_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_dataset(info->input_data_cursor, "tm5_tropopause_layer_index", harp_type_int32,
+                     info->num_scanlines * info->num_pixels, layer_data) != 0)
+    {
+        free(layer_data.int32_data);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (layer_data.int32_data[i] < 0 || layer_data.int32_data[i] >= info->num_layers)
+        {
+            for (j = 0; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] = (float)harp_nan();
+            }
+        }
+        else
+        {
+            for (j = layer_data.int32_data[i]; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] = 0;
+            }
+        }
+    }
+
+    free(layer_data.int32_data);
+
+    return 0;
+}
+
 static int read_o3_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -5108,14 +5164,19 @@ static void register_hcho_product(void)
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
-    /* HCHO_column_number_density_avk */
-    description = "averaging kernel for the total HCHO column number density";
+    /* tropospheric_HCHO_column_number_density_avk */
+    description = "averaging kernel for the tropospheric HCHO column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_averaging_kernel_1d);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_hcho_column_tropospheric_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.00.00", path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[]";
+    description =
+        "averaging_kernel[layer] = if layer <= tm5_tropopause_layer_index then averaging_kernel[layer] else 0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
 
     /* HCHO_volume_mixing_ratio_dry_air_apriori */
     description = "HCHO apriori profile in volume mixing ratios (with regard to dry air)";
