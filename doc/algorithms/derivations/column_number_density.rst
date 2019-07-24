@@ -320,6 +320,10 @@ column number density derivations
 
 #. column number density for air component from volume mixing ratio dry air:
 
+   This algorithm is an approximation for the case where no water content information is available at all (e.g. no :math:`M_{air}`).
+   Besides the poor approximation for :math:`z` and :math:`g_{h}`, the :math:`c_{x}` should actually be multiplied by :math:`q_{dry\_air}`
+   (mass mixing ratio of dry air) to get consistent results.
+
    ===================== =========================================== ================================ ===========================================
    symbol                description                                 unit                             variable name
    ===================== =========================================== ================================ ===========================================

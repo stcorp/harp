@@ -887,6 +887,9 @@ with regard to total air</td>
    c_{x} &amp; = &amp; -\nu_{x}\frac{N_A}{10^{-3}M_{air}g_{h}}(p^{B}(2)-p^{B}(1))
 \end{eqnarray}</div></li>
 <li><p class="first">column number density for air component from volume mixing ratio dry air:</p>
+<p>This algorithm is an approximation for the case where no water content information is available at all (e.g. no <span class="math notranslate nohighlight">\(M_{air}\)</span>).
+Besides the poor approximation for <span class="math notranslate nohighlight">\(z\)</span> and <span class="math notranslate nohighlight">\(g_{h}\)</span>, the <span class="math notranslate nohighlight">\(c_{x}\)</span> should actually be multiplied by <span class="math notranslate nohighlight">\(q_{dry\_air}\)</span>
+(mass mixing ratio of dry air) to get consistent results.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%" />
