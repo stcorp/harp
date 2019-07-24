@@ -149,7 +149,6 @@ column mass density derivations
                       (:math:`l \in \{1,2\}`)
    :math:`p_{surf}`   surface pressure                  :math:`Pa`             `surface_pressure {:}`
    :math:`R`          local earth curvature radius      :math:`m`
-                      at WGS84 ellipsoid
    :math:`z(i)`       altitude                          :math:`m`              `altitude {:,vertical}`
    :math:`\phi`       latitude                          :math:`degN`           `latitude {:}`
    :math:`\sigma`     column mass density for total air :math:`\frac{kg}{m^2}` `column_density {:}`

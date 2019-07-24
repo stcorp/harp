@@ -27,7 +27,6 @@ geopotential height derivations
    :math:`g_{0}`     mean earth gravity           :math:`\frac{m}{s^2}`
    :math:`g`         nominal gravity at sea level :math:`\frac{m}{s^2}`
    :math:`R`         local earth curvature radius :math:`m`
-                     at WGS84 ellipsoid
    :math:`z`         altitude                     :math:`m`             `altitude {:}`
    :math:`z_{g}`     geopotential height          :math:`m`             `geopotential_height {:}`
    :math:`\phi`      latitude                     :math:`degN`          `latitude {:}`
@@ -107,7 +106,6 @@ geopotential height derivations
    :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
    :math:`g`          nominal gravity at sea level :math:`\frac{m}{s^2}`
    :math:`R`          local earth curvature radius :math:`m`
-                      at WGS84 ellipsoid
    :math:`z_{surf}`   surface altitude             :math:`m`             `surface_altitude {:}`
    :math:`z_{g,surf}` surface geopotential height  :math:`m`             `surface_geopotential_height {:}`
    :math:`\phi`       latitude                     :math:`degN`          `latitude {:}`
