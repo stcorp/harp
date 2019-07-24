@@ -101,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="frequency.html">frequency derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential.html">geopotential derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential_height.html">geopotential height derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.html">gravity derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude.html">latitude derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude_bounds.html">latitude bounds derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="longitude.html">longitude derivations</a></li>
@@ -515,39 +516,44 @@
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{wgs84}\)</span></td>
-<td>gravity at WGS84 ellipsoid</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>nominal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(p^{B}(i,l)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(p^{B}(i,l)\)</span></td>
 <td>pressure boundaries
 (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
 <td><span class="math notranslate nohighlight">\(Pa\)</span></td>
 <td><cite>pressure_bounds {:,vertical,2}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(p_{surf}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(p_{surf}\)</span></td>
 <td>surface pressure</td>
 <td><span class="math notranslate nohighlight">\(Pa\)</span></td>
 <td><cite>surface_pressure {:}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{wgs84}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(R\)</span></td>
 <td>local earth curvature radius
 at WGS84 ellipsoid</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z(i)\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z(i)\)</span></td>
 <td>altitude</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>altitude {:,vertical}</cite></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
 <td>latitude</td>
 <td><span class="math notranslate nohighlight">\(degN\)</span></td>
 <td><cite>latitude {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\sigma\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\sigma\)</span></td>
 <td>column mass density for total air</td>
 <td><span class="math notranslate nohighlight">\(\frac{kg}{m^2}\)</span></td>
 <td><cite>column_density {:}</cite></td>
@@ -558,10 +564,10 @@ at WGS84 ellipsoid</td>
 or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{wgs84} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-   g(i) &amp; = &amp; g_{wgs84}\left(\frac{R_{wgs84}}{R_{wgs84} + z(i)}\right)^2 \\
-   \bar{g} &amp; = &amp; \frac{\sum_{i}{p^{B}(i,0)-p^{B}(i,1)}}{\sum_{i}{\frac{p^{B}(i,0)-p^{B}(i,1)}{g(i)}}} \\
+   g_{h}(i) &amp; = &amp; g\left(\frac{R}{R + z(i)}\right)^2 \\
+   \bar{g} &amp; = &amp; \frac{\sum_{i}{p^{B}(i,0)-p^{B}(i,1)}}{\sum_{i}{\frac{p^{B}(i,0)-p^{B}(i,1)}{g_{h}(i)}}} \\
    \sigma &amp; = &amp; \frac{p_{surf}}{\bar{g}}
 \end{eqnarray}</div></li>
 </ol>

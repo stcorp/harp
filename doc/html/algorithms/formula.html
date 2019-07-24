@@ -179,9 +179,9 @@
 <li><p class="first">Newton’s gravitational law</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="24%" />
-<col width="42%" />
-<col width="33%" />
+<col width="21%" />
+<col width="44%" />
+<col width="35%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -191,33 +191,33 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<td>normal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at earth surface</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(h\)</span></td>
-<td>height above surface</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z\)</span></td>
+<td>altitude</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(R_{surf}\)</span></td>
-<td>earth radius at surface</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(R\)</span></td>
+<td>local earth curvature radius</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 </tr>
 </tbody>
 </table>
 <div class="math notranslate nohighlight">
-\[g = g_{surf}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2\]</div>
+\[g_{h} = g\left(\frac{R}{R + z}\right)^2\]</div>
 </li>
-<li><p class="first">normal gravity at ellipsoid surface</p>
+<li><p class="first">Normal gravity at sea level ellipsoid</p>
 <p>This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="28%" />
-<col width="36%" />
-<col width="36%" />
+<col width="21%" />
+<col width="44%" />
+<col width="34%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -238,16 +238,16 @@
 <td>eccentricity</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{e}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>normal gravity at sea level</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{e}\)</span></td>
 <td>gravity at equator</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{p}\)</span></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{p}\)</span></td>
 <td>gravity at poles</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-</tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at surface</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
@@ -260,17 +260,17 @@
 \begin{eqnarray}
    e^2 &amp; = &amp; \frac{a^2-b^2}{a^2} \\
    k &amp; = &amp; \frac{bg_{p} - ag_{e}}{ag_{e}} \\
-   g_{surf} &amp; = &amp; g_{e}\frac{1 + k {\sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{\sin}^2(\frac{\pi}{180}\phi)}} \\
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; g_{e}\frac{1 + k {\sin}^2(\frac{\pi}{180}\phi)}{\sqrt{1 - e^2{\sin}^2(\frac{\pi}{180}\phi)}} \\
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}}
 \end{eqnarray}</div></li>
-<li><p class="first">normal gravity above ellipsoid surface</p>
+<li><p class="first">Gravity at specific altitude</p>
 <p>This is the WGS84 ellipsoidal gravity formula as taken from NIMA TR8350.2</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="21%" />
-<col width="48%" />
-<col width="31%" />
+<col width="19%" />
+<col width="49%" />
+<col width="32%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -292,11 +292,11 @@
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<td>normal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at the ellipsoid surface</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(GM\)</span></td>
@@ -321,7 +321,7 @@
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
-   g &amp; = &amp; g_{surf} \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
+   g_{h} &amp; = &amp; g \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
 \end{eqnarray}</div></li>
 </ol>
 </div>
@@ -330,9 +330,9 @@
 <blockquote>
 <div><table border="1" class="docutils">
 <colgroup>
-<col width="24%" />
-<col width="42%" />
-<col width="33%" />
+<col width="21%" />
+<col width="44%" />
+<col width="35%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -342,30 +342,30 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<td>normal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at earth surface</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(p\)</span></td>
 <td>pressure</td>
 <td><span class="math notranslate nohighlight">\(Pa\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{surf}\)</span></td>
-<td>earth radius at surface</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
+<td>local earth curvature radius</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(h\)</span></td>
-<td>height above surface</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z\)</span></td>
+<td>altitude</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(h_{g}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{g}\)</span></td>
 <td>geopotential height</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 </tr>
@@ -381,21 +381,21 @@
 </table>
 <p>The geopotential height allows the gravity in the hydrostatic equation</p>
 <div class="math notranslate nohighlight">
-\[dp = - \rho g dh\]</div>
+\[dp = - \rho g_{h} dz\]</div>
 <p>to be replaced by a constant gravity</p>
 <div class="math notranslate nohighlight">
-\[dp = - \rho g_{0} dh_{g}\]</div>
+\[dp = - \rho g_{0} dz_{g}\]</div>
 <p>providing</p>
 <div class="math notranslate nohighlight">
-\[dh_{g} = \frac{g}{g_{0}}dh\]</div>
+\[dz_{g} = \frac{g_{h}}{g_{0}}dz\]</div>
 <p>With Newton’s gravitational law this becomes</p>
 <div class="math notranslate nohighlight">
-\[dh_{g} = \frac{g_{surf}}{g_{0}}\left(\frac{R_{surf}}{R_{surf} + h}\right)^2dh\]</div>
-<p>And integrating this, considering that <span class="math notranslate nohighlight">\(h=0\)</span> and <span class="math notranslate nohighlight">\(h_{g}=0\)</span> at the surface, results in</p>
+\[dz_{g} = \frac{g}{g_{0}}\left(\frac{R}{R + z}\right)^2dz\]</div>
+<p>And integrating this, considering that <span class="math notranslate nohighlight">\(z=0\)</span> and <span class="math notranslate nohighlight">\(z_{g}=0\)</span> at sea level, results in</p>
 <div class="math notranslate nohighlight">
-\[h_{g} = \frac{g_{surf}}{g_{0}}\frac{R_{surf}h}{R_{surf} + h}\]</div>
+\[z_{g} = \frac{g}{g_{0}}\frac{Rz}{R + z}\]</div>
 <div class="math notranslate nohighlight">
-\[h = \frac{g_{0}R_{surf}h_{g}}{g_{surf}R_{surf}-g_{0}h_{g}}\]</div>
+\[z = \frac{g_{0}Rz_{g}}{gR-g_{0}z_{g}}\]</div>
 </div></blockquote>
 </div>
 <div class="section" id="gas-constant">
@@ -485,8 +485,8 @@
 <div><table border="1" class="docutils">
 <colgroup>
 <col width="21%" />
-<col width="33%" />
-<col width="46%" />
+<col width="36%" />
+<col width="44%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -495,12 +495,12 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
+<td>mean earth gravity</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
-<td>mean earth gravity</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(k\)</span></td>
@@ -558,21 +558,21 @@
 \[p = \frac{NkT}{V} = \frac{10^{-3}NM_{air}}{VN_{a}}\frac{kTN_{a}}{10^{-3}M_{air}} = \rho\frac{RT}{10^{-3}M_{air}}\]</div>
 <p>And from the hydrostatic assumption we get:</p>
 <div class="math notranslate nohighlight">
-\[dp = - \rho g dz\]</div>
+\[dp = - \rho g_{h} dz\]</div>
 <p>Dividing <span class="math notranslate nohighlight">\(dp\)</span> by <cite>p</cite> we get:</p>
 <div class="math notranslate nohighlight">
-\[\frac{dp}{p} = -\frac{10^{-3}M_{air}\rho g dz}{\rho RT} = -\frac{10^{-3}M_{air}gdz}{RT}\]</div>
+\[\frac{dp}{p} = -\frac{10^{-3}M_{air}\rho g_{h} dz}{\rho RT} = -\frac{10^{-3}M_{air}g_{h}dz}{RT}\]</div>
 <p>Integrating this expression from one pressure level to the next we get:</p>
 <div class="math notranslate nohighlight">
-\[p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{10^{-3}M_{air}g}{RT}dz}\]</div>
+\[p(i+1) = p(i)e^{-\int^{z(i+1)}_{z(i)}\frac{10^{-3}M_{air}g_{h}}{RT}dz}\]</div>
 <p>We can approximate this further by using an average value of the height dependent quantities
-<span class="math notranslate nohighlight">\(M_{air}\)</span>, <span class="math notranslate nohighlight">\(g\)</span> and <span class="math notranslate nohighlight">\(T\)</span> for the integration over the range <span class="math notranslate nohighlight">\([z(i),z(i+1)]\)</span>.
+<span class="math notranslate nohighlight">\(M_{air}\)</span>, <span class="math notranslate nohighlight">\(g_{h}\)</span> and <span class="math notranslate nohighlight">\(T\)</span> for the integration over the range <span class="math notranslate nohighlight">\([z(i),z(i+1)]\)</span>.
 This gives:</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g &amp; = &amp; g(\phi,\frac{z(i)+z(i+1)}{2}) \\
-   p(i+1) &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{2}\frac{2}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)} \\
-          &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g}{R}\left(z(i+1)-z(i)\right)}
+   g' &amp; = &amp; g_{h}(\phi,\frac{z(i)+z(i+1)}{2}) \\
+   p(i+1) &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{2}\frac{2}{T(i)+T(i+1)}\frac{g'}{R}\left(z(i+1)-z(i)\right)} \\
+          &amp; = &amp; p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g'}{R}\left(z(i+1)-z(i)\right)}
 \end{eqnarray}</div><p>When using geopotential height the formula is the same except that <span class="math notranslate nohighlight">\(g=g_{0}\)</span> at all levels:</p>
 <div class="math notranslate nohighlight">
 \[p(i+1) = p(i)e^{-10^{-3}\frac{M_{air}(i)+M_{air}(i+1)}{T(i)+T(i+1)}\frac{g_{0}}{R}\left(z_{g}(i+1)-z_{g}(i)\right)}\]</div>
@@ -801,7 +801,7 @@ This gives:</p>
 <blockquote>
 <div><table border="1" class="docutils">
 <colgroup>
-<col width="28%" />
+<col width="27%" />
 <col width="40%" />
 <col width="32%" />
 </colgroup>

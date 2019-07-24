@@ -101,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="frequency.html">frequency derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential.html">geopotential derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential_height.html">geopotential height derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.html">gravity derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude.html">latitude derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude_bounds.html">latitude bounds derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="longitude.html">longitude derivations</a></li>
@@ -796,7 +797,7 @@ or no dimensions at all.</p>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<td>normal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -805,8 +806,8 @@ or no dimensions at all.</p>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at surface</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -877,13 +878,13 @@ with regard to total air</td>
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
    p &amp; = &amp; e^{\frac{\ln(p^{B}(2)) + \ln(p^{B}(1))}{2}} \\
    z &amp; = &amp; -\frac{RT_{0}}{10^{-3}M_{air}g_{0}}\ln(\frac{p}{p_{0}}) \\
-   g &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
-   c_{x} &amp; = &amp; -\nu_{x}\frac{N_A}{10^{-3}M_{air}g}(p^{B}(2)-p^{B}(1))
+   g_{h} &amp; = &amp; g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
+   c_{x} &amp; = &amp; -\nu_{x}\frac{N_A}{10^{-3}M_{air}g_{h}}(p^{B}(2)-p^{B}(1))
 \end{eqnarray}</div></li>
 <li><p class="first">column number density for air component from volume mixing ratio dry air:</p>
 <table border="1" class="docutils">
@@ -923,7 +924,7 @@ with regard to total air</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<td>normal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -932,8 +933,8 @@ with regard to total air</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at surface</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -1004,13 +1005,13 @@ with regard to dry air</td>
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
    p &amp; = &amp; e^{\frac{\ln(p^{B}(2)) + \ln(p^{B}(1))}{2}} \\
    z &amp; = &amp; -\frac{RT_{0}}{10^{-3}M_{dry\_air}g_{0}}\ln(\frac{p}{p_{0}}) \\
-   g &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
-   c_{x} &amp; = &amp; -\bar{\nu}_{x}\frac{N_A}{10^{-3}M_{dry\_air}g}(p^{B}(2)-p^{B}(1))
+   g_{h} &amp; = &amp; g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
+   c_{x} &amp; = &amp; -\bar{\nu}_{x}\frac{N_A}{10^{-3}M_{dry\_air}g_{h}}(p^{B}(2)-p^{B}(1))
 \end{eqnarray}</div></li>
 </ol>
 </div>

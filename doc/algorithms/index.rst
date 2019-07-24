@@ -37,6 +37,7 @@ Variable Conversions
    derivations/frequency
    derivations/geopotential
    derivations/geopotential_height
+   derivations/gravity
    derivations/latitude
    derivations/latitude_bounds
    derivations/longitude

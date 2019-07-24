@@ -104,34 +104,21 @@ double harp_frequency_from_wavenumber(double wavenumber)
     return (double)CONST_SPEED_OF_LIGHT *wavenumber;
 }
 
-/* Calculate the gravitational acceleration gsurf at the Earth's surface for a given latitude
- * Using WGS84 Gravity formula
- * \param latitude  Latitude [degree_north]
- * \return the gravitational acceleration at the Earth's surface gsurf [m/s2] */
-double harp_gravity_at_surface_from_latitude(double latitude)
-{
-    double g_e = 9.7803253359;
-    double k = 0.00193185265241;
-    double e2 = 0.00669437999013;
-    double sinphi = sin(latitude * CONST_DEG2RAD);
 
-    return g_e * (1 + k * sinphi * sinphi) / sqrt(1 - e2 * sinphi * sinphi);
-}
-
-/* Calculate the gravitational acceleration g for a given latitude and height.
+/* Calculate the gravitational acceleration g for a given latitude and altitude.
  * Using WGS84 Gravity formula
- * \param latitude  Latitude [degree_north]
- * \param height    Height [m]
- * \return the gravitational acceleration at the Earth's surface gsurf [m/s2] */
-double harp_gravity_from_latitude_and_height(double latitude, double height)
+ * \param latitude Latitude [degree_north]
+ * \param altitude Altitude [m]
+ * \return the gravitational acceleration at the given altitude [m/s2] */
+double harp_gravity_from_latitude_and_altitude(double latitude, double altitude)
 {
     double a = 6378137.0;
     double f = 1 / 298.257223563;
     double m = 0.00344978650684;
     double sinphi = sin(latitude * CONST_DEG2RAD);
 
-    return harp_gravity_at_surface_from_latitude(latitude) *
-        (1 - (2 * (1 + f + m - 2 * f * sinphi * sinphi) + 3 * height / a) * height / a);
+    return harp_normal_gravity_from_latitude(latitude) *
+        (1 - (2 * (1 + f + m - 2 * f * sinphi * sinphi) + 3 * altitude / a) * altitude / a);
 }
 
 /* Calculate the local curvature radius Rsurf at the Earth's surface for a given latitude
@@ -147,6 +134,20 @@ double harp_local_curvature_radius_at_surface_from_latitude(double latitude)
 
     Rsurf = 1.0 / sqrt(cos(phi) * cos(phi) / (Rmin * Rmin) + sin(phi) * sin(phi) / (Rmax * Rmax));
     return Rsurf;
+}
+
+/* Calculate the gravitational acceleration g at sea level for a given latitude
+ * Using WGS84 Gravity formula
+ * \param latitude Latitude [degree_north]
+ * \return the gravitational acceleration at sea level [m/s2] */
+double harp_normal_gravity_from_latitude(double latitude)
+{
+    double g_e = 9.7803253359;
+    double k = 0.00193185265241;
+    double e2 = 0.00669437999013;
+    double sinphi = sin(latitude * CONST_DEG2RAD);
+
+    return g_e * (1 + k * sinphi * sinphi) / sqrt(1 - e2 * sinphi * sinphi);
 }
 
 /** Convert radiance to normalized radiance

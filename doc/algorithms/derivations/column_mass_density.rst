@@ -143,11 +143,12 @@ column mass density derivations
    symbol             description                       unit                   variable name
    ================== ================================= ====================== ================================
    :math:`\bar{g}`    mean gravity for profile          :math:`\frac{m}{s^2}`
-   :math:`g_{wgs84}`  gravity at WGS84 ellipsoid        :math:`\frac{m}{s^2}`
+   :math:`g`          nominal gravity at sea level      :math:`\frac{m}{s^2}`
+   :math:`g_{h}`      gravity at specific height        :math:`\frac{m}{s^2}`
    :math:`p^{B}(i,l)` pressure boundaries               :math:`Pa`             `pressure_bounds {:,vertical,2}`
                       (:math:`l \in \{1,2\}`)
    :math:`p_{surf}`   surface pressure                  :math:`Pa`             `surface_pressure {:}`
-   :math:`R_{wgs84}`  local earth curvature radius      :math:`m`
+   :math:`R`          local earth curvature radius      :math:`m`
                       at WGS84 ellipsoid
    :math:`z(i)`       altitude                          :math:`m`              `altitude {:,vertical}`
    :math:`\phi`       latitude                          :math:`degN`           `latitude {:}`
@@ -161,9 +162,9 @@ column mass density derivations
       :nowrap:
 
       \begin{eqnarray}
-         g_{wgs84} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+         g & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-         g(i) & = & g_{wgs84}\left(\frac{R_{wgs84}}{R_{wgs84} + z(i)}\right)^2 \\
-         \bar{g} & = & \frac{\sum_{i}{p^{B}(i,0)-p^{B}(i,1)}}{\sum_{i}{\frac{p^{B}(i,0)-p^{B}(i,1)}{g(i)}}} \\
+         g_{h}(i) & = & g\left(\frac{R}{R + z(i)}\right)^2 \\
+         \bar{g} & = & \frac{\sum_{i}{p^{B}(i,0)-p^{B}(i,1)}}{\sum_{i}{\frac{p^{B}(i,0)-p^{B}(i,1)}{g_{h}(i)}}} \\
          \sigma & = & \frac{p_{surf}}{\bar{g}}
       \end{eqnarray}

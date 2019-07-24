@@ -283,9 +283,9 @@ column number density derivations
    :math:`c_{x}`      column number density for air component x   :math:`\frac{molec}{m^2}`        `<species>_column_number_density {:}`
                       (e.g. :math:`c_{O_{3}}`)
    :math:`f`          WGS84 flattening                            :math:`m`
-   :math:`g`          gravity                                     :math:`\frac{m}{s^2}`
+   :math:`g`          normal gravity at sea level                 :math:`\frac{m}{s^2}`
    :math:`g_{0}`      mean earth gravity                          :math:`\frac{m}{s^2}`
-   :math:`g_{surf}`   gravity at surface                          :math:`\frac{m}{s^2}`
+   :math:`g_{h}`      gravity at specific height                  :math:`\frac{m}{s^2}`
    :math:`GM`         WGS84 earth's gravitational constant        :math:`\frac{m^3}{s^2}`
    :math:`M_{air}`    molar mass of total air                     :math:`\frac{g}{mol}`            `molar_mass {:}`
    :math:`N_A`        Avogadro constant                           :math:`\frac{1}{mol}`
@@ -308,13 +308,13 @@ column number density derivations
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+         g & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
          m & = & \frac{\omega^2a^2b}{GM} \\
          p & = & e^{\frac{\ln(p^{B}(2)) + \ln(p^{B}(1))}{2}} \\
          z & = & -\frac{RT_{0}}{10^{-3}M_{air}g_{0}}\ln(\frac{p}{p_{0}}) \\
-         g & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
-         c_{x} & = & -\nu_{x}\frac{N_A}{10^{-3}M_{air}g}(p^{B}(2)-p^{B}(1))
+         g_{h} & = & g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
+         c_{x} & = & -\nu_{x}\frac{N_A}{10^{-3}M_{air}g_{h}}(p^{B}(2)-p^{B}(1))
       \end{eqnarray}
 
 
@@ -328,9 +328,9 @@ column number density derivations
    :math:`c_{x}`         column number density for air component x   :math:`\frac{molec}{m^2}`        `<species>_column_number_density {:}`
                          (e.g. :math:`c_{O_{3}}`)
    :math:`f`             WGS84 flattening                            :math:`m`
-   :math:`g`             gravity                                     :math:`\frac{m}{s^2}`
+   :math:`g`             normal gravity at sea level                 :math:`\frac{m}{s^2}`
    :math:`g_{0}`         mean earth gravity                          :math:`\frac{m}{s^2}`
-   :math:`g_{surf}`      gravity at surface                          :math:`\frac{m}{s^2}`
+   :math:`g_{h}`         gravity at specific height                  :math:`\frac{m}{s^2}`
    :math:`GM`            WGS84 earth's gravitational constant        :math:`\frac{m^3}{s^2}`
    :math:`M_{dry\_air}`  molar mass for dry air                      :math:`\frac{g}{mol}`
    :math:`N_A`           Avogadro constant                           :math:`\frac{1}{mol}`
@@ -353,11 +353,11 @@ column number density derivations
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+         g & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
          m & = & \frac{\omega^2a^2b}{GM} \\
          p & = & e^{\frac{\ln(p^{B}(2)) + \ln(p^{B}(1))}{2}} \\
          z & = & -\frac{RT_{0}}{10^{-3}M_{dry\_air}g_{0}}\ln(\frac{p}{p_{0}}) \\
-         g & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
-         c_{x} & = & -\bar{\nu}_{x}\frac{N_A}{10^{-3}M_{dry\_air}g}(p^{B}(2)-p^{B}(1))
+         g_{h} & = & g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2\right) \\
+         c_{x} & = & -\bar{\nu}_{x}\frac{N_A}{10^{-3}M_{dry\_air}g_{h}}(p^{B}(2)-p^{B}(1))
       \end{eqnarray}

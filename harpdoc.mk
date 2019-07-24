@@ -82,6 +82,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/frequency.html \
 	doc/html/algorithms/derivations/geopotential.html \
 	doc/html/algorithms/derivations/geopotential_height.html \
+	doc/html/algorithms/derivations/gravity.html \
 	doc/html/algorithms/derivations/latitude.html \
 	doc/html/algorithms/derivations/latitude_bounds.html \
 	doc/html/algorithms/derivations/longitude.html \
@@ -711,6 +712,8 @@ doc/html/algorithms/derivations/frequency.html:
 doc/html/algorithms/derivations/geopotential.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/geopotential_height.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/gravity.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/latitude.html:
 	$(MAKE) harp_doc

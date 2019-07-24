@@ -101,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="frequency.html">frequency derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential.html">geopotential derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential_height.html">geopotential height derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.html">gravity derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude.html">latitude derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude_bounds.html">latitude bounds derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="longitude.html">longitude derivations</a></li>
@@ -276,7 +277,7 @@
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<td>normal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -285,8 +286,8 @@
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at surface</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -352,13 +353,13 @@ since even for altitude grids that start at the surface, <span class="math notra
 (which is generally not equal to <span class="math notranslate nohighlight">\(z^{B}(1,1)\)</span>).</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
-   g(1) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
-   g(i) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 &lt; i \leq N \\
-   p(1) &amp; = &amp; p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
-   p(i) &amp; = &amp; p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 &lt; i \leq N
+   g(1) &amp; = &amp; g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
+   g(i) &amp; = &amp; g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 &lt; i \leq N \\
+   p(1) &amp; = &amp; p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g_{h}(1)}{R}\left(z(i)-z_{surf}\right)} \\
+   p(i) &amp; = &amp; p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{h}(i)}{R}\left(z(i)-z(i-1)\right)}, 1 &lt; i \leq N
 \end{eqnarray}</div></li>
 <li><p class="first">pressure from geopotential height</p>
 <table border="1" class="docutils">
