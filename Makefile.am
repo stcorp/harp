@@ -50,6 +50,10 @@ harppython_PYTHON = \
 	python/_harpc.py
 endif
 
+if BUILD_R
+harprlib_LTLIBRARIES = Rharp.la
+endif
+
 # headers
 
 nodist_include_HEADERS = libharp/harp.h
@@ -332,6 +336,37 @@ python/_harpc.py: $(srcdir)/libharp/harp.h.in $(srcdir)/python/build.py
 EXTRA_DIST += \
 	python/_harpc.py \
 	python/build.py
+
+# harp-R
+
+HARP_R_SOURCE_FILES = R/harp.c
+INDENTFILES += $(HARP_R_SOURCE_FILES)
+
+if BUILD_R
+Rharp_la_SOURCES = $(HARP_R_SOURCE_FILES)
+Rharp_la_CPPFLAGS = $(RCPPFLAGS) $(AM_CPPFLAGS)
+Rharp_la_LDFLAGS = -module -shared -avoid-version
+Rharp_la_LIBADD = libharp.la
+Rharp_la_DEPENDENCIES = libharp.la
+
+R/package.rds:
+	@$(MKDIR_P) R
+	R --silent --vanilla -e 'saveRDS(list(DESCRIPTION=c(Package="Rharp", Version="'${VERSION}'", Built=""), Built=list(R=paste(version$$major,version$$minor,sep="."), Platform=version$$platform, OStype=version$$os, Date=paste(version$$year, version$$month, version$$day, sep="-"))), "R/package.rds")'
+
+harpr_DATA = R/DESCRIPTION R/NAMESPACE
+harprMeta_DATA = R/package.rds
+harprR_DATA = R/Rharp
+
+install_rharpdir:
+	test -z "$(DESTDIR)$(harprdir)/help" || $(MKDIR_P) "$(DESTDIR)$(harprdir)/help"
+	test -z "$(DESTDIR)$(harprdir)/html" || $(MKDIR_P) "$(DESTDIR)$(harprdir)/html"
+INSTALL_DATA_HOOK_TARGETS += install_rharpdir
+endif
+
+EXTRA_DIST += \
+	R/Rharp \
+	R/NAMESPACE \
+	R/harp.c
 
 # harp-idl
 

@@ -8,6 +8,8 @@ stamp-*
 /.indent.pro
 /Makefile
 /Makefile.in
+/R/DESCRIPTION
+/R/package.rds
 /aclocal.m4
 /ar-lib
 /autom4te.cache/
