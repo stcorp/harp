@@ -375,6 +375,29 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L2_AER_LH</span></code> products.</p>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="15%" />
+<col width="25%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">option name</th>
+<th class="head">legal values</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>aerosol_pressure</td>
+<td>unclipped</td>
+<td>ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) or the unclipped variant (aerosol_pressure=unclipped)</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
@@ -516,9 +539,21 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/qa_value</strong></td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_pressure</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="5"><strong>aerosol_pressure</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>aerosol_pressure unset</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/PRODUCT/aerosol_mid_pressure[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>aerosol_pressure=unclipped and processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_pressure_not_clipped[]</strong></td>
 </tr>
 <tr class="row-odd"><td><strong>aerosol_pressure_uncertainty</strong></td>
 <td><em>path</em></td>

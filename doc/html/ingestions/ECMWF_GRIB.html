@@ -192,6 +192,18 @@
 <td>[nm]</td>
 <td>wavelengths of the aerosol properties</td>
 </tr>
+<tr class="row-even"><td><strong>RWC_mass_mixing_ratio</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
+<td>[kg/kg]</td>
+<td>specific rain water content</td>
+</tr>
+<tr class="row-odd"><td><strong>SWC_mass_mixing_ratio</strong></td>
+<td>float</td>
+<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
+<td>[kg/kg]</td>
+<td>specific snow water content</td>
+</tr>
 <tr class="row-even"><td><strong>LWC_column_density</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>}</td>
@@ -300,13 +312,13 @@
 <td>[kg/kg]</td>
 <td>specific cloud ice water content</td>
 </tr>
-<tr class="row-even"><td><strong>CO2_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>CO2_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>carbon dioxide mass mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>CH4_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
@@ -330,25 +342,25 @@
 <td>[kg/m3]</td>
 <td>surface density of particulate matter with d &lt; 10 um</td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>NO2_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>nitrogen dioxide mass mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>SO2_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>SO2_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>sulphur dioxide mass mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>CO_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>CO_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>carbon monoxide mass mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>HCHO_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
@@ -378,7 +390,7 @@
 <td>[kg/m^2]</td>
 <td>total column formaldehyde</td>
 </tr>
-<tr class="row-odd"><td><strong>O3_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>O3_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
@@ -426,43 +438,43 @@
 <td>[]</td>
 <td>sulphate aerosol optical depth (at 550nm)</td>
 </tr>
-<tr class="row-odd"><td><strong>HNO3_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>HNO3_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>nitric acid mass mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>C2H3NO5_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>C2H3NO5_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>peroxyacetyl nitrate (PAN) mass mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>C5H8_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>C5H8_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>isoprene mass mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>NO_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>NO_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>nitrogen monoxide mass mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>OH_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>OH_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>hydroxyl radical mass mixing ratio</td>
 </tr>
-<tr class="row-even"><td><strong>C2H6_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td><strong>C2H6_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
 <td>ethane mass mixing ratio</td>
 </tr>
-<tr class="row-odd"><td><strong>C3H8_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td><strong>C3H8_mass_mixing_ratio_dry_air</strong></td>
 <td>float</td>
 <td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
 <td>[kg/kg]</td>
@@ -606,6 +618,50 @@
 </tr>
 <tr class="row-even"><td><em>description</em></td>
 <td>the values are based on the available AODs; possible values are: 469, 550, 670, 865, 1240</td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><strong>RWC_mass_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(table,indicator) = (128,75)</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(discipline,category,number) = (0,1,85)</td>
+</tr>
+<tr class="row-even"><td rowspan="7"><strong>SWC_mass_mixing_ratio</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>GRIB1</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/[]/data/values[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>(table,indicator) = (128,76)</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>GRIB2</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/[]/data[]/values[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>(discipline,category,number) = (0,1,86)</td>
 </tr>
 <tr class="row-odd"><td rowspan="7"><strong>LWC_column_density</strong></td>
 <td><em>available</em></td>
@@ -976,7 +1032,7 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>(discipline,category,number) = (0,1,84)</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>CO2_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>CO2_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -998,7 +1054,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,210,61)</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>CH4_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>CH4_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1086,7 +1142,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,210,74)</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>NO2_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>NO2_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1108,7 +1164,7 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,210,121)</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>SO2_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>SO2_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1130,7 +1186,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,210,122)</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>CO_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>CO_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1152,7 +1208,7 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,210,123)</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>HCHO_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>HCHO_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1262,7 +1318,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,210,128)</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>O3_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>O3_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1438,7 +1494,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,210,212) [550nm]</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>HNO3_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>HNO3_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1460,7 +1516,7 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,217,6)</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>C2H3NO5_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>C2H3NO5_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1482,7 +1538,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,217,13)</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>C5H8_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>C5H8_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1504,7 +1560,7 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,217,16)</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>NO_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>NO_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1526,7 +1582,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,217,27)</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>OH_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>OH_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1548,7 +1604,7 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,217,30)</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>C2H6_mass_mixing_ratio</strong></td>
+<tr class="row-even"><td rowspan="7"><strong>C2H6_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -1570,7 +1626,7 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>(discipline,category,number) = (192,217,45)</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>C3H8_mass_mixing_ratio</strong></td>
+<tr class="row-odd"><td rowspan="7"><strong>C3H8_mass_mixing_ratio_dry_air</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>

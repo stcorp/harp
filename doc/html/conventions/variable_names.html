@@ -254,6 +254,24 @@ for it.</p>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
+<tr class="row-even"><td>aerosol_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>aerosol_column_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
 <tr class="row-even"><td>aerosol_optical_depth</td>
 <td>stratospheric,
 tropospheric</td>
@@ -290,6 +308,43 @@ tropospheric</td>
 <td>X</td>
 <td>&#160;</td>
 <td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;aerosol_size&gt;_aerosol_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;aerosol_size&gt;_aerosol_column_number_density</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&lt;aerosol_size&gt;_aerosol_extinction_coefficient</td>
+<td>surface</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&lt;aerosol_size&gt;_aerosol_optical_depth</td>
+<td>stratospheric,
+tropospheric</td>
+<td>&#160;</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td>this is equal to ‘aerosol optical thickness’</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_type&gt;_aerosol_base_height</td>
 <td>&#160;</td>
@@ -1573,6 +1628,29 @@ dfs, sic</td>
 </tr>
 </tbody>
 </table>
+<p>The supported aerosol sizes are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Aerosol size</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ultrafine</td>
+<td>particles &lt; 0.1 um</td>
+</tr>
+<tr class="row-odd"><td>fine</td>
+<td>particles &lt; threshold, 0.5 um &lt;= threshold &lt;= 2.5 um</td>
+</tr>
+<tr class="row-even"><td>coarse</td>
+<td>particles &gt; threshold, 0.5 um &lt;= threshold &lt;= 2.5 um</td>
+</tr>
+</tbody>
+</table>
 <p>The supported aerosol types are:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1629,8 +1707,8 @@ dfs, sic</td>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
-<col width="44%" />
-<col width="43%" />
+<col width="45%" />
+<col width="42%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -1807,12 +1885,12 @@ methyl cyanide</td>
 </tr>
 <tr class="row-odd"><td>IWC</td>
 <td>ice water content;
-H2O in ice state</td>
+H2O in clouds in ice state</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>LWC</td>
 <td>liquid water content;
-H2O in liquid state</td>
+H2O in clouds in liquid state</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>NH3</td>
@@ -1883,12 +1961,22 @@ H2O in liquid state</td>
 <td>tetraoxygen, oxozone</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>SF6</td>
+<tr class="row-even"><td>RWC</td>
+<td>rain water content;
+H2O as rain</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>SF6</td>
 <td>sulfur hexafluoride</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>SO2</td>
+<tr class="row-even"><td>SO2</td>
 <td>sulfur dioxide</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>SWC</td>
+<td>snow water content;
+H2O as snow/ice</td>
 <td>&#160;</td>
 </tr>
 </tbody>

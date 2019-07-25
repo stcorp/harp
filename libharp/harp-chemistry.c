@@ -97,8 +97,10 @@ static const char *chemical_species_names[] = {
     "O3_668",
     "O3_686",
     "O4",
+    "RWC",
     "SF6",
     "SO2",
+    "SWC",
     "unknown"
 };
 
@@ -163,8 +165,10 @@ double chemical_species_molar_mass[] = {
     CONST_MOLAR_MASS_O3_668,
     CONST_MOLAR_MASS_O3_686,
     CONST_MOLAR_MASS_O4,
+    CONST_MOLAR_MASS_H2O,       /* rain has H2O molar mass */
     CONST_MOLAR_MASS_SF6,
     CONST_MOLAR_MASS_SO2,
+    CONST_MOLAR_MASS_H2O,       /* snow has H2O molar mass */
     0   /* value for 'unknown' */
 };
 
@@ -356,7 +360,7 @@ double harp_partial_column_number_density_from_volume_mixing_ratio(double volume
     p = exp(0.5 * (log(pressure_bounds[0]) + log(pressure_bounds[1])));
     z = -(CONST_MOLAR_GAS * CONST_STD_TEMPERATURE) * log(p / CONST_STD_PRESSURE) /
         (10e-3 * molar_mass_air * CONST_GRAV_ACCEL);
-    g = harp_gravity_from_latitude_and_height(latitude, z);
+    g = harp_gravity_from_latitude_and_altitude(latitude, z);
 
     return -volume_mixing_ratio * CONST_NUM_AVOGADRO * (pressure_bounds[1] - pressure_bounds[0]) /
         (10e-3 * molar_mass_air * g);

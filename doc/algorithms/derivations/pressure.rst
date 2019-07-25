@@ -25,9 +25,9 @@ pressure derivations
    :math:`a`          WGS84 semi-major axis        :math:`m`
    :math:`b`          WGS84 semi-minor axis        :math:`m`
    :math:`f`          WGS84 flattening             :math:`m`
-   :math:`g`          gravity                      :math:`\frac{m}{s^2}`
+   :math:`g`          normal gravity at sea level  :math:`\frac{m}{s^2}`
    :math:`g_{0}`      mean earth gravity           :math:`\frac{m}{s^2}`
-   :math:`g_{surf}`   gravity at surface           :math:`\frac{m}{s^2}`
+   :math:`g_{h}`      gravity at specific height   :math:`\frac{m}{s^2}`
    :math:`GM`         WGS84 earth's gravitational  :math:`\frac{m^3}{s^2}`
                       constant
    :math:`M_{air}(i)` molar mass of total air      :math:`\frac{g}{mol}`            `molar_mass {:,vertical}`
@@ -55,13 +55,13 @@ pressure derivations
       :nowrap:
 
       \begin{eqnarray}
-         g_{surf} & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+         g & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
          m & = & \frac{\omega^2a^2b}{GM} \\
-         g(1) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
-         g(i) & = & g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 < i \leq N \\
-         p(1) & = & p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g(1)}{R}\left(z(i)-z_{surf}\right)} \\
-         p(i) & = & p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g(i)}{R}\left(z(i)-z(i-1)\right)}, 1 < i \leq N
+         g(1) & = & g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z_{surf}+z(1)}{2} + \frac{3}{a^2}\left(\frac{z_{surf}+z(1)}{2}\right)^2\right) \\
+         g(i) & = & g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)\frac{z(i-1)+z(i)}{2} + \frac{3}{a^2}\left(\frac{z(i-1)+z(i)}{2}\right)^2\right), 1 < i \leq N \\
+         p(1) & = & p_{surf}e^{-10^{-3}\frac{M_{air}(1)}{T(1)}\frac{g_{h}(1)}{R}\left(z(i)-z_{surf}\right)} \\
+         p(i) & = & p(i-1)e^{-10^{-3}\frac{M_{air}(i-1)+M_{air}(i)}{T(i-1)+T(i)}\frac{g_{h}(i)}{R}\left(z(i)-z(i-1)\right)}, 1 < i \leq N
       \end{eqnarray}
 
 

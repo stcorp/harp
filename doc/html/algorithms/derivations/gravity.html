@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>datetime start derivations &mdash; HARP 1.7 documentation</title>
+  <title>gravity derivations &mdash; HARP 1.7 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="next" title="datetime stop derivations" href="datetime_stop.html" />
-    <link rel="prev" title="datetime length derivations" href="datetime_length.html" /> 
+    <link rel="next" title="latitude derivations" href="latitude.html" />
+    <link rel="prev" title="geopotential height derivations" href="geopotential_height.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -95,13 +95,13 @@
 <li class="toctree-l3"><a class="reference internal" href="column_volume_mixing_ratio.html">column volume mixing ratio derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="datetime.html">datetime derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="datetime_length.html">datetime length derivations</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">datetime start derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="datetime_start.html">datetime start derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="datetime_stop.html">datetime stop derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="degrees_of_freedom_for_signal.html">degrees of freedom for signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="frequency.html">frequency derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential.html">geopotential derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential_height.html">geopotential height derivations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gravity.html">gravity derivations</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">gravity derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude.html">latitude derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude_bounds.html">latitude bounds derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="longitude.html">longitude derivations</a></li>
@@ -193,7 +193,7 @@
         
           <li><a href="../index.html">Algorithms</a> &raquo;</li>
         
-      <li>datetime start derivations</li>
+      <li>gravity derivations</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -210,16 +210,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="datetime-start-derivations">
-<h1>datetime start derivations</h1>
+  <div class="section" id="gravity-derivations">
+<h1>gravity derivations</h1>
 <ol class="arabic">
-<li><p class="first">datetime start from datetime and stop</p>
+<li><p class="first">normal gravity at sea level from latitude</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="19%" />
-<col width="23%" />
-<col width="30%" />
-<col width="28%" />
+<col width="16%" />
+<col width="33%" />
+<col width="26%" />
+<col width="26%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -229,26 +229,166 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(t\)</span></td>
-<td>datetime (mid point)</td>
-<td><span class="math notranslate nohighlight">\(s\)</span> since 2000-01-01</td>
-<td><cite>datetime {time}</cite></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>normal gravity at sea level</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><cite>gravity {:}</cite></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(t_{s}\)</span></td>
-<td>datetime start</td>
-<td><span class="math notranslate nohighlight">\(s\)</span> since 2000-01-01</td>
-<td><cite>datetime_start {time}</cite></td>
-</tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\Delta t\)</span></td>
-<td>time duration</td>
-<td><span class="math notranslate nohighlight">\(s\)</span></td>
-<td><cite>datetime_length {time}</cite></td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math notranslate nohighlight">\(degN\)</span></td>
+<td><cite>latitude {:}</cite></td>
 </tr>
 </tbody>
 </table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
-\[t_{s} = t - \frac{\Delta t}{2}\]</div>
+\[\begin{eqnarray}
+    g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}}
+ \end{eqnarray}\]</div>
 </li>
+<li><p class="first">gravity at specific altitude</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="34%" />
+<col width="22%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(a\)</span></td>
+<td>WGS84 semi-major axis</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(b\)</span></td>
+<td>WGS84 semi-minor axis</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(f\)</span></td>
+<td>WGS84 flattening</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><cite>gravity {:,vertical}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>normal gravity at sea level</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><cite>gravity {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(GM\)</span></td>
+<td>WGS84 earth’s gravitational constant</td>
+<td><span class="math notranslate nohighlight">\(\frac{m^3}{s^2}\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z\)</span></td>
+<td>altitude</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><cite>altitude {:,vertical}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math notranslate nohighlight">\(degN\)</span></td>
+<td><cite>latitude {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\omega\)</span></td>
+<td>WGS84 earth angular velocity</td>
+<td><span class="math notranslate nohighlight">\(rad/s\)</span></td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\begin{eqnarray}
+   m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
+   g_{h} &amp; = &amp; g \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
+\end{eqnarray}</div></li>
+<li><p class="first">gravity at earth surface</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="33%" />
+<col width="21%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">name</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(a\)</span></td>
+<td>WGS84 semi-major axis</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(b\)</span></td>
+<td>WGS84 semi-minor axis</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(f\)</span></td>
+<td>WGS84 flattening</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
+<td>gravity at surface altitude</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><cite>surface_gravity {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>normal gravity at sea level</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td><cite>gravity {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(GM\)</span></td>
+<td>WGS84 earth’s gravitational constant</td>
+<td><span class="math notranslate nohighlight">\(\frac{m^3}{s^2}\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{surf}\)</span></td>
+<td>surface altitude</td>
+<td><span class="math notranslate nohighlight">\(m\)</span></td>
+<td><cite>surface_altitude {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
+<td>latitude</td>
+<td><span class="math notranslate nohighlight">\(degN\)</span></td>
+<td><cite>latitude {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\omega\)</span></td>
+<td>WGS84 earth angular velocity</td>
+<td><span class="math notranslate nohighlight">\(rad/s\)</span></td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
+or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\begin{eqnarray}
+   m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
+   g_{surf} &amp; = &amp; g \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
+\end{eqnarray}</div></li>
 </ol>
 </div>
 
@@ -260,10 +400,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="datetime_stop.html" class="btn btn-neutral float-right" title="datetime stop derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="latitude.html" class="btn btn-neutral float-right" title="latitude derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="datetime_length.html" class="btn btn-neutral" title="datetime length derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="geopotential_height.html" class="btn btn-neutral" title="geopotential height derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -93,6 +93,7 @@ static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = { 2, 0, 2, 2, 
 typedef struct ingest_info_struct
 {
     coda_product *product;
+    int use_aerosol_pressure_not_clipped;
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
     int use_ch4_bias_corrected;
@@ -560,6 +561,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
 
     info->product = product;
+    info->use_aerosol_pressure_not_clipped = 0;
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
     info->use_ch4_bias_corrected = 0;
@@ -597,6 +599,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
 
+    if (harp_ingestion_options_has_option(options, "aerosol_pressure"))
+    {
+        info->use_aerosol_pressure_not_clipped = 1;
+    }
     if (harp_ingestion_options_has_option(options, "total_column"))
     {
         if (harp_ingestion_options_get_option(options, "total_column", &option_value) != 0)
@@ -1770,6 +1776,107 @@ static int read_input_tm5_pressure(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_input_tropopause_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array hybride_coef_a;
+    harp_array hybride_coef_b;
+    harp_array layer_index;
+    long num_profiles;
+    long num_layers;
+    long i;
+
+    num_profiles = info->num_scanlines * info->num_pixels;
+    num_layers = info->num_layers;
+
+    layer_index.ptr = malloc(num_profiles * sizeof(int32_t));
+    if (layer_index.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_profiles * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    hybride_coef_a.ptr = malloc(num_layers * sizeof(double));
+    if (hybride_coef_a.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * sizeof(double), __FILE__, __LINE__);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    hybride_coef_b.ptr = malloc(num_layers * sizeof(double));
+    if (hybride_coef_b.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_layers * sizeof(double), __FILE__, __LINE__);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_tropopause_layer_index", harp_type_int32, num_profiles, layer_index)
+        != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_constant_a", harp_type_double, num_layers, hybride_coef_a) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "tm5_constant_b", harp_type_double, num_layers, hybride_coef_b) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "surface_pressure", harp_type_double, num_profiles, data) != 0)
+    {
+        free(hybride_coef_b.ptr);
+        free(hybride_coef_a.ptr);
+        free(layer_index.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        long index = layer_index.int32_data[i];
+
+        if (index >= 0 && index < num_layers - 1)
+        {
+            double surface_pressure = data.double_data[i];      /* surface pressure at specific (time, lat, lon) */
+            double layer_pressure, upper_layer_pressure;
+
+            /* the tropause level is the upper boundary of the layer defined by layer_index */
+            layer_pressure = hybride_coef_a.double_data[index] + hybride_coef_b.double_data[index] * surface_pressure;
+            upper_layer_pressure = hybride_coef_a.double_data[index + 1] +
+                hybride_coef_b.double_data[index + 1] * surface_pressure;
+            data.double_data[i] = exp((log(layer_pressure) + log(upper_layer_pressure)) / 2.0);
+        }
+        else
+        {
+            data.double_data[i] = harp_nan();
+        }
+    }
+
+    free(hybride_coef_b.ptr);
+    free(hybride_coef_a.ptr);
+    free(layer_index.ptr);
+
+    return 0;
+}
+
 static int read_product_air_mass_factor_total(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1843,14 +1950,6 @@ static int read_product_aerosol_mid_height_precision(void *user_data, harp_array
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->product_cursor, "aerosol_mid_height_precision", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_product_aerosol_mid_pressure(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2751,6 +2850,20 @@ static int read_results_water_total_column_precision(void *user_data, harp_array
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_aer_lh_aerosol_mid_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_aerosol_pressure_not_clipped)
+    {
+        return read_dataset(info->detailed_results_cursor, "aerosol_mid_pressure_not_clipped", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
+    return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_co_surface_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2818,6 +2931,62 @@ static int read_hcho_cloud_fraction_precision(void *user_data, harp_array data)
     }
     return read_dataset(info->input_data_cursor, "cloud_fraction_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_hcho_column_tropospheric_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array layer_data;
+    long i, j;
+
+    if (read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->processor_version < 2000)
+    {
+        /* we only have a tm5_tropopause_index since processor version 02.00.00 */
+        /* just give the unmasked avk back for older versions of the product */
+        return 0;
+    }
+
+    layer_data.int32_data = malloc(info->num_scanlines * info->num_pixels * sizeof(int32_t));
+    if (layer_data.int32_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_dataset(info->input_data_cursor, "tm5_tropopause_layer_index", harp_type_int32,
+                     info->num_scanlines * info->num_pixels, layer_data) != 0)
+    {
+        free(layer_data.int32_data);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        if (layer_data.int32_data[i] < 0 || layer_data.int32_data[i] >= info->num_layers)
+        {
+            for (j = 0; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] = (float)harp_nan();
+            }
+        }
+        else
+        {
+            for (j = layer_data.int32_data[i]; j < info->num_layers; j++)
+            {
+                data.float_data[i * info->num_layers + j] = 0;
+            }
+        }
+    }
+
+    free(layer_data.int32_data);
+
+    return 0;
 }
 
 static int read_o3_cloud_fraction(void *user_data, harp_array data)
@@ -3825,12 +3994,12 @@ static int read_so2_surface_albedo(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_snow_ice_type(void *user_data, harp_array data)
+static int read_snow_ice_type_from_flag(void *user_data, const char *variable_name, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long i;
 
-    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_int8, info->num_scanlines * info->num_pixels,
+    if (read_dataset(info->input_data_cursor, variable_name, harp_type_int8, info->num_scanlines * info->num_pixels,
                      data) != 0)
     {
         return -1;
@@ -3872,12 +4041,22 @@ static int read_snow_ice_type(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_sea_ice_fraction(void *user_data, harp_array data)
+static int read_snow_ice_type(void *user_data, harp_array data)
+{
+    return read_snow_ice_type_from_flag(user_data, "snow_ice_flag", data);
+}
+
+static int read_snow_ice_type_nise(void *user_data, harp_array data)
+{
+    return read_snow_ice_type_from_flag(user_data, "snow_ice_flag_nise", data);
+}
+
+static int read_sea_ice_fraction_from_flag(void *user_data, const char *variable_name, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long i;
 
-    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_float, info->num_scanlines * info->num_pixels,
+    if (read_dataset(info->input_data_cursor, variable_name, harp_type_float, info->num_scanlines * info->num_pixels,
                      data) != 0)
     {
         return -1;
@@ -3895,6 +4074,16 @@ static int read_sea_ice_fraction(void *user_data, harp_array data)
     }
 
     return 0;
+}
+
+static int read_sea_ice_fraction(void *user_data, harp_array data)
+{
+    return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag", data);
+}
+
+static int read_sea_ice_fraction_nise(void *user_data, harp_array data)
+{
+    return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag_nise", data);
 }
 
 static int parse_option_wavelength_ratio(ingest_info *info, const harp_ingestion_options *options)
@@ -3952,6 +4141,12 @@ static int include_offl(void *user_data)
     return !((ingest_info *)user_data)->is_nrti;
 }
 
+static int include_aer_lh_aerosol_pressure(void *user_data)
+{
+    return !((ingest_info *)user_data)->use_aerosol_pressure_not_clipped ||
+        ((ingest_info *)user_data)->processor_version >= 20000;
+}
+
 static int include_co_nd_avk(void *user_data)
 {
     return ((ingest_info *)user_data)->use_co_nd_avk;
@@ -3998,6 +4193,11 @@ static int include_from_010000(void *user_data)
 static int include_from_010300(void *user_data)
 {
     return ((ingest_info *)user_data)->processor_version >= 10300;
+}
+
+static int include_from_020000(void *user_data)
+{
+    return ((ingest_info *)user_data)->processor_version >= 20000;
 }
 
 static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims)
@@ -4279,6 +4479,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+/* include_surface_winds=1: include from 01.03.00, include_surface_winds=2: include from 02.00.00 */
 static void register_surface_variables(harp_product_definition *product_definition, int include_surface_pressure,
                                        int include_surface_winds)
 {
@@ -4319,14 +4520,27 @@ static void register_surface_variables(harp_product_definition *product_definiti
 
     if (include_surface_winds)
     {
+        const char *processor_description;
+        int (*include_func) (void *);
+
+        if (include_surface_winds == 1)
+        {
+            include_func = include_from_010300;
+            processor_description = "processor version >= 01.03.00";
+        }
+        else
+        {
+            include_func = include_from_020000;
+            processor_description = "processor version >= 02.00.00";
+        }
         /* surface_meridional_wind_velocity */
         description = "northward wind";
         path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_meridional_wind_velocity",
                                                        harp_type_float, 1, dimension_type, NULL, description, "m/s",
-                                                       include_from_010300, read_input_northward_wind);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.03.00", path, NULL);
+                                                       include_func, read_input_northward_wind);
+        harp_variable_definition_add_mapping(variable_definition, NULL, processor_description, path, NULL);
 
         /* surface_zonal_wind_velocity */
         description = "eastward wind";
@@ -4334,8 +4548,8 @@ static void register_surface_variables(harp_product_definition *product_definiti
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_zonal_wind_velocity",
                                                        harp_type_float, 1, dimension_type, NULL, description, "m/s",
-                                                       include_from_010300, read_input_eastward_wind);
-        harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.03.00", path, NULL);
+                                                       include_func, read_input_eastward_wind);
+        harp_variable_definition_add_mapping(variable_definition, NULL, processor_description, path, NULL);
     }
 }
 
@@ -4345,21 +4559,28 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
     const char *description;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    int (*read_snow_ice_type_function) (void *, harp_array);
+    int (*read_sea_ice_fraction_function) (void *, harp_array);
 
     if (nise_extension)
     {
         path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]";
+        read_snow_ice_type_function = read_snow_ice_type_nise;
+        read_sea_ice_fraction_function = read_sea_ice_fraction_nise;
     }
     else
     {
         path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
+        read_snow_ice_type_function = read_snow_ice_type;
+        read_sea_ice_fraction_function = read_sea_ice_fraction;
     }
 
     /* snow_ice_type */
     description = "surface snow/ice type";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_snow_ice_type);
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_snow_ice_type_function);
     harp_variable_definition_set_enumeration_values(variable_definition, 5, snow_ice_type_values);
     description = "0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), "
         "other values map to -1";
@@ -4369,7 +4590,8 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
     description = "sea-ice concentration (as a fraction)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "", NULL, read_sea_ice_fraction);
+                                                   dimension_type, NULL, description, "", NULL,
+                                                   read_sea_ice_fraction_function);
     description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
@@ -4434,9 +4656,14 @@ static void register_aer_lh_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    const char *aerosol_pressure_option_values[1] = { "unclipped" };
 
     module = harp_ingestion_register_module_coda("S5P_L2_AER_LH", "Sentinel-5P", "Sentinel5P", "L2__AER_LH",
                                                  "Sentinel-5P L2 aerosol layer height", ingestion_init, ingestion_done);
+
+    description = "ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) "
+        "or the unclipped variant (aerosol_pressure=unclipped)";
+    harp_ingestion_register_option(module, "aerosol_pressure", description, 1, aerosol_pressure_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_LH", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh]);
@@ -4474,10 +4701,13 @@ static void register_aer_lh_product(void)
     description = "pressure at center of aerosol layer";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "Pa", NULL,
-                                                   read_product_aerosol_mid_pressure);
+                                                   dimension_type, NULL, description, "Pa",
+                                                   include_aer_lh_aerosol_pressure, read_aer_lh_aerosol_mid_pressure);
     path = "/PRODUCT/aerosol_mid_pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "aerosol_pressure unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_pressure_not_clipped[]";
+    harp_variable_definition_add_mapping(variable_definition, "aerosol_pressure=unclipped",
+                                         "processor version >= 02.00.00", path, NULL);
 
     /* aerosol_pressure_uncertainty */
     description = "uncertainty of pressure at center of aerosol layer";
@@ -4934,14 +5164,19 @@ static void register_hcho_product(void)
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
-    /* HCHO_column_number_density_avk */
-    description = "averaging kernel for the total HCHO column number density";
+    /* tropospheric_HCHO_column_number_density_avk */
+    description = "averaging kernel for the tropospheric HCHO column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_averaging_kernel_1d);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_hcho_column_tropospheric_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.00.00", path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[]";
+    description =
+        "averaging_kernel[layer] = if layer <= tm5_tropopause_layer_index then averaging_kernel[layer] else 0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
 
     /* HCHO_volume_mixing_ratio_dry_air_apriori */
     description = "HCHO apriori profile in volume mixing ratios (with regard to dry air)";
@@ -5023,7 +5258,21 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1, 0);
+    register_surface_variables(product_definition, 1, 2);
+
+    /* tropopause_pressure */
+    description = "tropopause pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "Pa", include_from_020000,
+                                                                     read_input_tropopause_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
+        "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
+        "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_o3_product(void)
@@ -5364,7 +5613,7 @@ static void register_o3_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
-    register_surface_variables(product_definition, 1, 0);
+    register_surface_variables(product_definition, 1, 2);
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
@@ -6271,7 +6520,21 @@ static void register_so2_product(void)
         "selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    register_surface_variables(product_definition, 1, 0);
+    register_surface_variables(product_definition, 1, 2);
+
+    /* tropopause_pressure */
+    description = "tropopause pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "Pa", include_from_020000,
+                                                                     read_input_tropopause_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
+        "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
+        "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_cloud_cal_variables(harp_product_definition *product_definition)
@@ -6431,7 +6694,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1, 0);
+    register_surface_variables(product_definition, 1, 2);
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
@@ -6555,7 +6818,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1, 0);
+    register_surface_variables(product_definition, 1, 2);
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
@@ -6698,7 +6961,7 @@ static void register_fresco_product(void)
                                                    include_from_010000, read_input_surface_pressure);
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
 
-    register_snow_ice_flag_variables(product_definition, 1);
+    register_snow_ice_flag_variables(product_definition, 0);
 }
 
 int harp_ingestion_module_s5p_l2_init(void)

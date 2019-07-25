@@ -47,6 +47,8 @@
 typedef enum grib_parameter_enum
 {
     grib_param_unknown = -1,
+    grib_param_crwc,    /* 75: Specific rain water content [kg/kg] */
+    grib_param_cswc,    /* 76: Specific snow water content [kg/kg] */
     grib_param_tclw,    /* 78: Total column cloud liquid water [kg/m2] */
     grib_param_tciw,    /* 79: Total column cloud ice water [kg/m2] */
     grib_param_z,       /* 129: Geopotential [m2/s2] (at the surface: orography) */
@@ -108,6 +110,8 @@ typedef enum grib_parameter_enum
 #define NUM_GRIB_PARAMETERS (grib_param_tc_c3h8 + 1)
 
 const char *param_name[NUM_GRIB_PARAMETERS] = {
+    "crwc",
+    "cswc",
     "tclw",
     "tciw",
     "z",
@@ -167,6 +171,8 @@ const char *param_name[NUM_GRIB_PARAMETERS] = {
 };
 
 int param_is_profile[NUM_GRIB_PARAMETERS] = {
+    1,  /* crwc */
+    1,  /* cswc */
     0,  /* tclw */
     0,  /* tciw */
     0,  /* z */
@@ -362,6 +368,10 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
         case 128:
             switch (indicatorOfParameter)
             {
+                case 75:
+                    return grib_param_crwc;
+                case 76:
+                    return grib_param_cswc;
                 case 78:
                     return grib_param_tclw;
                 case 79:
@@ -634,6 +644,10 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                             return grib_param_clwc;
                         case 84:
                             return grib_param_ciwc;
+                        case 85:
+                            return grib_param_crwc;
+                        case 86:
+                            return grib_param_cswc;
                     }
                     break;
                 case 2:
@@ -916,6 +930,16 @@ static int read_wavelengths(void *user_data, harp_array data)
     }
 
     return 0;
+}
+
+static int read_crwc(void *user_data, long index, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_crwc, index, data);
+}
+
+static int read_cswc(void *user_data, long index, harp_array data)
+{
+    return read_3d_grid_data((ingest_info *)user_data, grib_param_cswc, index, data);
 }
 
 static int read_tclw(void *user_data, long index, harp_array data)
@@ -1924,22 +1948,24 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         if (info->grid_grib_version != grib_version)
         {
             /* since GRIB1 and GRIB2 use different resolutions we need to compare with a tollerance of 1000 */
-            if (fabs((double)(longitudeOfFirstGridPoint - info->longitudeOfFirstGridPoint)) > 1e3 ||
-                fabs((double)(longitudeOfLastGridPoint - info->longitudeOfLastGridPoint)) > 1e3 ||
-                fabs((double)(iDirectionIncrement - info->iDirectionIncrement)) > 1e3)
+            if (fabs((double)longitudeOfFirstGridPoint - (double)info->longitudeOfFirstGridPoint) > 1e3 ||
+                fabs((double)longitudeOfLastGridPoint - (double)info->longitudeOfLastGridPoint) > 1e3 ||
+                fabs((double)iDirectionIncrement - (double)info->iDirectionIncrement) > 1e3)
             {
                 harp_set_error(HARP_ERROR_INGESTION, "not all longitude grids in the GRIB file are the same");
                 return -1;
             }
-            if (fabs((double)(latitudeOfFirstGridPoint - info->latitudeOfFirstGridPoint)) > 1e3 ||
-                fabs((double)(latitudeOfLastGridPoint - info->latitudeOfLastGridPoint)) > 1e3 ||
-                fabs((double)(jDirectionIncrement - info->jDirectionIncrement)) > 1e3 || N != info->N)
+            if (fabs((double)latitudeOfFirstGridPoint - (double)info->latitudeOfFirstGridPoint) > 1e3 ||
+                fabs((double)latitudeOfLastGridPoint - (double)info->latitudeOfLastGridPoint) > 1e3 ||
+                fabs((double)jDirectionIncrement - (double)info->jDirectionIncrement) > 1e3 || N != info->N)
             {
                 harp_set_error(HARP_ERROR_INGESTION, "not all latitude grids in the GRIB file are the same");
                 return -1;
             }
             if (grib_version == 2)
             {
+                int k;
+
                 /* prefer more accurate GRIB2 grid over that of less accurate GRIB1 grid */
                 info->latitudeOfFirstGridPoint = latitudeOfFirstGridPoint;
                 info->longitudeOfFirstGridPoint = longitudeOfFirstGridPoint;
@@ -1948,6 +1974,23 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
                 info->iDirectionIncrement = iDirectionIncrement;
                 info->jDirectionIncrement = jDirectionIncrement;
                 info->grid_grib_version = grib_version;
+
+                /* update lat/lon grid values */
+                info->longitude[0] = longitudeOfFirstGridPoint * 1e-6;
+                info->longitude[info->num_longitudes - 1] = longitudeOfLastGridPoint * 1e-6;
+                for (k = 1; k < info->num_longitudes - 1; k++)
+                {
+                    info->longitude[k] = info->longitude[k - 1] + iDirectionIncrement * 1e-6;
+                }
+                if (!is_gaussian)
+                {
+                    info->latitude[0] = latitudeOfLastGridPoint * 1e-6;
+                    info->latitude[info->num_latitudes - 1] = latitudeOfFirstGridPoint * 1e-6;
+                    for (k = info->num_latitudes - 2; k > 0; k--)
+                    {
+                        info->latitude[k] = info->latitude[k + 1] - iDirectionIncrement * 1e-6;
+                    }
+                }
             }
         }
         else
@@ -2673,6 +2716,16 @@ static int include_wavelengths(void *user_data)
     return ((ingest_info *)user_data)->num_wavelengths > 0;
 }
 
+static int include_crwc(void *user_data)
+{
+    return ((ingest_info *)user_data)->has_parameter[grib_param_crwc];
+}
+
+static int include_cswc(void *user_data)
+{
+    return ((ingest_info *)user_data)->has_parameter[grib_param_cswc];
+}
+
 static int include_tclw(void *user_data)
 {
     return ((ingest_info *)user_data)->has_parameter[grib_param_tclw];
@@ -3027,6 +3080,22 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "one or more AOD quantities are present", NULL,
                                          description);
 
+    /* crwc: RWC_mass_mixing_ratio */
+    description = "specific rain water content";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "RWC_mass_mixing_ratio",
+                                                                      harp_type_float, 3, &dimension_type[1], NULL,
+                                                                      description, "kg/kg", include_crwc, read_crwc);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,75)",
+                               "(discipline,category,number) = (0,1,85)");
+
+    /* cswc: SWC_mass_mixing_ratio */
+    description = "specific snow water content";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SWC_mass_mixing_ratio",
+                                                                      harp_type_float, 3, &dimension_type[1], NULL,
+                                                                      description, "kg/kg", include_cswc, read_cswc);
+    add_value_variable_mapping(variable_definition, "(table,indicator) = (128,76)",
+                               "(discipline,category,number) = (0,1,86)");
+
     /* tclw: LWC_column_density */
     description = "total column cloud liquid water";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "LWC_column_density",
@@ -3184,19 +3253,21 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,247)",
                                "(discipline,category,number) = (0,1,84)");
 
-    /* co2: CO2_mass_mixing_ratio */
+    /* co2: CO2_mass_mixing_ratio_dry_air */
     description = "carbon dioxide mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CO2_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_co2, read_co2);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CO2_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_co2, read_co2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,61)",
                                "(discipline,category,number) = (192,210,61)");
 
-    /* ch4: CH4_mass_mixing_ratio */
+    /* ch4: CH4_mass_mixing_ratio_dry_air */
     description = "methane mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CH4_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_ch4, read_ch4);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CH4_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_ch4, read_ch4);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,62) or (217,4)",
                                "(discipline,category,number) = (192,210,62) or (192,217,4)");
 
@@ -3224,35 +3295,39 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,74)",
                                "(discipline,category,number) = (192,210,74)");
 
-    /* no2: NO2_mass_mixing_ratio */
+    /* no2: NO2_mass_mixing_ratio_dry_air */
     description = "nitrogen dioxide mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO2_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_no2, read_no2);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO2_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_no2, read_no2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,121)",
                                "(discipline,category,number) = (192,210,121)");
 
-    /* so2: SO2_mass_mixing_ratio */
+    /* so2: SO2_mass_mixing_ratio_dry_air */
     description = "sulphur dioxide mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SO2_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_so2, read_so2);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "SO2_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_so2, read_so2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,122)",
                                "(discipline,category,number) = (192,210,122)");
 
-    /* co: CO_mass_mixing_ratio */
+    /* co: CO_mass_mixing_ratio_dry_air */
     description = "carbon monoxide mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "CO_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_co, read_co);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "CO_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_co, read_co);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,123)",
                                "(discipline,category,number) = (192,210,123)");
 
-    /* hcho: HCHO_mass_mixing_ratio */
+    /* hcho: HCHO_mass_mixing_ratio_dry_air */
     description = "formaldehyde mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "HCHO_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_hcho, read_hcho);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "HCHO_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_hcho, read_hcho);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,124)",
                                "(discipline,category,number) = (192,210,124)");
 
@@ -3289,11 +3364,12 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,128)",
                                "(discipline,category,number) = (192,210,128)");
 
-    /* go3: O3_mass_mixing_ratio */
+    /* go3: O3_mass_mixing_ratio_dry_air */
     description = "ozone mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "O3_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_go3, read_go3);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "O3_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_go3, read_go3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,203)",
                                "(discipline,category,number) = (192,210,203)");
 
@@ -3366,59 +3442,66 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,212) [550nm]",
                                "(discipline,category,number) = (192,210,212) [550nm]");
 
-    /* hno3: HNO3_mass_mixing_ratio */
+    /* hno3: HNO3_mass_mixing_ratio_dry_air */
     description = "nitric acid mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "HNO3_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_hno3, read_hno3);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "HNO3_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_hno3, read_hno3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,6)",
                                "(discipline,category,number) = (192,217,6)");
 
-    /* pan: C2H3NO5_mass_mixing_ratio */
+    /* pan: C2H3NO5_mass_mixing_ratio_dry_air */
     description = "peroxyacetyl nitrate (PAN) mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H3NO5_mass_mixing_ratio",
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "C2H3NO5_mass_mixing_ratio_dry_air",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
                                                                       description, "kg/kg", include_pan, read_pan);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,13)",
                                "(discipline,category,number) = (192,217,13)");
 
-    /* c5h8: C5H8_mass_mixing_ratio */
+    /* c5h8: C5H8_mass_mixing_ratio_dry_air */
     description = "isoprene mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C5H8_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_c5h8, read_c5h8);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "C5H8_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_c5h8, read_c5h8);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,16)",
                                "(discipline,category,number) = (192,217,16)");
 
-    /* no: NO_mass_mixing_ratio */
+    /* no: NO_mass_mixing_ratio_dry_air */
     description = "nitrogen monoxide mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "NO_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_no, read_no);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "NO_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_no, read_no);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,27)",
                                "(discipline,category,number) = (192,217,27)");
 
-    /* oh: OH_mass_mixing_ratio */
+    /* oh: OH_mass_mixing_ratio_dry_air */
     description = "hydroxyl radical mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "OH_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_oh, read_oh);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "OH_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_oh, read_oh);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,30)",
                                "(discipline,category,number) = (192,217,30)");
 
-    /* c2h6: C2H6_mass_mixing_ratio */
+    /* c2h6: C2H6_mass_mixing_ratio_dry_air */
     description = "ethane mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H6_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_c2h6, read_c2h6);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "C2H6_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_c2h6, read_c2h6);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,45)",
                                "(discipline,category,number) = (192,217,45)");
 
-    /* c3h8: C3H8_mass_mixing_ratio */
+    /* c3h8: C3H8_mass_mixing_ratio_dry_air */
     description = "propane mass mixing ratio";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C3H8_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_c3h8, read_c3h8);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "C3H8_mass_mixing_ratio_dry_air", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_c3h8, read_c3h8);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,47)",
                                "(discipline,category,number) = (192,217,47)");
 

@@ -542,6 +542,37 @@ static int get_gph_from_geopotential(harp_variable *variable, const harp_variabl
     return 0;
 }
 
+static int get_gravity_from_latitude(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = harp_normal_gravity_from_latitude(source_variable[0]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_gravity_from_latitude_and_altitude(harp_variable *variable, const harp_variable **source_variable)
+{
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_profiles = variable->num_elements / length;
+    long i, j;
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        for (j = 0; j < length; j++)
+        {
+            variable->data.double_data[i * length + j] =
+            harp_gravity_from_latitude_and_altitude(source_variable[0]->data.double_data[i],
+                                                    source_variable[1]->data.double_data[i * length + j]);
+        }
+    }
+
+    return 0;
+}
+
 static int get_h2o_from_air_and_dry_air(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -1231,6 +1262,21 @@ static int get_strato_column_from_partial_column_and_pressure(harp_variable *var
             harp_profile_strato_column_from_partial_column_and_pressure
             (num_levels, &source_variable[0]->data.double_data[i * num_levels],
              &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_surface_gravity_from_latitude_and_surface_altitude(harp_variable *variable,
+                                                                  const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_gravity_from_latitude_and_altitude(source_variable[0]->data.double_data[i],
+                                                    source_variable[1]->data.double_data[i]);
     }
 
     return 0;
@@ -5095,6 +5141,42 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         }
     }
 
+    /*** gravity ***/
+
+    if (has_vertical)
+    {
+        /* gravity from latitude and altitude */
+        if (harp_variable_conversion_new("gravity", harp_type_double, HARP_UNIT_ACCELERATION, num_dimensions,
+                                         dimension_type, 0, get_gravity_from_latitude_and_altitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "altitude", harp_type_double, HARP_UNIT_LENGTH,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        /* normal gravity from latitude  */
+        if (harp_variable_conversion_new("gravity", harp_type_double, HARP_UNIT_ACCELERATION, num_dimensions,
+                                         dimension_type, 0, get_gravity_from_latitude, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions - 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** molar mass (of total air) ***/
 
     /* time dependent from independent */
@@ -5560,6 +5642,29 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
             return -1;
         }
         if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** surface gravity ***/
+
+    if (!has_vertical)
+    {
+        /* surface_gravity from latitude and surface_altitude */
+        if (harp_variable_conversion_new("surface_gravity", harp_type_double, HARP_UNIT_ACCELERATION, num_dimensions,
+                                         dimension_type, 0, get_surface_gravity_from_latitude_and_surface_altitude,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "surface_altitude", harp_type_double, HARP_UNIT_LENGTH,
                                                 num_dimensions, dimension_type, 0) != 0)
         {
             return -1;

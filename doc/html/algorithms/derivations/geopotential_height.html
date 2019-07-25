@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="next" title="latitude derivations" href="latitude.html" />
+    <link rel="next" title="gravity derivations" href="gravity.html" />
     <link rel="prev" title="geopotential derivations" href="geopotential.html" /> 
 
   
@@ -101,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="frequency.html">frequency derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential.html">geopotential derivations</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">geopotential height derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.html">gravity derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude.html">latitude derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude_bounds.html">latitude bounds derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="longitude.html">longitude derivations</a></li>
@@ -271,14 +272,13 @@
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{wgs84}\)</span></td>
-<td>gravity at WGS84 ellipsoid</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>nominal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{wgs84}\)</span></td>
-<td>local earth curvature radius
-at WGS84 ellipsoid</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
+<td>local earth curvature radius</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -300,14 +300,13 @@ at WGS84 ellipsoid</td>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{time}</cite>, <cite>{time,vertical}</cite>, or no dimensions at all.</p>
-<p>This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{wgs84} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-   R_{wgs84} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+   R &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
       \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
-   z_{g} &amp; = &amp; \frac{g_{wgs84}}{g_{0}}\frac{R_{wgs84}z}{z + R_{wgs84}}
+   z_{g} &amp; = &amp; \frac{g}{g_{0}}\frac{Rz}{z + R}
 \end{eqnarray}</div></li>
 <li><p class="first">geopotential height from pressure</p>
 <table border="1" class="docutils">
@@ -438,14 +437,13 @@ or no dimensions at all.</p>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{wgs84}\)</span></td>
-<td>gravity at WGS84 ellipsoid</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>nominal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{wgs84}\)</span></td>
-<td>local earth curvature radius
-at WGS84 ellipsoid</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
+<td>local earth curvature radius</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -468,14 +466,13 @@ at WGS84 ellipsoid</td>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
-<p>This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{wgs84} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-   R_{wgs84} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+   R &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
       \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
-   z_{g,surf} &amp; = &amp; \frac{g_{wgs84}}{g_{0}}\frac{R_{wgs84}z_{surf}}{z_{surf} + R_{wgs84}}
+   z_{g,surf} &amp; = &amp; \frac{g}{g_{0}}\frac{Rz_{surf}}{z_{surf} + R}
 \end{eqnarray}</div></li>
 </ol>
 </div>
@@ -488,7 +485,7 @@ or no dimensions at all.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="latitude.html" class="btn btn-neutral float-right" title="latitude derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="gravity.html" class="btn btn-neutral float-right" title="gravity derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="geopotential.html" class="btn btn-neutral" title="geopotential derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

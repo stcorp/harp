@@ -486,6 +486,7 @@ RSTFILES = \
 	doc/algorithms/derivations/frequency.rst \
 	doc/algorithms/derivations/geopotential.rst \
 	doc/algorithms/derivations/geopotential_height.rst \
+	doc/algorithms/derivations/gravity.rst \
 	doc/algorithms/derivations/latitude.rst \
 	doc/algorithms/derivations/latitude_bounds.rst \
 	doc/algorithms/derivations/longitude.rst \

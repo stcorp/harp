@@ -57,16 +57,14 @@ typedef enum profile_resample_type_enum
  */
 double harp_altitude_from_gph_and_latitude(double gph, double latitude)
 {
-    double altitude;
-    double g0 = (double)CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE;    /* gravitational accel. [m s-2] at latitude 45o32'33'' */
-    double gsurf;       /* gravitational acceleration at surface [m s-2] */
-    double Rsurf;       /* local curvature radius [m] */
+    double g0 = (double)CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE;
+    double g;   /* gravitational acceleration at sea level [m s-2] */
+    double R;   /* local earth curvature radius [m] */
 
-    gsurf = harp_gravity_at_surface_from_latitude(latitude);
-    Rsurf = harp_local_curvature_radius_at_surface_from_latitude(latitude);
+    g = harp_normal_gravity_from_latitude(latitude);
+    R = harp_local_curvature_radius_at_surface_from_latitude(latitude);
 
-    altitude = g0 * Rsurf * gph / (gsurf * Rsurf - g0 * gph);
-    return altitude;
+    return g0 * R * gph / (g * R - g0 * gph);
 }
 
 /** Convert a pressure profile to an altitude profile
@@ -106,12 +104,12 @@ void harp_profile_altitude_from_pressure(long num_levels, const double *pressure
 
         if (i == 0)
         {
-            g = harp_gravity_at_surface_from_latitude(latitude);
+            g = harp_normal_gravity_from_latitude(latitude);
             z = surface_height + 1e3 * (T / M) * (CONST_MOLAR_GAS / g) * log(surface_pressure / p);
         }
         else
         {
-            g = harp_gravity_from_latitude_and_height(latitude, prev_z);
+            g = harp_gravity_from_latitude_and_altitude(latitude, prev_z);
             z = prev_z + 1e3 * ((prev_T + T) / (prev_M + M)) * (CONST_MOLAR_GAS / g) * log(prev_p / p);
         }
 
@@ -149,13 +147,13 @@ double harp_gph_from_geopotential(double geopotential)
  */
 double harp_gph_from_altitude_and_latitude(double altitude, double latitude)
 {
-    double gsurf;       /* gravitational acceleration at surface [m] */
-    double Rsurf;       /* local curvature radius [m] */
+    double g;   /* gravitational acceleration at sea level [m] */
+    double R;   /* local earth curvature radius [m] */
 
-    gsurf = harp_gravity_at_surface_from_latitude(latitude);
-    Rsurf = harp_local_curvature_radius_at_surface_from_latitude(latitude);
+    g = harp_normal_gravity_from_latitude(latitude);
+    R = harp_local_curvature_radius_at_surface_from_latitude(latitude);
 
-    return (gsurf / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) * Rsurf * altitude / (altitude + Rsurf);
+    return (g / CONST_GRAV_ACCEL_45LAT_WGS84_SPHERE) * R * altitude / (altitude + R);
 }
 
 /** Convert geometric height (= altitude) to geopotential height
@@ -175,7 +173,7 @@ double harp_column_mass_density_from_surface_pressure_and_profile(double surface
 
     for (i = 0; i < num_levels; i++)
     {
-        double g = harp_gravity_from_latitude_and_height(latitude, altitude_profile[i]);
+        double g = harp_gravity_from_latitude_and_altitude(latitude, altitude_profile[i]);
 
         sum1 += pressure_bounds[2 * i] - pressure_bounds[2 * i + 1];
         sum2 += (pressure_bounds[2 * i] - pressure_bounds[2 * i + 1]) / g;
@@ -262,13 +260,10 @@ long harp_tropopause_index_from_altitude_and_temperature(long num_levels, const 
                 }
                 k++;
             }
-            if (count > 0)
+            /* average lapse rate should not exceed 2 degC/km */
+            if (count == 0 || lapse_sum / count <= 0.002)
             {
-                /* average lapse rate should not exceed 2 degC/km */
-                if (lapse_sum / count <= 0.002)
-                {
-                    return i;
-                }
+                return i;
             }
         }
         lapse_below = lapse_above;
@@ -583,12 +578,12 @@ void harp_profile_pressure_from_altitude(long num_levels, const double *altitude
 
         if (i == 0)
         {
-            g = harp_gravity_from_latitude_and_height(latitude, (z + surface_height) / 2);
+            g = harp_gravity_from_latitude_and_altitude(latitude, (z + surface_height) / 2);
             p = surface_pressure * exp(-1e-3 * (M / T) * (g / CONST_MOLAR_GAS) * (z - surface_height));
         }
         else
         {
-            g = harp_gravity_from_latitude_and_height(latitude, (prev_z + z) / 2);
+            g = harp_gravity_from_latitude_and_altitude(latitude, (prev_z + z) / 2);
             p = prev_p * exp(-1e-3 * ((prev_M + M) / (prev_T + T)) * (g / CONST_MOLAR_GAS) * (z - prev_z));
         }
 

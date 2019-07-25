@@ -101,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="frequency.html">frequency derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential.html">geopotential derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="geopotential_height.html">geopotential height derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.html">gravity derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude.html">latitude derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="latitude_bounds.html">latitude bounds derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="longitude.html">longitude derivations</a></li>
@@ -228,19 +229,18 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>normal gravity at sea level</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{wgs84}\)</span></td>
-<td>gravity at WGS84 ellipsoid</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{wgs84}\)</span></td>
-<td>local earth curvature radius
-at WGS84 ellipsoid</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
+<td>local earth curvature radius</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -262,14 +262,13 @@ at WGS84 ellipsoid</td>
 </tbody>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{time}</cite>, <cite>{time,vertical}</cite>, or no dimensions at all.</p>
-<p>This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{wgs84} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-   R_{wgs84} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+   R &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
       \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
-   z &amp; = &amp; \frac{g_{0}R_{wgs84}z_{g}}{g_{wgs84}R_{wgs84} - g_{0}z_{g}}
+   z &amp; = &amp; \frac{g_{0}Rz_{g}}{gR - g_{0}z_{g}}
 \end{eqnarray}</div></li>
 <li><p class="first">altitude from bounds</p>
 <table border="1" class="docutils">
@@ -367,7 +366,7 @@ at WGS84 ellipsoid</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>gravity</td>
+<td>normal gravity at sea level</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -376,8 +375,8 @@ at WGS84 ellipsoid</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{surf}\)</span></td>
-<td>gravity at surface</td>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{h}\)</span></td>
+<td>gravity at specific height</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -443,13 +442,13 @@ equal the lower pressure boundary <span class="math notranslate nohighlight">\(p
 and <span class="math notranslate nohighlight">\(p^{B}(1,2)\)</span> (which is generally not equal to <span class="math notranslate nohighlight">\(p^{B}(1,1)\)</span>).</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{surf} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013 {\sin}^2(\frac{\pi}{180}\phi)}} \\
    m &amp; = &amp; \frac{\omega^2a^2b}{GM} \\
-   g(1) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z_{surf} + \frac{3}{a^2}z_{surf}^2\right) \\
-   g(i) &amp; = &amp; g_{surf} \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z(i-1) + \frac{3}{a^2}z(i-1)^2\right), 1 &lt; i \leq N \\
-   z(1) &amp; = &amp; z_{surf} + 10^{3}\frac{T(1)}{M_{air}(1)}\frac{R}{g(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
-   z(i) &amp; = &amp; z(i-1) + 10^{3}\frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
+   g_{h}(1) &amp; = &amp; g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z_{surf} + \frac{3}{a^2}z_{surf}^2\right) \\
+   g_{h}(i) &amp; = &amp; g \left(1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z(i-1) + \frac{3}{a^2}z(i-1)^2\right), 1 &lt; i \leq N \\
+   z(1) &amp; = &amp; z_{surf} + 10^{3}\frac{T(1)}{M_{air}(1)}\frac{R}{g_{h}(1)}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
+   z(i) &amp; = &amp; z(i-1) + 10^{3}\frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{h}(i)}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
 \end{eqnarray}</div></li>
 <li><p class="first">surface altitude from surface geopotential height</p>
 <table border="1" class="docutils">
@@ -467,31 +466,28 @@ and <span class="math notranslate nohighlight">\(p^{B}(1,2)\)</span> (which is g
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(g\)</span></td>
+<td>nominal gravity at sea level</td>
+<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
 <td>mean earth gravity</td>
 <td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{wgs84}\)</span></td>
-<td>gravity at WGS84 ellipsoid</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R_{wgs84}\)</span></td>
-<td>local earth curvature radius
-at WGS84 ellipsoid</td>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
+<td>local earth curvature radius</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{surf}\)</span></td>
-<td>surface altitude
-(relative to mean sea level)</td>
+<td>surface altitude</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>surface_altitude {:}</cite></td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></td>
-<td>surface geopotential height
-(relative to mean sea level)</td>
+<td>surface geopotential height</td>
 <td><span class="math notranslate nohighlight">\(m\)</span></td>
 <td><cite>surface_geopotential_height {:}</cite></td>
 </tr>
@@ -504,14 +500,13 @@ at WGS84 ellipsoid</td>
 </table>
 <p>The pattern <cite>:</cite> for the dimensions can represent <cite>{latitude,longitude}</cite>, <cite>{time}</cite>, <cite>{time,latitude,longitude}</cite>,
 or no dimensions at all.</p>
-<p>This equation approximates the mean sea level gravity and radius by that of the reference ellipsoid.</p>
 <div class="math notranslate nohighlight">
 \begin{eqnarray}
-   g_{wgs84} &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
+   g &amp; = &amp; 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
       {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}} \\
-   R_{wgs84} &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
+   R &amp; = &amp; \frac{1}{\sqrt{\left(\frac{\cos(\frac{\pi}{180}\phi)}{6356752.0}\right)^2 +
       \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
-   z_{surf} &amp; = &amp; \frac{g_{0}R_{wgs84}z_{g,surf}}{g_{wgs84}R_{wgs84} - g_{0}z_{g,surf}}
+   z_{surf} &amp; = &amp; \frac{g_{0}Rz_{g,surf}}{gR - g_{0}z_{g,surf}}
 \end{eqnarray}</div></li>
 <li><p class="first">tropopause altitude from temperature and altitude/pressure</p>
 <table border="1" class="docutils">

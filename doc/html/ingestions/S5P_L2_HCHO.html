@@ -294,11 +294,11 @@
 <td>&#160;</td>
 <td>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</td>
 </tr>
-<tr class="row-odd"><td><strong>HCHO_column_number_density_avk</strong></td>
+<tr class="row-odd"><td><strong>tropospheric_HCHO_column_number_density_avk</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>vertical</em>}</td>
 <td>[]</td>
-<td>averaging kernel for the total HCHO column number density</td>
+<td>averaging kernel for the tropospheric HCHO column number density</td>
 </tr>
 <tr class="row-even"><td><strong>HCHO_volume_mixing_ratio_dry_air_apriori</strong></td>
 <td>float</td>
@@ -414,7 +414,25 @@
 <td>[Pa]</td>
 <td>surface pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>surface_meridional_wind_velocity</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m/s]</td>
+<td>northward wind</td>
+</tr>
+<tr class="row-even"><td><strong>surface_zonal_wind_velocity</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[m/s]</td>
+<td>eastward wind</td>
+</tr>
+<tr class="row-odd"><td><strong>tropopause_pressure</strong></td>
+<td>double</td>
+<td>{<em>time</em>}</td>
+<td>[Pa]</td>
+<td>tropopause pressure</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -451,9 +469,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="25%" />
-<col width="5%" />
-<col width="70%" />
+<col width="21%" />
+<col width="4%" />
+<col width="74%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -566,9 +584,21 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/qa_value</strong></td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_column_number_density_avk</strong></td>
-<td><em>path</em></td>
+<tr class="row-even"><td rowspan="5"><strong>tropospheric_HCHO_column_number_density_avk</strong></td>
+<td><em>condition</em></td>
+<td>processor version &lt; 02.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] else 0</td>
 </tr>
 <tr class="row-odd"><td rowspan="3"><strong>HCHO_volume_mixing_ratio_dry_air_apriori</strong></td>
 <td><em>available</em></td>
@@ -675,6 +705,36 @@
 <tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>surface_meridional_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>surface_zonal_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>tropopause_pressure</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)</td>
 </tr>
 </tbody>
 </table>
