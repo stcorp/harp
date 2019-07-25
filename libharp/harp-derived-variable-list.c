@@ -565,8 +565,8 @@ static int get_gravity_from_latitude_and_altitude(harp_variable *variable, const
         for (j = 0; j < length; j++)
         {
             variable->data.double_data[i * length + j] =
-            harp_gravity_from_latitude_and_altitude(source_variable[0]->data.double_data[i],
-                                                    source_variable[1]->data.double_data[i * length + j]);
+                harp_gravity_from_latitude_and_altitude(source_variable[0]->data.double_data[i],
+                                                        source_variable[1]->data.double_data[i * length + j]);
         }
     }
 
