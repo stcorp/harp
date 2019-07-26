@@ -3401,6 +3401,14 @@ static int read_o3_tcl_surface_altitude(void *user_data, harp_array data)
                         info->num_latitudes * info->num_longitudes, data);
 }
 
+static int read_o3_tcl_surface_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_pressure", harp_type_float,
+                        info->num_latitudes * info->num_longitudes, data);
+}
+
 static int read_no2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -4172,6 +4180,11 @@ static int include_o3_tcl_csa(void *user_data)
 static int include_o3_tcl_ccd(void *user_data)
 {
     return !((ingest_info *)user_data)->use_o3_tcl_csa;
+}
+
+static int include_o3_tcl_surface_pressure(void *user_data)
+{
+    return (!((ingest_info *)user_data)->use_o3_tcl_csa) && ((ingest_info *)user_data)->processor_version >= 20000;
 }
 
 static int include_o3_tcl_qa_value(void *user_data)
@@ -6018,6 +6031,16 @@ static void register_o3_tcl_product(void)
                                                    read_o3_tcl_surface_altitude);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
+
+    /* surface_pressure */
+    description = "surface pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 3,
+                                                   dimension_type, NULL, description, "Pa",
+                                                   include_o3_tcl_surface_pressure, read_o3_tcl_surface_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", "processor version >= 02.00.00",
+                                         path, NULL);
 
     /* pressure_bounds */
     description = "pressure range of the retrieved ozone";

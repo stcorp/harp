@@ -265,13 +265,19 @@
 <td>[m]</td>
 <td>averaged surface height above mean sea level</td>
 </tr>
-<tr class="row-even"><td><strong>pressure_bounds</strong></td>
+<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<td>float</td>
+<td>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</td>
+<td>[Pa]</td>
+<td>surface pressure</td>
+</tr>
+<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
 <td>float</td>
 <td>{<em>time</em>, <em>latitude</em>, <em>longitude</em>, 2}</td>
 <td>[Pa]</td>
 <td>pressure range of the retrieved ozone</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -530,14 +536,24 @@
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_altitude[]</strong></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>pressure_bounds</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>surface_pressure</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>condition</em></td>
-<td>o3=csa</td>
+<td>o3=ccd or o3 unset and processor version &gt;= 02.00.00</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>pressure_bounds</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>o3=csa</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]</strong></td>
 </tr>
 </tbody>
