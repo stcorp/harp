@@ -503,6 +503,7 @@ include harpdoc.mk
 DOCFILES = $(HARP_DOCFILES)
 
 RSTFILES = \
+	doc/R.rst \
 	doc/algorithms/common.rst \
 	doc/algorithms/definitions.rst \
 	doc/algorithms/derivations/aerosol_extinction_coefficient.rst \

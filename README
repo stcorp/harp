@@ -6,7 +6,7 @@ Copyright (C) 2015-2019 S[&]T, The Netherlands
 HARP is a toolset for ingesting, processing and inter-comparing satellite or
 model data against correlative data. The toolset is composed of a set of
 command line tools, a C library of analysis functions, and import/export
-interfaces for Python, Matlab, and IDL. The main goal of HARP is to assist
+interfaces for Python, R, Matlab, and IDL. The main goal of HARP is to assist
 in the inter-comparison of data sets. By appropriatelty chaining calls to
 the HARP command line tools one can preprocess satellite, model, and/or
 correlative data such that two datasets that need to be compared end up
@@ -46,7 +46,7 @@ The main functionalities of HARP are:
  - creating L3 grids
  - built-in AFGL86 and USSTD76 climatology data
  - C Library interface to all core functionality
- - direct import/export interfaces for Python, Matlab, and IDL
+ - direct import/export interfaces for Python, R, Matlab, and IDL
  - command line tools harpcheck, harpcollocate, harpconvert, harpdump, and
    harpmerge
  - extensive documentation, including specification of algorithms used for

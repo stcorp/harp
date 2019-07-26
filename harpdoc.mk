@@ -1,5 +1,6 @@
 HARP_DOCFILES = \
 	doc/html/.buildinfo \
+	doc/html/R.html \
 	doc/html/_static/ajax-loader.gif \
 	doc/html/_static/basic.css \
 	doc/html/_static/comment-bright.png \
@@ -548,6 +549,8 @@ HARP_DOCFILES = \
 	doc/html/python.html \
 	doc/html/tools.html
 doc/html/.buildinfo:
+	$(MAKE) harp_doc
+doc/html/R.html:
 	$(MAKE) harp_doc
 doc/html/_static/ajax-loader.gif:
 	$(MAKE) harp_doc

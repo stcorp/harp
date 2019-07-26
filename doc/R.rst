@@ -39,8 +39,6 @@ variable according to the type map shown below. Zero-dimensional arrays of
 length 1 are converted to R arrays of 1x1. The resulting R type is also
 shown in the type map.
 
-TODO check zero dimensions
-
 +------------------+-------------+
 | HARP data type   | R type      |
 +==================+=============+
@@ -57,15 +55,11 @@ TODO check zero dimensions
 | harp_type_string | string      |
 +------------------+-------------+
 
-TODO check valid_min/max for improved precision?
-
 Unicode
 -------
 
 Zero-terminated C strings received from the HARP C library are always converted
-to arrays of mxCHAR in R which is an unicode string.
-
-TODO check unicode!
+to arrays of mxCHAR in R which is a unicode string.
 
 Examples
 --------
@@ -73,22 +67,23 @@ Examples
 .. code-block:: R
 
    # Ingest a file and convert it to a HARP product (the
-   # file that is used in this example is an ACE-FTS file).
-   product1 = harp::import("ss13799.asc")
+   # file that is used in this example is an S5P L2 HCHO product).
+   hcho_product = harp::import("S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc",
+                               "solar_zenith_angle < 60 [degree]; latitude > 30 [degree_north]; latitude < 60 [degree_north]")
 
    # Print product
-   print(product1)
+   print(hcho_product)
 
-   # Print variable 'temperature'.
-   print(product1$temperature)
+   # Print variable 'tropospheric_HCHO_column_number_density'.
+   print(hcho_product$tropospheric_HCHO_column_number_density)
 
-   # Export the updated product as an HDF4 file (the format must be
+   # Export the updated product as an HDF5 file (the format must be
    # HDF4, HDF5 or netCDF, if no format is specified netCDF is used).
-   harp::export(product1, "ace_fts_ss13799.hdf", "hdf4")
+   harp::export(hcho_product, "product.h5", "hdf5")
 
-   # Import the HDF4 file and perform an operation to exclude the variable
-   # temperature (variable name must be in uppercase).
-   product2 = harp::import("ace_fts_ss13799.hdf", "exclude(TEMPERATURE)");
+   # Import the HDF5 file and perform an operation to exclude the variable
+   # solar_azimuth_angle.
+   hcho_product2 = harp::import("product.h5", "exclude(solar_azimuth_angle)");
 
 API reference
 -------------
