@@ -349,7 +349,7 @@ Rharp_la_LDFLAGS = -module -shared -avoid-version
 Rharp_la_LIBADD = libharp.la
 Rharp_la_DEPENDENCIES = libharp.la
 
-package.rds features.rds: R/create_rds.r
+features.rds package.rds: R/create_rds.r
 	$(R) --silent --vanilla -f R/create_rds.r
 
 
