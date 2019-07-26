@@ -122,7 +122,6 @@ SEXP rharp_import_variable(harp_variable *hv)
     if (hv->num_dimensions == 0)
     {
         /* scalar */
-        /* TODO check num_elements */
         if (hv->num_elements != 1)
         {
             var_error(hv->name, "not exactly 1 element for scalar");
@@ -241,7 +240,7 @@ SEXP rharp_import_variable(harp_variable *hv)
     }
 
     /* set name */
-    SET_VECTOR_ELT(var, 0, mkstring(hv->name)); /* TODO: use mkString()? shouldn't we PROTECT the mkstring() result? */
+    SET_VECTOR_ELT(var, 0, mkstring(hv->name));
     protected++;
 
     /* set description */
@@ -825,7 +824,7 @@ SEXP rharp_import_product(SEXP sname, SEXP soperations, SEXP soptions)
     for (i = 0; i < hp->num_variables; i++)
     {
         harp_variable *hv = hp->variable[i];
-        SEXP var = rharp_import_variable(hv);   /* TODO: shouldn't we PROTECT var? */
+        SEXP var = rharp_import_variable(hv);
 
         SET_VECTOR_ELT(product, i + 2, var);
     }
