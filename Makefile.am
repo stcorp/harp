@@ -349,12 +349,12 @@ Rharp_la_LDFLAGS = -module -shared -avoid-version
 Rharp_la_LIBADD = libharp.la
 Rharp_la_DEPENDENCIES = libharp.la
 
-R/package.rds:
+package.rds: R/create_package_rds.r
 	@$(MKDIR_P) R
-	R --silent --vanilla -e 'saveRDS(list(DESCRIPTION=c(Package="harp", Version="'${VERSION}'", Built=""), Built=list(R=paste(version$$major,version$$minor,sep="."), Platform=version$$platform, OStype=version$$os, Date=paste(version$$year, version$$month, version$$day, sep="-"))), "R/package.rds")'
+	R --silent --vanilla -f R/create_package_rds.r
 
 harpr_DATA = R/DESCRIPTION R/NAMESPACE
-harprMeta_DATA = R/package.rds
+harprMeta_DATA = package.rds
 harprR_DATA = R/Rharp
 
 install_rharpdir:

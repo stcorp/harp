@@ -9,7 +9,7 @@ stamp-*
 /Makefile
 /Makefile.in
 /R/DESCRIPTION
-/R/package.rds
+/R/create_package_rds.r
 /aclocal.m4
 /ar-lib
 /autom4te.cache/
@@ -50,6 +50,7 @@ stamp-*
 /m4/ltversion.m4
 /m4/lt~obsolete.m4
 /missing
+/package.rds
 /py-compile
 /udunits2/utparser.c
 /udunits2/utparser.h
