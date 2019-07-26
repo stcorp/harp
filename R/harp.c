@@ -35,8 +35,9 @@ SEXP mkstring(const char *x)
 SEXP rharp_named_element(SEXP l, const char *name)
 {
     SEXP names = getAttrib(l, R_NamesSymbol);
+    R_len_t i;
 
-    for (R_len_t i = 0; i < length(l); i++)
+    for (i = 0; i < length(l); i++)
     {
         const char *attrname = CHAR(STRING_ELT(names, i));
 
@@ -70,7 +71,7 @@ SEXP rharp_import_variable(harp_variable *hv)
     /* create variable (named list) */
     const char *varfields[] =
         { "name", "description", "unit", "data", "dimension", "type", "enum", "valid_min", "valid_max", "" };
-    SEXP dim, data, var;
+    SEXP dim, data = NULL, var;
     int protected = 1;
     const char *datatype;
     int int_valid_min, int_valid_max;
@@ -163,7 +164,10 @@ SEXP rharp_import_variable(harp_variable *hv)
             protected++;
             SET_STRING_ELT(data, 0, mkChar(hv->data.string_data[0]));
         }
-
+        else
+        {
+            error("unsupported datatype");
+        }
     }
     else
     {
@@ -229,6 +233,10 @@ SEXP rharp_import_variable(harp_variable *hv)
             {
                 SET_STRING_ELT(data, k, mkChar(hv->data.string_data[k]));
             }
+        }
+        else
+        {
+            error("unsupported datatype");
         }
     }
 
@@ -322,6 +330,7 @@ harp_variable *rharp_export_variable(SEXP var, const char *name)
     harp_variable *hv;
     long dim[HARP_MAX_NUM_DIMS];
     harp_dimension_type dim_type[HARP_MAX_NUM_DIMS];
+    harp_data_type hdatatype;
     int num_dims = 0;
     const char *description = NULL;
     const char *dtype;
@@ -458,12 +467,12 @@ harp_variable *rharp_export_variable(SEXP var, const char *name)
     {
         dimlens = LENGTH(sdimlens);
     }
-    if (dimlens != num_dims)
+    if ((int)dimlens != num_dims)
     {
         var_error(name, "'data' dimensions inconsistent with 'dimensions'");
     }
 
-    for (j = 0; j < dimlens; j++)
+    for (j = 0; j < (int)dimlens; j++)
     {
         int dimlen = INTEGER(sdimlens)[j];
 
@@ -473,7 +482,6 @@ harp_variable *rharp_export_variable(SEXP var, const char *name)
 
     /* convert data */
     datatype = TYPEOF(sdata);
-    harp_data_type hdatatype;
 
     if (num_dims == 0)
     {
@@ -520,11 +528,11 @@ harp_variable *rharp_export_variable(SEXP var, const char *name)
 
         if (datatype == INTSXP)
         {
-            hdatatype = harp_type_int32;        /* R has no smaller datatypes */
-
             /* determine smallest fitting storage size */
             int min_value = 0;
             int max_value = 0;
+
+            hdatatype = harp_type_int32;        /* R has no smaller datatypes */
 
             for (j = 0; j < num_elements; j++)
             {
@@ -836,6 +844,7 @@ SEXP rharp_export_product(SEXP product, SEXP sfilename, SEXP sformat)
     const char *filename;
     const char *format;
     harp_product *hp;
+    R_len_t i;
 
     if (TYPEOF(product) != VECSXP)
     {
@@ -860,7 +869,7 @@ SEXP rharp_export_product(SEXP product, SEXP sfilename, SEXP sformat)
 
     /* product attributes */
     names = getAttrib(product, R_NamesSymbol);
-    for (R_len_t i = 0; i < length(product); i++)
+    for (i = 0; i < length(product); i++)
     {
         const char *attrname = CHAR(STRING_ELT(names, i));
         SEXP elmt = VECTOR_ELT(product, i);
