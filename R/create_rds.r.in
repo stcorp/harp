@@ -1,10 +1,8 @@
 q <- list(
     DESCRIPTION=c(Package="harp", Version="@VERSION@", Built=""),
-    Built=list(R=paste(version$major,version$minor,sep="."),
-               Platform=version$platform,
-               OStype=version$os,
-               Date=paste(version$year, version$month, version$day, sep="-"))
+    Built=list(R=getRversion(), Platform=version$platform, OStype=.Platform$OS.type, Date="")
 )
 saveRDS(q, "package.rds")
 
-saveRDS(list(internalsID = .Internal(internalsID())), "features.rds")
+if (getRversion() < "3.4.0") internalsID="" else internalsID=.Internal(internalsID())
+saveRDS(list(internalsID=internalsID), "features.rds")
