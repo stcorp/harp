@@ -385,7 +385,7 @@ Try setting the R environment variable to the location of your R program.]))
   RHOME=`${R} RHOME`
   RCPPFLAGS=-I$RHOME/include
 
-  harprdir="$libdir/R/site-library/Rharp"
+  harprdir="$libdir/R/site-library/harp"
   harprlibdir="\${harprdir}/lib"
   harprMetadir="\${harprdir}/Meta"
   harprRdir="\${harprdir}/R"

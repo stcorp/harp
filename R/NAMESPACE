@@ -1,2 +1,2 @@
-useDynLib(harp, .registration = TRUE, .fixes = "C_")
+useDynLib(Rharp, .registration = TRUE, .fixes = "C_")
 export(import, export, version)

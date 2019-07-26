@@ -351,7 +351,7 @@ Rharp_la_DEPENDENCIES = libharp.la
 
 R/package.rds:
 	@$(MKDIR_P) R
-	R --silent --vanilla -e 'saveRDS(list(DESCRIPTION=c(Package="Rharp", Version="'${VERSION}'", Built=""), Built=list(R=paste(version$$major,version$$minor,sep="."), Platform=version$$platform, OStype=version$$os, Date=paste(version$$year, version$$month, version$$day, sep="-"))), "R/package.rds")'
+	R --silent --vanilla -e 'saveRDS(list(DESCRIPTION=c(Package="harp", Version="'${VERSION}'", Built=""), Built=list(R=paste(version$$major,version$$minor,sep="."), Platform=version$$platform, OStype=version$$os, Date=paste(version$$year, version$$month, version$$day, sep="-"))), "R/package.rds")'
 
 harpr_DATA = R/DESCRIPTION R/NAMESPACE
 harprMeta_DATA = R/package.rds
