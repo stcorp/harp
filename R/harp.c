@@ -907,7 +907,7 @@ SEXP rharp_export_product(SEXP product, SEXP sfilename, SEXP sformat)
             hv = rharp_export_variable(elmt, attrname);
             if (harp_product_add_variable(hp, hv) != 0)
             {
-                rharp_error(attrname);
+                rharp_error();
             }
         }
     }
