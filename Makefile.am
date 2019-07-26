@@ -350,7 +350,7 @@ Rharp_la_LIBADD = libharp.la
 Rharp_la_DEPENDENCIES = libharp.la
 
 features.rds package.rds: R/create_rds.r
-	$(R) --silent --vanilla -f R/create_rds.r
+	${R}script --silent --vanilla R/create_rds.r
 
 
 harpr_DATA = R/DESCRIPTION R/NAMESPACE
