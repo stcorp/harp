@@ -697,6 +697,7 @@ EXTRA_DIST += \
 	CMakeModules/FindHDF5.cmake \
 	CMakeModules/FindIDL.cmake \
 	CMakeModules/FindJPEG.cmake \
+	CMakeModules/FindR.cmake \
 	CMakeModules/FindSZIP.cmake \
 	CMakeModules/FindZLIB.cmake \
 	config.h.cmake.in \

@@ -48,6 +48,7 @@ endif(NOT MSVC AND NOT CMAKE_BUILD_TYPE AND NOT CMAKE_C_FLAGS)
 option(HARP_BUILD_IDL "build IDL interface" OFF)
 option(HARP_BUILD_MATLAB "build MATLAB interface" OFF)
 option(HARP_BUILD_PYTHON "build Python interface" OFF)
+option(HARP_BUILD_R "build R interface" OFF)
 option(HARP_WITH_HDF4 "use HDF4" ON)
 option(HARP_WITH_HDF5 "use HDF5" ON)
 option(HARP_ENABLE_CONDA_INSTALL OFF)
@@ -81,6 +82,7 @@ set(LIB_PREFIX lib)
 set(INCLUDE_PREFIX include)
 set(DOC_PREFIX share/harp/doc)
 set(PYTHON_PREFIX ${HARP_PYTHON_INSTALL_DIR}/harp)
+set(R_PREFIX lib/R/site-library/harp)
 set(MATLAB_PREFIX lib/harp/matlab)
 set(IDL_PREFIX lib/harp/idl)
 set(CODADEF_PREFIX share/coda/definitions)
@@ -93,6 +95,7 @@ if(WIN32)
     set(LIB_PREFIX Library/lib)
     set(INCLUDE_PREFIX Library/include)
     set(DOC_PREFIX Library/share/harp/doc)
+    set(R_PREFIX Library/lib/R/site-library/harp)
     set(MATLAB_PREFIX Library/lib/harp/matlab)
     set(IDL_PREFIX Library/lib/harp/idl)
     set(CODADEF_PREFIX Library/share/coda/definitions)
@@ -207,6 +210,14 @@ if(HARP_WITH_HDF5)
     include_directories(${HDF5_INCLUDE_DIR})
   endif(NOT HDF5_FOUND)
 endif(HARP_WITH_HDF5)
+
+if(HARP_BUILD_R)
+  find_package(R)
+  if(NOT R_FOUND)
+    message(FATAL_ERROR "R program not found.")
+  endif(NOT R_FOUND)
+  include_directories(${R_INCLUDE_DIR})
+endif()
 
 # We allow HARP to be build as part of a larger CMake build that also includes
 # CODA. It this is the case then CODA_SOURCE_DIR and CODA_BINARY_DIR will
@@ -596,6 +607,41 @@ if(HARP_BUILD_PYTHON)
     python/_harppy.py
     DESTINATION ${PYTHON_PREFIX})
 endif(HARP_BUILD_PYTHON)
+
+# R
+if(HARP_BUILD_R)
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/R/DESCRIPTION.in
+    ${CMAKE_CURRENT_BINARY_DIR}/R/DESCRIPTION)
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/R/create_rds.r.in
+    ${CMAKE_CURRENT_BINARY_DIR}/R/create_rds.r)
+  add_library(Rharp MODULE R/harp.c)
+  set_target_properties(Rharp PROPERTIES PREFIX "")
+  target_link_libraries(Rharp harp ${R_LIBRARIES})
+  install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs)
+  if(WIN32)
+    set_target_properties(Rharp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
+  endif(WIN32)
+  add_custom_command(OUTPUT features.rds package.rds
+    COMMAND "${R_EXECUTABLE}script" --silent --vanilla R/create_rds.r
+    DEPENDS R/create_rds.r)
+  install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/features.rds
+    ${CMAKE_CURRENT_BINARY_DIR}/package.rds
+    DESTINATION ${R_PREFIX}/Meta)
+  add_custom_target(rds_files ALL
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/features.rds ${CMAKE_CURRENT_BINARY_DIR}/package.rds)
+  install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/R/DESCRIPTION
+    R/NAMESPACE
+    DESTINATION ${R_PREFIX})
+  install(FILES R/harp.r DESTINATION ${R_PREFIX}/R RENAME harp)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/help)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/html)
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/help DESTINATION ${R_PREFIX})
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/html DESTINATION ${R_PREFIX})
+endif(HARP_BUILD_R)
 
 
 # product definition files
