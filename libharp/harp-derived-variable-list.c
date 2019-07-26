@@ -1016,27 +1016,6 @@ static int get_partial_column_nd_from_vmr_and_pressure_bounds(harp_variable *var
     return 0;
 }
 
-static int get_partial_column_nd_from_vmr_dry_and_pressure_bounds(harp_variable *variable,
-                                                                  const harp_variable **source_variable)
-{
-    double molar_mass_dry_air;
-    long i;
-
-    molar_mass_dry_air = harp_molar_mass_for_species(harp_chemical_species_dry_air);
-
-    for (i = 0; i < variable->num_elements; i++)
-    {
-        /* vmr, latitude, molar_mass_air, pressure_bounds */
-        variable->data.double_data[i] =
-            harp_partial_column_number_density_from_volume_mixing_ratio(source_variable[0]->data.double_data[i],
-                                                                        source_variable[1]->data.double_data[i],
-                                                                        molar_mass_dry_air,
-                                                                        &source_variable[2]->data.double_data[2 * i]);
-    }
-
-    return 0;
-}
-
 static int get_partial_pressure_from_vmr_and_pressure(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -2519,30 +2498,6 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
-    /* column number density from volume mixing ratio dry air and pressure bounds */
-    dimension_type[num_dimensions] = harp_dimension_independent;
-    if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions,
-                                     dimension_type, 0, get_partial_column_nd_from_vmr_dry_and_pressure_bounds,
-                                     &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
-                                            num_dimensions + 1, dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-
     /*** column number density apriori ***/
 
     /* time dependent from independent */
@@ -2622,30 +2577,6 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
-                                            num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "pressure_bounds", harp_type_double, HARP_UNIT_PRESSURE,
-                                            num_dimensions + 1, dimension_type, 2) != 0)
-    {
-        return -1;
-    }
-
-    /* column number density from volume mixing ratio dry air and pressure bounds */
-    dimension_type[num_dimensions] = harp_dimension_independent;
-    if (harp_variable_conversion_new(name_column_nd_apriori, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
-                                     num_dimensions, dimension_type, 0,
-                                     get_partial_column_nd_from_vmr_dry_and_pressure_bounds, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, name_vmr_dry_apriori, harp_type_double,
-                                            HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "latitude", harp_type_double, HARP_UNIT_LATITUDE,
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
