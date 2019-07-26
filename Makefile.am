@@ -355,7 +355,7 @@ package.rds: R/create_package_rds.r
 
 harpr_DATA = R/DESCRIPTION R/NAMESPACE
 harprMeta_DATA = package.rds
-harprR_DATA = R/Rharp
+harprR_DATA = R/harp
 
 install_rharpdir:
 	test -z "$(DESTDIR)$(harprdir)/help" || $(MKDIR_P) "$(DESTDIR)$(harprdir)/help"
@@ -364,7 +364,7 @@ INSTALL_DATA_HOOK_TARGETS += install_rharpdir
 endif
 
 EXTRA_DIST += \
-	R/Rharp \
+	R/harp \
 	R/NAMESPACE \
 	R/harp.c
 
