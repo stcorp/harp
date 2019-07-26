@@ -9,7 +9,7 @@ stamp-*
 /Makefile
 /Makefile.in
 /R/DESCRIPTION
-/R/create_package_rds.r
+/R/create_rds.r
 /aclocal.m4
 /ar-lib
 /autom4te.cache/
@@ -28,6 +28,7 @@ stamp-*
 /doc/install.rst
 /doc/xml
 /doctrees
+/features.rds
 /findtypedef
 /findtypedef.c
 /install-sh

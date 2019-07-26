@@ -164,7 +164,7 @@ AC_CONFIG_HEADERS([libharp/harp.h])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([doc/Doxyfile])
 AC_CONFIG_FILES([R/DESCRIPTION])
-AC_CONFIG_FILES([R/create_package_rds.r])
+AC_CONFIG_FILES([R/create_rds.r])
 AC_CONFIG_FILES([idl/harp_idl.dlm])
 
 # Set dynamic library version

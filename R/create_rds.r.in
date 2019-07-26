@@ -6,3 +6,5 @@ q <- list(
                Date=paste(version$year, version$month, version$day, sep="-"))
 )
 saveRDS(q, "package.rds")
+
+saveRDS(list(internalsID = .Internal(internalsID())), "features.rds")
