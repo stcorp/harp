@@ -350,7 +350,7 @@ Rharp_la_LIBADD = libharp.la
 Rharp_la_DEPENDENCIES = libharp.la
 
 features.rds package.rds: R/create_rds.r
-	$(R) --silent --vanilla -f R/create_rds.r
+	$(R) --silent --vanilla -f $(srcdir)/R/create_rds.r
 
 
 harpr_DATA = R/DESCRIPTION R/NAMESPACE
@@ -365,9 +365,9 @@ INSTALL_DATA_HOOK_TARGETS += install_rharp
 endif
 
 EXTRA_DIST += \
-	R/harp \
 	R/NAMESPACE \
-	R/harp.c
+	R/harp.c \
+	R/harp.r
 
 # harp-idl
 
