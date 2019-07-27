@@ -949,7 +949,7 @@ int harp_variable_conversion_add_source(harp_variable_conversion *conversion, co
                                 (conversion->num_source_variables + 1) * sizeof(harp_source_variable_definition));
     if (source_definition == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory(could not allocate % lu bytes) (%s:%u)",
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate % lu bytes) (%s:%u)",
                        (conversion->num_source_variables + 1) * sizeof(harp_source_variable_definition),
                        __FILE__, __LINE__);
         return -1;
