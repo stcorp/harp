@@ -101,6 +101,8 @@ static char *get_dimsvar_name(const char *variable_name, int num_dimensions, con
     char *dimsvar_name;
     int i;
 
+    assert(num_dimensions >= 0 && num_dimensions <= HARP_MAX_NUM_DIMS);
+
     /* see harp-internal.h for format definition of dimsvar_name */
 
     dimsvar_name = malloc(HARP_MAX_NUM_DIMS + strlen(variable_name) + 1);
