@@ -11,6 +11,7 @@
 #
 include(CheckLibraryExists)
 include(CheckIncludeFile)
+include(FindPackageHandleStandardArgs)
 
 if(NOT R_EXECUTABLE)
   find_program(R_EXECUTABLE NAMES R)
@@ -26,6 +27,7 @@ endif(R_EXECUTABLE)
 
 check_include_file(R.h HAVE_R_H)
 
+if(NOT WIN32)
 find_library(R_LIBRARY NAMES R libR PATHS ${R_LIBRARY_DIR})
 if(R_LIBRARY)
   check_library_exists(${R_LIBRARY} Rprintf "" HAVE_R_LIBRARY)
@@ -33,6 +35,8 @@ endif(R_LIBRARY)
 if(HAVE_R_LIBRARY)
   set(R_LIBRARIES ${R_LIBRARY})
 endif(HAVE_R_LIBRARY)
-
-include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(R DEFAULT_MSG R_EXECUTABLE HAVE_R_LIBRARY HAVE_R_H)
+else()
+# On Windows there is no global R library to link against
+find_package_handle_standard_args(R DEFAULT_MSG R_EXECUTABLE HAVE_R_H)
+endif()
