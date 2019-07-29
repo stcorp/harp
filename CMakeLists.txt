@@ -90,12 +90,11 @@ set(UDUNITS2_PREFIX share/harp)
 if(WIN32)
   # we use a different installation directory structure on Windows
   if(HARP_ENABLE_CONDA_INSTALL)
-    # all non-python components need to be installed in a Library sub-directory for Conda on Windows
+    # all non-python/non-R components need to be installed in a Library sub-directory for Conda on Windows
     set(BIN_PREFIX Library/bin)
     set(LIB_PREFIX Library/lib)
     set(INCLUDE_PREFIX Library/include)
     set(DOC_PREFIX Library/share/harp/doc)
-    set(R_PREFIX Library/lib/R/site-library/harp)
     set(MATLAB_PREFIX Library/lib/harp/matlab)
     set(IDL_PREFIX Library/lib/harp/idl)
     set(CODADEF_PREFIX Library/share/coda/definitions)
@@ -103,6 +102,7 @@ if(WIN32)
   else(CODA_ENABLE_CONDA_INSTALL)
     set(DOC_PREFIX doc)
     set(PYTHON_PREFIX python/harp)
+    set(R_PREFIX R/harp)
   endif(HARP_ENABLE_CONDA_INSTALL)
 endif(WIN32)
 
@@ -214,7 +214,7 @@ endif(HARP_WITH_HDF5)
 if(HARP_BUILD_R)
   find_package(R)
   if(NOT R_FOUND)
-    message(FATAL_ERROR "R program not found.")
+    message(FATAL_ERROR "R installation not found.")
   endif(NOT R_FOUND)
   include_directories(${R_INCLUDE_DIR})
 endif()
@@ -616,15 +616,25 @@ if(HARP_BUILD_R)
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/R/create_rds.r.in
     ${CMAKE_CURRENT_BINARY_DIR}/R/create_rds.r)
-  add_library(Rharp MODULE R/harp.c)
+  add_library(Rharp MODULE R/harp.c R/Rharp.def)
   set_target_properties(Rharp PROPERTIES PREFIX "")
-  target_link_libraries(Rharp harp ${R_LIBRARIES})
-  install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs)
   if(WIN32)
+    add_custom_command(OUTPUT R/R.lib
+      COMMAND lib /def:${CMAKE_CURRENT_SOURCE_DIR}/R/R.def /MACHINE:x64 /OUT:${CMAKE_CURRENT_BINARY_DIR}/R/R.lib
+      DEPENDS R/R.def)
+    add_custom_target(Rlib ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/R/R.lib)
+    target_link_libraries(Rharp harp ${CMAKE_CURRENT_BINARY_DIR}/R/R.lib)
+    set_target_properties(Rharp PROPERTIES DEPENDS Rlib)
+    install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs/x64)
     set_target_properties(Rharp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
-  endif(WIN32)
+    string(REGEX REPLACE "\\.exe$" "script.exe" RSCRIPT_EXECUTABLE ${R_EXECUTABLE})
+  else()
+    target_link_libraries(Rharp harp ${R_LIBRARIES})
+    install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs)
+    set(RSCRIPT_EXECUTABLE "${R_EXECUTABLE}script")
+  endif()
   add_custom_command(OUTPUT features.rds package.rds
-    COMMAND "${R_EXECUTABLE}script" --silent --vanilla R/create_rds.r
+    COMMAND "${RSCRIPT_EXECUTABLE}" --silent --vanilla R/create_rds.r
     DEPENDS R/create_rds.r)
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/features.rds

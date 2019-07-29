@@ -4,7 +4,7 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 
-const char *dimension_name[6] = {
+static const char *dimension_name[6] = {
     "independent",
     "time",
     "latitude",
@@ -13,7 +13,7 @@ const char *dimension_name[6] = {
     "spectral",
 };
 
-const char *data_types[6] = {
+static const char *data_types[6] = {
     "int8",
     "int16",
     "int32",
@@ -23,7 +23,7 @@ const char *data_types[6] = {
 };
 
 /* make R "string" (string vector of length 1) */
-SEXP mkstring(const char *x)
+static SEXP mkstring(const char *x)
 {
     SEXP str = PROTECT(allocVector(STRSXP, 1));
 
@@ -32,7 +32,7 @@ SEXP mkstring(const char *x)
 }
 
 /* return list element with given name */
-SEXP rharp_named_element(SEXP l, const char *name)
+static SEXP rharp_named_element(SEXP l, const char *name)
 {
     SEXP names = getAttrib(l, R_NamesSymbol);
     R_len_t i;
@@ -50,23 +50,23 @@ SEXP rharp_named_element(SEXP l, const char *name)
 }
 
 /* report errors to R */
-void rharp_error()
+static void rharp_error()
 {
     error(harp_errno_to_string(harp_errno));
 }
 
-void rharp_var_error(const char *varname)
+static void rharp_var_error(const char *varname)
 {
     error("variable '%s': %s", varname, harp_errno_to_string(harp_errno));
 }
 
-void var_error(const char *varname, char *msg)
+static void var_error(const char *varname, char *msg)
 {
     error("variable '%s': %s", varname, msg);
 }
 
 /* create R variable from harp variable */
-SEXP rharp_import_variable(harp_variable *hv)
+static SEXP rharp_import_variable(harp_variable *hv)
 {
     /* create variable (named list) */
     const char *varfields[] =
@@ -322,7 +322,7 @@ SEXP rharp_import_variable(harp_variable *hv)
 }
 
 /* create harp variable from R variable */
-harp_variable *rharp_export_variable(SEXP var, const char *name)
+static harp_variable *rharp_export_variable(SEXP var, const char *name)
 {
     SEXP sdescription, sname, sunit, sdata, sdimension, senum, svalidmin, svalidmax, stype, sdimlens;
     unsigned int dimlens;
@@ -943,16 +943,24 @@ SEXP rharp_init(SEXP spath)
 {
     const char *path = CHAR(STRING_ELT(spath, 0));
 
-    harp_init();
-
     if (getenv("CODA_DEFINITION") == NULL)
     {
+#ifdef WIN32
+        harp_set_coda_definition_path_conditional("harp.dll", NULL, "../share/coda/definitions/");
+#else
         harp_set_coda_definition_path_conditional("DESCRIPTION", path, "../../../../share/coda/definitions/");
+#endif
     }
     if (getenv("UDUNITS2_XML_PATH") == NULL)
     {
+#ifdef WIN32
+        harp_set_udunits2_xml_path_conditional("harp.dll", NULL, "../share/harp/udunits2.xml");
+#else
         harp_set_udunits2_xml_path_conditional("DESCRIPTION", path, "../../../../share/harp/udunits2.xml");
+#endif
     }
+
+    harp_init();
 
     return R_NilValue;
 }

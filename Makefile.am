@@ -366,6 +366,8 @@ endif
 
 EXTRA_DIST += \
 	R/NAMESPACE \
+	R/R.def \
+	R/Rharp.def \
 	R/harp.c \
 	R/harp.r
 

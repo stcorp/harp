@@ -1,0 +1,6 @@
+EXPORTS
+   rharp_init @1
+   rharp_done @2
+   rharp_version @3
+   rharp_import_product @4
+   rharp_export_product @5

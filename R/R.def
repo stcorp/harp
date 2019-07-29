@@ -1,0 +1,24 @@
+LIBRARY R.dll
+EXPORTS
+INTEGER
+LENGTH
+R_CHAR
+R_DimSymbol
+R_NamesSymbol
+R_NilValue
+REAL
+Rf_allocArray
+Rf_allocVector
+Rf_error
+Rf_getAttrib
+Rf_isArray
+Rf_length
+Rf_mkChar
+Rf_mkNamed
+Rf_protect
+Rf_unprotect
+SET_STRING_ELT
+SET_VECTOR_ELT
+STRING_ELT
+TYPEOF
+VECTOR_ELT
