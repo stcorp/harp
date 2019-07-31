@@ -219,7 +219,7 @@
 <colgroup>
 <col width="15%" />
 <col width="34%" />
-<col width="20%" />
+<col width="21%" />
 <col width="31%" />
 </colgroup>
 <thead valign="bottom">
@@ -236,13 +236,13 @@
 <td><cite>density {:}</cite></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(\rho_{x}\)</span></td>
-<td>mass density for air component x
+<td>mass density of air component x
 (e.g. <span class="math notranslate nohighlight">\(\rho_{O_{3}}\)</span>)</td>
 <td><span class="math notranslate nohighlight">\(\frac{kg}{m^3}\)</span></td>
 <td><cite>&lt;species&gt;_density {:}</cite></td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(q_{x}\)</span></td>
-<td>mass mixing ratio for air component x
+<td>mass mixing ratio of air component x
 with regard to total air</td>
 <td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
 <td><cite>&lt;species&gt;_mass_mixing_ratio {:}</cite></td>
@@ -271,12 +271,12 @@ with regard to total air</td>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(M_{air}\)</span></td>
-<td>molar mass for total air</td>
+<td>molar mass of total air</td>
 <td><span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span></td>
 <td><cite>molar_mass {:}</cite></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(M_{x}\)</span></td>
-<td>molar mass for air component x</td>
+<td>molar mass of air component x</td>
 <td><span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -299,13 +299,54 @@ with regard to total air</td>
 <div class="math notranslate nohighlight">
 \[q_{x} = \nu_{x}\frac{M_{x}}{M_{air}}\]</div>
 </li>
+<li><p class="first">mass mixing ratio from mass mixing ratio dry air</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="31%" />
+<col width="18%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(q_{x}\)</span></td>
+<td>mass mixing ratio of air component x
+with regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>&lt;species&gt;_mass_mixing_ratio {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(q_{dry\_air}\)</span></td>
+<td>mass mixing ratio of dry air with
+regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>dry_air_mass_mixing_ratio {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\bar{q}_{x}\)</span></td>
+<td>mass mixing ratio of air component x
+with regard to dry air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>&lt;species&gt;_mass_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[q_{x} = \bar{q}_{x}q_{dry\_air}\]</div>
+</li>
 <li><p class="first">mass mixing ratio dry air from mass density</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="19%" />
 <col width="30%" />
 <col width="18%" />
-<col width="33%" />
+<col width="34%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -321,13 +362,13 @@ with regard to total air</td>
 <td><cite>dry_air_density {:}</cite></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(\rho_{x}\)</span></td>
-<td>mass density for air component x
+<td>mass density of air component x
 (e.g. <span class="math notranslate nohighlight">\(\rho_{O_{3}}\)</span>)</td>
 <td><span class="math notranslate nohighlight">\(\frac{kg}{m^3}\)</span></td>
 <td><cite>&lt;species&gt;_density {:}</cite></td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(\bar{q}_{x}\)</span></td>
-<td>mass mixing ratio for air component x
+<td>mass mixing ratio if air component x
 with regard to dry air</td>
 <td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
 <td><cite>&lt;species&gt;_mass_mixing_ratio_dry_air {:}</cite></td>
@@ -356,12 +397,12 @@ with regard to dry air</td>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(M_{dry\_air}\)</span></td>
-<td>molar mass for dry air</td>
+<td>molar mass of dry air</td>
 <td><span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(M_{x}\)</span></td>
-<td>molar mass for air component x</td>
+<td>molar mass of air component x</td>
 <td><span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span></td>
 <td>&#160;</td>
 </tr>
@@ -383,6 +424,117 @@ with regard to dry air</td>
 <cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
 \[\bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}\]</div>
+</li>
+<li><p class="first">mass mixing ratio dry air from mass mixing ratio</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="31%" />
+<col width="18%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(q_{x}\)</span></td>
+<td>mass mixing ratio of air component x
+with regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>&lt;species&gt;_mass_mixing_ratio {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(q_{dry\_air}\)</span></td>
+<td>mass mixing ratio of dry air with
+regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>dry_air_mass_mixing_ratio {:}</cite></td>
+</tr>
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(\bar{q}_{x}\)</span></td>
+<td>mass mixing ratio of air component x
+with regard to dry air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>&lt;species&gt;_mass_mixing_ratio_dry_air {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[\bar{q}_{x} = \frac{q_{x}}{q_{dry\_air}}\]</div>
+</li>
+<li><p class="first">dry air mass mixing ratio from H2O mass mixing ratio</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="28%" />
+<col width="21%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(q_{H_{2}O}\)</span></td>
+<td>mass mixing ratio of H2O
+with regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>H2O_mass_mixing_ratio {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(q_{dry\_air}\)</span></td>
+<td>mass mixing ratio of dry air
+with regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>dry_air_mass_mixing_ratio {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[q_{dry\_air} = 1 - q_{H_{2}O}\]</div>
+</li>
+<li><p class="first">H2O mass mixing ratio from dry air mass mixing ratio</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="28%" />
+<col width="21%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(q_{H_{2}O}\)</span></td>
+<td>mass mixing ratio of H2O
+with regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>H2O_mass_mixing_ratio {:}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(q_{dry\_air}\)</span></td>
+<td>mass mixing ratio of dry air
+with regard to total air</td>
+<td><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></td>
+<td><cite>dry_air_mass_mixing_ratio {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[q_{H_{2}O} = 1 - q_{dry\_air}\]</div>
 </li>
 </ol>
 </div>

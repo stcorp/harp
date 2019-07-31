@@ -7,7 +7,7 @@ degrees of freedom for signal
    symbol               description                             unit variable name
    ==================== ======================================= ==== ===============================
    :math:`d^{x}_{s}(i)` degrees of freedom for signal per level      `<x>_dfs {:,vertical}`
-   :math:`A^{x}(i,j)`   AVK for a profile x                          `<x>_avk {:,vertical,vertical}`
+   :math:`A^{x}(i,j)`   AVK of a profile x                           `<x>_avk {:,vertical,vertical}`
    ==================== ======================================= ==== ===============================
 
    The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,

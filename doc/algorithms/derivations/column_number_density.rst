@@ -1,14 +1,14 @@
 column number density derivations
 =================================
 
-#. total column number density for air component from partial column number density profile:
+#. total column number density of air component from partial column number density profile:
 
    ================ ======================================= ========================= ==============================================
    symbol           description                             unit                      variable name
    ================ ======================================= ========================= ==============================================
-   :math:`c_{x}`    total column number density for air     :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
+   :math:`c_{x}`    total column number density of air      :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
                     component x (e.g. :math:`c_{O_{3}}`)
-   :math:`c_{x}(i)` column number density profile for air   :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+   :math:`c_{x}(i)` column number density profile of air    :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
                     component x (e.g. :math:`c_{O_{3}}(i)`)
    ================ ======================================= ========================= ==============================================
 
@@ -20,14 +20,14 @@ column number density derivations
       c_{x} = \sum_{i}{c_{x}(i)}
 
 
-#. total column number density for total air from partial column number density profile:
+#. total column number density of total air from partial column number density profile:
 
-   ============ =========================================== ========================= ====================================
-   symbol       description                                 unit                      variable name
-   ============ =========================================== ========================= ====================================
-   :math:`c`    total column number density for total air   :math:`\frac{molec}{m^2}` `column_number_density {:}`
-   :math:`c(i)` column number density profile for total air :math:`\frac{molec}{m^2}` `column_number_density {:,vertical}`
-   ============ =========================================== ========================= ====================================
+   ============ ========================================== ========================= ====================================
+   symbol       description                                unit                      variable name
+   ============ ========================================== ========================= ====================================
+   :math:`c`    total column number density of total air   :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`c(i)` column number density profile of total air :math:`\frac{molec}{m^2}` `column_number_density {:,vertical}`
+   ============ ========================================== ========================= ====================================
 
    The pattern `:` for the first dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
    or no dimensions at all.
@@ -37,14 +37,14 @@ column number density derivations
       c_{x} = \sum_{i}{c_{x}(i)}
 
 
-#. tropospheric column number density for air component from partial column number density profile and altitude:
+#. tropospheric column number density of air component from partial column number density profile and altitude:
 
    ================ =========================================== ========================= ==================================================
    symbol           description                                 unit                      variable name
    ================ =========================================== ========================= ==================================================
-   :math:`c_{x}`    tropospheric column number density for air  :math:`\frac{molec}{m^2}` `tropospheric_<species>_column_number_density {:}`
+   :math:`c_{x}`    tropospheric column number density of air   :math:`\frac{molec}{m^2}` `tropospheric_<species>_column_number_density {:}`
                     component x (e.g. :math:`c_{O_{3}}`)
-   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+   :math:`c_{x}(i)` column number density profile of air        :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
                     component x (e.g. :math:`c_{O_{3}}(i)`)
    :math:`z_{TP}`   tropopause altitude                         :math:`m`                 `tropopause_altitude {:}`
    :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
@@ -62,14 +62,14 @@ column number density derivations
       \end{cases}}
 
 
-#. stratospheric column number density for air component from partial column number density profile and altitude:
+#. stratospheric column number density of air component from partial column number density profile and altitude:
 
    ================ =========================================== ========================= ===================================================
    symbol           description                                 unit                      variable name
    ================ =========================================== ========================= ===================================================
-   :math:`c_{x}`    stratospheric column number density for air :math:`\frac{molec}{m^2}` `stratospheric_<species>_column_number_density {:}`
+   :math:`c_{x}`    stratospheric column number density of air  :math:`\frac{molec}{m^2}` `stratospheric_<species>_column_number_density {:}`
                     component x (e.g. :math:`c_{O_{3}}`)
-   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+   :math:`c_{x}(i)` column number density profile of air        :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
                     component x (e.g. :math:`c_{O_{3}}(i)`)
    :math:`z_{TP}`   tropopause altitude                         :math:`m`                 `tropopause_altitude {:}`
    :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
@@ -87,14 +87,14 @@ column number density derivations
       \end{cases}}
 
 
-#. tropospheric column number density for air component from partial column number density profile and pressure:
+#. tropospheric column number density of air component from partial column number density profile and pressure:
 
    ================ =========================================== ========================= ==================================================
    symbol           description                                 unit                      variable name
    ================ =========================================== ========================= ==================================================
-   :math:`c_{x}`    tropospheric column number density for air  :math:`\frac{molec}{m^2}` `tropospheric_<species>_column_number_density {:}`
+   :math:`c_{x}`    tropospheric column number density of air   :math:`\frac{molec}{m^2}` `tropospheric_<species>_column_number_density {:}`
                     component x (e.g. :math:`c_{O_{3}}`)
-   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+   :math:`c_{x}(i)` column number density profile of air        :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
                     component x (e.g. :math:`c_{O_{3}}(i)`)
    :math:`p_{TP}`   tropopause pressure                         :math:`Pa`                `tropopause_pressure {:}`
    :math:`p^{B}(l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa`                `pressure_bounds {:,2}`
@@ -112,14 +112,14 @@ column number density derivations
       \end{cases}}
 
 
-#. stratospheric column number density for air component from partial column number density profile and pressure:
+#. stratospheric column number density of air component from partial column number density profile and pressure:
 
    ================ =========================================== ========================= ===================================================
    symbol           description                                 unit                      variable name
    ================ =========================================== ========================= ===================================================
-   :math:`c_{x}`    stratospheric column number density for air :math:`\frac{molec}{m^2}` `stratospheric_<species>_column_number_density {:}`
+   :math:`c_{x}`    stratospheric column number density of air  :math:`\frac{molec}{m^2}` `stratospheric_<species>_column_number_density {:}`
                     component x (e.g. :math:`c_{O_{3}}`)
-   :math:`c_{x}(i)` column number density profile for air       :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
+   :math:`c_{x}(i)` column number density profile of air        :math:`\frac{molec}{m^2}` `<species>_column_number_density {:,vertical}`
                     component x (e.g. :math:`c_{O_{3}}(i)`)
    :math:`p_{TP}`   tropopause pressure                         :math:`Pa`                `tropopause_pressure {:}`
    :math:`p^{B}(l)` pressure boundaries (:math:`l \in \{1,2\}`) :math:`Pa`                `pressure_bounds {:,2}`
@@ -137,14 +137,14 @@ column number density derivations
       \end{cases}}
 
 
-#. column number density for total air from dry air column number density and H2O column number density
+#. column number density of total air from dry air column number density and H2O column number density
 
    ==================== ================================ ========================= ===================================
    symbol               description                      unit                      variable name
    ==================== ================================ ========================= ===================================
    :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
-   :math:`c_{H_{2}O}`   column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   :math:`c_{H_{2}O}`   column number density of H2O     :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
    ==================== ================================ ========================= ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -155,14 +155,14 @@ column number density derivations
      c = c_{dry\_air} + c_{H_{2}O}
 
 
-#. column number density for dry air from total air column number density and H2O column number density
+#. column number density of dry air from total air column number density and H2O column number density
 
    ==================== ================================ ========================= ===================================
    symbol               description                      unit                      variable name
    ==================== ================================ ========================= ===================================
    :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
-   :math:`c_{H_{2}O}`   column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   :math:`c_{H_{2}O}`   column number density of H2O     :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
    ==================== ================================ ========================= ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -173,14 +173,14 @@ column number density derivations
      c_{dry\_air} = c - c_{H_{2}O}
 
 
-#. column number density for H2O from total air column number density and dry air column number density
+#. column number density of H2O from total air column number density and dry air column number density
 
    ==================== ================================ ========================= ===================================
    symbol               description                      unit                      variable name
    ==================== ================================ ========================= ===================================
    :math:`c`            column number density            :math:`\frac{molec}{m^2}` `column_number_density {:}`
    :math:`c_{dry\_air}` column number density of dry air :math:`\frac{molec}{m^2}` `dry_air_column_number_density {:}`
-   :math:`c_{H_{2}O}`   column number density for H2O    :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
+   :math:`c_{H_{2}O}`   column number density of H2O     :math:`\frac{molec}{m^2}` `H2O_column_number_density {:}`
    ==================== ================================ ========================= ===================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
@@ -191,14 +191,14 @@ column number density derivations
      c_{H_{2}O} = c - c_{dry\_air}
 
 
-#. column number density for air component from number density:
+#. column number density of air component from number density:
 
    ================ =========================================== ========================= =====================================
    symbol           description                                 unit                      variable name
    ================ =========================================== ========================= =====================================
-   :math:`c_{x}`    column number density for air component x   :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
+   :math:`c_{x}`    column number density of air component x    :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
                     (e.g. :math:`c_{O_{3}}`)
-   :math:`n_{x}`    number density for air component x          :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
+   :math:`n_{x}`    number density of air component x           :math:`\frac{molec}{m^3}` `<species>_number_density {:}`
                     (e.g. :math:`n_{O_{3}}`)
    :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
    ================ =========================================== ========================= =====================================
@@ -211,13 +211,13 @@ column number density derivations
       c_{x} = n_{x} \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column number density for total air from number density:
+#. column number density of total air from number density:
 
    ================ =========================================== ========================= ===========================
    symbol           description                                 unit                      variable name
    ================ =========================================== ========================= ===========================
-   :math:`c`        column number density for total air         :math:`\frac{molec}{m^2}` `column_number_density {:}`
-   :math:`n`        number density for total air                :math:`\frac{molec}{m^3}` `number_density {:}`
+   :math:`c`        column number density of total air          :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`n`        number density of total air                 :math:`\frac{molec}{m^3}` `number_density {:}`
    :math:`z^{B}(l)` altitude boundaries (:math:`l \in \{1,2\}`) :math:`m`                 `altitude_bounds {:,2}`
    ================ =========================================== ========================= ===========================
 
@@ -229,20 +229,20 @@ column number density derivations
       c = n \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column number density for air component from column mass density:
+#. column number density of air component from column mass density:
 
    This conversion applies to both total columns as well as partial column profiles.
 
-   ================== ========================================= ========================= =====================================
-   symbol             description                               unit                      variable name
-   ================== ========================================= ========================= =====================================
-   :math:`c_{x}`      column number density for air component x :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
+   ================== ======================================== ========================= =====================================
+   symbol             description                              unit                      variable name
+   ================== ======================================== ========================= =====================================
+   :math:`c_{x}`      column number density of air component x :math:`\frac{molec}{m^2}` `<species>_column_number_density {:}`
                       (e.g. :math:`n_{O_{3}}`)
-   :math:`M_{x}`      molar mass for air component x            :math:`\frac{g}{mol}`
-   :math:`N_A`        Avogadro constant                         :math:`\frac{1}{mol}`
-   :math:`\sigma_{x}` column mass density for air component x   :math:`\frac{kg}{m^2}`    `<species>_column_density {:}`
+   :math:`M_{x}`      molar mass of air component x            :math:`\frac{g}{mol}`
+   :math:`N_A`        Avogadro constant                        :math:`\frac{1}{mol}`
+   :math:`\sigma_{x}` column mass density of air component x   :math:`\frac{kg}{m^2}`    `<species>_column_density {:}`
                       (e.g. :math:`\sigma_{O_{3}}`)
-   ================== ========================================= ========================= =====================================
+   ================== ======================================== ========================= =====================================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -252,18 +252,18 @@ column number density derivations
       c_{x} = \frac{\sigma_{x}N_{A}}{10^{-3}M_{x}}
 
 
-#. column number density for total air from column mass density:
+#. column number density of total air from column mass density:
 
    This conversion applies to both total columns as well as partial column profiles.
 
-   =============== =================================== ========================= ===========================
-   symbol          description                         unit                      variable name
-   =============== =================================== ========================= ===========================
-   :math:`c`       column number density for total air :math:`\frac{molec}{m^2}` `column_number_density {:}`
-   :math:`M_{air}` molar mass for total air            :math:`\frac{g}{mol}`     `molar_mass {:}`
-   :math:`N_A`     Avogadro constant                   :math:`\frac{1}{mol}`
-   :math:`\sigma`  column mass density for total air   :math:`\frac{kg}{m^2}`    `column_density {:}`
-   =============== =================================== ========================= ===========================
+   =============== ================================== ========================= ===========================
+   symbol          description                        unit                      variable name
+   =============== ================================== ========================= ===========================
+   :math:`c`       column number density of total air :math:`\frac{molec}{m^2}` `column_number_density {:}`
+   :math:`M_{air}` molar mass of total air            :math:`\frac{g}{mol}`     `molar_mass {:}`
+   :math:`N_A`     Avogadro constant                  :math:`\frac{1}{mol}`
+   :math:`\sigma`  column mass density of total air   :math:`\frac{kg}{m^2}`    `column_density {:}`
+   =============== ================================== ========================= ===========================
 
    The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
    `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
@@ -273,14 +273,14 @@ column number density derivations
       c = \frac{\sigma N_{A}}{10^{-3}M_{air}}
 
 
-#. column number density for air component from volume mixing ratio:
+#. column number density of air component from volume mixing ratio:
 
    ================== =========================================== ================================ =====================================
    symbol             description                                 unit                             variable name
    ================== =========================================== ================================ =====================================
    :math:`a`          WGS84 semi-major axis                       :math:`m`
    :math:`b`          WGS84 semi-minor axis                       :math:`m`
-   :math:`c_{x}`      column number density for air component x   :math:`\frac{molec}{m^2}`        `<species>_column_number_density {:}`
+   :math:`c_{x}`      column number density of air component x    :math:`\frac{molec}{m^2}`        `<species>_column_number_density {:}`
                       (e.g. :math:`c_{O_{3}}`)
    :math:`f`          WGS84 flattening                            :math:`m`
    :math:`g`          normal gravity at sea level                 :math:`\frac{m}{s^2}`
