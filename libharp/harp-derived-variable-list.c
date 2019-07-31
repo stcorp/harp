@@ -379,7 +379,8 @@ static int get_dry_air_from_air_and_h2o(harp_variable *variable, const harp_vari
     return 0;
 }
 
-static int get_dry_air_mixing_ratio_from_h2o_mixing_ratio(harp_variable *variable, const harp_variable **source_variable)
+static int get_dry_air_mixing_ratio_from_h2o_mixing_ratio(harp_variable *variable,
+                                                          const harp_variable **source_variable)
 {
     long i;
 
@@ -598,7 +599,8 @@ static int get_h2o_from_air_and_dry_air(harp_variable *variable, const harp_vari
     return 0;
 }
 
-static int get_h2o_mixing_ratio_from_dry_air_mixing_ratio(harp_variable *variable, const harp_variable **source_variable)
+static int get_h2o_mixing_ratio_from_dry_air_mixing_ratio(harp_variable *variable,
+                                                          const harp_variable **source_variable)
 {
     long i;
 
@@ -609,6 +611,7 @@ static int get_h2o_mixing_ratio_from_dry_air_mixing_ratio(harp_variable *variabl
 
     return 0;
 }
+
 static int get_index(harp_variable *variable, const harp_variable **source_variable)
 {
     int32_t i;
@@ -773,6 +776,32 @@ static int get_midpoint_from_bounds_log(harp_variable *variable, const harp_vari
     {
         variable->data.double_data[i] = exp((log(source_variable[0]->data.double_data[2 * i]) +
                                              log(source_variable[0]->data.double_data[2 * i + 1])) / 2.0);
+    }
+
+    return 0;
+}
+
+static int get_mr_dry_from_mr_and_dry_air_mr(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            source_variable[0]->data.double_data[i] / source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
+static int get_mr_from_mr_dry_and_dry_air_mr(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            source_variable[0]->data.double_data[i] * source_variable[1]->data.double_data[i];
     }
 
     return 0;
@@ -2906,6 +2935,29 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+
+        if (!is_h2o_related)
+        {
+            /* mass mixing ratio from mass mixing ratio dry air */
+            if (harp_variable_conversion_new(name_column_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                             num_dimensions, dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr,
+                                             &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_column_mmr_dry, harp_type_double,
+                                                    HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0)
+                != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, "dry_air_column_mass_mixing_ratio", harp_type_double,
+                                                    HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0)
+                != 0)
+            {
+                return -1;
+            }
+        }
     }
 
     /*** column mass mixing ratio DFS ***/
@@ -2965,6 +3017,24 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+
+        /* mass mixing ratio dry air from mass mixing ratio */
+        if (harp_variable_conversion_new(name_column_mmr_dry, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_mmr, harp_type_double,
+                                                HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_column_mass_mixing_ratio", harp_type_double,
+                                                HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** column mass mixing ratio dry air DFS ***/
@@ -2994,6 +3064,29 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                         dimension_type) != 0)
         {
             return -1;
+        }
+
+        if (!is_h2o_related)
+        {
+            /* mass mixing ratio from mass mixing ratio dry air */
+            if (harp_variable_conversion_new(name_strato_column_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                             num_dimensions, dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr,
+                                             &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_strato_column_mmr_dry, harp_type_double,
+                                                    HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0)
+                != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, "stratospheric_dry_air_column_mass_mixing_ratio",
+                                                    harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                                    dimension_type, 0) != 0)
+            {
+                return -1;
+            }
         }
     }
 
@@ -3037,6 +3130,25 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+
+        /* mass mixing ratio dry air from mass mixing ratio */
+        if (harp_variable_conversion_new(name_strato_column_mmr_dry, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_strato_column_mmr, harp_type_double,
+                                                HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "stratospheric_dry_air_column_mass_mixing_ratio",
+                                                harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** stratospheric column mass mixing ratio dry air DFS ***/
@@ -3066,6 +3178,29 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                         dimension_type) != 0)
         {
             return -1;
+        }
+
+        if (!is_h2o_related)
+        {
+            /* mass mixing ratio from mass mixing ratio dry air */
+            if (harp_variable_conversion_new(name_tropo_column_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                             num_dimensions, dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr,
+                                             &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_tropo_column_mmr_dry, harp_type_double,
+                                                    HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) !=
+                0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, "tropospheric_dry_air_column_mass_mixing_ratio",
+                                                    harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                                    dimension_type, 0) != 0)
+            {
+                return -1;
+            }
         }
     }
 
@@ -3106,6 +3241,25 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
         if (harp_variable_conversion_add_source(conversion, name_tropo_column_vmr_dry, harp_type_double,
                                                 HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* mass mixing ratio dry air from mass mixing ratio */
+        if (harp_variable_conversion_new(name_tropo_column_mmr_dry, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_tropo_column_mmr, harp_type_double,
+                                                HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropospheric_dry_air_column_mass_mixing_ratio",
+                                                harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3175,6 +3329,29 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+
+        if (!is_h2o_related)
+        {
+            /* volume mixing ratio from volume mixing ratio dry air */
+            if (harp_variable_conversion_new(name_column_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                             num_dimensions, dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr,
+                                             &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_column_vmr_dry, harp_type_double,
+                                                    HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0)
+                != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, "dry_air_column_volume_mixing_ratio", harp_type_double,
+                                                    HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0)
+                != 0)
+            {
+                return -1;
+            }
+        }
     }
 
     /*** column volume mixing ratio DFS ***/
@@ -3236,6 +3413,24 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+
+        /* volume mixing ratio dry air from volume mixing ratio */
+        if (harp_variable_conversion_new(name_column_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_vmr, harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_column_volume_mixing_ratio", harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** column volume mixing ratio dry air DFS ***/
@@ -3265,6 +3460,29 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                         dimension_type) != 0)
         {
             return -1;
+        }
+
+        if (!is_h2o_related)
+        {
+            /* volume mixing ratio from volume mixing ratio dry air */
+            if (harp_variable_conversion_new(name_strato_column_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                             num_dimensions, dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr,
+                                             &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_strato_column_vmr_dry, harp_type_double,
+                                                    HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0)
+                != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, "stratospheric_dry_air_column_volume_mixing_ratio",
+                                                    harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                                    dimension_type, 0) != 0)
+            {
+                return -1;
+            }
         }
     }
 
@@ -3308,6 +3526,25 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+
+        /* volume mixing ratio dry air from volume mixing ratio */
+        if (harp_variable_conversion_new(name_strato_column_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_strato_column_vmr, harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "stratospheric_dry_air_column_volume_mixing_ratio",
+                                                harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** stratospheric column volume mixing ratio dry air DFS ***/
@@ -3337,6 +3574,29 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                         dimension_type) != 0)
         {
             return -1;
+        }
+
+        if (!is_h2o_related)
+        {
+            /* volume mixing ratio from volume mixing ratio dry air */
+            if (harp_variable_conversion_new(name_tropo_column_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                             num_dimensions, dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr,
+                                             &conversion) != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, name_tropo_column_vmr_dry, harp_type_double,
+                                                    HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0)
+                != 0)
+            {
+                return -1;
+            }
+            if (harp_variable_conversion_add_source(conversion, "tropospheric_dry_air_column_volume_mixing_ratio",
+                                                    harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                                    dimension_type, 0) != 0)
+            {
+                return -1;
+            }
         }
     }
 
@@ -3377,6 +3637,25 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
         if (harp_variable_conversion_add_source(conversion, name_tropo_column_mmr_dry, harp_type_double,
                                                 HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* volume mixing ratio dry air from volume mixing ratio */
+        if (harp_variable_conversion_new(name_tropo_column_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                         num_dimensions, dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr,
+                                         &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_tropo_column_vmr, harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropospheric_dry_air_column_volume_mixing_ratio",
+                                                harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                                dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3487,6 +3766,26 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
+    if (!is_h2o_related)
+    {
+        /* mass mixing ratio from mass mixing ratio dry air */
+        if (harp_variable_conversion_new(name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                         dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_mmr_dry, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_mass_mixing_ratio", harp_type_double,
+                                                HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
     /*** mass mixing ratio apriori ***/
 
     /* time dependent from independent */
@@ -3563,8 +3862,26 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+        if (harp_variable_conversion_add_source
+            (conversion, name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type,
+             0) != 0)
+        {
+            return -1;
+        }
+
+        /* mass mixing ratio dry air from mass mixing ratio */
+        if (harp_variable_conversion_new(name_mmr_dry, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO, num_dimensions,
+                                         dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_mmr, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
                                                 num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_mass_mixing_ratio", harp_type_double,
+                                                HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3575,8 +3892,9 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     if (!is_h2o_related)
     {
         /* time dependent from independent */
-        if (add_time_indepedent_to_dependent_conversion(name_mmr_dry_apriori, harp_type_double, HARP_UNIT_MASS_MIXING_RATIO,
-                                                        num_dimensions, dimension_type, 0) != 0)
+        if (add_time_indepedent_to_dependent_conversion(name_mmr_dry_apriori, harp_type_double,
+                                                        HARP_UNIT_MASS_MIXING_RATIO, num_dimensions, dimension_type, 0)
+            != 0)
         {
             return -1;
         }
@@ -3656,8 +3974,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                                num_dimensions, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3791,8 +4109,9 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
             {
                 return -1;
             }
-            if (harp_variable_conversion_add_source(conversion, name_vmr_dry_avk, harp_type_double, HARP_UNIT_DIMENSIONLESS,
-                                                    num_dimensions + 1, dimension_type, 0) != 0)
+            if (harp_variable_conversion_add_source(conversion, name_vmr_dry_avk, harp_type_double,
+                                                    HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0) !=
+                0)
             {
                 return -1;
             }
@@ -3868,13 +4187,13 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     if (!is_h2o_related)
     {
         /* partial pressure from volume mixing ratio dry air */
-        if (harp_variable_conversion_new(name_pp, harp_type_double, HARP_UNIT_PRESSURE, num_dimensions, dimension_type, 0,
-                                         get_partial_pressure_from_vmr_and_pressure, &conversion) != 0)
+        if (harp_variable_conversion_new(name_pp, harp_type_double, HARP_UNIT_PRESSURE, num_dimensions, dimension_type,
+                                         0, get_partial_pressure_from_vmr_and_pressure, &conversion) != 0)
         {
             return -1;
         }
-        if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                                num_dimensions, dimension_type, 0) != 0)
+        if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }
@@ -3949,6 +4268,26 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
                                             num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
+    }
+
+    if (!is_h2o_related)
+    {
+        /* volume mixing ratio from volume mixing ratio dry air */
+        if (harp_variable_conversion_new(name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                         dimension_type, 0, get_mr_from_mr_dry_and_dry_air_mr, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_volume_mixing_ratio", harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** volume mixing ratio apriori ***/
@@ -4047,7 +4386,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         }
 
         /* uncertainties */
-        if (add_uncertainty_conversions(name_vmr_dry, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type) != 0)
+        if (add_uncertainty_conversions(name_vmr_dry, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type) !=
+            0)
         {
             return -1;
         }
@@ -4083,7 +4423,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
 
         /* volume mixing ratio dry air from partial pressure */
         if (harp_variable_conversion_new(name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
-                                         dimension_type, 0, get_vmr_from_partial_pressure_and_pressure, &conversion) != 0)
+                                         dimension_type, 0, get_vmr_from_partial_pressure_and_pressure, &conversion) !=
+            0)
         {
             return -1;
         }
@@ -4097,6 +4438,23 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         {
             return -1;
         }
+
+        /* volume mixing ratio dry air from volume mixing ratio */
+        if (harp_variable_conversion_new(name_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions,
+                                         dimension_type, 0, get_mr_dry_from_mr_and_dry_air_mr, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_vmr, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_volume_mixing_ratio", harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** volume mixing ratio dry air apriori ***/
@@ -4105,8 +4463,8 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     {
         /* time dependent from independent */
         if (add_time_indepedent_to_dependent_conversion(name_vmr_dry_apriori, harp_type_double,
-                                                        HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) !=
-            0)
+                                                        HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type,
+                                                        0) != 0)
         {
             return -1;
         }
@@ -5935,27 +6293,27 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     /*** volume mixing ratio ***/
 
     /* dry air volume mixing ratio from H2O volume mixing ratio */
-    if (harp_variable_conversion_new("dry_air_volume_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+    if (harp_variable_conversion_new("dry_air_volume_mixing_ratio", harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
                                      num_dimensions, dimension_type, 0, get_dry_air_mixing_ratio_from_h2o_mixing_ratio,
                                      &conversion) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "H2O_volume_mixing_ratio", harp_type_double,
-                                            HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
 
     /* H2O volume mixing ratio from dry air volume mixing ratio */
-    if (harp_variable_conversion_new("H2O_volume_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+    if (harp_variable_conversion_new("H2O_volume_mixing_ratio", harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
                                      num_dimensions, dimension_type, 0, get_h2o_mixing_ratio_from_dry_air_mixing_ratio,
                                      &conversion) != 0)
     {
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "dry_air_volume_mixing_ratio", harp_type_double,
-                                            HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+                                            HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
