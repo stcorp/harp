@@ -379,6 +379,18 @@ static int get_dry_air_from_air_and_h2o(harp_variable *variable, const harp_vari
     return 0;
 }
 
+static int get_dry_air_mixing_ratio_from_h2o_mixing_ratio(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = 1 - source_variable[0]->data.double_data[i];
+    }
+
+    return 0;
+}
+
 static int get_elevation_angle_from_zenith_angle(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -586,6 +598,17 @@ static int get_h2o_from_air_and_dry_air(harp_variable *variable, const harp_vari
     return 0;
 }
 
+static int get_h2o_mixing_ratio_from_dry_air_mixing_ratio(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = 1 - source_variable[0]->data.double_data[i];
+    }
+
+    return 0;
+}
 static int get_index(harp_variable *variable, const harp_variable **source_variable)
 {
     int32_t i;
@@ -5108,6 +5131,34 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         }
     }
 
+    /*** mass mixing ratio ***/
+
+    /* dry air mass mixing ratio from H2O mass mixing ratio */
+    if (harp_variable_conversion_new("dry_air_mass_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                     num_dimensions, dimension_type, 0, get_dry_air_mixing_ratio_from_h2o_mixing_ratio,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio", harp_type_double,
+                                            HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* H2O mass mixing ratio from dry air mass mixing ratio */
+    if (harp_variable_conversion_new("H2O_mass_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                     num_dimensions, dimension_type, 0, get_h2o_mixing_ratio_from_dry_air_mixing_ratio,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_mass_mixing_ratio", harp_type_double,
+                                            HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     /*** molar mass (of total air) ***/
 
     /* time dependent from independent */
@@ -5849,6 +5900,34 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
     }
     if (harp_variable_conversion_add_source(conversion, "molar_mass", harp_type_double, HARP_UNIT_MOLAR_MASS,
                                             num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /*** volume mixing ratio ***/
+
+    /* dry air volume mixing ratio from H2O volume mixing ratio */
+    if (harp_variable_conversion_new("dry_air_volume_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                     num_dimensions, dimension_type, 0, get_dry_air_mixing_ratio_from_h2o_mixing_ratio,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_volume_mixing_ratio", harp_type_double,
+                                            HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* H2O volume mixing ratio from dry air volume mixing ratio */
+    if (harp_variable_conversion_new("H2O_volume_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                     num_dimensions, dimension_type, 0, get_h2o_mixing_ratio_from_dry_air_mixing_ratio,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "dry_air_volume_mixing_ratio", harp_type_double,
+                                            HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;
     }
