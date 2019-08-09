@@ -348,13 +348,20 @@ def _get_c_library_filename():
     if _system() == "Windows":
         return "harp.dll"
 
-    import os.path
-    path = os.path.join(os.path.dirname(__file__), "../../..")
-
     if _system() == "Darwin":
-        return os.path.join(os.path.normpath(path), "libharp.dylib")
+        library_name = "libharp.dylib"
+    else:
+        library_name = "libharp.so"
 
-    return os.path.join(os.path.normpath(path), "libharp.so")
+    import os.path
+
+    # check for library file in the parent directory (for pyinstaller bundles)
+    library_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", library_name))
+    if os.path.exists(library_path):
+        return library_path
+
+    # otherwise assume the library to be in the parent library directory
+    return os.path.normpath(os.path.join(os.path.dirname(__file__), "../../..", library_name))
 
 def _get_filesystem_encoding():
     """Return the encoding used by the filesystem."""
