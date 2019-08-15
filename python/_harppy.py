@@ -449,18 +449,6 @@ def _init():
             _lib.harp_type_string: "string"
         }
 
-def _all(predicate, sequence):
-    """Return True if the predicate evaluates to True for all elements in the
-    sequence, False otherwise.
-
-    Attributes:
-        predicate   --  Predicate to use; this should be a callable that takes a
-                        single argument and returns a bool.
-        sequence    --  Sequence to test.
-
-    """
-    return reduce(lambda x, y: x and predicate(y), sequence, True)
-
 def _dict_iteritems(dictionary):
     """Get an iterator or view on the items of the specified dictionary.
 
@@ -508,9 +496,9 @@ def _get_c_data_type(value):
         # the ndarray or scalar dtype.
         if numpy.issubdtype(value.dtype, numpy.object_):
             # NumPy object arrays are only used to contain variable length strings or byte strings.
-            if _all(lambda element: isinstance(element, str), value.flat):
+            if all(isinstance(x, str) for x in value.flat):
                 return _lib.harp_type_string
-            elif _all(lambda element: isinstance(element, bytes), value.flat):
+            elif all(isinstance(x, bytes) for x in value.flat):
                 return _lib.harp_type_string
             else:
                 raise UnsupportedTypeError("elements of a NumPy object array must be all str or all bytes")
