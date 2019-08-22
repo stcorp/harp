@@ -645,9 +645,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     if (harp_ingestion_options_has_option(options, "so2_column"))
     {
-        if (!info->is_nrti)
+        if (!info->is_nrti && info->processor_version < 10101)
         {
-            /* alternative SO2 columns are only available for NRTI, so return an empty product if not NRTI */
+            /* alternative SO2 columns are only available for NRTI and for OFFL with processor version >= 01.01.01 */
+            /* return an empty product if the columns are not available */
             /* (i.e. just pick the first definition and leave num_times set to 0) */
             *definition = *module->product_definition;
             *user_data = info;
@@ -4198,6 +4199,18 @@ static int include_so2_apriori_profile(void *user_data)
     return ((ingest_info *)user_data)->so2_column_type == 0;
 }
 
+static int include_so2_offl_010000(void *user_data)
+{
+    /* include if NRTI or if OFFL and processor version >= 1.0.0 */
+    return ((ingest_info *)user_data)->is_nrti || ((ingest_info *)user_data)->processor_version >= 10000;
+}
+
+static int include_so2_offl_010101(void *user_data)
+{
+    /* include if NRTI or if OFFL and processor version >= 1.1.1 */
+    return ((ingest_info *)user_data)->is_nrti || ((ingest_info *)user_data)->processor_version >= 10101;
+}
+
 static int include_from_010000(void *user_data)
 {
     return ((ingest_info *)user_data)->processor_version >= 10000;
@@ -6349,8 +6362,9 @@ static void register_so2_product(void)
     harp_ingestion_register_option(module, "so2_column", "whether to ingest the SO2 column derived from the TM5 "
                                    "profile (default), from the 1km box profile (so2_column=1km), from the 7km box "
                                    "profile (so2_column=7km), or from the 15km box profile (so2_column=15km); "
-                                   "providing this option will only work for NRTI data (otherwise an empty product is "
-                                   "returned)", 3, so2_column_options);
+                                   "providing this option will only work for NRTI data or for OFFL data with processor "
+                                   "version >= 01.01.01 (otherwise an empty product is returned)", 3,
+                                   so2_column_options);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
@@ -6380,26 +6394,32 @@ static void register_so2_product(void)
     path = "/PRODUCT/sulfurdioxide_total_vertical_column[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
 
     /* SO2_column_number_density_uncertainty_random */
     description = "random component of the uncertainty of the SO2 vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty_random",
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
-                                                   include_nrti, read_so2_total_vertical_column_precision);
+                                                   NULL, read_so2_total_vertical_column_precision);
     path = "/PRODUCT/sulfurdioxide_total_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
 
     /* SO2_column_number_density_uncertainty_systematic */
     description = "systematic component of the uncertainty of the SO2 vertical column density";
@@ -6407,15 +6427,19 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_uncertainty_systematic", harp_type_float,
                                                    1, dimension_type, NULL, description, "mol/m^2",
-                                                   include_nrti, read_so2_total_vertical_column_trueness);
+                                                   include_so2_offl_010000, read_so2_total_vertical_column_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset",
+                                         "NRTI or processor version >= 01.00.00", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_1km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_7km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
 
     /* SO2_column_number_density_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
@@ -6434,11 +6458,14 @@ static void register_so2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column unset", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
 
     /* SO2_column_number_density_amf_uncertainty_random */
     description = "random component of the uncertainty of the total air mass factor";
@@ -6446,15 +6473,19 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_amf_uncertainty_random", harp_type_float,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   include_nrti, read_so2_total_air_mass_factor_precision);
+                                                   include_so2_offl_010101, read_so2_total_air_mass_factor_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
 
     /* SO2_column_number_density_amf_uncertainty_systematic */
     description = "systematic component of the uncertainty of the total air mass factor";
@@ -6462,16 +6493,20 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_amf_uncertainty_systematic",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, include_nrti,
+                                                   HARP_UNIT_DIMENSIONLESS, include_so2_offl_010101,
                                                    read_so2_total_air_mass_factor_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column unset", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column unset",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI or processor version >= 01.01.01",
+                                         path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
 
     /* SO2_column_number_density_avk */
     description = "averaging kernel for the SO2 vertical column density";
