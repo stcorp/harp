@@ -6418,8 +6418,8 @@ static void register_so2_product(void)
     harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", "NRTI or processor version >= 01.01.01",
                                          path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", "NRTI or processor version >= 01.01.01",
-                                         path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km",
+                                         "NRTI or processor version >= 01.01.01", path, NULL);
 
     /* SO2_column_number_density_uncertainty_systematic */
     description = "systematic component of the uncertainty of the SO2 vertical column density";
