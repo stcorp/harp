@@ -922,7 +922,7 @@ static int add_missing_count_variables(harp_product *product, harp_product *othe
 
     if (!harp_product_has_variable(product, "count"))
     {
-        /* we cannot add specific '*_count' variables of the product does not have a global 'count' variable */
+        /* we cannot add specific '*_count' variables if the product does not have a global 'count' variable */
         return 0;
     }
 
