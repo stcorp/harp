@@ -102,6 +102,10 @@ static binning_type get_binning_type(harp_variable *variable)
                 /* so just remove any counts for angles */
                 return binning_remove;
             }
+            if (strcmp(variable->name, "count") == 0 && variable->num_dimensions != 1)
+            {
+                return binning_remove;
+            }
             return binning_sum;
         }
 
@@ -384,9 +388,9 @@ static int add_count_variable(harp_product *product, binning_type *bintype, binn
         {
             return -1;
         }
-        if (bintype[index] == binning_remove)
+        if (bintype[index] == binning_remove || bintype[index] == binning_skip)
         {
-            /* if the existing count variable was scheduled for removal than replace it with a new one */
+            /* if the existing count variable was scheduled for removal or was invalid then replace it with a new one */
             if (harp_variable_new(count_variable_name, harp_type_int32, num_dimensions, dimension_type, dimension,
                                   &variable) != 0)
             {

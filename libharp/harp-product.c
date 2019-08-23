@@ -932,8 +932,8 @@ static int add_missing_count_variables(harp_product *product, harp_product *othe
     }
     if (count_variable->num_dimensions != 1 || count_variable->dimension_type[0] != harp_dimension_time)
     {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid 'count' variable (expected single time dimension)");
-        return -1;
+        /* we cannot add specific '*_count' variables if the product does not have a valid global 'count' variable */
+        return 0;
     }
 
     for (i = 0; i < other_product->num_variables; i++)
