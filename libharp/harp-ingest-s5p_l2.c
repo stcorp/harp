@@ -3914,6 +3914,37 @@ static int read_so2_total_vertical_column_trueness(void *user_data, harp_array d
     exit(1);
 }
 
+static int read_so2_type(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array sulfurdioxide_detection_flag;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long i;
+
+    sulfurdioxide_detection_flag.ptr = malloc(num_elements * sizeof(int32_t));
+    if (sulfurdioxide_detection_flag.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info->detailed_results_cursor, "sulfurdioxide_detection_flag", harp_type_int32, num_elements,
+                     sulfurdioxide_detection_flag) != 0)
+    {
+        free(sulfurdioxide_detection_flag.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int8_data[i] = sulfurdioxide_detection_flag.int32_data[i];
+    }
+
+    free(sulfurdioxide_detection_flag.ptr);
+
+    return 0;
+}
 
 static int read_so2_surface_albedo(void *user_data, harp_array data)
 {
@@ -6349,6 +6380,7 @@ static void register_so2_product(void)
 {
     const char *so2_column_options[] = { "1km", "7km", "15km" };
     const char *cloud_fraction_options[] = { "radiance" };
+    const char *so2_type_values[] = { "none", "unknown", "volcanic", "anthropogenic" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -6534,6 +6566,16 @@ static void register_so2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_results_sulfurdioxide_slant_column_corrected);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_slant_column_corrected[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* SO2_type */
+    description = "type of SO2 detected";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_type",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL,
+                                                   NULL, read_so2_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 4, so2_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_detection_flag[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_column_number_density */
