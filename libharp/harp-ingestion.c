@@ -2047,39 +2047,50 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
         return 0;
     }
 
-    /* read all (available) variables whose name starts with 'datetime' */
-    for (i = 0; i < info->product_definition->num_variable_definitions; i++)
+    if (info->product_definition->read_datetime_range != NULL)
     {
-        if (info->variable_mask[i])
+        if (info->product_definition->read_datetime_range(info->user_data, datetime_start, datetime_stop) != 0)
         {
-            harp_variable_definition *variable_def;
-            harp_variable *variable;
-
-            variable_def = info->product_definition->variable_definition[i];
-            if (strncmp(variable_def->name, "datetime", 8) != 0)
-            {
-                continue;
-            }
-
-            if (get_variable(info, variable_def, info->dimension_mask_set, &variable) != 0)
-            {
-                ingestion_done(info);
-                return -1;
-            }
-
-            if (harp_product_add_variable(info->product, variable) != 0)
-            {
-                harp_variable_delete(variable);
-                ingestion_done(info);
-                return -1;
-            }
+            ingestion_done(info);
+            return -1;
         }
     }
-
-    if (harp_product_get_datetime_range(info->product, datetime_start, datetime_stop) != 0)
+    else
     {
-        ingestion_done(info);
-        return -1;
+        /* read all (available) variables whose name starts with 'datetime' */
+        for (i = 0; i < info->product_definition->num_variable_definitions; i++)
+        {
+            if (info->variable_mask[i])
+            {
+                harp_variable_definition *variable_def;
+                harp_variable *variable;
+
+                variable_def = info->product_definition->variable_definition[i];
+                if (strncmp(variable_def->name, "datetime", 8) != 0)
+                {
+                    continue;
+                }
+
+                if (get_variable(info, variable_def, info->dimension_mask_set, &variable) != 0)
+                {
+                    ingestion_done(info);
+                    return -1;
+                }
+
+                if (harp_product_add_variable(info->product, variable) != 0)
+                {
+                    harp_variable_delete(variable);
+                    ingestion_done(info);
+                    return -1;
+                }
+            }
+        }
+
+        if (harp_product_get_datetime_range(info->product, datetime_start, datetime_stop) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
     }
 
     ingestion_done(info);

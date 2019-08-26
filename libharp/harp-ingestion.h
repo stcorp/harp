@@ -99,6 +99,7 @@ typedef struct harp_product_definition_struct
     struct hashtable_struct *variable_definition_hash_data;
 
     int (*read_dimensions) (void *user_data, long dimension[HARP_NUM_DIM_TYPES]);
+    int (*read_datetime_range) (void *user_data, double *datetime_start, double *datetime_stop);
 
     char *ingestion_option;
     char *mapping_description;
@@ -211,6 +212,10 @@ harp_product_definition *harp_ingestion_register_product(harp_ingestion_module *
                                                          const char *description,
                                                          int (*read_dimensions) (void *user_data,
                                                                                  long dimension[HARP_NUM_DIM_TYPES]));
+/* read_datetime_range() should return the same values as harp_product_get_datetime_range() would */
+void harp_ingestion_register_datetime_range_read(harp_product_definition *product_definition,
+                                                 int (*read_datetime_range) (void *user_data, double *datetime_start,
+                                                                             double *datetime_stop));
 harp_variable_definition *harp_ingestion_register_variable_full_read(harp_product_definition *product_definition,
                                                                      const char *name, harp_data_type data_type,
                                                                      int num_dimensions,

@@ -615,6 +615,107 @@ static int init_quality_flags(ingest_info *info)
     return 0;
 }
 
+static int read_datetime_range(void *user_data, double *datetime_start, double *datetime_stop)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    long num_elements;
+    int32_t Day;
+    int32_t MillisecondOfDay;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "GEOLOCATION/Time") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    /* datetime_start */
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_first_record_field(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, &Day) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_next_record_field(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, &MillisecondOfDay) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+    coda_cursor_goto_parent(&cursor);
+    if (Day == 0 && MillisecondOfDay == 0)
+    {
+        *datetime_start = coda_MinInf();
+    }
+    else
+    {
+        *datetime_start = (Day - DAYS_FROM_1950_TO_2000) + MillisecondOfDay / 8.64e7;
+    }
+
+    /* datetime_stop */
+    if (coda_cursor_goto_array_element_by_index(&cursor, num_elements - 1) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_first_record_field(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, &Day) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_next_record_field(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_int32(&cursor, &MillisecondOfDay) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+    coda_cursor_goto_parent(&cursor);
+    if (Day == 0 && MillisecondOfDay == 0)
+    {
+        *datetime_stop = coda_PlusInf();
+    }
+    else
+    {
+        *datetime_stop = (Day - DAYS_FROM_1950_TO_2000) + MillisecondOfDay / 8.64e7;
+    }
+
+    return 0;
+}
+
 static int read_amf(ingest_info *info, species_type species, harp_array data)
 {
     long offset;
@@ -3540,6 +3641,7 @@ static void register_o3mnto_product(void)
 
     /* O3MNTO product */
     product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MNTO", NULL, read_dimensions);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
     register_common_variables(product_definition);
     register_scan_variables(product_definition, 0);
 }
@@ -3556,6 +3658,7 @@ static void register_o3moto_product(void)
 
     /* O3MOTO product */
     product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MOTO", NULL, read_dimensions);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
     register_common_variables(product_definition);
     register_scan_variables(product_definition, 0);
 }
@@ -3572,6 +3675,7 @@ static void register_ersnto_product(void)
 
     /* ERSNTO product */
     product_definition = harp_ingestion_register_product(module, "GOME_L2_ERSNTO", NULL, read_dimensions);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
     register_common_variables(product_definition);
     register_scan_variables(product_definition, 1);
 }
@@ -3588,6 +3692,7 @@ static void register_ersoto_product(void)
 
     /* ERSOTO product */
     product_definition = harp_ingestion_register_product(module, "GOME_L2_ERSOTO", NULL, read_dimensions);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
     register_common_variables(product_definition);
     register_scan_variables(product_definition, 1);
 }

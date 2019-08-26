@@ -395,6 +395,7 @@ static int product_definition_new(const char *name, const char *description,
     product_definition->variable_definition = NULL;
     product_definition->variable_definition_hash_data = NULL;
     product_definition->read_dimensions = read_dimensions;
+    product_definition->read_datetime_range = NULL;
     product_definition->ingestion_option = NULL;
     product_definition->mapping_description = NULL;
 
@@ -876,6 +877,14 @@ harp_product_definition *harp_ingestion_register_product(harp_ingestion_module *
     }
 
     return product_definition;
+}
+
+void harp_ingestion_register_datetime_range_read(harp_product_definition *product_definition,
+                                                 int (*read_datetime_range) (void *user_data, double *datetime_start,
+                                                                             double *datetime_stop))
+{
+    assert(product_definition->read_datetime_range == NULL);
+    product_definition->read_datetime_range = read_datetime_range;
 }
 
 harp_variable_definition *harp_ingestion_register_variable_full_read
