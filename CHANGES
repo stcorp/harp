@@ -1,7 +1,7 @@
 * bin() operation now replaces global 'count' variable if existing one was
   not one-dimensional (or otherwise invalid).
 
-* Updates to GOME-2 L2 and S5P L2 product ingestions.
+* Updates to ECMWF GRIB, GOME-2 L2, and S5P L2 product ingestions.
 
 1.8 2019-07-31
 ~~~~~~~~~~~~~~
