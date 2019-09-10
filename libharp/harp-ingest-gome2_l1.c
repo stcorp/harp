@@ -745,7 +745,8 @@ static int read_orbit_index(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_int32(&cursor, data.int32_data) != 0)
+    /* we read the data as uint32, but since it is only 5 ascii digits, we can directly cast it to int32 */
+    if (coda_cursor_read_uint32(&cursor, (uint32_t *)data.int32_data) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
