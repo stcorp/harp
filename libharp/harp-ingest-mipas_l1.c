@@ -149,12 +149,11 @@ static int read_altitude(void *user_data, harp_array data)
     return get_main_data((ingest_info *)user_data, "loc_1[0]", data.double_data);
 }
 
-static int read_wavenumber_radiance(void *user_data, harp_array data)
+static int read_wavenumber_radiance(void *user_data, long index, harp_array data)
 {
     coda_cursor cursor;
     ingest_info *info = (ingest_info *)user_data;
     float *float_data;
-    long i;
     short start_band, end_band, band_nr;
 
     float_data = data.float_data;
@@ -167,24 +166,21 @@ static int read_wavenumber_radiance(void *user_data, harp_array data)
         start_band = 0;
         end_band = NR_BANDS - 1;
     }
-    for (i = 0; i < info->num_mds_records; i++)
+    cursor = info->mds_cursors[index];
+    for (band_nr = start_band; band_nr <= end_band; band_nr++)
     {
-        cursor = info->mds_cursors[i];
-        for (band_nr = start_band; band_nr <= end_band; band_nr++)
+        if (coda_cursor_goto(&cursor, band_name_in_file[band_nr]) != 0)
         {
-            if (coda_cursor_goto(&cursor, band_name_in_file[band_nr]) != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
-            }
-            if (coda_cursor_read_float_array(&cursor, float_data, coda_array_ordering_c) != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
-            }
-            float_data += info->measurements_in_band[band_nr];
-            coda_cursor_goto_parent(&cursor);
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
         }
+        if (coda_cursor_read_float_array(&cursor, float_data, coda_array_ordering_c) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        float_data += info->measurements_in_band[band_nr];
+        coda_cursor_goto_parent(&cursor);
     }
     return 0;
 }
@@ -193,7 +189,7 @@ static int read_wavenumber(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     double *double_data = data.double_data;
-    long i, j;
+    long j;
     short start_band, end_band, band_nr;
 
     if (info->selected_band >= 0)
@@ -205,21 +201,17 @@ static int read_wavenumber(void *user_data, harp_array data)
         start_band = 0;
         end_band = NR_BANDS - 1;
     }
-    for (i = 0; i < info->num_mds_records; i++)
+    for (band_nr = start_band; band_nr <= end_band; band_nr++)
     {
-        for (band_nr = start_band; band_nr <= end_band; band_nr++)
+        for (j = 0; j < info->measurements_in_band[band_nr]; j++)
         {
-            for (j = 0; j < info->measurements_in_band[band_nr]; j++)
-            {
-                *double_data =
-                    info->first_wavenum[band_nr] +
-                    (j *
-                     ((info->last_wavenum[band_nr] -
-                       info->first_wavenum[band_nr]) / info->measurements_in_band[band_nr]));
-                double_data++;
-            }
+            *double_data = info->first_wavenum[band_nr] +
+                (info->last_wavenum[band_nr] - info->first_wavenum[band_nr]) *
+                (j / (double)(info->measurements_in_band[band_nr] - 1));
+            double_data++;
         }
     }
+
     return 0;
 }
 
@@ -319,8 +311,6 @@ static int init_dimensions(ingest_info *info)
         info->total_measurements_all_bands =
             info->offset_in_band[NR_BANDS - 1] + info->measurements_in_band[NR_BANDS - 1];
     }
-
-    coda_cursor_goto_root(&cursor);
 
     return 0;
 }
@@ -440,18 +430,19 @@ int harp_ingestion_module_mipas_l1_init(void)
     /* wavenumber_radiance */
     description = "measured radiances";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavenumber_radiance", harp_type_double,
-                                                   2, dimension_type, NULL, description, "W/cm^2/sr/cm",
-                                                   NULL, read_wavenumber_radiance);
-    path =
-        "/mipas_level_1b_mds[]/band_a[], /mipas_level_1b_mds[]/band_ab[], /mipas_level_1b_mds[]/band_b[], /mipas_level_1b_mds[]/band_c[], /mipas_level_1b_mds[]/band_d[]";
+        harp_ingestion_register_variable_block_read(product_definition, "wavenumber_radiance", harp_type_float,
+                                                    2, dimension_type, NULL, description, "W/cm2/sr/(cm-1)",
+                                                    NULL, read_wavenumber_radiance);
+    path = "/mipas_level_1b_mds[]/band_a[], /mipas_level_1b_mds[]/band_ab[], /mipas_level_1b_mds[]/band_b[], "
+        "/mipas_level_1b_mds[]/band_c[], /mipas_level_1b_mds[]/band_d[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavenumber */
     description = "nominal wavenumber assignment for each of the detector pixels";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "wavenumber", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "cm", NULL, read_wavenumber);
+        harp_ingestion_register_variable_full_read(product_definition, "wavenumber", harp_type_double, 1,
+                                                   &dimension_type[1], NULL, description, "cm-1", NULL,
+                                                   read_wavenumber);
     path = "/sph/first_wavenum], /sph/last_wavenum[], /sph/num_points_per_band[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
