@@ -132,6 +132,24 @@ static int spherical_polygon_bounds_contains_any_points(const harp_spherical_pol
         /* (if we cross the equator then we don't know which pole is covered => take whole earth as bounding box) */
     }
 
+    /* Compensate for the fact that greatcircle segments do not run along a parallel
+     * We compensate by taking the latitude of the midpoint of the greatcircle defined by the points
+     * (max_lat,-(max_lon-min_lon)/2) and (max_lat,(max_lon-min_lon)/2)
+     * The formula for this revised upper latitude limit is:
+     * lon = (max_lon - min_lon) / 2
+     * upper_lat = asin(1 / sqrt((cos(lon) / tan(max_lat))^2 + 1))
+     */
+    if (max_lat > 0 && max_lat < M_PI_2)
+    {
+        double x = cos(0.5 * (max_lon - min_lon)) / tan(max_lat);
+        max_lat = asin(1 / sqrt(x * x + 1));
+    }
+    if (min_lat < 0 && min_lat > -M_PI_2)
+    {
+        double x = cos(0.5 * (max_lon - min_lon)) / tan(-min_lat);
+        min_lat = -asin(1 / sqrt(x * x + 1));
+    }
+
     for (i = 0; i < num_points; i++)
     {
         lon = point[i].lon;

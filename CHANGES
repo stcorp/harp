@@ -1,6 +1,9 @@
 * bin() operation now replaces global 'count' variable if existing one was
   not one-dimensional (or otherwise invalid).
 
+* Fixed issue with invalid bounding box optimization for spherical area
+  filter operations.
+
 * Updates to ECMWF GRIB, IASI L1/L2, GOME-2 L1/L2, MIPAS L1, and S5P L2
   product ingestions.
 
