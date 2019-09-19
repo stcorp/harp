@@ -142,11 +142,13 @@ static int spherical_polygon_bounds_contains_any_points(const harp_spherical_pol
     if (max_lat > 0 && max_lat < M_PI_2)
     {
         double x = cos(0.5 * (max_lon - min_lon)) / tan(max_lat);
+
         max_lat = asin(1 / sqrt(x * x + 1));
     }
     if (min_lat < 0 && min_lat > -M_PI_2)
     {
         double x = cos(0.5 * (max_lon - min_lon)) / tan(-min_lat);
+
         min_lat = -asin(1 / sqrt(x * x + 1));
     }
 
