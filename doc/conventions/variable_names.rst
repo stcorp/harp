@@ -46,6 +46,7 @@ aerosol_top_pressure                                                          X 
 altitude                                      sensor,                         X       X    X
                                               surface
 altitude_bounds                                                               X       X    X
+angstrom_exponent                                                             X       X    X
 area                                                                          X                          the size of an area defined by latitude/longitude bounds
 backscatter_coefficient                       surface                         X       X    X       X
 cloud_albedo                                                                  X            X
