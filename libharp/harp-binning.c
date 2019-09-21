@@ -1793,7 +1793,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
  * If the product doesn't have lat/lon bounds per sample, it should have latitude {time} and longitude {time} variables.
  * The binning onto the lat/lon grid will then be a point binning. This means that each sample is allocated to only one
  * grid cell based on its lat/lon coordinate. To achieve a unique assignment, for each cell the lower edge will be
- * considered inclusive and the upper edge exclusive (except for the last cell (when there is now wrap-around)).
+ * considered inclusive and the upper edge exclusive (except for the last cell (when there is no wrap-around)).
  *
  * The resulting value for each time/lat/lon cell will be the average of all values for that cell.
  * This will be a weighted average in case an area binning is performed and a straight average for point binning.
