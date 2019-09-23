@@ -1185,8 +1185,8 @@ int harp_variable_squash_dimension(harp_variable *variable, int dim_index)
                     {
                         if (strcmp(first_string_data[k], string_data[k]) != 0)
                         {
-                            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable does not have the same values in "
-                                           "each subdimension block for squash operation");
+                            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' does not have the same values "
+                                           "in each subdimension block for squash operation", variable->name);
                             return -1;
                         }
                     }
@@ -1195,8 +1195,8 @@ int harp_variable_squash_dimension(harp_variable *variable, int dim_index)
                 {
                     if (memcmp(block_ptr, &block_ptr[sub_id * block_size], block_size) != 0)
                     {
-                        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable does not have the same values in each "
-                                       "subdimension block for squash operation");
+                        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variable '%s' does not have the same values in "
+                                       "each subdimension block for squash operation", variable->name);
                         return -1;
                     }
                 }
