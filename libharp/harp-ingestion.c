@@ -1235,6 +1235,68 @@ static int execute_value_filter(ingest_info *info, harp_program *program)
     return 0;
 }
 
+static int execute_index_filter(ingest_info *info, harp_program *program)
+{
+    harp_operation_index_filter *operation;
+    harp_dimension_mask *dimension_mask;
+    long dimension;
+    long i, index;
+
+    if (info->product_mask == 0)
+    {
+        return 0;
+    }
+
+    operation = (harp_operation_index_filter *)program->operation[program->current_index];
+    dimension = info->dimension[operation->dimension_type];
+    if (dimension <= 0)
+    {
+        return 0;
+    }
+
+    if (info->dimension_mask_set[operation->dimension_type] == NULL)
+    {
+        if (harp_dimension_mask_new(1, &dimension, &info->dimension_mask_set[operation->dimension_type]) != 0)
+        {
+            return -1;
+        }
+    }
+
+    dimension_mask = info->dimension_mask_set[operation->dimension_type];
+
+    /* we only filter on the elements in the dimension that are still included */
+    index = 0;
+    for (i = 0; i < dimension; i++)
+    {
+        if (dimension_mask->mask[i])
+        {
+            int result;
+
+            result = operation->eval(operation, index);
+            if (result < 0)
+            {
+                return -1;
+            }
+            dimension_mask->mask[i] = result;
+            if (!dimension_mask->mask[i])
+            {
+                dimension_mask->masked_dimension_length--;
+            }
+            index++;
+        }
+    }
+
+    if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))
+    {
+        info->product_mask = 0;
+    }
+
+    /* jump to the next operation in the list */
+    program->current_index++;
+
+    return 0;
+}
+
 static int execute_point_filter(ingest_info *info, harp_program *program)
 {
     harp_variable_definition *latitude_def;
@@ -1667,6 +1729,13 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             case operation_string_membership_filter:
             case operation_valid_range_filter:
                 if (execute_value_filter(info, program) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_index_comparison_filter:
+            case operation_index_membership_filter:
+                if (execute_index_filter(info, program) != 0)
                 {
                     return -1;
                 }

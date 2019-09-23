@@ -1,3 +1,5 @@
+* Added operations to filter on dimension indices (e.g. 'index(vertical) < 5').
+
 * bin() operation now replaces global 'count' variable if existing one was
   not one-dimensional (or otherwise invalid).
 

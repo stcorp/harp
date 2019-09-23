@@ -230,6 +230,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_DERIVE_SMOOTHED_COLUMN
 %token                  FUNC_EXCLUDE
 %token                  FUNC_FLATTEN
+%token                  FUNC_INDEX
 %token                  FUNC_KEEP
 %token                  FUNC_LONGITUDE_RANGE
 %token                  FUNC_POINT_DISTANCE
@@ -255,12 +256,12 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %type   <double_val>            double_value
 %type   <string_val>            identifier
 %type   <const_string_val>      reserved_identifier
-%type   <array>                 double_array string_array identifier_array dimension_array dimensionspec
+%type   <array>                 double_array int32_array string_array identifier_array dimension_array dimensionspec
 %type   <membership_operator>   membership_operator;
 %type   <comparison_operator>   comparison_operator;
 %type   <bit_mask_operator>     bit_mask_operator;
 
-%destructor { harp_sized_array_delete($$); } double_array string_array identifier_array dimension_array dimensionspec
+%destructor { harp_sized_array_delete($$); } double_array int32_array string_array identifier_array dimension_array dimensionspec
 %destructor { harp_operation_delete($$); } operation
 %destructor { harp_program_delete($$); } program
 %destructor { free($$); } STRING_VALUE INTEGER_VALUE DOUBLE_VALUE NAME UNIT identifier
@@ -296,6 +297,7 @@ reserved_identifier:
     | FUNC_DERIVE_SMOOTHED_COLUMN { $$ = "derive_smoothed_column"; }
     | FUNC_EXCLUDE { $$ = "exclude"; }
     | FUNC_FLATTEN { $$ = "flatten"; }
+    | FUNC_INDEX { $$ = "index"; }
     | FUNC_KEEP { $$ = "keep"; }
     | FUNC_LONGITUDE_RANGE { $$ = "longitude_range"; }
     | FUNC_POINT_DISTANCE { $$ = "point_distance"; }
@@ -366,6 +368,17 @@ double_array:
     | double_value {
             if (harp_sized_array_new(harp_type_double, &$$) != 0) YYERROR;
             if (harp_sized_array_add_double($$, $1) != 0) YYERROR;
+        }
+    ;
+
+int32_array:
+      int32_array ',' int32_value {
+            if (harp_sized_array_add_int32($1, $3) != 0) YYERROR;
+            $$ = $1;
+        }
+    | int32_value {
+            if (harp_sized_array_new(harp_type_int32, &$$) != 0) YYERROR;
+            if (harp_sized_array_add_int32($$, $1) != 0) YYERROR;
         }
     ;
 
@@ -535,6 +548,21 @@ operation:
             }
             free($1);
             harp_sized_array_delete($4);
+        }
+    | FUNC_INDEX '(' DIMENSION ')' comparison_operator int32_value {
+            if (harp_operation_index_comparison_filter_new($3, $5, $6, &$$) != 0)
+            {
+                YYERROR;
+            }
+        }
+    | FUNC_INDEX '(' DIMENSION ')' membership_operator '(' int32_array ')' {
+            if (harp_operation_index_membership_filter_new($3, $5, $7->num_elements, $7->array.int32_data, &$$) !=
+                0)
+            {
+                harp_sized_array_delete($7);
+                YYERROR;
+            }
+            harp_sized_array_delete($7);
         }
     | FUNC_AREA_COVERS_AREA '(' '(' double_array ')' ',' '(' double_array ')' ')' {
             if (harp_operation_area_covers_area_filter_new(NULL, $4->num_elements, $4->array.double_data, NULL,

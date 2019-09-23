@@ -218,6 +218,7 @@ static int execute_value_filter(harp_product *product, harp_program *program)
 
         if (harp_dimension_mask_new(variable->num_dimensions, variable->dimension, &dimension_mask) != 0)
         {
+            harp_dimension_mask_set_delete(dimension_mask_set);
             return -1;
         }
         dimension_mask_set[variable->dimension_type[0]] = dimension_mask;
@@ -373,6 +374,68 @@ static int execute_value_filter(harp_product *product, harp_program *program)
 
     /* jump to the last operation in the list that we performed */
     program->current_index += num_operations - 1;
+
+    return 0;
+}
+
+static int execute_index_filter(harp_product *product, harp_program *program)
+{
+    harp_dimension_mask_set *dimension_mask_set = NULL;
+    harp_operation_index_filter *operation;
+    harp_dimension_mask *dimension_mask;
+    long dimension;
+    long i;
+
+    if (harp_dimension_mask_set_new(&dimension_mask_set) != 0)
+    {
+        return -1;
+    }
+
+    operation = (harp_operation_index_filter *)program->operation[program->current_index];
+    dimension = product->dimension[operation->dimension_type];
+    if (dimension <= 0)
+    {
+        return 0;
+    }
+
+    if (harp_dimension_mask_set_new(&dimension_mask_set) != 0)
+    {
+        return -1;
+    }
+    if (harp_dimension_mask_new(1, &dimension, &dimension_mask) != 0)
+    {
+        harp_dimension_mask_set_delete(dimension_mask_set);
+        return -1;
+    }
+    dimension_mask_set[operation->dimension_type] = dimension_mask;
+
+    for (i = 0; i < dimension; i++)
+    {
+        int result;
+
+        result = operation->eval(operation, i);
+        if (result < 0)
+        {
+            harp_dimension_mask_set_delete(dimension_mask_set);
+            return -1;
+        }
+        dimension_mask->mask[i] = result;
+        if (!dimension_mask->mask[i])
+        {
+            dimension_mask->masked_dimension_length--;
+        }
+    }
+
+    if (harp_product_filter(product, dimension_mask_set) != 0)
+    {
+        harp_dimension_mask_set_delete(dimension_mask_set);
+        return -1;
+    }
+
+    harp_dimension_mask_set_delete(dimension_mask_set);
+
+    /* jump to the next operation in the list */
+    program->current_index++;
 
     return 0;
 }
@@ -1206,6 +1269,13 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
             case operation_string_membership_filter:
             case operation_valid_range_filter:
                 if (execute_value_filter(product, program) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_index_comparison_filter:
+            case operation_index_membership_filter:
+                if (execute_index_filter(product, program) != 0)
                 {
                     return -1;
                 }

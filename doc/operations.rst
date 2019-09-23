@@ -581,6 +581,9 @@ Formal definition
 
     dimensionspec = '{' dimensionlist '}' ;
 
+    bit_mask_operator = '=&' | '!&' ;
+    operator = '==' | '!=' | '>=' | '<=' | '<' | '>' ;
+
     functioncall =
        'area_covers_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
        'area_covers_area', '(', stringvalue, ')' |
@@ -631,8 +634,11 @@ Formal definition
        'wrap', '(', variable, [unit], ',', floatvalue, ',', floatvalue, ')' ;
 
     operationexpr =
+       variable, bit_mask_operator, intvalue |
        variable, operator, value, [unit] |
        variable, ['not'], 'in', '(', valuelist, ')', [unit] |
+       'index', '(', dimension, ')', operator, intvalue |
+       'index', '(', dimension, ')',  ['not'], 'in', '(', intvaluelist, ')' |
        functioncall |
        operationexpr, ';', operationexpr ;
 

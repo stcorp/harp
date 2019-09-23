@@ -365,6 +365,43 @@ static int eval_membership(harp_operation_membership_filter *operation, harp_dat
     return operation->operator_type == operator_in ? 0 : 1;
 }
 
+static int eval_index_comparison(harp_operation_index_comparison_filter *operation, int32_t value)
+{
+    switch (operation->operator_type)
+    {
+        case operator_eq:
+            return value == operation->value;
+        case operator_ne:
+            return value != operation->value;
+        case operator_lt:
+            return value < operation->value;
+        case operator_le:
+            return value <= operation->value;
+        case operator_gt:
+            return value > operation->value;
+        case operator_ge:
+            return value >= operation->value;
+    }
+
+    assert(0);
+    exit(1);
+}
+
+static int eval_index_membership(harp_operation_index_membership_filter *operation, int32_t value)
+{
+    int i;
+
+    for (i = 0; i < operation->num_values; i++)
+    {
+        if (operation->value[i] == value)
+        {
+            return operation->operator_type == operator_in ? 1 : 0;
+        }
+    }
+
+    return operation->operator_type == operator_in ? 0 : 1;
+}
+
 static int eval_point_distance(harp_operation_point_distance_filter *operation, harp_spherical_point *point)
 {
     return (harp_spherical_point_distance(&operation->point, point) * CONST_EARTH_RADIUS_WGS84_SPHERE <=
@@ -833,6 +870,27 @@ static void flatten_delete(harp_operation_flatten *operation)
     }
 }
 
+static void index_comparison_filter_delete(harp_operation_index_comparison_filter *operation)
+{
+    if (operation != NULL)
+    {
+        free(operation);
+    }
+}
+
+static void index_membership_filter_delete(harp_operation_index_membership_filter *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->value != NULL)
+        {
+            free(operation->value);
+        }
+
+        free(operation);
+    }
+}
+
 static void keep_variable_delete(harp_operation_keep_variable *operation)
 {
     if (operation != NULL)
@@ -1264,6 +1322,12 @@ void harp_operation_delete(harp_operation *operation)
             break;
         case operation_flatten:
             flatten_delete((harp_operation_flatten *)operation);
+            break;
+        case operation_index_comparison_filter:
+            index_comparison_filter_delete((harp_operation_index_comparison_filter *)operation);
+            break;
+        case operation_index_membership_filter:
+            index_membership_filter_delete((harp_operation_index_membership_filter *)operation);
             break;
         case operation_keep_variable:
             keep_variable_delete((harp_operation_keep_variable *)operation);
@@ -2206,6 +2270,69 @@ int harp_operation_flatten_new(const harp_dimension_type dimension_type, harp_op
     }
     operation->type = operation_flatten;
     operation->dimension_type = dimension_type;
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_index_comparison_filter_new(harp_dimension_type dimension_type,
+                                               harp_comparison_operator_type operator_type, int32_t value,
+                                               harp_operation **new_operation)
+{
+    harp_operation_index_comparison_filter *operation;
+
+    operation = (harp_operation_index_comparison_filter *)malloc(sizeof(harp_operation_index_comparison_filter));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_index_comparison_filter), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_index_comparison_filter;
+    operation->eval = eval_index_comparison;
+    operation->dimension_type = dimension_type;
+    operation->operator_type = operator_type;
+    operation->value = value;
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_index_membership_filter_new(harp_dimension_type dimension_type,
+                                               harp_membership_operator_type operator_type,
+                                               int num_values, const int32_t *value, harp_operation **new_operation)
+{
+    harp_operation_index_membership_filter *operation;
+
+    assert(num_values == 0 || value != NULL);
+
+    operation = (harp_operation_index_membership_filter *)malloc(sizeof(harp_operation_index_membership_filter));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_index_membership_filter), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_index_membership_filter;
+    operation->eval = eval_index_membership;
+    operation->dimension_type = dimension_type;
+    operation->operator_type = operator_type;
+    operation->num_values = num_values;
+    operation->value = NULL;
+
+    if (value != NULL)
+    {
+        operation->value = (int32_t *)malloc(num_values * sizeof(int32_t));
+        if (operation->value == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           num_values * sizeof(int32_t), __FILE__, __LINE__);
+            index_membership_filter_delete(operation);
+            return -1;
+        }
+
+        memcpy(operation->value, value, num_values * sizeof(int32_t));
+    }
 
     *new_operation = (harp_operation *)operation;
     return 0;

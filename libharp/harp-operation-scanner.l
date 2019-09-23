@@ -101,6 +101,7 @@ WHITESPACE   [[:space:]]+
 "derive_smoothed_column"	return FUNC_DERIVE_SMOOTHED_COLUMN;
 "exclude"               return FUNC_EXCLUDE;
 "flatten"               return FUNC_FLATTEN;
+"index"                 return FUNC_INDEX;
 "keep"                  return FUNC_KEEP;
 "longitude_range"       return FUNC_LONGITUDE_RANGE;
 "point_distance"        return FUNC_POINT_DISTANCE;

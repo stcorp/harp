@@ -56,6 +56,8 @@ typedef enum harp_operation_type_enum
     operation_derive_smoothed_column_collocated_product,
     operation_exclude_variable,
     operation_flatten,
+    operation_index_comparison_filter,
+    operation_index_membership_filter,
     operation_keep_variable,
     operation_longitude_range_filter,
     operation_membership_filter,
@@ -112,6 +114,9 @@ typedef enum harp_membership_operator_type_enum
  *   |- harp_operation_string_value_filter
  *   |  |-  harp_operation_string_comparison_filter
  *   |  |-  harp_operation_string_membership_filter
+ *   |- harp_operation_index_filter
+ *   |  |-  harp_operation_index_comparison_filter
+ *   |  |-  harp_operation_index_membership_filter
  *   |- harp_operation_point_filter
  *   |  |-  harp_operation_point_distance_filter
  *   |  |-  harp_operation_point_in_area_filter
@@ -159,6 +164,13 @@ typedef struct harp_operation_string_value_filter_struct
     int (*eval) (struct harp_operation_string_value_filter_struct *, int num_enum_values, char **enum_name,
                  harp_data_type, void *);
 } harp_operation_string_value_filter;
+
+typedef struct harp_operation_index_filter_struct
+{
+    harp_operation_type type;
+    int (*eval) (struct harp_operation_index_filter_struct *, int32_t);
+    harp_dimension_type dimension_type;
+} harp_operation_index_filter;
 
 typedef struct harp_operation_point_filter_struct
 {
@@ -342,6 +354,27 @@ typedef struct harp_operation_flatten_struct
     /* parameters */
     harp_dimension_type dimension_type;
 } harp_operation_flatten;
+
+typedef struct harp_operation_index_comparison_filter_struct
+{
+    harp_operation_type type;
+    int (*eval) (struct harp_operation_index_comparison_filter_struct *, int32_t);
+    harp_dimension_type dimension_type;
+    /* parameters */
+    harp_comparison_operator_type operator_type;
+    int32_t value;
+} harp_operation_index_comparison_filter;
+
+typedef struct harp_operation_index_membership_filter_struct
+{
+    harp_operation_type type;
+    int (*eval) (struct harp_operation_index_membership_filter_struct *, int32_t);
+    harp_dimension_type dimension_type;
+    /* parameters */
+    harp_membership_operator_type operator_type;
+    int num_values;
+    int32_t *value;
+} harp_operation_index_membership_filter;
 
 typedef struct harp_operation_keep_variable_struct
 {
@@ -585,6 +618,12 @@ int harp_operation_derive_smoothed_column_collocated_product_new(const char *var
                                                                  harp_operation **new_operation);
 int harp_operation_exclude_variable_new(int num_variables, const char **variable_name, harp_operation **new_operation);
 int harp_operation_flatten_new(const harp_dimension_type dimension_type, harp_operation **new_operation);
+int harp_operation_index_comparison_filter_new(harp_dimension_type dimension_type,
+                                               harp_comparison_operator_type operator_type, int32_t value,
+                                               harp_operation **new_operation);
+int harp_operation_index_membership_filter_new(harp_dimension_type dimension_type,
+                                               harp_membership_operator_type operator_type,
+                                               int num_values, const int32_t *value, harp_operation **new_operation);
 int harp_operation_keep_variable_new(int num_variables, const char **variable_name, harp_operation **new_operation);
 int harp_operation_longitude_range_filter_new(double min, const char *min_unit, double max, const char *max_unit,
                                               harp_operation **new_operation);
