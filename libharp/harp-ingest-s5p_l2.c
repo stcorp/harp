@@ -901,6 +901,7 @@ static int read_surface_layer_status(ingest_info *info)
     if (read_dataset(info->detailed_results_cursor, "pressure_grid", harp_type_float,
                      info->num_scanlines * info->num_pixels * info->num_levels, data) != 0)
     {
+        free(data.ptr);
         return -1;
     }
 
@@ -926,6 +927,8 @@ static int read_surface_layer_status(ingest_info *info)
             }
         }
     }
+
+    free(data.ptr);
 
     return 0;
 }
