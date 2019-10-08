@@ -2949,7 +2949,7 @@ static int read_hcho_column_tropospheric_avk(void *user_data, harp_array data)
         return -1;
     }
 
-    if (info->processor_version < 2000)
+    if (info->processor_version < 20000)
     {
         /* we only have a tm5_tropopause_index since processor version 02.00.00 */
         /* just give the unmasked avk back for older versions of the product */
