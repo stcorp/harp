@@ -69,7 +69,7 @@ column_density                                stratospheric,  amf, apriori,   X 
                                               tropospheric    avk, dfs, sic
 column_number_density                         stratospheric,  amf, apriori,   X       X    X
                                               tropospheric    avk, dfs, sic
-count
+count                                                                                                    number of samples per bin for binning operation
 datetime
 datetime_length
 datetime_start
@@ -164,6 +164,7 @@ wavenumber_photon_radiance                                                    X 
 wavenumber_photon_transmittance                                               X                    X
 wavenumber_radiance                                                           X                    X
 wavenumber_transmittance                                                      X                    X
+weight                                                                                     X             weighting factors used for spatial binning
 wind_speed                                    surface                         X       X    X
 wind_direction                                surface                         X       X    X
 year                                                                                                     integer value representing a year
@@ -373,3 +374,6 @@ diagonal of the two-dimensional AVK and provides information on the vertical res
 profiles.
 The 'sic' postfix is used for the 'Shannon information content' for vertical profiles which can be derived from the
 two-dimensional AVK.
+
+Both 'count' and 'weight' can also be used as a postfix for other variables to describe the counts/weights for those
+variables based on filtering out the invalid values during binning.
