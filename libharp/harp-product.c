@@ -915,66 +915,135 @@ LIBHARP_API int harp_product_copy(const harp_product *other_product, harp_produc
     return 0;
 }
 
-static int add_missing_count_variables(harp_product *product, harp_product *other_product)
+/**
+ * @}
+ */
+
+static int add_missing_count_and_weight_variables(harp_product *product, harp_product *other_product)
 {
-    harp_variable *count_variable;
     int i, j;
 
-    if (!harp_product_has_variable(product, "count"))
+    /* we cannot add specific '*_count' variables if the product does not have a global 'count' variable */
+    if (harp_product_has_variable(product, "count"))
     {
-        /* we cannot add specific '*_count' variables if the product does not have a global 'count' variable */
-        return 0;
-    }
+        harp_variable *count_variable;
 
-    if (harp_product_get_variable_by_name(product, "count", &count_variable) != 0)
-    {
-        return -1;
-    }
-    if (count_variable->num_dimensions != 1 || count_variable->dimension_type[0] != harp_dimension_time)
-    {
-        /* we cannot add specific '*_count' variables if the product does not have a valid global 'count' variable */
-        return 0;
-    }
-
-    for (i = 0; i < other_product->num_variables; i++)
-    {
-        harp_variable *variable = other_product->variable[i];
-        int length = strlen(variable->name);
-
-        if (length > 6 && strcmp(&variable->name[length - 6], "_count") == 0)
+        if (harp_product_get_variable_by_name(product, "count", &count_variable) != 0)
         {
-            if (variable->num_dimensions < 1 || variable->dimension_type[0] != harp_dimension_time)
+            return -1;
+        }
+        if (count_variable->num_dimensions == 1 && count_variable->dimension_type[0] == harp_dimension_time)
+        {
+            for (i = 0; i < other_product->num_variables; i++)
             {
-                harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                               "invalid 'count' variable (first dimension should be the time dimension)");
-                return -1;
-            }
-            if (!harp_product_has_variable(product, variable->name))
-            {
-                harp_variable *new_variable;
+                harp_variable *variable = other_product->variable[i];
+                int length = strlen(variable->name);
 
-                if (harp_variable_copy(count_variable, &new_variable) != 0)
+                if (length > 6 && strcmp(&variable->name[length - 6], "_count") == 0)
                 {
-                    return -1;
-                }
-                if (harp_variable_rename(new_variable, variable->name) != 0)
-                {
-                    harp_variable_delete(new_variable);
-                    return -1;
-                }
-                for (j = 1; j < variable->num_dimensions; j++)
-                {
-                    if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j],
-                                                    variable->dimension[j]) != 0)
+                    if (variable->num_dimensions < 1 || variable->dimension_type[0] != harp_dimension_time)
                     {
-                        harp_variable_delete(new_variable);
+                        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                                       "invalid variable '%s' (should have time dimension as first dimension)",
+                                       variable->name);
                         return -1;
                     }
+                    if (!harp_product_has_variable(product, variable->name))
+                    {
+                        harp_variable *new_variable;
+
+                        if (harp_variable_copy(count_variable, &new_variable) != 0)
+                        {
+                            return -1;
+                        }
+                        if (harp_variable_rename(new_variable, variable->name) != 0)
+                        {
+                            harp_variable_delete(new_variable);
+                            return -1;
+                        }
+                        for (j = 1; j < variable->num_dimensions; j++)
+                        {
+                            if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j],
+                                                            variable->dimension[j]) != 0)
+                            {
+                                harp_variable_delete(new_variable);
+                                return -1;
+                            }
+                        }
+                        if (harp_product_add_variable(product, new_variable) != 0)
+                        {
+                            harp_variable_delete(new_variable);
+                            return -1;
+                        }
+                    }
                 }
-                if (harp_product_add_variable(product, new_variable) != 0)
+            }
+        }
+    }
+
+    /* we cannot add specific '*_weight' variables if the product does not have a global 'weight' variable */
+    if (harp_product_has_variable(product, "weight"))
+    {
+        harp_variable *weight_variable;
+
+        if (harp_product_get_variable_by_name(product, "weight", &weight_variable) != 0)
+        {
+            return -1;
+        }
+        if (weight_variable->num_dimensions > 1 && weight_variable->dimension_type[0] == harp_dimension_time)
+        {
+            for (i = 0; i < other_product->num_variables; i++)
+            {
+                harp_variable *variable = other_product->variable[i];
+                int length = strlen(variable->name);
+
+                if (length > 7 && strcmp(&variable->name[length - 7], "_weight") == 0)
                 {
-                    harp_variable_delete(new_variable);
-                    return -1;
+                    if (variable->num_dimensions < weight_variable->num_dimensions)
+                    {
+                        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                                       "invalid variable '%s' (should be have same initial dimensions as 'weight')",
+                                       variable->name);
+                        return -1;
+                    }
+                    for (j = 0; j < weight_variable->num_dimensions; j++)
+                    {
+                        if (variable->dimension_type[j] != weight_variable->dimension_type[j])
+                        {
+                            harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                                           "invalid variable '%s' (should be have same initial dimensions as 'weight')",
+                                           variable->name);
+                            return -1;
+                        }
+                    }
+                    if (!harp_product_has_variable(product, variable->name))
+                    {
+                        harp_variable *new_variable;
+
+                        if (harp_variable_copy(weight_variable, &new_variable) != 0)
+                        {
+                            return -1;
+                        }
+                        if (harp_variable_rename(new_variable, variable->name) != 0)
+                        {
+                            harp_variable_delete(new_variable);
+                            return -1;
+                        }
+                        for (j = 1; j < variable->num_dimensions; j++)
+                        {
+                            if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j],
+                                                            variable->dimension[j]) != 0)
+                            {
+                                harp_variable_delete(new_variable);
+                                return -1;
+                            }
+                        }
+                        if (harp_product_add_variable(product, new_variable) != 0)
+                        {
+                            harp_variable_delete(new_variable);
+                            return -1;
+                        }
+                    }
                 }
             }
         }
@@ -982,6 +1051,10 @@ static int add_missing_count_variables(harp_product *product, harp_product *othe
 
     return 0;
 }
+
+/** \addtogroup harp_product
+ * @{
+ */
 
 /** Append one product to another.
  * The 'index' variable, if present, will be removed.
@@ -1035,12 +1108,12 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
         }
     }
 
-    /* add '*_count' variables where needed */
-    if (add_missing_count_variables(product, other_product) != 0)
+    /* add '*_count' and '*_weight' variables where needed */
+    if (add_missing_count_and_weight_variables(product, other_product) != 0)
     {
         return -1;
     }
-    if (add_missing_count_variables(other_product, product) != 0)
+    if (add_missing_count_and_weight_variables(other_product, product) != 0)
     {
         return -1;
     }

@@ -550,6 +550,10 @@ LIBHARP_API int harp_collocation_result_filter_for_source_product_b(harp_colloca
     return 0;
 }
 
+/**
+ * @}
+ */
+
 /* This function uses a binary search and assumes the collocation result to be sorted by collocation index */
 static int find_collocation_pair_for_collocation_index(harp_collocation_result *collocation_result,
                                                        long collocation_index, long *index)
@@ -587,6 +591,10 @@ static int find_collocation_pair_for_collocation_index(harp_collocation_result *
                    collocation_index);
     return -1;
 }
+
+/** \addtogroup harp_collocation
+ * @{
+ */
 
 /** Filter collocation result set for the specified list of collocation indices.
  * The collocation result pairs will be sorted according to the order in the provided \a collocation_index parameter.

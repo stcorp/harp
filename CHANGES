@@ -1,7 +1,15 @@
 * Added operations to filter on dimension indices (e.g. 'index(vertical) < 5').
 
-* bin() operation now replaces global 'count' variable if existing one was
-  not one-dimensional (or otherwise invalid).
+* Changed bin() and bin_spatial() operations to use/produce separate 'count'
+  and 'weight' variables. The counts/weights are used to allow the following
+  commands to now be equivalent:
+    harpmerge -a 'bin()' -ap 'bin()' a.nc b.nc merged.nc
+    harpmerge -ap 'bin()' a.nc b.nc merged.nc
+  As well as the following:
+    harpmerge -a 'bin_spatial(...)'
+      -ap 'squash(time, (latitude_bounds, longitude_bounds));bin()'
+      a.nc b.nc merged.nc
+    harpmerge -ap 'bin_spatial(...)' a.nc b.nc merged.nc
 
 * Fixed issue with invalid bounding box optimization for spherical area
   filter operations.
