@@ -1187,7 +1187,8 @@ def export_product(product, filename, file_format="netcdf", operations="", hdf5_
 
         if operations:
             # Apply operations to the product before export
-            _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations))
+            if _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
+                raise CLibraryError()
 
         # Export the C product to a file.
         if file_format == 'hdf5':
