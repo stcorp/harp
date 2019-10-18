@@ -82,7 +82,7 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
         /* datetime_length requires interval interpolation which is currently not supported for the time dimension */
         if (strcmp(variable->name, "datetime_length") == 0)
         {
-            return resample_remove;
+            return resample_interval;
         }
     }
 
@@ -222,35 +222,72 @@ static int filter_resamplable_variables(harp_product *product, harp_dimension_ty
 
 int harp_product_get_derived_bounds_for_grid(harp_product *product, harp_variable *grid, harp_variable **bounds)
 {
-    harp_dimension_type dim_type[HARP_MAX_NUM_DIMS];
-    char *bounds_name = NULL;
-    int i;
-
-    assert(grid->num_dimensions < HARP_MAX_NUM_DIMS);
-    for (i = 0; i < grid->num_dimensions; i++)
+    if (grid->num_dimensions == 1 && grid->dimension_type[0] == harp_dimension_time &&
+        strcmp(grid->name, "datetime") == 0)
     {
-        dim_type[i] = grid->dimension_type[i];
+        harp_variable *datetime_start = NULL;
+        harp_variable *datetime_stop = NULL;
+        harp_data_type data_type = harp_type_double;
+        long i;
+
+        /* try to derive datetime_start and datetime_stop and store these into the bounds variable */
+        if (harp_product_get_derived_variable(product, "datetime_start", &data_type, grid->unit,
+                                              grid->num_dimensions, grid->dimension_type, &datetime_start) != 0)
+        {
+            return -1;
+        }
+        /* extend datetime_start variable to add the stop times */
+        if (harp_variable_add_dimension(datetime_start, datetime_start->num_dimensions, harp_dimension_independent, 2)
+            != 0)
+        {
+            harp_variable_delete(datetime_start);
+            return -1;
+        }
+        if (harp_product_get_derived_variable(product, "datetime_stop", &data_type, grid->unit,
+                                              grid->num_dimensions, grid->dimension_type, &datetime_stop) != 0)
+        {
+            harp_variable_delete(datetime_start);
+            return -1;
+        }
+        for (i = 0; i < grid->num_elements; i++)
+        {
+            datetime_start->data.double_data[2 * i + 1] = datetime_stop->data.double_data[i];
+        }
+        harp_variable_delete(datetime_stop);
+        *bounds = datetime_start;
     }
-    dim_type[grid->num_dimensions] = harp_dimension_independent;
-
-    /* derive the name of the bounds variable for the vertical axis */
-    bounds_name = malloc(strlen(grid->name) + 7 + 1);
-    if (!bounds_name)
+    else
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
-                       " (%s:%u)", __FILE__, __LINE__);
-        return -1;
-    }
-    strcpy(bounds_name, grid->name);
-    strcat(bounds_name, "_bounds");
+        harp_dimension_type dim_type[HARP_MAX_NUM_DIMS];
+        char *bounds_name = NULL;
+        int i;
 
-    if (harp_product_get_derived_variable(product, bounds_name, &grid->data_type, grid->unit, grid->num_dimensions + 1,
-                                          dim_type, bounds) != 0)
-    {
+        assert(grid->num_dimensions < HARP_MAX_NUM_DIMS);
+        for (i = 0; i < grid->num_dimensions; i++)
+        {
+            dim_type[i] = grid->dimension_type[i];
+        }
+        dim_type[grid->num_dimensions] = harp_dimension_independent;
+
+        /* derive the name of the bounds variable for the axis */
+        bounds_name = malloc(strlen(grid->name) + 7 + 1);
+        if (!bounds_name)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string)"
+                           " (%s:%u)", __FILE__, __LINE__);
+            return -1;
+        }
+        strcpy(bounds_name, grid->name);
+        strcat(bounds_name, "_bounds");
+
+        if (harp_product_get_derived_variable(product, bounds_name, &grid->data_type, grid->unit, grid->num_dimensions + 1,
+                                              dim_type, bounds) != 0)
+        {
+            free(bounds_name);
+            return -1;
+        }
         free(bounds_name);
-        return -1;
     }
-    free(bounds_name);
 
     return 0;
 }
@@ -855,6 +892,15 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 }
             }
         }
+        /* Als make variable time dependent if the grid dimension is time and the variable does not depend on time */
+        if (dimension_type == harp_dimension_time &&
+            (variable->num_dimensions == 0 || variable->dimension_type[0] != harp_dimension_time))
+        {
+            if (harp_variable_add_dimension(variable, 0, harp_dimension_time, source_grid_max_dim_elements) != 0)
+            {
+                return -1;
+            }
+        }
 
         /* treat variable as a [num_blocks, source_max_dim_elements, num_elements] array with indices [j,k,l] */
         num_blocks = 1;
@@ -978,35 +1024,38 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         goto error;
     }
     /* add axis bounds variable if either it was provided explicitly or if we derived it */
-    if (target_bounds != NULL)
+    if (dimension_type != harp_dimension_time)
     {
-        if (harp_variable_copy(target_bounds, &variable) != 0)
+        if (target_bounds != NULL)
         {
-            goto error;
-        }
-        if (harp_product_add_variable(product, variable) != 0)
-        {
-            harp_variable_delete(variable);
-            goto error;
-        }
-    }
-    else if (local_target_bounds != NULL)
-    {
-        if (dimension_type == harp_dimension_vertical && strcmp(local_target_grid->name, "pressure") == 0)
-        {
-            for (i = 0; i < local_target_bounds->num_elements; i++)
+            if (harp_variable_copy(target_bounds, &variable) != 0)
             {
-                local_target_bounds->data.double_data[i] = exp(local_target_bounds->data.double_data[i]);
+                goto error;
+            }
+            if (harp_product_add_variable(product, variable) != 0)
+            {
+                harp_variable_delete(variable);
+                goto error;
             }
         }
-        if (harp_variable_copy(local_target_bounds, &variable) != 0)
+        else if (local_target_bounds != NULL)
         {
-            goto error;
-        }
-        if (harp_product_add_variable(product, variable) != 0)
-        {
-            harp_variable_delete(variable);
-            goto error;
+            if (dimension_type == harp_dimension_vertical && strcmp(local_target_grid->name, "pressure") == 0)
+            {
+                for (i = 0; i < local_target_bounds->num_elements; i++)
+                {
+                    local_target_bounds->data.double_data[i] = exp(local_target_bounds->data.double_data[i]);
+                }
+            }
+            if (harp_variable_copy(local_target_bounds, &variable) != 0)
+            {
+                goto error;
+            }
+            if (harp_product_add_variable(product, variable) != 0)
+            {
+                harp_variable_delete(variable);
+                goto error;
+            }
         }
     }
 
