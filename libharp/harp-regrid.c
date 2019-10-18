@@ -280,8 +280,8 @@ int harp_product_get_derived_bounds_for_grid(harp_product *product, harp_variabl
         strcpy(bounds_name, grid->name);
         strcat(bounds_name, "_bounds");
 
-        if (harp_product_get_derived_variable(product, bounds_name, &grid->data_type, grid->unit, grid->num_dimensions + 1,
-                                              dim_type, bounds) != 0)
+        if (harp_product_get_derived_variable(product, bounds_name, &grid->data_type, grid->unit,
+                                              grid->num_dimensions + 1, dim_type, bounds) != 0)
         {
             free(bounds_name);
             return -1;
