@@ -31,6 +31,12 @@ If a unit is specified, the comparison will be performed in the specified unit.
 Otherwise, it will be performed in the unit that the variable currently has.
 Units can only be specified for numerical values.
 
+Comparison operations can also be performed on the index of a dimension.
+
+    ``index(dimension) operator value``
+
+For instance, ``index(vertical) == 0`` will keep only the lowest vertical level of a vertical profile.
+
 
 Membership test filter
 ----------------------
