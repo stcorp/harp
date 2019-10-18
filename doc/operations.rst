@@ -605,6 +605,7 @@ Formal definition
        'bin', '(', stringvalue, ',', ( 'a' | 'b' ), ')' |
        'bin_spatial', '(', '(', floatvaluelist, ')', '(', floatvaluelist, ')', ')' |
        'bin_spatial', '(', intvalue, ',', floatvalue, ',', floatvalue, ',', intvalue, ',', floatvalue, ',', floatvalue, ',', ')' |
+       'clamp', '(', dimension, ',', variable, [unit], '(', floatvalue, ',', floatvalue, ')', ')' |
        'collocate_left', '(', stringvalue, ')' |
        'collocate_left', '(', stringvalue, ',', intvalue, ')' |
        'collocate_left', '(', stringvalue, ',', intvalue, ',', intvalue, ')' |
