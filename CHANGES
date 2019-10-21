@@ -1,3 +1,6 @@
+1.9 2019-10-21
+~~~~~~~~~~~~~~
+
 * Added operations to filter on dimension indices (e.g. 'index(vertical) < 5').
 
 * Changed bin() and bin_spatial() operations to use/produce separate 'count'
@@ -13,6 +16,11 @@
 
 * Fixed issue with invalid bounding box optimization for spherical area
   filter operations.
+
+* Fixed missing error handling when using invalid operations in
+  harp.export_product() in Python.
+
+* Fixed Python3 compatibility issue when exporting string data.
 
 * Updates to ECMWF GRIB, IASI L1/L2, GOME-2 L1/L2, MIPAS L1, and S5P L2
   product ingestions.
