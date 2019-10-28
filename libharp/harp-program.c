@@ -434,9 +434,6 @@ static int execute_index_filter(harp_product *product, harp_program *program)
 
     harp_dimension_mask_set_delete(dimension_mask_set);
 
-    /* jump to the next operation in the list */
-    program->current_index++;
-
     return 0;
 }
 

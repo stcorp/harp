@@ -1291,9 +1291,6 @@ static int execute_index_filter(ingest_info *info, harp_program *program)
         info->product_mask = 0;
     }
 
-    /* jump to the next operation in the list */
-    program->current_index++;
-
     return 0;
 }
 
