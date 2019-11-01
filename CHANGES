@@ -1,3 +1,6 @@
+1.9.1 2019-11-01
+~~~~~~~~~~~~~~~~
+
 * Fixed issue where results from deriving partial column densities from vmr and
   pressure were a factor 10 too low.
 
