@@ -1,3 +1,6 @@
+* Fixed issue where results from deriving partial column densities from vmr and
+  pressure were a factor 10 too low.
+
 * Fixed issue where operation following an index filter operation did not
   get executed.
 

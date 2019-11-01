@@ -349,7 +349,7 @@ double harp_partial_column_from_density_and_altitude_bounds(double density, cons
  * \param latitude Latitude [degrees_north]
  * \param molar_mass_air Molar mass of air [g/mol]
  * \param pressure_bounds Lower and upper pressure [Pa] boundaries [2]
- * \return the partial column [?]
+ * \return the partial column [molec/m2]
  */
 double harp_partial_column_number_density_from_volume_mixing_ratio(double volume_mixing_ratio, double latitude,
                                                                    double molar_mass_air, const double *pressure_bounds)
@@ -359,11 +359,11 @@ double harp_partial_column_number_density_from_volume_mixing_ratio(double volume
     /* calculate gravity at a rough estimate of the height z (reflecting the center of the pressure bounds) */
     p = exp(0.5 * (log(pressure_bounds[0]) + log(pressure_bounds[1])));
     z = -(CONST_MOLAR_GAS * CONST_STD_TEMPERATURE) * log(p / CONST_STD_PRESSURE) /
-        (10e-3 * molar_mass_air * CONST_GRAV_ACCEL);
+        (1e-3 * molar_mass_air * CONST_GRAV_ACCEL);
     g = harp_gravity_from_latitude_and_altitude(latitude, z);
 
     return -volume_mixing_ratio * CONST_NUM_AVOGADRO * (pressure_bounds[1] - pressure_bounds[0]) /
-        (10e-3 * molar_mass_air * g);
+        (1e-3 * molar_mass_air * g);
 }
 
 /** Convert volume mixing ratio to partial pressure
