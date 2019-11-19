@@ -1029,7 +1029,7 @@ static int add_missing_count_and_weight_variables(harp_product *product, harp_pr
                             harp_variable_delete(new_variable);
                             return -1;
                         }
-                        for (j = 1; j < variable->num_dimensions; j++)
+                        for (j = weight_variable->num_dimensions; j < variable->num_dimensions; j++)
                         {
                             if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j],
                                                             variable->dimension[j]) != 0)
