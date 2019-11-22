@@ -180,14 +180,15 @@ for it.</p>
 <p>HARP defines the following variable names:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="27%" />
-<col width="9%" />
-<col width="9%" />
+<col width="24%" />
+<col width="8%" />
+<col width="8%" />
 <col width="4%" />
 <col width="2%" />
 <col width="4%" />
 <col width="3%" />
-<col width="42%" />
+<col width="11%" />
+<col width="38%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -197,6 +198,7 @@ for it.</p>
 <th class="head">Vert</th>
 <th class="head">Lat/Lon</th>
 <th class="head">Spect</th>
+<th class="head">Default unit</th>
 <th class="head">Comments</th>
 </tr>
 </thead>
@@ -208,6 +210,7 @@ for it.</p>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[1/s]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>absorbing_aerosol_index</td>
@@ -217,6 +220,7 @@ for it.</p>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>aerosol_base_height</td>
@@ -226,6 +230,7 @@ for it.</p>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>aerosol_base_pressure</td>
@@ -235,6 +240,7 @@ for it.</p>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>aerosol_extinction_coefficient</td>
@@ -244,6 +250,7 @@ for it.</p>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[1/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>aerosol_height</td>
@@ -253,6 +260,7 @@ for it.</p>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>aerosol_number_density</td>
@@ -262,6 +270,7 @@ for it.</p>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[1/m3]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>aerosol_column_number_density</td>
@@ -271,6 +280,7 @@ for it.</p>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[1/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>aerosol_optical_depth</td>
@@ -281,6 +291,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[]</td>
 <td>this is equal to ‘aerosol optical thickness’</td>
 </tr>
 <tr class="row-odd"><td>aerosol_pressure</td>
@@ -290,6 +301,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>aerosol_top_height</td>
@@ -299,6 +311,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>aerosol_top_pressure</td>
@@ -308,6 +321,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_size&gt;_aerosol_number_density</td>
@@ -317,6 +331,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[1/m3]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;aerosol_size&gt;_aerosol_column_number_density</td>
@@ -326,6 +341,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[1/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_size&gt;_aerosol_extinction_coefficient</td>
@@ -335,6 +351,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[1/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;aerosol_size&gt;_aerosol_optical_depth</td>
@@ -345,6 +362,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[]</td>
 <td>this is equal to ‘aerosol optical thickness’</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_type&gt;_aerosol_base_height</td>
@@ -354,6 +372,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;aerosol_type&gt;_aerosol_base_pressure</td>
@@ -363,6 +382,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_type&gt;_aerosol_extinction_coefficient</td>
@@ -372,6 +392,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[1/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;aerosol_type&gt;_aerosol_height</td>
@@ -381,6 +402,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_type&gt;_aerosol_optical_depth</td>
@@ -391,6 +413,7 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[]</td>
 <td>this is equal to ‘aerosol optical thickness’</td>
 </tr>
 <tr class="row-odd"><td>&lt;aerosol_type&gt;_aerosol_pressure</td>
@@ -400,6 +423,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;aerosol_type&gt;_aerosol_top_height</td>
@@ -409,6 +433,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;aerosol_type&gt;_aerosol_top_pressure</td>
@@ -418,6 +443,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>altitude</td>
@@ -428,6 +454,7 @@ surface</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>altitude_bounds</td>
@@ -437,6 +464,7 @@ surface</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>angstrom_exponent</td>
@@ -446,6 +474,7 @@ surface</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>area</td>
@@ -455,6 +484,7 @@ surface</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[m2]</td>
 <td>the size of an area defined by latitude/longitude bounds</td>
 </tr>
 <tr class="row-even"><td>backscatter_coefficient</td>
@@ -464,6 +494,7 @@ surface</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[1/m/sr]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>cloud_albedo</td>
@@ -473,6 +504,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>cloud_base_albedo</td>
@@ -482,6 +514,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>cloud_base_height</td>
@@ -491,6 +524,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>cloud_base_pressure</td>
@@ -500,6 +534,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>cloud_base_temperature</td>
@@ -509,6 +544,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>cloud_fraction</td>
@@ -518,6 +554,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>cloud_height</td>
@@ -527,6 +564,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>cloud_optical_depth</td>
@@ -536,6 +574,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>this is equal to ‘cloud optical thickness’</td>
 </tr>
 <tr class="row-odd"><td>cloud_pressure</td>
@@ -545,6 +584,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>cloud_temperature</td>
@@ -554,6 +594,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>cloud_top_albedo</td>
@@ -563,6 +604,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>cloud_top_height</td>
@@ -572,6 +614,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>cloud_top_pressure</td>
@@ -581,6 +624,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>cloud_top_temperature</td>
@@ -590,6 +634,7 @@ surface</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>cloud_type</td>
@@ -600,8 +645,10 @@ surface</td>
 <td>X</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td>collocation_index</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -619,7 +666,8 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is the mass density</td>
+<td>[kg/m2]</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td>column_number_density</td>
 <td>stratospheric,
@@ -630,9 +678,11 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[molec/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>count</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -648,6 +698,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[s since 2000-01-01]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>datetime_length</td>
@@ -657,6 +708,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[s]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>datetime_start</td>
@@ -666,6 +718,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[s since 2000-01-01]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>datetime_stop</td>
@@ -675,6 +728,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[s since 2000-01-01]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>density</td>
@@ -684,7 +738,8 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is the mass density</td>
+<td>[kg/m3]</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>extinction_coefficient</td>
 <td>surface</td>
@@ -693,6 +748,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[1/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>frequency</td>
@@ -702,6 +758,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[Hz]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>frequency_bounds</td>
@@ -711,6 +768,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[Hz]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>frequency_irradiance</td>
@@ -720,6 +778,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[W/m2/Hz]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>frequency_photon_irradiance</td>
@@ -729,6 +788,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[1/s/m2/Hz]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>frequency_photon_radiance</td>
@@ -738,6 +798,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[1/s/sr/m2/Hz]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>frequency_photon_transmittance</td>
@@ -747,6 +808,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>frequency_radiance</td>
@@ -756,6 +818,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[W/sr/m2/Hz]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>frequency_transmittance</td>
@@ -765,6 +828,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>geoid_height</td>
@@ -774,6 +838,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>geopotential</td>
@@ -783,6 +848,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m2/s2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>geopotential_height</td>
@@ -792,6 +858,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>geopotential_height_bounds</td>
@@ -801,6 +868,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>gravity</td>
@@ -810,6 +878,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m/s2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>hlos_wind_velocity</td>
@@ -819,9 +888,11 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m/s]</td>
 <td>hlos means ‘horizontal line of sight’</td>
 </tr>
 <tr class="row-even"><td>index</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -837,6 +908,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[s]</td>
 <td>provides measurement specific integration time
 (at e.g. altitude or wavelength) compared to overal datetime_length;
 only use if integration time differs from datetime_length;
@@ -851,6 +923,7 @@ datetime values means replication of measured value in time dimension</td>
 <td>X</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>latitude</td>
 <td>sensor</td>
@@ -859,6 +932,7 @@ datetime values means replication of measured value in time dimension</td>
 <td>&#160;</td>
 <td>(lat)</td>
 <td>&#160;</td>
+<td>[degree_north]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>latitude_bounds</td>
@@ -868,6 +942,7 @@ datetime values means replication of measured value in time dimension</td>
 <td>&#160;</td>
 <td>(lat)</td>
 <td>&#160;</td>
+<td>[degree_north]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>longitude</td>
@@ -877,6 +952,7 @@ datetime values means replication of measured value in time dimension</td>
 <td>&#160;</td>
 <td>(lon)</td>
 <td>&#160;</td>
+<td>[degree_east]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>longitude_bounds</td>
@@ -886,6 +962,7 @@ datetime values means replication of measured value in time dimension</td>
 <td>&#160;</td>
 <td>(lon)</td>
 <td>&#160;</td>
+<td>[degree_east]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>meridional_wind_velocity</td>
@@ -895,6 +972,7 @@ datetime values means replication of measured value in time dimension</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m/s]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>molar_mass</td>
@@ -904,10 +982,12 @@ datetime values means replication of measured value in time dimension</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[g/mol]</td>
 <td>this is the molar mass of the total substance (it is defined by the
 relation between the variables ‘density’ and ‘number_density’)</td>
 </tr>
 <tr class="row-odd"><td>month</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -923,6 +1003,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[molec/m3]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>optical_depth</td>
@@ -932,9 +1013,11 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>X</td>
 <td>X</td>
+<td>[]</td>
 <td>this is equal to ‘optical thickness’</td>
 </tr>
 <tr class="row-even"><td>orbit_index</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -950,6 +1033,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>potential_temperature</td>
@@ -959,6 +1043,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>pressure</td>
@@ -968,6 +1053,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>pressure_bounds</td>
@@ -977,6 +1063,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>radiance</td>
@@ -986,6 +1073,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[W/sr/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>reflectance</td>
@@ -995,6 +1083,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>relative_azimuth_angle</td>
@@ -1004,6 +1093,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>absolute difference between sensor and solar azimuth angles</td>
 </tr>
 <tr class="row-even"><td>relative_humidity</td>
@@ -1013,6 +1103,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>relative_vorticity</td>
@@ -1022,9 +1113,11 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>scan_direction_type</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -1041,6 +1134,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td>scattering_angle</td>
 <td>&#160;</td>
@@ -1049,6 +1143,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>scene_albedo</td>
@@ -1058,6 +1153,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>scene_pressure</td>
@@ -1067,6 +1163,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>scene_type</td>
@@ -1077,6 +1174,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>X</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td>sensor_azimuth_angle</td>
 <td>&#160;</td>
@@ -1085,6 +1183,7 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>sensor_elevation_angle</td>
@@ -1094,9 +1193,11 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>sensor_name</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -1112,9 +1213,11 @@ relation between the variables ‘density’ and ‘number_density’)</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>site_name</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -1131,6 +1234,7 @@ surface, toa</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>solar_declination_angle</td>
@@ -1140,6 +1244,7 @@ surface, toa</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>solar_elevation_angle</td>
@@ -1150,6 +1255,7 @@ surface, toa</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>solar_hour_angle</td>
@@ -1159,6 +1265,7 @@ surface, toa</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>solar_irradiance</td>
@@ -1168,6 +1275,7 @@ surface, toa</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[W/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>solar_zenith_angle</td>
@@ -1178,6 +1286,7 @@ surface, toa,</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>sun_normalized_radiance</td>
@@ -1187,6 +1296,7 @@ surface, toa,</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>surface_albedo</td>
@@ -1196,6 +1306,7 @@ surface, toa,</td>
 <td>&#160;</td>
 <td>X</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>temperature</td>
@@ -1205,6 +1316,7 @@ surface, toa,</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>tropopause_altitude</td>
@@ -1214,6 +1326,7 @@ surface, toa,</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m]</td>
 <td>altitude of the troposphere/stratosphere boundary location</td>
 </tr>
 <tr class="row-odd"><td>tropopause_pressure</td>
@@ -1223,9 +1336,11 @@ surface, toa,</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>pressure level of the troposphere/stratosphere boundary location</td>
 </tr>
 <tr class="row-even"><td>validity</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -1242,6 +1357,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>viewing_elevation_angle</td>
@@ -1251,6 +1367,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>viewing_zenith_angle</td>
@@ -1260,6 +1377,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>virtual_temperature</td>
@@ -1269,6 +1387,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavelength</td>
@@ -1278,6 +1397,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavelength_bounds</td>
@@ -1287,6 +1407,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavelength_irradiance</td>
@@ -1296,6 +1417,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[W/m2/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavelength_photon_irradiance</td>
@@ -1305,6 +1427,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[1/s/m2/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavelength_photon_radiance</td>
@@ -1314,6 +1437,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[1/s/sr/m2/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavelength_photon_transmittance</td>
@@ -1323,6 +1447,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavelength_radiance</td>
@@ -1332,6 +1457,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[W/sr/m2/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavelength_transmittance</td>
@@ -1341,6 +1467,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavenumber</td>
@@ -1350,6 +1477,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[1/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavenumber_bounds</td>
@@ -1359,6 +1487,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[1/m]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavenumber_irradiance</td>
@@ -1368,6 +1497,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[Wm/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavenumber_photon_irradiance</td>
@@ -1377,6 +1507,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[m/s/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavenumber_photon_radiance</td>
@@ -1386,6 +1517,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[m/s/sr/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavenumber_photon_transmittance</td>
@@ -1395,6 +1527,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wavenumber_radiance</td>
@@ -1404,6 +1537,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[Wm/sr/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>wavenumber_transmittance</td>
@@ -1413,6 +1547,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>[]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>weight</td>
@@ -1421,6 +1556,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>X</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>weighting factors used for spatial binning</td>
 </tr>
@@ -1431,6 +1567,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m/s]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>wind_direction</td>
@@ -1440,9 +1577,11 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[degree]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>year</td>
+<td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -1458,6 +1597,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[m/s]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_column_density</td>
@@ -1469,7 +1609,8 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is the mass density</td>
+<td>[kg/m2]</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_slant_column_density</td>
 <td>&#160;</td>
@@ -1478,7 +1619,8 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is the mass density</td>
+<td>[kg/m2]</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;pm&gt;_column_density</td>
 <td>stratospheric,
@@ -1488,7 +1630,8 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is the mass density</td>
+<td>[kg/m2]</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_column_number_density</td>
 <td>stratospheric,
@@ -1499,6 +1642,7 @@ avk, dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[molec/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_slant_column_number_density</td>
@@ -1508,6 +1652,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[molec/m2]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_column_mass_mixing_ratio</td>
@@ -1518,6 +1663,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[kg/kg]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_column_mass_mixing_ratio_dry_air</td>
@@ -1528,6 +1674,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[kg/kg]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_column_volume_mixing_ratio</td>
@@ -1538,6 +1685,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[ppv]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_column_volume_mixing_ratio_dry_air</td>
@@ -1548,6 +1696,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[ppv]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_density</td>
@@ -1557,7 +1706,8 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is the mass density</td>
+<td>[kg/m3]</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;pm&gt;_density</td>
 <td>surface</td>
@@ -1566,7 +1716,8 @@ tropospheric</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
-<td>this is the mass density</td>
+<td>[kg/m3]</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>O3_effective_temperature</td>
 <td>&#160;</td>
@@ -1575,6 +1726,7 @@ tropospheric</td>
 <td>&#160;</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[K]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_mass_mixing_ratio</td>
@@ -1585,6 +1737,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[kg/kg]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_mass_mixing_ratio_dry_air</td>
@@ -1595,6 +1748,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[kg/kg]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_number_density</td>
@@ -1605,6 +1759,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[molec/m3]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_partial_pressure</td>
@@ -1614,6 +1769,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_partial_pressure_dry_air</td>
@@ -1623,6 +1779,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[Pa]</td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&lt;species&gt;_volume_mixing_ratio</td>
@@ -1633,6 +1790,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[ppv]</td>
 <td>this is equal to ‘number mixing ratio’</td>
 </tr>
 <tr class="row-even"><td>&lt;species&gt;_volume_mixing_ratio_dry_air</td>
@@ -1643,6 +1801,7 @@ dfs, sic</td>
 <td>X</td>
 <td>X</td>
 <td>&#160;</td>
+<td>[ppv]</td>
 <td>&#160;</td>
 </tr>
 </tbody>
