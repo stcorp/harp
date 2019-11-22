@@ -644,7 +644,8 @@ int harp_ingestion_module_gome_l2_init(void)
     description = "cloud fraction";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_fraction",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "", NULL, read_cloud_fraction);
+                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                      read_cloud_fraction);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version=1", "/ddr[]/irr/icfa/frac", NULL);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/ocra/cloud_frac", NULL);
 
@@ -652,7 +653,8 @@ int harp_ingestion_module_gome_l2_init(void)
     description = "cloud fraction error";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_fraction_uncertainty",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "", NULL, read_cloud_fraction_error);
+                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                      read_cloud_fraction_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version=1",
                                          "/ddr[]/irr/icfa/frac, /ddr[]/irr/icfa/err_frac", error_mapping);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1",
@@ -662,7 +664,7 @@ int harp_ingestion_module_gome_l2_init(void)
     description = "cloud top height";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_height",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "", include_v2,
+                                                                      description, "km", include_v2,
                                                                       read_cloud_top_height);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/rocinn/height", NULL);
 
@@ -670,7 +672,7 @@ int harp_ingestion_module_gome_l2_init(void)
     description = "cloud top height uncertainty";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "cloud_top_height_uncertainty", harp_type_double,
-                                                                      1, dimension_type, NULL, description, "",
+                                                                      1, dimension_type, NULL, description, "km",
                                                                       include_v2, read_cloud_top_height_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1",
                                          "/ddr[]/irr/rocinn/height, /ddr[]/irr/rocinn/height_error", error_mapping);
@@ -700,7 +702,7 @@ int harp_ingestion_module_gome_l2_init(void)
     description = "cloud top albedo";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "cloud_top_albedo",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "", include_v2,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, include_v2,
                                                                       read_cloud_top_albedo);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/rocinn/albedo", NULL);
 
@@ -709,7 +711,7 @@ int harp_ingestion_module_gome_l2_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "cloud_top_albedo_uncertainty",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "", include_v2,
+                                                                      description, HARP_UNIT_DIMENSIONLESS, include_v2,
                                                                       read_cloud_top_albedo_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1",
                                          "/ddr[]/irr/rocinn/albedo, /ddr[]/irr/rocinn/albedo_error", error_mapping);
@@ -734,7 +736,8 @@ int harp_ingestion_module_gome_l2_init(void)
     description = "surface albedo";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_albedo",
                                                                       harp_type_double, 1, dimension_type, NULL,
-                                                                      description, "", include_v2, read_surface_albedo);
+                                                                      description, HARP_UNIT_DIMENSIONLESS, include_v2,
+                                                                      read_surface_albedo);
     harp_variable_definition_add_mapping(variable_definition, NULL, "version>1", "/ddr[]/irr/surface_albedo", NULL);
 
     /* solar_zenith_angle */

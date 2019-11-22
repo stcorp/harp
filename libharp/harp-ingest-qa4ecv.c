@@ -1373,7 +1373,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "sea-ice concentration (as a fraction)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "", NULL, read_sea_ice_fraction);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_sea_ice_fraction);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
     description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);

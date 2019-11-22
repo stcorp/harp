@@ -3,7 +3,10 @@
 
 * Added default units to documention on variable name conventions.
 
-* Fixed unit of backscatter coefficient in Calipso L2 ingestion.
+* Updates to product ingestions:
+  - Calipso L2: fixed unit of backscatter coefficient
+  - ERS GOME L2: fixed unit of cloud top height
+  - S5P L2 AER_LH: fixed unit of aerosol optical depth
 
 1.9.1 2019-11-01
 ~~~~~~~~~~~~~~~~

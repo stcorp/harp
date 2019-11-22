@@ -4650,7 +4650,7 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
     description = "sea-ice concentration (as a fraction)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_sea_ice_fraction_function);
     description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -4782,7 +4782,7 @@ static void register_aer_lh_product(void)
     description = "aerosol optical thickness";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_aerosol_optical_thickness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -4791,7 +4791,8 @@ static void register_aer_lh_product(void)
     description = "uncertainty of the aerosol optical thickness";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_aerosol_optical_thickness_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -5146,7 +5147,7 @@ static void register_co_product(void)
     description = "Scattering optical thickness SWIR";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "", NULL,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_scattering_optical_thickness_SWIR);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scattering_optical_thickness_SWIR[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -6065,8 +6066,8 @@ static void register_o3_tcl_product(void)
     description = "averaged surface albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 3,
-                                                   dimension_type, NULL, description, "", include_o3_tcl_ccd,
-                                                   read_o3_tcl_surface_albedo);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   include_o3_tcl_ccd, read_o3_tcl_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
 
