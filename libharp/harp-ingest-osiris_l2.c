@@ -384,7 +384,7 @@ static void register_aerosol_product(void)
     description = "aerosol number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_number_density", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "molec/cm3", NULL,
+                                                   dimension_type, NULL, description, "1/cm3", NULL,
                                                    read_aerosol_number_density);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Data_Fields/Aerosol[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -393,7 +393,7 @@ static void register_aerosol_product(void)
     description = "precision of the aerosol number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_number_density_uncertainty",
-                                                   harp_type_double, 2, dimension_type, NULL, description, "molec/cm3",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "1/cm3",
                                                    NULL, read_aerosol_number_density_uncertainty);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_Aerosol_MART/Data_Fields/AerosolPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
