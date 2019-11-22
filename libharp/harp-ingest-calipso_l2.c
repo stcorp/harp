@@ -1027,7 +1027,7 @@ static void register_profile_specific_fields(harp_product_definition *product_de
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "km^-1", NULL, read_backscatter_coefficient);
+                                                   "sr^-1 km^-1", NULL, read_backscatter_coefficient);
     path = "/Total_Backscatter_Coefficient_532[,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Backscatter_Coefficient_1064[,]";
@@ -1038,7 +1038,7 @@ static void register_profile_specific_fields(harp_product_definition *product_de
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "backscatter_coefficient_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description,
-                                                   "km^-1", NULL, read_backscatter_coefficient_uncertainty);
+                                                   "sr^-1 km^-1", NULL, read_backscatter_coefficient_uncertainty);
     path = "/Total_Backscatter_Coefficient_Uncertainty_532[,]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "wavelength=532 or wavelength unset", path, NULL);
     path = "/Backscatter_Coefficient_Uncertainty_1064[,]";

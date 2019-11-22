@@ -3,6 +3,8 @@
 
 * Added default units to documention on variable name conventions.
 
+* Fixed unit of backscatter coefficient in Calipso L2 ingestion.
+
 1.9.1 2019-11-01
 ~~~~~~~~~~~~~~~~
 
