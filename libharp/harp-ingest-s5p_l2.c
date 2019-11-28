@@ -2383,14 +2383,6 @@ static int read_results_averaging_kernel_2d(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels * info->num_levels * info->num_levels, data);
 }
 
-static int read_results_averaging_kernel_1d(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
-}
-
 static int read_results_cloud_albedo_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3769,6 +3761,64 @@ static int read_no2_tropopause_pressure(void *user_data, harp_array data)
     free(hybride_coef_b.ptr);
     free(hybride_coef_a.ptr);
     free(layer_index.ptr);
+
+    return 0;
+}
+
+static int read_so2_averaging_kernel(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *scaling_variable_name = NULL;
+    harp_array scaling;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long i, j;
+
+    if (read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    switch (info->so2_column_type)
+    {
+        case 0:
+            return 0;
+        case 1:
+            scaling_variable_name = "sulfurdioxide_averaging_kernel_scaling_box_1km";
+            break;
+        case 2:
+            scaling_variable_name = "sulfurdioxide_averaging_kernel_scaling_box_7km";
+            break;
+        case 3:
+            scaling_variable_name = "sulfurdioxide_averaging_kernel_scaling_box_15km";
+            break;
+    }
+
+    scaling.ptr = malloc(num_elements * sizeof(float));
+    if (scaling.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info->detailed_results_cursor, scaling_variable_name, harp_type_float, num_elements, scaling) != 0)
+    {
+        free(scaling.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        long offset = i * info->num_layers;
+
+        for (j = 0; j < info->num_layers; j++)
+        {
+            data.float_data[offset + j] *= scaling.float_data[i];
+        }
+    }
+
+    free(scaling.ptr);
 
     return 0;
 }
@@ -6549,9 +6599,19 @@ static void register_so2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_averaging_kernel_1d);
+                                                   read_so2_averaging_kernel);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_1km[]";
+    description = "the averaging kernel is multiplied by the scaling factor";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, description);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_7km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, description);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_15km[]";
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, description);
 
     /* SO2_volume_mixing_ratio_dry_air_apriori */
     description = "SO2 apriori profile in volume mixing ratios";

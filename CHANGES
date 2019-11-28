@@ -7,6 +7,7 @@
   - Calipso L2: fixed unit of backscatter coefficient
   - ERS GOME L2: fixed unit of cloud top height
   - S5P L2 AER_LH: fixed unit of aerosol optical depth
+  - S5P L2 SO2: add scaled avk for 1km/7km/15km box profiles
 
 1.9.1 2019-11-01
 ~~~~~~~~~~~~~~~~
