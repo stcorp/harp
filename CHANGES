@@ -1,3 +1,6 @@
+1.9.2 2019-12-01
+~~~~~~~~~~~~~~~~
+
 * Fixed issue where using the 'bin()' operation did not correctly create a
   '<variable>_weight' variable from a 'weight' variable when it was missing.
 
