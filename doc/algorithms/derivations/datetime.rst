@@ -13,4 +13,4 @@ datetime derivations
 
    .. math::
 
-      t = \frac{t_{s} - t_{e}}{2}
+      t = \frac{t_{s} + t_{e}}{2}
