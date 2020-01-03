@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'HARP'
-copyright = u'2015-2019 S[&]T, The Netherlands'
+copyright = u'2015-2020 S[&]T, The Netherlands'
 author = u'S&T'
 
 # The version info for the project you're documenting, acts as replacement for
