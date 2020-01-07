@@ -1,3 +1,7 @@
+* Updates to product ingestions:
+  - GOMOS L1 Limb: fixed unit of wavelength_photon_radiance (and uncertainty)
+    and documented conversion algorithm
+
 1.9.2 2019-12-01
 ~~~~~~~~~~~~~~~~
 
