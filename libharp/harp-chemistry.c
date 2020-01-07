@@ -459,7 +459,3 @@ double harp_volume_mixing_ratio_from_partial_pressure_and_pressure(double partia
 {
     return partial_pressure / pressure;
 }
-
-/**
- * @}
- */
