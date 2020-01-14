@@ -3779,7 +3779,7 @@ static int read_so2_averaging_kernel(void *user_data, harp_array data)
     long i, j;
 
     if (read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
     {
         return -1;
     }

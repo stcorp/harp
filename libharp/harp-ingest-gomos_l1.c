@@ -398,8 +398,7 @@ static int read_sensitivity_curve(ingest_info *info)
     coda_cursor_goto_parent(&cursor);
 
     /* Read wavelengths in the lookup table */
-    CHECKED_MALLOC(info->sensitivity_curve_wavelengths,
-                   sizeof(double) * info->sensitivity_curve_size);
+    CHECKED_MALLOC(info->sensitivity_curve_wavelengths, sizeof(double) * info->sensitivity_curve_size);
     if (coda_cursor_goto_record_field_by_name(&cursor, "abs_rad_sens_curve_limb") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -438,8 +437,7 @@ static double spectral_conversion_factor(ingest_info *info, double wavelength)
     {
         return info->sensitivity_curve[0];
     }
-    else if (wavelength >
-             info->sensitivity_curve_wavelengths[info->sensitivity_curve_size - 1])
+    else if (wavelength > info->sensitivity_curve_wavelengths[info->sensitivity_curve_size - 1])
     {
         return info->sensitivity_curve[info->sensitivity_curve_size - 1];
     }
@@ -453,8 +451,7 @@ static double spectral_conversion_factor(ingest_info *info, double wavelength)
                 return info->sensitivity_curve[i - 1] +
                     ((info->sensitivity_curve[i] - info->sensitivity_curve[i - 1]) *
                      ((wavelength - info->sensitivity_curve_wavelengths[i - 1]) /
-                      (info->sensitivity_curve_wavelengths[i] -
-                       info->sensitivity_curve_wavelengths[i - 1])));
+                      (info->sensitivity_curve_wavelengths[i] - info->sensitivity_curve_wavelengths[i - 1])));
             }
         }
     }
