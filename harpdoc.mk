@@ -488,7 +488,6 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L2_O3.html \
 	doc/html/ingestions/S5P_L2_O3_PR.html \
 	doc/html/ingestions/S5P_L2_O3_TCL.html \
-	doc/html/ingestions/S5P_L2_O3_TPR.html \
 	doc/html/ingestions/S5P_L2_SO2.html \
 	doc/html/ingestions/SCIAMACHY_L1c.html \
 	doc/html/ingestions/SCIAMACHY_L1c_sun_reference.html \
@@ -1525,8 +1524,6 @@ doc/html/ingestions/S5P_L2_O3.html:
 doc/html/ingestions/S5P_L2_O3_PR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_O3_TCL.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_O3_TPR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_SO2.html:
 	$(MAKE) harp_doc

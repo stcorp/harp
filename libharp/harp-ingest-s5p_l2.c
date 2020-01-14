@@ -45,7 +45,6 @@ typedef enum s5p_product_type_enum
 {
     s5p_type_o3_pr,
     s5p_type_o3_tcl,
-    s5p_type_o3_tpr,
     s5p_type_no2,
     s5p_type_co,
     s5p_type_ch4,
@@ -75,7 +74,6 @@ typedef enum s5p_dimension_type_enum
 static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", NULL, "level"},
     {"time", NULL, NULL, NULL, NULL, NULL},
-    {"time", "scanline", "ground_pixel", "corner", NULL, "level"},
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL},
     {"time", "scanline", "ground_pixel", "corner", "layer", "level"},
@@ -88,7 +86,7 @@ static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] 
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL}
 };
 
-static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = { 2, 0, 2, 2, 2, 2, 2, 2, 3, 2, 3, 3, 3 };
+static const int s5p_delta_time_num_dims[S5P_NUM_PRODUCT_TYPES] = { 2, 0, 2, 2, 2, 2, 2, 3, 2, 3, 3, 3 };
 
 typedef struct ingest_info_struct
 {
@@ -173,8 +171,6 @@ static const char *get_product_type_name(s5p_product_type product_type)
             return "L2__O3__PR";
         case s5p_type_o3_tcl:
             return "L2__O3_TCL";
-        case s5p_type_o3_tpr:
-            return "L2__O3_TPR";
         case s5p_type_no2:
             return "L2__NO2___";
         case s5p_type_co:
@@ -956,7 +952,6 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
             dimension[harp_dimension_vertical] = info->num_layers;
             break;
         case s5p_type_o3_pr:
-        case s5p_type_o3_tpr:
             dimension[harp_dimension_vertical] = info->num_levels;
             break;
         case s5p_type_aer_lh:
@@ -1203,14 +1198,6 @@ static int read_input_aerosol_index_354_388(void *user_data, harp_array data)
 
     return read_dataset(info->input_data_cursor, "aerosol_index_354_388", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_input_altitude(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->input_data_cursor, "altitude", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_levels, data);
 }
 
 static int read_input_altitude_bounds(void *user_data, harp_array data)
@@ -1480,92 +1467,6 @@ static int read_input_ozone_profile_apriori_uncertainty(void *user_data, harp_ar
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->input_data_cursor, "ozone_profile_apriori_precision", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_levels, data);
-}
-
-static int read_input_ozone_profile_apriori_covariance(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    long num_elements = info->num_scanlines * info->num_pixels;
-    long num_levels = info->num_levels;
-    harp_array altitude;
-    harp_array stddev;
-    double correlation_length;
-    long i, j, k;
-
-    if (read_double_attribute(info->input_data_cursor, "ozone_profile_apriori_precision", "correlation_length",
-                              &correlation_length) != 0)
-    {
-        return -1;
-    }
-
-    altitude.float_data = malloc(num_elements * num_levels * sizeof(float));
-    if (altitude.float_data == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * num_levels * sizeof(float), __FILE__, __LINE__);
-        return -1;
-    }
-    if (read_input_altitude(user_data, altitude) != 0)
-    {
-        free(altitude.float_data);
-        return -1;
-    }
-
-    stddev.float_data = malloc(num_elements * num_levels * sizeof(float));
-    if (stddev.float_data == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * num_levels * sizeof(float), __FILE__, __LINE__);
-        free(altitude.float_data);
-        return -1;
-    }
-    if (read_input_ozone_profile_apriori_uncertainty(user_data, stddev) != 0)
-    {
-        free(altitude.float_data);
-        free(stddev.float_data);
-        return -1;
-    }
-
-    for (i = 0; i < num_elements; i++)
-    {
-        long offset = i * num_levels * num_levels;
-
-        for (j = 0; j < num_levels; j++)
-        {
-            for (k = 0; k < num_levels; k++)
-            {
-                double value;
-
-                if (k <= j)
-                {
-                    value = data.float_data[offset + j] * data.float_data[offset + k];
-                    if (k < j)
-                    {
-                        value *= exp(-fabs(altitude.float_data[j] - altitude.float_data[k]) / correlation_length);
-                    }
-                }
-                else
-                {
-                    /* since the matrix is symetric, use the value from the lower triangular part of the matrix */
-                    value = data.float_data[offset + k * num_levels + j];
-                }
-                data.float_data[offset + j * num_levels + k] = (float)value;
-            }
-        }
-    }
-
-    free(altitude.float_data);
-    free(stddev.float_data);
-
-    return 0;
-}
-
-static int read_input_pressure(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->input_data_cursor, "pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels * info->num_levels, data);
 }
 
@@ -3139,6 +3040,110 @@ static int read_o3_pressure_bounds(void *user_data, harp_array data)
     }
 
     return 0;
+}
+
+static int read_o3_pr_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor *cursor = info->processor_version < 20100 ? &info->input_data_cursor : &info->product_cursor;
+
+    return read_dataset(*cursor, "altitude", harp_type_float, info->num_scanlines * info->num_pixels * info->num_levels,
+                        data);
+}
+
+static int read_o3_pr_cloud_fraction_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor *cursor = info->processor_version < 20100 ? &info->detailed_results_cursor : &info->input_data_cursor;
+
+    return read_dataset(*cursor, "cloud_fraction_crb", harp_type_float, info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o3_pr_ozone_profile_apriori_covariance(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long num_levels = info->num_levels;
+    harp_array altitude;
+    harp_array stddev;
+    double correlation_length;
+    long i, j, k;
+
+    if (read_double_attribute(info->input_data_cursor, "ozone_profile_apriori_precision", "correlation_length",
+                              &correlation_length) != 0)
+    {
+        return -1;
+    }
+
+    altitude.float_data = malloc(num_elements * num_levels * sizeof(float));
+    if (altitude.float_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * num_levels * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_o3_pr_altitude(user_data, altitude) != 0)
+    {
+        free(altitude.float_data);
+        return -1;
+    }
+
+    stddev.float_data = malloc(num_elements * num_levels * sizeof(float));
+    if (stddev.float_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * num_levels * sizeof(float), __FILE__, __LINE__);
+        free(altitude.float_data);
+        return -1;
+    }
+    if (read_input_ozone_profile_apriori_uncertainty(user_data, stddev) != 0)
+    {
+        free(altitude.float_data);
+        free(stddev.float_data);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        long offset = i * num_levels * num_levels;
+
+        for (j = 0; j < num_levels; j++)
+        {
+            for (k = 0; k < num_levels; k++)
+            {
+                double value;
+
+                if (k <= j)
+                {
+                    value = data.float_data[offset + j] * data.float_data[offset + k];
+                    if (k < j)
+                    {
+                        value *= exp(-fabs(altitude.float_data[j] - altitude.float_data[k]) / correlation_length);
+                    }
+                }
+                else
+                {
+                    /* since the matrix is symetric, use the value from the lower triangular part of the matrix */
+                    value = data.float_data[offset + k * num_levels + j];
+                }
+                data.float_data[offset + j * num_levels + k] = (float)value;
+            }
+        }
+    }
+
+    free(altitude.float_data);
+    free(stddev.float_data);
+
+    return 0;
+}
+
+static int read_o3_pr_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor *cursor = info->processor_version < 20100 ? &info->input_data_cursor : &info->product_cursor;
+
+    return read_dataset(*cursor, "pressure", harp_type_float, info->num_scanlines * info->num_pixels * info->num_levels,
+                        data);
 }
 
 static int read_o3_tcl_pressure_bounds(void *user_data, harp_array data)
@@ -5739,17 +5744,21 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
     description = "pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 2, dimension_type,
-                                                   NULL, description, "Pa", NULL, read_input_pressure);
+                                                   NULL, description, "Pa", NULL, read_o3_pr_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.01.00", path, NULL);
+    path = "/PRODUCT/pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.01.00", path, NULL);
 
     /* altitude */
     description = "altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 2, dimension_type,
-                                                   NULL, description, "m", NULL, read_input_altitude);
+                                                   NULL, description, "m", NULL, read_o3_pr_altitude);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.01.00", path, NULL);
+    path = "/PRODUCT/altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.01.00", path, NULL);
 
     /* O3_volume_mixing_ratio */
     description = "O3 volume mixing ratio";
@@ -5800,12 +5809,15 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_apriori_covariance",
                                                    harp_type_float, 3, dimension_type, NULL, description, "ppmv^2",
-                                                   NULL, read_input_ozone_profile_apriori_covariance);
+                                                   NULL, read_o3_pr_ozone_profile_apriori_covariance);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision[], "
         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision@correlation_length, "
         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude[]";
     description = "covariance[i,j] = exp(-(latitude[i]-latitude[j])/correlation_length) * precision[i] * precision[j]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.01.00", path, description);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori_precision@correlation_length, /PRODUCT/altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.01.00", path, description);
 
     /* O3_volume_mixing_ratio_covariance */
     description = "O3 volume mixing ratio covariance";
@@ -5863,22 +5875,15 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_fraction */
-    description = "effective wavelenght-dependent cloud fraction";
+    description = "effective cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_cloud_fraction_crb);
+                                                   read_o3_pr_cloud_fraction_crb);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* cloud_fraction_uncertainty */
-    description = "precision of the effective wavelenght-dependent cloud fraction";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_cloud_fraction_crb_precision);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.01.00", path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.01.00", path, NULL);
 
     /* tropopause_pressure */
     description = "tropopause pressure";
@@ -6150,24 +6155,6 @@ static void register_o3_tcl_product(void)
         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=csa", NULL, path, NULL);
 
-}
-
-static void register_o3_tpr_product(void)
-{
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
-
-    module = harp_ingestion_register_module_coda("S5P_L2_O3_TPR", "Sentinel-5P", "Sentinel5P", "L2__O3_TPR",
-                                                 "Sentinel-5P L2 O3 tropospheric profile", ingestion_init,
-                                                 ingestion_done);
-
-    product_definition = harp_ingestion_register_product(module, "S5P_L2_O3_TPR", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3_tpr]);
-    register_geolocation_variables(product_definition);
-    register_additional_geolocation_variables(product_definition);
-    register_o3_profile_variables(product_definition);
-    register_surface_variables(product_definition, 1, 1);
-    register_snow_ice_flag_variables(product_definition, 0);
 }
 
 static void register_no2_product(void)
@@ -7138,7 +7125,6 @@ int harp_ingestion_module_s5p_l2_init(void)
     register_o3_product();
     register_o3_pr_product();
     register_o3_tcl_product();
-    register_o3_tpr_product();
     register_no2_product();
     register_so2_product();
     register_cloud_product();
