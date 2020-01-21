@@ -640,31 +640,31 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     if (target_grid->data_type != harp_type_double)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid data type for axis variable");
-        return -1;
+        goto error;
     }
     target_grid_num_dims = target_grid->num_dimensions;
     if (target_grid_num_dims != 1 && target_grid_num_dims != 2)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
-        return -1;
+        goto error;
     }
     dimension_type = target_grid->dimension_type[target_grid->num_dimensions - 1];
     if (dimension_type == harp_dimension_independent)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
-        return -1;
+        goto error;
     }
     if (target_grid_num_dims == 2)
     {
         if (target_grid->dimension_type[0] != harp_dimension_time || dimension_type == harp_dimension_time)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
-            return -1;
+            goto error;
         }
         if (target_grid->dimension[0] != product->dimension[harp_dimension_time])
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "time dimension of axis variable does not match product");
-            return -1;
+            goto error;
         }
     }
     target_grid_max_dim_elements = target_grid->dimension[target_grid_num_dims - 1];
@@ -679,18 +679,18 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         if (target_bounds->data_type != harp_type_double)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid data type for axis bounds variable");
-            return -1;
+            goto error;
         }
         if (target_bounds->num_dimensions != target_grid_num_dims + 1)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent dimensions for axis bounds variable");
-            return -1;
+            goto error;
         }
         if ((target_bounds->dimension_type[0] != target_grid->dimension_type[0]) ||
             (target_bounds->dimension[0] != target_grid->dimension[0]))
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent dimensions for axis bounds variable");
-            return -1;
+            goto error;
         }
         if (target_grid_num_dims == 2)
         {
@@ -698,14 +698,14 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 (target_bounds->dimension[1] != target_grid->dimension[1]))
             {
                 harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent dimensions for axis bounds variable");
-                return -1;
+                goto error;
             }
         }
         if (target_bounds->dimension_type[target_grid_num_dims] != harp_dimension_independent ||
             target_bounds->dimension[target_grid_num_dims] != 2)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid independent dimension for axis bounds variable");
-            return -1;
+            goto error;
         }
 
         if (harp_variable_copy(target_bounds, &local_target_bounds) != 0)
@@ -888,7 +888,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             {
                 if (harp_variable_add_dimension(variable, 0, harp_dimension_time, source_num_time_elements) != 0)
                 {
-                    return -1;
+                    goto error;
                 }
             }
         }
@@ -898,7 +898,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         {
             if (harp_variable_add_dimension(variable, 0, harp_dimension_time, source_grid_max_dim_elements) != 0)
             {
-                return -1;
+                goto error;
             }
         }
 
@@ -1081,8 +1081,14 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     harp_variable_delete(source_bounds);
     harp_variable_delete(local_target_grid);
     harp_variable_delete(local_target_bounds);
-    free(source_buffer);
-    free(target_buffer);
+    if (source_buffer != NULL)
+    {
+        free(source_buffer);
+    }
+    if (target_buffer != NULL)
+    {
+        free(target_buffer);
+    }
 
     return -1;
 }
