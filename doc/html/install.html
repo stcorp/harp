@@ -493,8 +493,8 @@ directory that contains the .codadef files. On Linux this would be e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CODA_DEFINITION</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">coda</span><span class="o">/</span><span class="n">definitions</span>
 </pre></div>
 </div>
-<p>Information on how to set environment variables on macOS can be found
-<a class="reference external" href="https://apple.stackexchange.com/questions/106355/setting-the-system-wide-path-environment-variable-in-mavericks">here</a>.</p>
+<p>On macOS you can set environment variables via a <a class="reference external" href="https://apple.stackexchange.com/questions/106355/setting-the-system-wide-path-environment-variable-in-mavericks">~/Library/LaunchAgents/my.startup.plist</a>
+file.</p>
 <p>Also make sure that you do not already have a CODA_DEFINITION
 environment variable set that points to a different location than where
 the .codadef files that come with HARP are located.</p>
@@ -510,15 +510,17 @@ On Linux this would be e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">UDUNITS2_XML_PATH</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">harp</span><span class="o">/</span><span class="n">udunits2</span><span class="o">.</span><span class="n">xml</span>
 </pre></div>
 </div>
-<p>Information on how to set environment variables on macOS can be found
-<a class="reference external" href="https://apple.stackexchange.com/questions/106355/setting-the-system-wide-path-environment-variable-in-mavericks">here</a>.</p>
+<p>On macOS you can set environment variables via a <a class="reference external" href="https://apple.stackexchange.com/questions/106355/setting-the-system-wide-path-environment-variable-in-mavericks">~/Library/LaunchAgents/my.startup.plist</a>
+file.</p>
 </li>
 </ol>
 </div></blockquote>
 </div>
 <div class="section" id="installing-the-binary-package-windows">
 <h2>Installing the binary package (Windows)</h2>
-<p>To install the binary package of HARP for Windows just run the executable
+<p>First make sure that you have the <a class="reference external" href="https://www.microsoft.com/en-us/download/details.aspx?id=48145">Microsoft Visual C++ Redistributable
+Packages for Visual Studio 2015</a> installed.</p>
+<p>To install the binary package of HARP for Windows just run the msi executable
 which will guide you through the installation process. Make sure to install
 HARP in a directory that does not have any spaces in its path. Otherwise
 you might encounter problems with e.g. the Python interface.</p>
