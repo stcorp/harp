@@ -951,6 +951,13 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 }
             }
 
+            if (source_grid_num_dim_elements <= 1 && target_grid_num_dim_elements > 0)
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                               "dimension length for %s needs to be > 1 to allow regridding", target_grid->name);
+                goto error;
+            }
+
             for (l = 0; l < num_elements; l++)
             {
                 /* we need to regrid by taking a slice for each sub element 'l' */
