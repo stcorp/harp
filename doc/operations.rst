@@ -298,10 +298,13 @@ Supported functions:
         Exclude measurements of which the longitude of the
         measurement location falls outside the specified range.
         This function correctly handles longitude ranges that
-        cross the international date line.
+        cross the international date line. It checks whether
+        ``wrap(longitude, minimum, minimum + 360) <= maximum``.
 
-            | ``longitude_range(179.0, -179.0)``
+            | ``longitude_range(179.0, 181.0)``
             | (select a 2 degree range around the international dateline)
+            | ``longitude_range(-181.0, -179.0)``
+            | (gives exact same result as the first example)
 
     ``point_distance(latitude [unit], longitude [unit], distance [unit])``
         Exclude measurements whose point location is situated further than

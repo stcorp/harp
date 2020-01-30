@@ -474,11 +474,14 @@ result in an error.</dd>
 <dd><p class="first">Exclude measurements of which the longitude of the
 measurement location falls outside the specified range.
 This function correctly handles longitude ranges that
-cross the international date line.</p>
+cross the international date line. It checks whether
+<code class="docutils literal notranslate"><span class="pre">wrap(longitude,</span> <span class="pre">minimum,</span> <span class="pre">minimum</span> <span class="pre">+</span> <span class="pre">360)</span> <span class="pre">&lt;=</span> <span class="pre">maximum</span></code>.</p>
 <blockquote class="last">
 <div><div class="line-block">
-<div class="line"><code class="docutils literal notranslate"><span class="pre">longitude_range(179.0,</span> <span class="pre">-179.0)</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">longitude_range(179.0,</span> <span class="pre">181.0)</span></code></div>
 <div class="line">(select a 2 degree range around the international dateline)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">longitude_range(-181.0,</span> <span class="pre">-179.0)</span></code></div>
+<div class="line">(gives exact same result as the first example)</div>
 </div>
 </div></blockquote>
 </dd>
