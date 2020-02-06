@@ -3,6 +3,7 @@
     and documented conversion algorithm
   - S5P L2 O3 PR: support for IODD 12.0.0
   - S5P L2 O3 TPR: removed support (future availability of product uncertain)
+  - GEOMS PANDORA: allow for trailing \0 in global attribute values
 
 1.9.2 2019-12-01
 ~~~~~~~~~~~~~~~~

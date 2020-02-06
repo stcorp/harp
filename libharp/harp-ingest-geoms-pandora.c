@@ -320,7 +320,7 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
                                   harp_product_definition **definition)
 {
     coda_cursor cursor;
-    char template_name[35];
+    char template_name[36];
     char data_source[30];
     char *gas;
     long length;
@@ -342,14 +342,15 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         return -1;
     }
     /* template should match the pattern "GEOMS-TE-PANDORA-DIRECTSUN-GAS-xxx" */
+    if (coda_cursor_read_string(&cursor, template_name, 36) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    length = strlen(template_name);
     if (length != 34)
     {
         harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid string length for DATA_TEMPLATE global attribute");
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, template_name, 35) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     if (strncmp(template_name, "GEOMS-TE-PANDORA-DIRECTSUN-GAS-", 31) != 0)
