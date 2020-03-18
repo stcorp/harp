@@ -230,7 +230,7 @@
 <p>The resulting value for each time/lat/lon cell will be the average of all values for that cell. This will be a weighted average in case an area binning is performed and a straight average for point binning. Variables with multiple dimensions will have all elements in its sub dimensions averaged on an element by element basis (i.e. sub dimensions will be retained).</p>
 <p>Variables that have a time dimension but no unit (or using a string data type) will be removed. Any existing count or weight variables will also be removed.</p>
 <p>All variables that are binned are converted to a double data type. Cells that have no samples will end up with a NaN value.</p>
-<p>A ‘count’ variable will be added to the product that will contain the number of samples per time bin. In addition, a ‘weight’ variable will be added that will contain the sum of weights for the contribution to each cell. If a variable contained NaN values then a variable specific weight variable will be create with only the sum of weights for the non-NaN entries.</p>
+<p>A ‘count’ variable will be added to the product that will contain the number of samples per time bin. In addition, a ‘weight’ variable will be added that will contain the sum of weights for the contribution to each cell. If a variable contained NaN values then a variable specific weight variable will be created with only the sum of weights for the non-NaN entries.</p>
 <p>Axis variables for the time dimension such as datetime, datetime_length, datetime_start, and datetime_stop will only be binned in the time dimension (and will not gain a latitude or longitude dimension).</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>

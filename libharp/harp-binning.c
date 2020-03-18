@@ -2057,7 +2057,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
  *
  * A 'count' variable will be added to the product that will contain the number of samples per time bin.
  * In addition, a 'weight' variable will be added that will contain the sum of weights for the contribution to each cell.
- * If a variable contained NaN values then a variable specific weight variable will be create with only the sum of weights
+ * If a variable contained NaN values then a variable specific weight variable will be created with only the sum of weights
  * for the non-NaN entries.
  *
  * Axis variables for the time dimension such as datetime, datetime_length, datetime_start, and datetime_stop will only
