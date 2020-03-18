@@ -1002,7 +1002,7 @@ static int add_missing_count_and_weight_variables(harp_product *product, harp_pr
                     if (variable->num_dimensions < weight_variable->num_dimensions)
                     {
                         harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                                       "invalid variable '%s' (should be have same initial dimensions as 'weight')",
+                                       "invalid variable '%s' (should have same initial dimensions as 'weight')",
                                        variable->name);
                         return -1;
                     }
@@ -1011,7 +1011,7 @@ static int add_missing_count_and_weight_variables(harp_product *product, harp_pr
                         if (variable->dimension_type[j] != weight_variable->dimension_type[j])
                         {
                             harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                                           "invalid variable '%s' (should be have same initial dimensions as 'weight')",
+                                           "invalid variable '%s' (should have same initial dimensions as 'weight')",
                                            variable->name);
                             return -1;
                         }
