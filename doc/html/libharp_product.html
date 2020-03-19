@@ -199,7 +199,7 @@
 <p>Variables that have a time dimension but no unit (or using a string data type) will be removed. The exception are count and weight variables, which will be summed.</p>
 <p>All variables that are binned (except existing count/weight variables) are converted to a double data type. Bins that have no samples will end up with a NaN value.</p>
 <p>If the product did not already have a ‘count’ variable then a ‘count’ variable will be added to the product that will contain the number of samples per bin.</p>
-<p>Only non-NaN values will contribute to a bin. If there are NaN values then a separate variable-specific count variable will be created that will contain the number of non-NaN values that contributed to each bin. This count variable will have the same dimensions as the variable it provides the count for.</p>
+<p>Only non-NaN values will contribute to a bin. If there are NaN values and there is not already a variable-specific count or weight variable for that variable, then a separate variable-specific count variable will be created that will contain the number of non-NaN values that contributed to each bin. This count variable will have the same dimensions as the variable it provides the count for.</p>
 <p>For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains the magnitude of the sum of the unit vectors that was used to calculate the angle average.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>

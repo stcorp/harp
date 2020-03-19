@@ -1369,8 +1369,8 @@ static int find_matching_cells_for_points(harp_variable *latitude, harp_variable
 /** Bin the product's variables.
  * This will bin all variables in the time dimension. Each time sample will be put in the bin defined by bin_index.
  * All variables with a time dimension will then be resampled using these bins.
- * The resulting value for each variable will be the average of all values for the bin (using existing count or weight variables
- * as weighting factors where available).
+ * The resulting value for each variable will be the average of all values for the bin (using existing count or weight
+ * variables as weighting factors where available).
  * Variables with multiple dimensions will have all elements in the sub dimensions averaged on an element by element
  * basis.
  *
@@ -1383,9 +1383,10 @@ static int find_matching_cells_for_points(harp_variable *latitude, harp_variable
  * If the product did not already have a 'count' variable then a 'count' variable will be added to the product that
  * will contain the number of samples per bin.
  *
- * Only non-NaN values will contribute to a bin. If there are NaN values then a separate variable-specific count
- * variable will be created that will contain the number of non-NaN values that contributed to each bin. This
- * count variable will have the same dimensions as the variable it provides the count for.
+ * Only non-NaN values will contribute to a bin. If there are NaN values and there is not already a variable-specific
+ * count or weight variable for that variable, then a separate variable-specific count variable will be created that
+ * will contain the number of non-NaN values that contributed to each bin. This count variable will have the same
+ * dimensions as the variable it provides the count for.
  *
  * For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains
  * the magnitude of the sum of the unit vectors that was used to calculate the angle average.
@@ -2053,12 +2054,13 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
  * Variables that have a time dimension but no unit (or using a string data type) will be removed.
  * Any existing count or weight variables will also be removed.
  *
- * All variables that are binned are converted to a double data type. Cells that have no samples will end up with a NaN value.
+ * All variables that are binned are converted to a double data type. Cells that have no samples will end up with a NaN
+ * value.
  *
  * A 'count' variable will be added to the product that will contain the number of samples per time bin.
- * In addition, a 'weight' variable will be added that will contain the sum of weights for the contribution to each cell.
- * If a variable contained NaN values then a variable specific weight variable will be created with only the sum of weights
- * for the non-NaN entries.
+ * In addition, a 'weight' variable will be added that will contain the sum of weights for the contribution to each
+ * cell. If a variable contained NaN values then a variable specific weight variable will be created with only the sum
+ * of weights for the non-NaN entries.
  *
  * Axis variables for the time dimension such as datetime, datetime_length, datetime_start, and datetime_stop will only
  * be binned in the time dimension (and will not gain a latitude or longitude dimension).
