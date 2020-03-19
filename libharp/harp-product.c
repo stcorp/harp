@@ -999,24 +999,27 @@ static int add_missing_count_and_weight_variables(harp_product *product, harp_pr
 
                 if (length > 7 && strcmp(&variable->name[length - 7], "_weight") == 0)
                 {
+                    int same_dimensions = 1;
+
+                    /* Ignore this variable if it does not match the dimensions of the weight variable */
+                    /* (e.g. it is a weight variable linked to an angle variable, which will never be 'missing') */
                     if (variable->num_dimensions < weight_variable->num_dimensions)
                     {
-                        harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                                       "invalid variable '%s' (should have same initial dimensions as 'weight')",
-                                       variable->name);
-                        return -1;
+                        same_dimensions = 0;
                     }
-                    for (j = 0; j < weight_variable->num_dimensions; j++)
+                    else
                     {
-                        if (variable->dimension_type[j] != weight_variable->dimension_type[j])
+                        for (j = 0; j < weight_variable->num_dimensions; j++)
                         {
-                            harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
-                                           "invalid variable '%s' (should have same initial dimensions as 'weight')",
-                                           variable->name);
-                            return -1;
+                            if (variable->dimension_type[j] != weight_variable->dimension_type[j])
+                            {
+                                same_dimensions = 0;
+                                break;
+                            }
                         }
                     }
-                    if (!harp_product_has_variable(product, variable->name))
+
+                    if (!harp_product_has_variable(product, variable->name) && same_dimensions)
                     {
                         harp_variable *new_variable;
 
@@ -1119,15 +1122,19 @@ LIBHARP_API int harp_product_append(harp_product *product, harp_product *other_p
     }
 
     /* now check if both products have the same variables */
-    if (product->num_variables != other_product->num_variables)
-    {
-        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "products don't have the same number of variables");
-        return -1;
-    }
     for (i = 0; i < product->num_variables; i++)
     {
         variable = product->variable[i];
         if (!harp_product_has_variable(other_product, variable->name))
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "products don't both have variable '%s'", variable->name);
+            return -1;
+        }
+    }
+    for (i = 0; i < other_product->num_variables; i++)
+    {
+        variable = other_product->variable[i];
+        if (!harp_product_has_variable(product, variable->name))
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "products don't both have variable '%s'", variable->name);
             return -1;

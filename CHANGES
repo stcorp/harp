@@ -1,3 +1,6 @@
+* Fixed incorrect "invalid variable" error on weight variables for angular
+  quantities when performing a harpmerge.
+
 * Updates to product ingestions:
   - GOMOS L1 Limb: fixed unit of wavelength_photon_radiance (and uncertainty)
     and documented conversion algorithm
