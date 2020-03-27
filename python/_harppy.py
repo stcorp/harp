@@ -49,9 +49,11 @@ __all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensi
            "get_encoding", "set_encoding", "version", "import_product", "export_product", "concatenate",
            "execute_operations", "convert_unit", "to_dict"]
 
+
 class Error(Exception):
     """Exception base class for all HARP Python interface errors."""
     pass
+
 
 class CLibraryError(Error):
     """Exception raised when an error occurs inside the HARP C library.
@@ -77,12 +79,14 @@ class CLibraryError(Error):
     def __str__(self):
         return self.strerror
 
+
 class UnsupportedTypeError(Error):
     """Exception raised when unsupported types are encountered, either on the Python
     or on the C side of the interface.
 
     """
     pass
+
 
 class UnsupportedDimensionError(Error):
     """Exception raised when unsupported dimensions are encountered, either on the
@@ -91,6 +95,7 @@ class UnsupportedDimensionError(Error):
     """
     pass
 
+
 class NoDataError(Error):
     """Exception raised when the product returned from an import contains no variables,
     or variables without data.
@@ -98,6 +103,7 @@ class NoDataError(Error):
     """
     def __init__(self):
         super(NoDataError, self).__init__("product contains no variables, or variables without data")
+
 
 class Variable(object):
     """Python representation of a HARP variable.
@@ -192,6 +198,7 @@ class Variable(object):
                 print(str(self.data), file=stream)
 
         return stream.getvalue()
+
 
 class Product(object):
     """Python representation of a HARP product.
@@ -336,6 +343,7 @@ class Product(object):
 
         return stream.getvalue()
 
+
 def _get_c_library_filename():
     """Return the filename of the HARP shared library depending on the current
     platform.
@@ -361,6 +369,7 @@ def _get_c_library_filename():
     # otherwise assume the library to be in the parent library directory
     return os.path.normpath(os.path.join(os.path.dirname(__file__), "../../..", library_name))
 
+
 def _get_filesystem_encoding():
     """Return the encoding used by the filesystem."""
     from sys import getdefaultencoding as _getdefaultencoding, getfilesystemencoding as _getfilesystemencoding
@@ -370,6 +379,7 @@ def _get_filesystem_encoding():
         encoding = _getdefaultencoding()
 
     return encoding
+
 
 def _init():
     """Initialize the HARP Python interface."""
@@ -449,6 +459,7 @@ def _init():
             _lib.harp_type_string: "string"
         }
 
+
 def _dict_iteritems(dictionary):
     """Get an iterator or view on the items of the specified dictionary.
 
@@ -458,6 +469,7 @@ def _dict_iteritems(dictionary):
         return dictionary.iteritems()
     except AttributeError:
         return dictionary.items()
+
 
 def _get_py_dimension_type(dimension_type):
     """Return the dimension name corresponding to the specified C dimension type
@@ -469,6 +481,7 @@ def _get_py_dimension_type(dimension_type):
     except KeyError:
         raise UnsupportedDimensionError("unsupported C dimension type code '%d'" % dimension_type)
 
+
 def _get_c_dimension_type(dimension_type):
     """Return the C dimension type code corresponding to the specified dimension
     name.
@@ -479,12 +492,14 @@ def _get_c_dimension_type(dimension_type):
     except KeyError:
         raise UnsupportedDimensionError("unsupported dimension %r" % dimension_type)
 
+
 def _get_py_data_type(data_type):
     """Return the Python type corresponding to the specified C data type code."""
     try:
         return _py_data_type[data_type]
     except KeyError:
         raise UnsupportedTypeError("unsupported C data type code '%d'" % data_type)
+
 
 def _get_c_data_type(value):
     """Return the C data type code corresponding to the specified variable data
@@ -534,12 +549,14 @@ def _get_c_data_type(value):
     else:
         raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
 
+
 def _get_c_data_type_name(data_type):
     """Return the canonical name for the specified C data type code."""
     try:
         return _c_data_type_name[data_type]
     except KeyError:
         raise UnsupportedTypeError("unsupported C data type code '%d'" % data_type)
+
 
 def _c_can_cast(c_data_type_src, c_data_type_dst):
     """Returns True if the source C data type can be cast to the destination C data
@@ -571,6 +588,7 @@ def _c_can_cast(c_data_type_src, c_data_type_dst):
     else:
         return False
 
+
 def _encode_string_with_encoding(string, encoding="utf-8"):
     """Encode a unicode string using the specified encoding.
 
@@ -597,6 +615,7 @@ def _encode_string_with_encoding(string, encoding="utf-8"):
             raise Error("unknown encoding '%s'" % encoding)
     except UnicodeEncodeError:
         raise Error("cannot encode '%s' using encoding '%s'" % (string, encoding))
+
 
 def _decode_string_with_encoding(string, encoding="utf-8"):
     """Decode a byte string using the specified encoding.
@@ -628,6 +647,7 @@ def _decode_string_with_encoding(string, encoding="utf-8"):
     except UnicodeEncodeError:
         raise Error("cannot decode '%s' using encoding '%s'" % (string, encoding))
 
+
 def _encode_path(path):
     """Encode the input unicode path using the filesystem encoding.
 
@@ -644,6 +664,7 @@ def _encode_path(path):
         return _encode_string_with_encoding(path, _get_filesystem_encoding())
     else:
         raise TypeError("path must be bytes or str, not %r" % path.__class__.__name__)
+
 
 def _encode_string(string):
     """Encode the input unicode string using the package default encoding.
@@ -662,6 +683,7 @@ def _encode_string(string):
     else:
         raise TypeError("string must be bytes or str, not %r" % string.__class__.__name__)
 
+
 def _decode_string(string):
     """Decode the input byte string using the package default encoding.
 
@@ -678,6 +700,7 @@ def _decode_string(string):
     else:
         raise TypeError("string must be bytes or str, not %r" % string.__class__.__name__)
 
+
 def _format_data_type(data):
     """Return the string representation of the C data type that would be used to
     store the specified data, or "<invalid>" if the specified data is of an
@@ -688,6 +711,7 @@ def _format_data_type(data):
         return _get_c_data_type_name(_get_c_data_type(data))
     except UnsupportedTypeError:
         return "<invalid>"
+
 
 def _format_dimensions(dimension, data):
     """Construct a formatted string from the specified dimensions and data that
@@ -712,6 +736,7 @@ def _format_dimensions(dimension, data):
 
     return stream.getvalue()
 
+
 def _import_scalar(c_data_type, c_data):
     if c_data_type == _lib.harp_type_int8:
         return c_data.int8_data
@@ -726,6 +751,7 @@ def _import_scalar(c_data_type, c_data):
 
     raise UnsupportedTypeError("unsupported C data type code '%d'" % c_data_type)
 
+
 def _import_array(c_data_type, c_num_elements, c_data):
     if c_data_type == _lib.harp_type_string:
         data = numpy.empty((c_num_elements,), dtype=numpy.object)
@@ -738,6 +764,7 @@ def _import_array(c_data_type, c_num_elements, c_data):
     # method incurs a copy.
     c_data_buffer = _ffi.buffer(c_data.ptr, c_num_elements * _lib.harp_get_size_for_type(c_data_type))
     return numpy.copy(numpy.frombuffer(c_data_buffer, dtype=_get_py_data_type(c_data_type)))
+
 
 def _import_variable(c_variable):
     # Import variable data.
@@ -768,6 +795,7 @@ def _import_variable(c_variable):
 
     return variable
 
+
 def _import_product(c_product):
     product = Product()
 
@@ -786,6 +814,7 @@ def _import_product(c_product):
 
     return product
 
+
 def _export_scalar(data, c_data_type, c_data):
     if c_data_type == _lib.harp_type_int8:
         c_data.int8_data = data
@@ -799,6 +828,7 @@ def _export_scalar(data, c_data_type, c_data):
         c_data.double_data = data
     else:
         raise UnsupportedTypeError("unsupported C data type code '%d'" % c_data_type)
+
 
 def _export_array(data, c_variable):
     if c_variable.data_type != _lib.harp_type_string:
@@ -819,6 +849,7 @@ def _export_array(data, c_variable):
         assert(c_variable.num_elements == 1)
         if _lib.harp_variable_set_string_data_element(c_variable, 0, _encode_string(data)) != 0:
             raise CLibraryError()
+
 
 def _export_variable(name, variable, c_product):
     data = getattr(variable, "data", None)
@@ -869,9 +900,9 @@ def _export_variable(name, variable, c_product):
         _lib.harp_variable_delete(c_variable_ptr[0])
         raise CLibraryError()
 
-    # The C variable has been successfully added to the C product. Therefore, the memory management of the C variable is
-    # tied to the life time of the C product. If an error occurs, the memory occupied by the C variable will be freed
-    # along with the C product.
+    # The C variable has been successfully added to the C product. Therefore, the memory management of the C variable
+    # is tied to the life time of the C product. If an error occurs, the memory occupied by the C variable will be
+    # freed along with the C product.
     c_variable = c_variable_ptr[0]
 
     # Copy data into the C variable.
@@ -937,8 +968,10 @@ def _export_variable(name, variable, c_product):
         pass
     else:
         if enum and _lib.harp_variable_set_enumeration_values(c_variable, len(enum),
-                                                              [_ffi.new("char[]", _encode_string(name)) for name in enum]) != 0:
+                                                              [_ffi.new("char[]",
+                                                               _encode_string(name)) for name in enum]) != 0:
             raise CLibraryError()
+
 
 def _export_product(product, c_product):
     # Export product attributes.
@@ -965,6 +998,7 @@ def _export_product(product, c_product):
         except Error as _error:
             raise Error("variable '%r' could not be exported (%s)" % (name, str(_error)))
 
+
 def _update_history(product, command):
     line = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     line += " [harp-%s] " % (version())
@@ -974,12 +1008,14 @@ def _update_history(product, command):
     except AttributeError:
         product.history = line
 
+
 def get_encoding():
     """Return the encoding used to convert between unicode strings and C strings
     (only relevant when using Python 3).
 
     """
     return _encoding
+
 
 def set_encoding(encoding):
     """Set the encoding used to convert between unicode strings and C strings
@@ -990,9 +1026,11 @@ def set_encoding(encoding):
 
     _encoding = encoding
 
+
 def version():
     """Return the version of the HARP C library."""
     return _decode_string(_ffi.string(_lib.libharp_version))
+
 
 def to_dict(product):
     """Convert a Product to an OrderedDict.
@@ -1025,6 +1063,7 @@ def to_dict(product):
             pass
 
     return dictionary
+
 
 def import_product(filename, operations="", options="", reduce_operations="", post_operations=""):
     """Import a product from a file.
@@ -1093,7 +1132,7 @@ def import_product(filename, operations="", options="", reduce_operations="", po
                 else:
                     if merged_product_ptr is None:
                         merged_product_ptr = c_product_ptr
-                        # if this remains the only product then make sure it still looks like it was the result of a merge
+                        # if this remains the only product, make sure it still looks like it was the result of a merge
                         if _lib.harp_product_append(merged_product_ptr[0], _ffi.NULL) != 0:
                             raise CLibraryError()
                     else:
@@ -1140,7 +1179,6 @@ def import_product(filename, operations="", options="", reduce_operations="", po
 
         return product
 
-
     c_product_ptr = _ffi.new("harp_product **")
 
     # Import the product as a C product.
@@ -1170,6 +1208,7 @@ def import_product(filename, operations="", options="", reduce_operations="", po
 
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
+
 
 def export_product(product, filename, file_format="netcdf", operations="", hdf5_compression=0):
     """Export a HARP compliant product.
@@ -1263,11 +1302,11 @@ def concatenate(products):
     variable_names = []
     for product in products:
         for name in product:
-            if not name in variable_names and name != "index":
+            if name not in variable_names and name != "index":
                 variable_names.append(name)
     for name in variable_names:
         for product in products:
-            if not name in product:
+            if name not in product:
                 raise Error("not all products contain variable '%s'" % (name,))
 
     for product in products:
@@ -1276,7 +1315,7 @@ def concatenate(products):
     for name in variable_names:
         for product in products:
             source_variable = product[name]
-            if not name in target_product:
+            if name not in target_product:
                 target_variable = Variable(source_variable.data, source_variable.dimension)
                 if hasattr(source_variable, 'unit'):
                     target_variable.unit = source_variable.unit
@@ -1336,6 +1375,7 @@ def execute_operations(products, operations="", post_operations=""):
                         raise CLibraryError()
                 except:
                     _lib.harp_product_delete(c_product_ptr[0])
+                    raise
 
                 if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
                     _lib.harp_product_delete(c_product_ptr[0])

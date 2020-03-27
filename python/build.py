@@ -51,11 +51,14 @@ except ImportError:
     except ImportError:
         from io import StringIO
 
+
 class Error(Exception):
     pass
 
+
 class SyntaxError(Error):
     pass
+
 
 def read_header_file(filename):
     cdefs = StringIO()
@@ -75,7 +78,7 @@ def read_header_file(filename):
                 continue
 
             # Remove LIBHARP_API prefix.
-            line = re.sub("^\s*LIBHARP_API\s*", "", line)
+            line = re.sub(r"^\s*LIBHARP_API\s*", "", line)
 
             # Remove brackets from #define statements, since in ABI mode cffi only accepts #define followed by a numeric
             # constant.
@@ -105,11 +108,13 @@ def read_header_file(filename):
 
     return cdefs.getvalue()
 
+
 def main(header_path, output_path):
     ffi = cffi.FFI()
     ffi.set_source("_harpc", None)
     ffi.cdef(read_header_file(header_path))
     ffi.emit_python_code(output_path)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
