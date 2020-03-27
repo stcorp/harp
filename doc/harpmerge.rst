@@ -24,6 +24,12 @@ the time dimension and storing the result into a single output file.
                   more details.
                   Operations will be performed before a product is appended.
 
+              -ar, --reduce-operations <operation list>
+                  List of operations to apply after each append.
+                  This advanced option allows for memory efficient application
+                  of time reduction operations (such as bin()) that would
+                  normally be provided as part of the post operations.
+
                -ap, --post-operations <operation list>
                    List of operations to apply to the merged product.
                    An operation list needs to be provided as a single expression.

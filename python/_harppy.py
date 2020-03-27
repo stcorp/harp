@@ -1026,7 +1026,7 @@ def to_dict(product):
 
     return dictionary
 
-def import_product(filename, operations="", options="", post_operations=""):
+def import_product(filename, operations="", options="", reduce_operations="", post_operations=""):
     """Import a product from a file.
 
     This will first try to import the file as an HDF4, HDF5, or netCDF file that
@@ -1049,6 +1049,13 @@ def import_product(filename, operations="", options="", post_operations=""):
     options -- Ingestion module specific options; should be specified as a semi-
                colon separated string of key=value pairs; only used if a file is not
                in HARP format.
+    reduce_operations -- Actions to apply after each append; should be specified as a
+                       semi-colon separated string of operations;
+                       these operations will only be applied if the filename argument is
+                       a file pattern or a list of filenames/patterns;
+                       this advanced option allows for memory efficient application
+                       of time reduction operations (such as bin()) that would
+                       normally be provided as part of post_operations.
     post_operations -- Actions to apply after the list of products is merged; should be
                        specified as a semi-colon separated string of operations;
                        these operations will only be applied if the filename argument is
@@ -1083,17 +1090,23 @@ def import_product(filename, operations="", options="", post_operations=""):
                     raise CLibraryError()
                 if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
                     _lib.harp_product_delete(c_product_ptr[0])
-                elif merged_product_ptr is None:
-                    merged_product_ptr = c_product_ptr
-                    # if this remains the only product then make sure it still looks like it was the result of a merge
-                    if _lib.harp_product_append(merged_product_ptr[0], _ffi.NULL) != 0:
-                        raise CLibraryError()
                 else:
-                    try:
-                        if _lib.harp_product_append(merged_product_ptr[0], c_product_ptr[0]) != 0:
+                    if merged_product_ptr is None:
+                        merged_product_ptr = c_product_ptr
+                        # if this remains the only product then make sure it still looks like it was the result of a merge
+                        if _lib.harp_product_append(merged_product_ptr[0], _ffi.NULL) != 0:
                             raise CLibraryError()
-                    finally:
-                        _lib.harp_product_delete(c_product_ptr[0])
+                    else:
+                        try:
+                            if _lib.harp_product_append(merged_product_ptr[0], c_product_ptr[0]) != 0:
+                                raise CLibraryError()
+                        finally:
+                            _lib.harp_product_delete(c_product_ptr[0])
+                    if reduce_operations:
+                        # perform reduction operations on the partially merged product after each append
+                        if _lib.harp_product_execute_operations(merged_product_ptr[0],
+                                                                _encode_string(reduce_operations)) != 0:
+                            raise CLibraryError()
         except:
             if merged_product_ptr is not None:
                 _lib.harp_product_delete(merged_product_ptr[0])
@@ -1118,6 +1131,8 @@ def import_product(filename, operations="", options="", post_operations=""):
                 command += ",operations='{0}'".format(operations)
             if options:
                 command += ",options='{0}'".format(options)
+            if reduce_operations:
+                command += ",reduce_operations='{0}'".format(reduce_operations)
             if post_operations:
                 command += ",post_operations='{0}'".format(post_operations)
             command += ")"

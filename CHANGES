@@ -1,3 +1,6 @@
+* Added support for -ar/--reduce-operations parameter to harpmerge and
+  for reduce_operations parameter to harp.import_product() Python function.
+
 * Fixed incorrect "invalid variable" error on weight variables for angular
   quantities when performing a harpmerge.
 

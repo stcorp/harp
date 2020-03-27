@@ -342,7 +342,7 @@ Functions
 This section describes the functions defined by the HARP Python library.
 
 .. py:function:: harp.import_product(filename, operations="", options="", \
-                                     post_operations="")
+                                     reduce_operations="", post_operations="")
 
    Import a product from a file.
  
@@ -365,6 +365,13 @@ This section describes the functions defined by the HARP Python library.
    :param str options: Ingestion module specific options; should be specified as
                        a semi-colon separated string of key=value pairs; only
                        used if a file is not in HARP format.
+   :param str reduce_operations: Actions to apply after each append; should be specified as a
+                       semi-colon separated string of operations;
+                       these operations will only be applied if the filename argument is
+                       a file pattern or a list of filenames/patterns;
+                       this advanced option allows for memory efficient application
+                       of time reduction operations (such as bin()) that would
+                       normally be provided as part of post_operations.
    :param str post_operations: Actions to apply after the list of products is merged;
                        should be specified as a semi-colon separated string of operations;
                        these operations will only be applied if the filename argument is

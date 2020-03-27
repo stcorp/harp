@@ -76,6 +76,12 @@ static void print_help()
     printf("                more details.\n");
     printf("                Operations will be performed before a product is appended.\n");
     printf("\n");
+    printf("            -ar, --reduce-operations <operation list>\n");
+    printf("                List of operations to apply after each append.\n");
+    printf("                This advanced option allows for memory efficient application\n");
+    printf("                of time reduction operations (such as bin()) that would\n");
+    printf("                normally be provided as part of the post operations.\n");
+    printf("\n");
     printf("            -ap, --post-operations <operation list>\n");
     printf("                List of operations to apply to the merged product.\n");
     printf("                An operation list needs to be provided as a single expression.\n");
@@ -117,7 +123,7 @@ static void print_help()
 }
 
 int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const char *operations, const char *options,
-                  int verbose)
+                  const char *reduce_operations, int verbose)
 {
     int i;
 
@@ -157,6 +163,14 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
                 }
                 harp_product_delete(product);
             }
+            if (reduce_operations != NULL)
+            {
+                /* perform reduction operations on the partially merged product after each append */
+                if (harp_product_execute_operations(*merged_product, reduce_operations) != 0)
+                {
+                    return -1;
+                }
+            }
         }
     }
 
@@ -167,6 +181,7 @@ static int merge(int argc, char *argv[])
 {
     harp_product *merged_product = NULL;
     const char *operations = NULL;
+    const char *reduce_operations = NULL;
     const char *post_operations = NULL;
     const char *options = NULL;
     const char *output_filename = NULL;
@@ -182,6 +197,12 @@ static int merge(int argc, char *argv[])
             argv[i + 1][0] != '-')
         {
             operations = argv[i + 1];
+            i++;
+        }
+        else if ((strcmp(argv[i], "-ar") == 0 || strcmp(argv[i], "--reduce-operations") == 0) && i + 1 < argc &&
+                 argv[i + 1][0] != '-')
+        {
+            reduce_operations = argv[i + 1];
             i++;
         }
         else if ((strcmp(argv[i], "-ap") == 0 || strcmp(argv[i], "--post-operations") == 0) && i + 1 < argc &&
@@ -254,7 +275,7 @@ static int merge(int argc, char *argv[])
             harp_dataset_delete(dataset);
             return -1;
         }
-        if (merge_dataset(&merged_product, dataset, operations, options, verbose) != 0)
+        if (merge_dataset(&merged_product, dataset, operations, options, reduce_operations, verbose) != 0)
         {
             harp_product_delete(merged_product);
             harp_dataset_delete(dataset);
