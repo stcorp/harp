@@ -36,6 +36,7 @@
 #include "harp.h"
 
 #include <assert.h>
+#include <locale.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1448,6 +1449,9 @@ int matchup(int argc, char *argv[])
 {
     collocation_info *info = NULL;
     int i;
+
+    /* set locale to a default one so our use of strtod() works as intended */
+    setlocale(LC_NUMERIC, "C");
 
     if (collocation_info_new(&info) != 0)
     {

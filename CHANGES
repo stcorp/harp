@@ -4,6 +4,10 @@
 * Fixed incorrect "invalid variable" error on weight variables for angular
   quantities when performing a harpmerge.
 
+* Fixed issue where the udunits2 library could not be initialized if the
+  environment had a LC_NUMERIC locale that did not have '.' as decimal
+  separator.
+
 * Updates to product ingestions:
   - GOMOS L1 Limb: fixed unit of wavelength_photon_radiance (and uncertainty)
     and documented conversion algorithm

@@ -33,6 +33,7 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <locale.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -240,15 +241,33 @@ static int unit_system_init(void)
 {
     if (unit_system == NULL)
     {
+        char *oldlocale = NULL;
+
         ut_set_error_message_handler(ut_ignore);
+
+        /* udunits2 uses strtod() for the xml parsing which is locale aware.
+         * We need to make sure that it uses a locale that has the correct decimal separator
+         */
+        oldlocale = strdup(setlocale(LC_NUMERIC, NULL));
+        if (oldlocale == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            return -1;
+        }
+        setlocale(LC_NUMERIC, "C");
 
         unit_system = ut_read_xml(harp_udunits2_xml_path);
         if (unit_system == NULL)
         {
             handle_udunits_error();
             harp_add_error_message(" (%s)", harp_udunits2_xml_path);
+            free(oldlocale);
             return -1;
         }
+
+        setlocale(LC_NUMERIC, oldlocale);
+        free(oldlocale);
     }
 
     return 0;
