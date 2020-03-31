@@ -14,7 +14,7 @@ Current versions used for generating the documentation are:
 - sphinx-autobuild 0.7.1
 - sphinx-rtd-theme 0.4.2
 - breathe 4.11.0
-- doxygen 1.8.16
+- doxygen 1.8.17
 With the following versions for third party dependencies:
 - Babel 2.6.0
 - Jinja2 2.10

@@ -1,5 +1,8 @@
-* Added support for -ar/--reduce-operations parameter to harpmerge and
-  for reduce_operations parameter to harp.import_product() Python function.
+1.10 2020-03-31
+~~~~~~~~~~~~~~~
+
+* Added support for -ar/--reduce-operations parameter in harpmerge and
+  for reduce_operations parameter in harp.import_product() Python function.
 
 * Fixed incorrect "invalid variable" error on weight variables for angular
   quantities when performing a harpmerge.
@@ -7,6 +10,8 @@
 * Fixed issue where the udunits2 library could not be initialized if the
   environment had a LC_NUMERIC locale that did not have '.' as decimal
   separator.
+
+* Fixed issue in name mangling of embedded expat library.
 
 * Updates to product ingestions:
   - GOMOS L1 Limb: fixed unit of wavelength_photon_radiance (and uncertainty)

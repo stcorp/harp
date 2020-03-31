@@ -1,5 +1,5 @@
 # autoconf file for HARP
-AC_INIT([harp],[1.9.2])
+AC_INIT([harp],[1.10])
 AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE(foreign subdir-objects 1.12 -Wall)
 
@@ -181,7 +181,7 @@ AC_CONFIG_FILES([idl/harp_idl.dlm])
 # 6. If any interfaces have been removed or changed since the last public
 #    release, then set age to 0.
 LIBHARP_CURRENT=10
-LIBHARP_REVISION=5
+LIBHARP_REVISION=6
 LIBHARP_AGE=0
 AC_SUBST(LIBHARP_CURRENT)
 AC_SUBST(LIBHARP_REVISION)
