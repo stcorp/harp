@@ -16,6 +16,7 @@
 
 #ifdef HARP_EXPAT_NAME_MANGLE
 
+#define _INTERNAL_trim_to_complete_utf8_characters harp_INTERNAL_trim_to_complete_utf8_characters
 #define XML_DefaultCurrent harp_XML_DefaultCurrent
 #define XML_ErrorString harp_XML_ErrorString
 #define XML_ExpatVersion harp_XML_ExpatVersion
