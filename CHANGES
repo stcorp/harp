@@ -1,3 +1,13 @@
+* Fixed issue where molar mass was incorrectly provided for the species with
+  the shortest matching name. e.g. the molar mass of CO was returned for CO2
+  and of NO for NO2. This impacts vmr <-> mmr conversions for BrO2, COF2, COS,
+  CO2, C2H2O2, H2O2, NOCl, NO2, N2O, N2O5, and all isotopologues (e.g. H2O_161).
+
+* Fixed issue where molar mass linked to variables with a 'surface',
+  'tropospheric', or 'stratospheric' prefix returned 0.
+
+* Fixed error/crash in deriving dry air column vmr from dry air column mmr.
+
 1.10 2020-03-31
 ~~~~~~~~~~~~~~~
 
