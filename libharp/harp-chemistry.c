@@ -207,9 +207,25 @@ harp_chemical_species harp_chemical_species_from_variable_name(const char *varia
         return harp_chemical_species_unknown;
     }
 
+    /* skip any known prefixes */
+    if (strncmp(variable_name, "surface_", 8) == 0)
+    {
+        variable_name = &variable_name[8];
+    }
+    else if (strncmp(variable_name, "tropospheric_", 13) == 0)
+    {
+        variable_name = &variable_name[13];
+    }
+    else if (strncmp(variable_name, "stratospheric_", 14) == 0)
+    {
+        variable_name = &variable_name[14];
+    }
+
     for (i = 0; i < harp_num_chemical_species; i++)
     {
-        if (strncmp(variable_name, chemical_species_names[i], strlen(chemical_species_names[i])) == 0)
+        int length = strlen(chemical_species_names[i]);
+
+        if (strncmp(variable_name, chemical_species_names[i], length) == 0 && variable_name[length] == '_')
         {
             return i;
         }
