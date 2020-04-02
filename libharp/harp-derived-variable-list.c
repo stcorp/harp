@@ -3404,7 +3404,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
 
         /* vmr from mmr */
         if (harp_variable_conversion_new(name_column_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                         num_dimensions, dimension_type, 0, get_vmr_from_mmr, &conversion) != 0)
+                                         num_dimensions, dimension_type, 0, get_vmr_from_mmr_dry, &conversion) != 0)
         {
             return -1;
         }
@@ -3517,7 +3517,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
 
         /* vmr from mmr */
         if (harp_variable_conversion_new(name_strato_column_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                         num_dimensions, dimension_type, 0, get_vmr_from_mmr, &conversion) != 0)
+                                         num_dimensions, dimension_type, 0, get_vmr_from_mmr_dry, &conversion) != 0)
         {
             return -1;
         }
@@ -3631,7 +3631,7 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
 
         /* vmr from mmr */
         if (harp_variable_conversion_new(name_tropo_column_vmr_dry, harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
-                                         num_dimensions, dimension_type, 0, get_vmr_from_mmr, &conversion) != 0)
+                                         num_dimensions, dimension_type, 0, get_vmr_from_mmr_dry, &conversion) != 0)
         {
             return -1;
         }
