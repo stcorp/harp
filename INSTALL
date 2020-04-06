@@ -441,9 +441,10 @@ Feedback
 --------
 
 If you encounter any problems while trying to build, install or run one or more
-components of the HARP package you can send an e-mail to:
+components of the HARP package then create a topic on the Atmospheric Toolbox
+Forum:
 
-    harp@stcorp.nl
+    https://forum.atmospherictoolbox.org/
 
 If you are using the source package on a Unix based system, please provide a
 copy of the config.log file that is created when you run ``./configure`` and a
