@@ -390,9 +390,6 @@ LIBHARP_API int harp_ismininf(double x);
 LIBHARP_API double harp_plusinf(void);
 LIBHARP_API double harp_mininf(void);
 
-LIBHARP_API void harp_str64(int64_t a, char *s);
-LIBHARP_API void harp_str64u(uint64_t a, char *s);
-
 LIBHARP_API const char *harp_basename(const char *path);
 
 LIBHARP_API long harp_get_size_for_type(harp_data_type data_type);

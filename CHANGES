@@ -3,6 +3,9 @@
   and of NO for NO2. This impacts vmr <-> mmr conversions for BrO2, COF2, COS,
   CO2, C2H2O2, H2O2, NOCl, NO2, N2O, N2O5, and all isotopologues (e.g. H2O_161).
 
+* Removed irrelevant harp_str64() and harp_str64u() functions (HARP does not
+  support 64bit integers).
+
 * Fixed issue where molar mass linked to variables with a 'surface',
   'tropospheric', or 'stratospheric' prefix returned 0.
 

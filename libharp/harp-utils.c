@@ -822,54 +822,6 @@ LIBHARP_API double harp_mininf(void)
     return mkInf.as_double;
 }
 
-/** Write 64 bit signed integer to a string.
- * The string \a s will be 0 terminated.
- * \param a  A signed 64 bit integer value.
- * \param s  A character buffer that is at least 21 bytes long.
- */
-LIBHARP_API void harp_str64(int64_t a, char *s)
-{
-    if (a < 0)
-    {
-        s[0] = '-';
-        harp_str64u((uint64_t)(-a), &s[1]);
-    }
-    else
-    {
-        harp_str64u((uint64_t)a, s);
-    }
-}
-
-/** Write 64 bit unsigned integer to a string.
- * The string \a s will be 0 terminated.
- * \param a  An unsigned 64 bit integer value.
- * \param s  A character buffer that is at least 21 bytes long.
- */
-LIBHARP_API void harp_str64u(uint64_t a, char *s)
-{
-    if (a <= 4294967295UL)
-    {
-        sprintf(s, "%ld", (long)a);
-    }
-    else
-    {
-        long a1, a2;
-
-        a1 = (long)(a % 100000000);
-        a /= 100000000;
-        a2 = (long)(a % 100000000);
-        a /= 100000000;
-        if (a != 0)
-        {
-            sprintf(s, "%ld%08ld%08ld", (long)a, a2, a1);
-        }
-        else
-        {
-            sprintf(s, "%ld%08ld", a2, a1);
-        }
-    }
-}
-
 /**
  * @}
  */
