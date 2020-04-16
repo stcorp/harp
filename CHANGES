@@ -13,6 +13,9 @@
 
 * Fixed error/crash in deriving dry air column vmr from dry air column mmr.
 
+* Updates to product ingestions:
+  - GOME-2 L2: add support for SO2 columns at all plume heights
+
 1.10 2020-03-31
 ~~~~~~~~~~~~~~~
 

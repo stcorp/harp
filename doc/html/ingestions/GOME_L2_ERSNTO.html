@@ -710,7 +710,11 @@
 </tr>
 <tr class="row-odd"><td>corrected</td>
 <td>true</td>
-<td>include corrected VCD and/or ESC (corrected=true) or uncorrected VCD/ESC (default); this only applies to the species for which additional detailed results are ingested (detailed_results is set to one of BrO, H2O, HCHO, NO2, O3, or OClO)</td>
+<td>include corrected VCD and/or ESC (corrected=true) or uncorrected VCD/ESC (default); this only applies to the species for which additional detailed results are ingested (detailed_results is set to one of BrO, H2O, HCHO, NO2, O3, SO2, or OClO); for SO2 this option is only applicable for the 6km height (other heights always provide corrected columns)</td>
+</tr>
+<tr class="row-even"><td>so2_column</td>
+<td>15km, 6km, 2.5km, 1km</td>
+<td>plume height retrieval version of the SO2 column to ingest (default is 6km); only applicable if detailed_results is set to SO2</td>
 </tr>
 </tbody>
 </table>
@@ -1132,255 +1136,339 @@
 <tr class="row-odd"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value ‘OClO’; validity = (QualityFlags &amp; 15) + 16 * (OClO_Flag &amp; 7)</td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>SO2_column_number_density</strong></td>
+<tr class="row-even"><td rowspan="12"><strong>SO2_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results!=SO2 or ((so2_column=6km or so2_column unset) and corrected unset)</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>unit is converted from DU to molec/cm2</td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>SO2_column_number_density_uncertainty</strong></td>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=15km</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected[:,0]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and (so2_column=6km or so2_column unset) and corrected unset</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected[:,1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=2.5km</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected[:,2]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=1km and CODA product version &gt;= 3</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected[:,3]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="15"><strong>SO2_column_number_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>CODA product version &lt; 3</td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>(detailed_results!=SO2 or ((so2_column=6km or so2_column unset) and corrected unset)) and CODA product version &lt; 3</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]; unit is converted from DU to molec/cm2</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>product version &gt;= 3</td>
+<tr class="row-even"><td><em>condition</em></td>
+<td>(detailed_results!=SO2 or ((so2_column=6km or so2_column unset) and corrected unset)) and CODA product version &gt;= 3</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/TOTAL_COLUMNS/SO2_Error[]</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>unit is converted from DU to molec/cm2</td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>SO2_column_number_density_validity</strong></td>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=15km</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,0]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and (so2_column=6km or so2_column unset) and corrected unset</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,1]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=2.5km</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,2]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=1km and CODA product version &gt;= 3</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,3]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><strong>SO2_column_number_density_validity</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
+<tr class="row-even"><td><em>condition</em></td>
 <td>CODA product version &lt; 3</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/SO2/SO2_Flag</strong></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
+<tr class="row-even"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value ‘SO2’; validity = (QualityFlags &amp; 15) + 16 * (SO2_Flag &amp; 15)</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>CODA product version &gt;= 3</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/QualityFlags[,window], /META_DATA/MainSpecies[], /DETAILED_RESULTS/SO2/SO2_Flag, /DETAILED_RESULTS/SO2/SO2_Volcano_Flag</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value ‘SO2’; validity = (QualityFlags &amp; 15) + 16 * (SO2_Flag &amp; 15) + (SO2_Volcano_Flag &gt; 0 ? 256 * 2^(SO2_Volcano_Flag - 1) : 0)</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>BrO_column_number_density_amf</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>BrO_column_number_density_amf</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>detailed_results=BrO</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value ‘BrO’</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>BrO_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>BrO_column_number_density_amf_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>detailed_results=BrO</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘BrO’</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>H2O_column_number_density_amf</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>H2O_column_number_density_amf</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>detailed_results=H2O</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value ‘H2O’</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>H2O_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>H2O_column_number_density_amf_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>detailed_results=H2O</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘H2O’</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>HCHO_column_number_density_amf</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>HCHO_column_number_density_amf</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>detailed_results=HCHO</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value ‘HCHO’</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>HCHO_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>HCHO_column_number_density_amf_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
+<tr class="row-odd"><td><em>condition</em></td>
 <td>detailed_results=HCHO</td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
+<tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘HCHO’</td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>NO2_column_number_density_amf</strong></td>
+<tr class="row-even"><td rowspan="4"><strong>NO2_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=NO2</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value ‘NO2’</td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>NO2_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>detailed_results=NO2</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘NO2’</td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>tropospheric_NO2_column_number_density_amf</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>detailed_results=NO2</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value ‘NO2’</td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>NO2_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>detailed_results=NO2</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘NO2’</td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>tropospheric_NO2_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
 <td>detailed_results=NO2 and CODA product version &gt;= 2</td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/NO2/AMFTropo[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><strong>tropospheric_NO2_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>detailed_results=NO2 and CODA product version &gt;= 2</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTropo_Error[] * 0.01 * AMFTropo[]</td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>O3_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>detailed_results=O3</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value ‘O3’</td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>O3_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>detailed_results=O3</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘O3’</td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>OClO_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>detailed_results=OClO</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value ‘OClO’</td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>OClO_column_number_density_amf_uncertainty</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>detailed_results=OClO</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘OClO’</td>
-</tr>
-<tr class="row-even"><td rowspan="4"><strong>SO2_column_number_density_amf</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>detailed_results=SO2</td>
-</tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
-</tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>window is the index in MainSpecies[] that has the value ‘SO2’</td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>SO2_column_number_density_amf_uncertainty</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>tropospheric_NO2_column_number_density_amf_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
-<td><strong>detailed_results=SO2</strong></td>
+<td><strong>detailed_results=NO2 and CODA product version &gt;= 2</strong></td>
 </tr>
 <tr class="row-even"><td><em>description</em></td>
-<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘SO2’</td>
+<td>derived from the relative error in percent as: AMFTropo_Error[] * 0.01 * AMFTropo[]</td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>O3_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=O3</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value ‘O3’</td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>O3_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=O3</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘O3’</td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>OClO_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=OClO</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>window is the index in MainSpecies[] that has the value ‘OClO’</td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>OClO_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=OClO</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; window is the index in MainSpecies[] that has the value ‘OClO’</td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><strong>SO2_column_number_density_amf</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=15km</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal[:,0]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and (so2_column=6km or so2_column unset)</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal[:,1]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=2.5km</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal[:,2]</strong></td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=1km and CODA product version &gt;= 3</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal[:,3]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="9"><strong>SO2_column_number_density_amf_uncertainty</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=15km</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal_Error[:,0]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and (so2_column=6km or so2_column unset)</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal_Error[:,1]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=2.5km</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal_Error[:,2]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=1km and CODA product version &gt;= 3</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/SO2/AMFTotal_Error[:,3]</strong></td>
 </tr>
 <tr class="row-odd"><td rowspan="6"><strong>BrO_slant_column_number_density</strong></td>
 <td><em>available</em></td>
@@ -1568,12 +1656,12 @@
 <tr class="row-even"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/OClO/ESCCorrected_Error[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>SO2_slant_column_number_density</strong></td>
+<tr class="row-odd"><td rowspan="12"><strong>SO2_slant_column_number_density</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>detailed_results=SO2</td>
+<td>detailed_results!=SO2 or ((so2_column=6km or so2_column unset) and corrected unset)</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]</strong></td>
@@ -1581,12 +1669,36 @@
 <tr class="row-even"><td><em>description</em></td>
 <td>window is the index in MainSpecies[] that has the value ‘SO2’</td>
 </tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=15km</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/ESCCorrected[:,0]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and (so2_column=6km or so2_column unset) and corrected unset</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/ESCCorrected[:,1]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=2.5km</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/ESCCorrected[:,2]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>detailed_results=SO2 and so2_column=1km and CODA product version &gt;= 3</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/DETAILED_RESULTS/BrO/ESCCorrected[:,3]</strong></td>
+</tr>
 <tr class="row-odd"><td rowspan="4"><strong>SO2_slant_column_number_density_uncertainty</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
 <tr class="row-even"><td><em>condition</em></td>
-<td>detailed_results=SO2</td>
+<td>detailed_results=SO2 and (so2_column=6km or so2_column unset) and corrected unset</td>
 </tr>
 <tr class="row-odd"><td><em>path</em></td>
 <td><strong>/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]</strong></td>

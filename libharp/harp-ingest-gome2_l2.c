@@ -56,6 +56,7 @@ typedef struct ingest_info_struct
     int window_for_species[7];
     int detailed_results_type;
     int corrected_column;
+    int so2_column_type;        /* 0: 15km, 1: 6km, 2: 2.5km, 3: 1km (plume heights) */
     harp_array amf_buffer;
     harp_array amf_error_buffer;
     harp_array esc_buffer;
@@ -354,6 +355,95 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
         default:
             assert(0);
             exit(1);
+    }
+
+    return 0;
+}
+
+static int read_dataset_for_subindex(ingest_info *info, const char *path, long num_elements, long subindex,
+                                     harp_array data)
+{
+    coda_cursor cursor;
+    double *buffer;
+    double fill_value;
+    long dim[CODA_MAX_NUM_DIMS];
+    int num_dims;
+    long i;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_array_dim(&cursor, &num_dims, dim) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (num_dims != 2)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '%s' has %d dimensions, expected 2)", path, num_dims);
+        return -1;
+    }
+    if (dim[0] != num_elements)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '%s' has %ld elements for first dimension (expected %ld)", path,
+                       dim[0], num_elements);
+        return -1;
+    }
+    if (subindex >= dim[1])
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '%s' has %ld elements for second dimension (requested %ld)", path,
+                       dim[1], subindex);
+        return -1;
+    }
+
+    buffer = malloc(dim[0] * dim[1] * sizeof(double));
+    if (buffer == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       dim[0] * dim[1] * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    if (coda_cursor_read_double_array(&cursor, buffer, coda_array_ordering_c) != 0)
+    {
+        free(buffer);
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    for (i = 0; i < dim[0]; i++)
+    {
+        data.double_data[i] = buffer[i * dim[1] + subindex];
+    }
+    free(buffer);
+
+    if (coda_cursor_goto(&cursor, "@FillValue[0]") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, &fill_value) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (!coda_isNaN(fill_value))
+    {
+        long i;
+
+        /* Replace fill values with NaN. */
+        for (i = 0; i < num_elements; i++)
+        {
+            if (data.double_data[i] == fill_value)
+            {
+                data.double_data[i] = coda_NaN();
+            }
+        }
     }
 
     return 0;
@@ -1251,32 +1341,43 @@ static int read_so2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_dataset(info, "TOTAL_COLUMNS/SO2", harp_type_double, info->num_main, data) != 0)
+    if (info->detailed_results_type != species_type_so2 || (info->so2_column_type == 1 && !info->corrected_column))
     {
-        return -1;
+        if (read_dataset(info, "TOTAL_COLUMNS/SO2", harp_type_double, info->num_main, data) != 0)
+        {
+            return -1;
+        }
+        return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
     }
-    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
+    return read_dataset_for_subindex(info, "DETAILED_RESULTS/SO2/VCDCorrected", info->num_main, info->so2_column_type,
+                                     data);
 }
 
 static int read_so2_column_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->product_version < 3)
+    if (info->detailed_results_type != species_type_so2 || (info->so2_column_type == 1 && !info->corrected_column))
     {
-        if (read_relative_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data) != 0)
+        if (info->product_version < 3)
         {
-            return -1;
+            if (read_relative_uncertainty(info, "TOTAL_COLUMNS/SO2", "TOTAL_COLUMNS/SO2_Error", info->num_main, data) !=
+                0)
+            {
+                return -1;
+            }
         }
-    }
-    else
-    {
-        if (read_dataset(info, "TOTAL_COLUMNS/SO2_Error", harp_type_double, info->num_main, data) != 0)
+        else
         {
-            return -1;
+            if (read_dataset(info, "TOTAL_COLUMNS/SO2_Error", harp_type_double, info->num_main, data) != 0)
+            {
+                return -1;
+            }
         }
+        return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
     }
-    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
+    return read_dataset_for_subindex(info, "DETAILED_RESULTS/SO2/VCDCorrected_Error", info->num_main,
+                                     info->so2_column_type, data);
 }
 
 static int read_amf_bro(void *user_data, harp_array data)
@@ -1382,14 +1483,16 @@ static int read_amf_so2(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_amf(info, species_type_so2, data);
+    return read_dataset_for_subindex(info, "DETAILED_RESULTS/SO2/AMFTotal", info->num_main,
+                                     info->so2_column_type, data);
 }
 
 static int read_amf_so2_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_amf_error(info, species_type_so2, data);
+    return read_dataset_for_subindex(info, "DETAILED_RESULTS/SO2/AMFTotal_Error", info->num_main,
+                                     info->so2_column_type, data);
 }
 
 static int read_esc_bro(void *user_data, harp_array data)
@@ -1505,7 +1608,12 @@ static int read_esc_so2(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_esc(info, species_type_so2, data);
+    if (info->detailed_results_type != species_type_so2 || (info->so2_column_type == 1 && !info->corrected_column))
+    {
+        return read_esc(info, species_type_so2, data);
+    }
+    return read_dataset_for_subindex(info, "DETAILED_RESULTS/SO2/ESCCorrected", info->num_main,
+                                     info->so2_column_type, data);
 }
 
 static int read_esc_so2_error(void *user_data, harp_array data)
@@ -2154,53 +2262,104 @@ static int parse_options(ingest_info *info, const harp_ingestion_options *option
         }
         if (strcmp(value, "BrO") == 0)
         {
-            if (info->window_for_species[species_type_bro] >= 0)
+            if (info->window_for_species[species_type_bro] < 0)
             {
-                info->detailed_results_type = species_type_bro;
+                harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "detailed results for BrO not available");
+                return -1;
             }
+            info->detailed_results_type = species_type_bro;
         }
         else if (strcmp(value, "H2O") == 0)
         {
-            if (info->window_for_species[species_type_h2o] >= 0)
+            if (info->window_for_species[species_type_h2o] < 0)
             {
-                info->detailed_results_type = species_type_h2o;
+                harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "detailed results for H2O not available");
+                return -1;
             }
+            info->detailed_results_type = species_type_h2o;
         }
         else if (strcmp(value, "HCHO") == 0)
         {
-            if (info->window_for_species[species_type_hcho] >= 0)
+            if (info->window_for_species[species_type_hcho] < 0)
             {
-                info->detailed_results_type = species_type_hcho;
+                harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "detailed results for HCHO not available");
+                return -1;
             }
+            info->detailed_results_type = species_type_hcho;
         }
         else if (strcmp(value, "NO2") == 0)
         {
-            if (info->window_for_species[species_type_no2] >= 0)
+            if (info->window_for_species[species_type_no2] < 0)
             {
-                info->detailed_results_type = species_type_no2;
+                harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "detailed results for NO2 not available");
+                return -1;
             }
+            info->detailed_results_type = species_type_no2;
         }
         else if (strcmp(value, "O3") == 0)
         {
-            if (info->window_for_species[species_type_o3] >= 0)
+            if (info->window_for_species[species_type_o3] < 0)
             {
-                info->detailed_results_type = species_type_o3;
+                harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "detailed results for O3 not available");
+                return -1;
             }
+            info->detailed_results_type = species_type_o3;
         }
         else if (strcmp(value, "OClO") == 0)
         {
-            if (info->window_for_species[species_type_oclo] >= 0)
+            if (info->window_for_species[species_type_oclo] < 0)
             {
-                info->detailed_results_type = species_type_oclo;
+                harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "detailed results for OClO not available");
+                return -1;
             }
+            info->detailed_results_type = species_type_oclo;
         }
         else if (strcmp(value, "SO2") == 0)
         {
-            if (info->window_for_species[species_type_so2] >= 0)
+            if (info->window_for_species[species_type_so2] < 0)
             {
-                info->detailed_results_type = species_type_so2;
+                harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "detailed results for SO2 not available");
+                return -1;
+            }
+            info->detailed_results_type = species_type_so2;
+        }
+
+        if (info->detailed_results_type == species_type_so2)
+        {
+            if (harp_ingestion_options_has_option(options, "so2_column"))
+            {
+                if (harp_ingestion_options_get_option(options, "so2_column", &value) != 0)
+                {
+                    return -1;
+                }
+                /* default is 6km */
+                if (strcmp(value, "15km") == 0)
+                {
+                    info->so2_column_type = 0;
+                }
+                else if (strcmp(value, "2.5km") == 0)
+                {
+                    info->so2_column_type = 2;
+                }
+                else if (strcmp(value, "1km") == 0)
+                {
+                    if (info->product_version < 3)
+                    {
+                        harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'so2_column=1km' "
+                                       "not supported for product version %d", info->product_version);
+                        return -1;
+                    }
+                    info->so2_column_type = 3;
+                }
             }
         }
+        else if (harp_ingestion_options_has_option(options, "so2_column"))
+        {
+            harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'so2_column' requires the "
+                           "'detailed_results' option to be set to SO2");
+            return -1;
+        }
+
 
         if (harp_ingestion_options_has_option(options, "corrected") && info->detailed_results_type >= 0)
         {
@@ -2250,19 +2409,26 @@ static int parse_options(ingest_info *info, const harp_ingestion_options *option
                     /* we will only have detailed results for product_version>=3, so no check needed */
                     break;
                 case species_type_so2:
-                    /* we don't support this because of the 'heights' dimension that SO2 has for VCDCorrected */
-                    harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'corrected' not "
-                                   "supported for SO2");
-                    return -1;
+                    /* we will only have detailed results for product_version>=2, so no check needed */
+                    break;
             }
             info->corrected_column = 1;
         }
     }
-    else if (harp_ingestion_options_has_option(options, "corrected"))
+    else
     {
-        harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'corrected' requires the "
-                       "'detailed_results' option to be set");
-        return -1;
+        if (harp_ingestion_options_has_option(options, "corrected"))
+        {
+            harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'corrected' requires the "
+                           "'detailed_results' option to be set");
+            return -1;
+        }
+        if (harp_ingestion_options_has_option(options, "so2_column"))
+        {
+            harp_set_error(HARP_ERROR_INVALID_INGESTION_OPTION_VALUE, "ingestion option 'so2_column' requires the "
+                           "'detailed_results' option to be set");
+            return -1;
+        }
     }
 
     return 0;
@@ -2324,6 +2490,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product_version = -1;
     info->detailed_results_type = -1;
     info->corrected_column = 0;
+    info->so2_column_type = 1;  /* default is 6km */
     info->amf_buffer.ptr = NULL;
     info->amf_error_buffer.ptr = NULL;
     info->esc_buffer.ptr = NULL;
@@ -2563,6 +2730,13 @@ static int include_oclo_details(void *user_data)
 static int include_so2_details(void *user_data)
 {
     return ((ingest_info *)user_data)->detailed_results_type == species_type_so2;
+}
+
+static int include_so2_esc_error(void *user_data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return info->detailed_results_type == species_type_so2 && info->so2_column_type == 1 && !info->corrected_column;
 }
 
 static int include_pressure(void *user_data)
@@ -2969,7 +3143,20 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    read_so2_column);
     path = "/TOTAL_COLUMNS/SO2[]";
     description = "unit is converted from DU to molec/cm2";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results!=SO2 or ((so2_column=6km or "
+                                         "so2_column unset) and corrected unset)", path, description);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,0]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,1]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
+                                         "so2_column unset) and corrected unset", path, NULL);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,2]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,3]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
+                                         "CODA product version >= 3", path, NULL);
 
     /* SO2_column_number_density_uncertainty */
     description = "uncertainty of the SO2 column number density";
@@ -2980,10 +3167,26 @@ static void register_common_variables(harp_product_definition *product_definitio
     path = "/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]";
     description = "derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]; "
         "unit is converted from DU to molec/cm2";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "CODA product version < 3", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "(detailed_results!=SO2 or ((so2_column=6km or "
+                                         "so2_column unset) and corrected unset)) and CODA product version < 3", path,
+                                         description);
     path = "/TOTAL_COLUMNS/SO2_Error[]";
     description = "unit is converted from DU to molec/cm2";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "product version >= 3", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "(detailed_results!=SO2 or ((so2_column=6km or "
+                                         "so2_column unset) and corrected unset)) and CODA product version >= 3", path,
+                                         description);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,0]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,1]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
+                                         "so2_column unset) and corrected unset", path, NULL);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,2]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,3]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
+                                         "CODA product version >= 3", path, NULL);
 
     /* SO2_column_number_density_validity */
     description = "quality flags for SO2 retrieval";
@@ -3157,9 +3360,18 @@ static void register_common_variables(harp_product_definition *product_definitio
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf",
                                                    harp_type_double, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_so2_details, read_amf_so2);
-    path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
-    description = "window is the index in MainSpecies[] that has the value 'SO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2", path, description);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal[:,0]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal[:,1]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
+                                         "so2_column unset)", path, NULL);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal[:,2]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal[:,3]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
+                                         "CODA product version >= 3", path, NULL);
 
     /* SO2_column_number_density_amf_uncertainty */
     description = "uncertainty of the SO2 air mass factor";
@@ -3167,10 +3379,18 @@ static void register_common_variables(harp_product_definition *product_definitio
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_so2_details, read_amf_so2_error);
-    path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
-    description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
-        "window is the index in MainSpecies[] that has the value 'SO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "detailed_results=SO2", description);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal_Error[:,0]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal_Error[:,1]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
+                                         "so2_column unset)", path, NULL);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal_Error[:,2]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/SO2/AMFTotal_Error[:,3]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
+                                         "CODA product version >= 3", path, NULL);
 
     /* BrO_slant_column_number_density */
     description = "BrO retrieved effective slant column";
@@ -3329,18 +3549,32 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    include_so2_details, read_esc_so2);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results!=SO2 or ((so2_column=6km or "
+                                         "so2_column unset) and corrected unset)", path, description);
+    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,0]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,1]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
+                                         "so2_column unset) and corrected unset", path, NULL);
+    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,2]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
+                                         NULL);
+    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,3]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
+                                         "CODA product version >= 3", path, NULL);
 
     /* SO2_slant_column_number_density_uncertainty */
     description = "uncertainty of the SO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density_uncertainty",
                                                    harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
-                                                   include_so2_details, read_esc_so2_error);
+                                                   include_so2_esc_error, read_esc_so2_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
         "window is the index in MainSpecies[] that has the value 'SO2'";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2", path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
+                                         "so2_column unset) and corrected unset", path, description);
 
     /* O3_effective_temperature */
     description = "fitted ozone temperature";
@@ -3615,6 +3849,7 @@ static void register_scan_variables(harp_product_definition *product_definition,
 static void register_common_options(harp_ingestion_module *module)
 {
     const char *detailed_results_option_values[7] = { "BrO", "H2O", "HCHO", "NO2", "O3", "OClO", "SO2" };
+    const char *so2_column_option_values[4] = { "15km", "6km", "2.5km", "1km" };
     const char *corrected_option_value[1] = { "true" };
     const char *description;
 
@@ -3625,8 +3860,14 @@ static void register_common_options(harp_ingestion_module *module)
     /* corrected VCD/ESC ingestion options */
     description = "include corrected VCD and/or ESC (corrected=true) or uncorrected VCD/ESC (default); "
         "this only applies to the species for which additional detailed results are ingested "
-        "(detailed_results is set to one of BrO, H2O, HCHO, NO2, O3, or OClO)";
+        "(detailed_results is set to one of BrO, H2O, HCHO, NO2, O3, SO2, or OClO); "
+        "for SO2 this option is only applicable for the 6km height (other heights always provide corrected columns)";
     harp_ingestion_register_option(module, "corrected", description, 1, corrected_option_value);
+
+    /* SO2 column type ingestion option */
+    description = "plume height retrieval version of the SO2 column to ingest (default is 6km); "
+        "only applicable if detailed_results is set to SO2";
+    harp_ingestion_register_option(module, "so2_column", description, 4, so2_column_option_values);
 }
 
 static void register_o3mnto_product(void)
