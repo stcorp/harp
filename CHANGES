@@ -1,3 +1,5 @@
+* Add derivations to retrieve column number density from column vmr.
+
 * Fixed issue where molar mass was incorrectly provided for the species with
   the shortest matching name. e.g. the molar mass of CO was returned for CO2
   and of NO for NO2. This impacts vmr <-> mmr conversions for BrO2, COF2, COS,

@@ -2521,6 +2521,44 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         return -1;
     }
 
+    /* column number density from column vmr */
+    if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                     num_dimensions, dimension_type, 0, get_nd_from_vmr, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, name_column_vmr, harp_type_double,
+                                            HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "column_number_density", harp_type_double,
+                                            HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    if (!is_h2o_related)
+    {
+        /* column number density from column vmr dry air */
+        if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY,
+                                         num_dimensions, dimension_type, 0, get_nd_from_vmr, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_vmr_dry, harp_type_double,
+                                                HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "dry_air_column_number_density", harp_type_double,
+                                                HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions, dimension_type, 0) !=
+            0)
+        {
+            return -1;
+        }
+    }
+
     /* column number density from volume mixing ratio and pressure bounds */
     dimension_type[num_dimensions] = harp_dimension_independent;
     if (harp_variable_conversion_new(name_column_nd, harp_type_double, HARP_UNIT_COLUMN_NUMBER_DENSITY, num_dimensions,
