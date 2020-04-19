@@ -3145,16 +3145,16 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "unit is converted from DU to molec/cm2";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results!=SO2 or ((so2_column=6km or "
                                          "so2_column unset) and corrected unset)", path, description);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,0]";
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected[:,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
                                          NULL);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,1]";
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected[:,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
-                                         "so2_column unset) and corrected unset", path, NULL);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,2]";
+                                         "so2_column unset) and corrected=true", path, NULL);
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected[:,2]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
                                          NULL);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected[:,3]";
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected[:,3]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
                                          "CODA product version >= 3", path, NULL);
 
@@ -3175,16 +3175,16 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, NULL, "(detailed_results!=SO2 or ((so2_column=6km or "
                                          "so2_column unset) and corrected unset)) and CODA product version >= 3", path,
                                          description);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,0]";
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected_Error[:,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
                                          NULL);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,1]";
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected_Error[:,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
-                                         "so2_column unset) and corrected unset", path, NULL);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,2]";
+                                         "so2_column unset) and corrected=true", path, NULL);
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected_Error[:,2]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
                                          NULL);
-    path = "/DETAILED_RESULTS/BrO/VCDCorrected_Error[:,3]";
+    path = "/DETAILED_RESULTS/SO2/VCDCorrected_Error[:,3]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
                                          "CODA product version >= 3", path, NULL);
 
@@ -3551,16 +3551,16 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results!=SO2 or ((so2_column=6km or "
                                          "so2_column unset) and corrected unset)", path, description);
-    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,0]";
+    path = "/DETAILED_RESULTS/SO2/ESCCorrected[:,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
                                          NULL);
-    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,1]";
+    path = "/DETAILED_RESULTS/SO2/ESCCorrected[:,1]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and (so2_column=6km or "
-                                         "so2_column unset) and corrected unset", path, NULL);
-    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,2]";
+                                         "so2_column unset) and corrected=true", path, NULL);
+    path = "/DETAILED_RESULTS/SO2/ESCCorrected[:,2]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=2.5km", path,
                                          NULL);
-    path = "/DETAILED_RESULTS/BrO/ESCCorrected[:,3]";
+    path = "/DETAILED_RESULTS/SO2/ESCCorrected[:,3]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=1km and "
                                          "CODA product version >= 3", path, NULL);
 
