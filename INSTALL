@@ -74,8 +74,8 @@ Using GitHub
 HARP is also available as source code directly from GitHub, but this is only
 recommended to be used by users who want to co-develop HARP and it will only
 work on Unix-based systems.
-You will need to have additional software installed and need to peform
-additional steps if you want to build HARP from the GitHub git respository.
+You will need to have additional software installed and need to perform
+additional steps if you want to build HARP from the GitHub git repository.
 
 Additional software that you will need:
   - autoconf + automake + libtool
@@ -116,7 +116,7 @@ Building the source package (Unix)
 
 To build the source package, make sure to download the official HARP source
 package, which is named harp-x.y.z.tar.gz. Don't use the packages called
-'Source code' from GitHub as these are contents of the git respository (see
+'Source code' from GitHub as these are contents of the git repository (see
 'Using GitHub' above).
 
 The HARP source package comes with both an autotools and a CMake build system.
@@ -295,7 +295,7 @@ library and executables:
     variables or add these to your shell startup script, please ask your
     system administrator).
     The variable should be set to ``<IDL_DEFAULT>`` appended with the HARP DLM
-    directory. If, for instance, you have installed HARP un ``/usr/local``
+    directory. If, for instance, you have installed HARP in ``/usr/local``
     then you should set the ``IDL_DLM_PATH`` environment variable to
     ``<IDL_DEFAULT>:/usr/local/lib/harp/idl``.
 
@@ -379,7 +379,7 @@ to install the Anaconda package of HARP.
 For IDL you will have to add ``<HARP installdir>\lib\harp\idl`` to your
 ``DLM_PATH``. You do this by setting an ``IDL_DLM_PATH`` environment variable.
 On Windows open the 'System' control panel of your Windows operating system
-and goto the 'Advanced' tab. Then click on 'Environment Variables' and create a
+and go to the 'Advanced' tab. Then click on 'Environment Variables' and create a
 new system variable with the name ``IDL_DLM_PATH`` and value
 ``<IDL_DEFAULT>;C:\Program Files\HARP\lib\harp\idl``.
 If you have installed HARP in a location different from
@@ -399,7 +399,7 @@ or CODA functions using::
     IDL> SETENV, 'CODA_DEFINITION=/path/to/codadefs/'
     IDL> SETENV, 'UDUNITS2_XML_PATH=/path/to/udunits2.xml'
 
-For MATLAB you will have to start MATLAB and goto the 'Set Path...' menu item
+For MATLAB you will have to start MATLAB and go to the 'Set Path...' menu item
 in the 'File' menu. Here you should add the directory
 ``C:\Program Files\HARP\lib\harp\matlab``. If you have installed HARP in a
 location different from ``C:\Program Files\HARP`` then replace this part of the
@@ -413,7 +413,7 @@ Building the source package (Windows)
 
 To build the source package, make sure to download the official HARP source
 package, which is named ``harp-x.y.z.tar.gz``. Don't use the packages called
-'Source code' from GitHub as these are contents of the git respository (see
+'Source code' from GitHub as these are contents of the git repository (see
 'Using GitHub' above).
 
 The official and only supported build system on Windows is CMake.

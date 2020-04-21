@@ -235,8 +235,8 @@ and <code class="docutils literal notranslate"><span class="pre">cffi</span></co
 <p>HARP is also available as source code directly from GitHub, but this is only
 recommended to be used by users who want to co-develop HARP and it will only
 work on Unix-based systems.
-You will need to have additional software installed and need to peform
-additional steps if you want to build HARP from the GitHub git respository.</p>
+You will need to have additional software installed and need to perform
+additional steps if you want to build HARP from the GitHub git repository.</p>
 <dl class="docutils">
 <dt>Additional software that you will need:</dt>
 <dd><ul class="first last simple">
@@ -276,7 +276,7 @@ co-development of HARP.</p>
 <h2>Building the source package (Unix)</h2>
 <p>To build the source package, make sure to download the official HARP source
 package, which is named harp-x.y.z.tar.gz. Don’t use the packages called
-‘Source code’ from GitHub as these are contents of the git respository (see
+‘Source code’ from GitHub as these are contents of the git repository (see
 ‘Using GitHub’ above).</p>
 <p>The HARP source package comes with both an autotools and a CMake build system.
 For Unix-based systems the recommended approach is to use the autotools based
@@ -458,7 +458,7 @@ your system shell startup script (if you don’t now how to set environment
 variables or add these to your shell startup script, please ask your
 system administrator).
 The variable should be set to <code class="docutils literal notranslate"><span class="pre">&lt;IDL_DEFAULT&gt;</span></code> appended with the HARP DLM
-directory. If, for instance, you have installed HARP un <code class="docutils literal notranslate"><span class="pre">/usr/local</span></code>
+directory. If, for instance, you have installed HARP in <code class="docutils literal notranslate"><span class="pre">/usr/local</span></code>
 then you should set the <code class="docutils literal notranslate"><span class="pre">IDL_DLM_PATH</span></code> environment variable to
 <code class="docutils literal notranslate"><span class="pre">&lt;IDL_DEFAULT&gt;:/usr/local/lib/harp/idl</span></code>.</p>
 <p>Note that you should ideally not use the IDL <code class="docutils literal notranslate"><span class="pre">pref_set</span></code> function to set
@@ -536,7 +536,7 @@ to install the Anaconda package of HARP.</p>
 <p>For IDL you will have to add <code class="docutils literal notranslate"><span class="pre">&lt;HARP</span> <span class="pre">installdir&gt;\lib\harp\idl</span></code> to your
 <code class="docutils literal notranslate"><span class="pre">DLM_PATH</span></code>. You do this by setting an <code class="docutils literal notranslate"><span class="pre">IDL_DLM_PATH</span></code> environment variable.
 On Windows open the ‘System’ control panel of your Windows operating system
-and goto the ‘Advanced’ tab. Then click on ‘Environment Variables’ and create a
+and go to the ‘Advanced’ tab. Then click on ‘Environment Variables’ and create a
 new system variable with the name <code class="docutils literal notranslate"><span class="pre">IDL_DLM_PATH</span></code> and value
 <code class="docutils literal notranslate"><span class="pre">&lt;IDL_DEFAULT&gt;;C:\Program</span> <span class="pre">Files\HARP\lib\harp\idl</span></code>.
 If you have installed HARP in a location different from
@@ -556,7 +556,7 @@ or CODA functions using:</p>
 <span class="n">IDL</span><span class="o">&gt;</span> <span class="n">SETENV</span><span class="p">,</span> <span class="s1">&#39;UDUNITS2_XML_PATH=/path/to/udunits2.xml&#39;</span>
 </pre></div>
 </div>
-<p>For MATLAB you will have to start MATLAB and goto the ‘Set Path…’ menu item
+<p>For MATLAB you will have to start MATLAB and go to the ‘Set Path…’ menu item
 in the ‘File’ menu. Here you should add the directory
 <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files\HARP\lib\harp\matlab</span></code>. If you have installed HARP in a
 location different from <code class="docutils literal notranslate"><span class="pre">C:\Program</span> <span class="pre">Files\HARP</span></code> then replace this part of the
@@ -568,7 +568,7 @@ which are CODA, HDF4, HDF5, and their dependencies.</p>
 <h2>Building the source package (Windows)</h2>
 <p>To build the source package, make sure to download the official HARP source
 package, which is named <code class="docutils literal notranslate"><span class="pre">harp-x.y.z.tar.gz</span></code>. Don’t use the packages called
-‘Source code’ from GitHub as these are contents of the git respository (see
+‘Source code’ from GitHub as these are contents of the git repository (see
 ‘Using GitHub’ above).</p>
 <p>The official and only supported build system on Windows is CMake.
 You will need to have builds of CODA, HDF4, HDF5 (and their dependencies)
