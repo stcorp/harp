@@ -1020,14 +1020,12 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
         {
             long lat_id = -1, lon_id = -1;
             long next_lat_id, next_lon_id;
-            long loop_offset = 0;
             long cumsum_offset = cumsum_index;
 
             if (loop == 1)
             {
                 lon_min += 360;
                 lon_max += 360;
-                loop_offset = num_latlon_index[i];
                 for (k = 0; k < num_vertices; k++)
                 {
                     poly_longitude[k] += 360;
