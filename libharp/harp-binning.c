@@ -513,15 +513,6 @@ static int add_weight_variable(harp_product *product, binning_type *bintype, bin
         }
     }
 
-    if (index != -1 && bintype[index] != binning_remove)
-    {
-        /* if the weight variable already exists and does not get removed then we assume it is correct/consistent
-         * (i.e. existing weight=0 <-> variable=NaN) */
-        /* update bintype anyway */
-        bintype[index] = target_bintype;
-        return 0;
-    }
-
     if (harp_variable_new(weight_variable_name, harp_type_float, num_dimensions, dimension_type, dimension,
                           &variable) != 0)
     {
@@ -1621,8 +1612,9 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         harp_variable *variable;
         long num_sub_elements;
 
-        if (bintype[k] == binning_skip || bintype[k] == binning_remove)
+        if (bintype[k] == binning_skip || bintype[k] == binning_remove || bintype[k] == binning_sum)
         {
+            /* we handle the summable variables in a second iteration to prevent wrong use of weights/counts */
             continue;
         }
 
@@ -1683,33 +1675,32 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             int store_count_variable = 0;
             int store_weight_variable = 0;
 
+            assert(bintype[k] == binning_average);
+
             /* sum up all values of a bin into the location of the first sample */
 
-            if (variable->data_type == harp_type_double)
+            result = get_weight_for_variable(product, variable, bintype, weight);
+            if (result < 0)
             {
-                result = get_weight_for_variable(product, variable, bintype, weight);
+                goto error;
+            }
+            if (result == 1)
+            {
+                use_weight_variable = 1;
+            }
+            else
+            {
+                result = get_count_for_variable(product, variable, bintype, count);
                 if (result < 0)
                 {
                     goto error;
                 }
-                if (result == 1)
+                if (result == 0)
                 {
-                    use_weight_variable = 1;
-                }
-                else
-                {
-                    result = get_count_for_variable(product, variable, bintype, count);
-                    if (result < 0)
+                    /* if there is no pre-existing weight or count variable then set all counts to 1 */
+                    for (i = 0; i < variable->num_elements; i++)
                     {
-                        goto error;
-                    }
-                    if (result == 0)
-                    {
-                        /* if there is no pre-existing weight or count variable then set all counts to 1 */
-                        for (i = 0; i < variable->num_elements; i++)
-                        {
-                            count[i] = 1;
-                        }
+                        count[i] = 1;
                     }
                 }
             }
@@ -1720,52 +1711,32 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
 
                 if (target_index != i)
                 {
-                    if (variable->data_type == harp_type_int32)
+                    for (j = 0; j < num_sub_elements; j++)
                     {
-                        for (j = 0; j < num_sub_elements; j++)
+                        if (harp_isnan(variable->data.double_data[i * num_sub_elements + j]))
                         {
-                            variable->data.int32_data[target_index * num_sub_elements + j] +=
-                                variable->data.int32_data[i * num_sub_elements + j];
-                        }
-                    }
-                    else if (variable->data_type == harp_type_float)
-                    {
-                        /* no need to perform NaN checks on weight variables */
-                        for (j = 0; j < num_sub_elements; j++)
-                        {
-                            variable->data.float_data[target_index * num_sub_elements + j] +=
-                                variable->data.float_data[i * num_sub_elements + j];
-                        }
-                    }
-                    else
-                    {
-                        for (j = 0; j < num_sub_elements; j++)
-                        {
-                            if (harp_isnan(variable->data.double_data[i * num_sub_elements + j]))
+                            if (use_weight_variable)
                             {
-                                if (use_weight_variable)
+                                if (weight[i * num_sub_elements + j] != 0)
                                 {
-                                    if (weight[i * num_sub_elements + j] != 0)
-                                    {
-                                        weight[i * num_sub_elements + j] = 0;
-                                        store_weight_variable = 1;
-                                    }
-                                }
-                                else if (count[i * num_sub_elements + j] != 0)
-                                {
-                                    count[i * num_sub_elements + j] = 0;
-                                    store_count_variable = 1;
+                                    weight[i * num_sub_elements + j] = 0;
+                                    store_weight_variable = 1;
                                 }
                             }
-                            else
+                            else if (count[i * num_sub_elements + j] != 0)
                             {
-                                variable->data.double_data[target_index * num_sub_elements + j] +=
-                                    variable->data.double_data[i * num_sub_elements + j];
+                                count[i * num_sub_elements + j] = 0;
+                                store_count_variable = 1;
                             }
+                        }
+                        else
+                        {
+                            variable->data.double_data[target_index * num_sub_elements + j] +=
+                                variable->data.double_data[i * num_sub_elements + j];
                         }
                     }
                 }
-                else if (variable->data_type == harp_type_double)
+                else
                 {
                     for (j = 0; j < num_sub_elements; j++)
                     {
@@ -1804,6 +1775,48 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                                         variable->dimension_type, variable->dimension, weight) != 0)
                 {
                     goto error;
+                }
+            }
+        }
+    }
+    /* do the same, but now only for the weight and count variables */
+    for (k = 0; k < product->num_variables; k++)
+    {
+        harp_variable *variable;
+        long num_sub_elements;
+
+        if (bintype[k] != binning_sum)
+        {
+            continue;
+        }
+
+        variable = product->variable[k];
+        assert(variable->dimension[0] == num_elements);
+        num_sub_elements = variable->num_elements / num_elements;
+
+        /* sum up all values of a bin into the location of the first sample */
+        for (i = 0; i < num_elements; i++)
+        {
+            long target_index = index[bin_index[i]];
+
+            if (target_index != i)
+            {
+                if (variable->data_type == harp_type_int32)
+                {
+                    for (j = 0; j < num_sub_elements; j++)
+                    {
+                        variable->data.int32_data[target_index * num_sub_elements + j] +=
+                            variable->data.int32_data[i * num_sub_elements + j];
+                    }
+                }
+                else
+                {
+                    assert(variable->data_type == harp_type_float);
+                    for (j = 0; j < num_sub_elements; j++)
+                    {
+                        variable->data.float_data[target_index * num_sub_elements + j] +=
+                            variable->data.float_data[i * num_sub_elements + j];
+                    }
                 }
             }
         }
