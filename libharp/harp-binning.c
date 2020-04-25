@@ -928,32 +928,33 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
         goto error;
     }
 
-    min_lat_id = malloc(num_longitude_cells * sizeof(long));
+    /* add two to the length to allow indexing just before and after the range */
+    min_lat_id = malloc((num_longitude_cells + 2) * sizeof(long));
     if (min_lat_id == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_longitude_cells * sizeof(long), __FILE__, __LINE__);
+                       (num_longitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
         goto error;
     }
-    max_lat_id = malloc(num_longitude_cells * sizeof(long));
+    max_lat_id = malloc((num_longitude_cells + 2) * sizeof(long));
     if (max_lat_id == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_longitude_cells * sizeof(long), __FILE__, __LINE__);
+                       (num_longitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
         goto error;
     }
-    min_lon_id = malloc(num_latitude_cells * sizeof(long));
+    min_lon_id = malloc((num_latitude_cells + 2) * sizeof(long));
     if (min_lon_id == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_latitude_cells * sizeof(long), __FILE__, __LINE__);
+                       (num_latitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
         goto error;
     }
-    max_lon_id = malloc(num_latitude_cells * sizeof(long));
+    max_lon_id = malloc((num_latitude_cells + 2) * sizeof(long));
     if (max_lon_id == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_latitude_cells * sizeof(long), __FILE__, __LINE__);
+                       (num_latitude_cells + 2) * sizeof(long), __FILE__, __LINE__);
         goto error;
     }
 
@@ -1038,12 +1039,12 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
                 continue;
             }
 
-            for (j = 0; j < num_longitude_cells; j++)
+            for (j = 0; j < num_longitude_cells + 2; j++)
             {
                 min_lat_id[j] = num_latitude_cells;
                 max_lat_id[j] = -1;
             }
-            for (j = 0; j < num_latitude_cells; j++)
+            for (j = 0; j < num_latitude_cells + 2; j++)
             {
                 min_lon_id[j] = num_longitude_cells;
                 max_lon_id[j] = -1;
@@ -1066,8 +1067,8 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
             /* add cell of starting point (if it falls within the grid) */
             if (lon_id >= 0 && lon_id < num_longitude_cells && lat_id >= 0 && lat_id < num_latitude_cells)
             {
-                if (lon_id < min_lon_id[lat_id] || lon_id > max_lon_id[lat_id] ||
-                    lat_id < min_lat_id[lon_id] || lat_id > max_lat_id[lon_id])
+                if (lon_id < min_lon_id[lat_id + 1] || lon_id > max_lon_id[lat_id + 1] ||
+                    lat_id < min_lat_id[lon_id + 1] || lat_id > max_lat_id[lon_id + 1])
                 {
                     num_latlon_index[i]++;
                     if (add_cell_index(lat_id * num_longitude_cells + lon_id, &cumsum_index, latlon_cell_index,
@@ -1077,21 +1078,21 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
                     }
                 }
             }
-            if (lat_id < min_lat_id[lon_id])
+            if (lat_id < min_lat_id[lon_id + 1])
             {
-                min_lat_id[lon_id] = lat_id;
+                min_lat_id[lon_id + 1] = lat_id;
             }
-            if (lat_id > max_lat_id[lon_id])
+            if (lat_id > max_lat_id[lon_id + 1])
             {
-                max_lat_id[lon_id] = lat_id;
+                max_lat_id[lon_id + 1] = lat_id;
             }
-            if (lon_id < min_lon_id[lat_id])
+            if (lon_id < min_lon_id[lat_id + 1])
             {
-                min_lon_id[lat_id] = lon_id;
+                min_lon_id[lat_id + 1] = lon_id;
             }
-            if (lon_id > max_lon_id[lat_id])
+            if (lon_id > max_lon_id[lat_id + 1])
             {
-                max_lon_id[lat_id] = lon_id;
+                max_lon_id[lat_id + 1] = lon_id;
             }
             for (j = 0; j < num_vertices - 1; j++)
             {
@@ -1192,8 +1193,8 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
                     /* add next cell (if it falls within the grid) */
                     if (lon_id >= 0 && lon_id < num_longitude_cells && lat_id >= 0 && lat_id < num_latitude_cells)
                     {
-                        if (lon_id < min_lon_id[lat_id] || lon_id > max_lon_id[lat_id] ||
-                            lat_id < min_lat_id[lon_id] || lat_id > max_lat_id[lon_id])
+                        if (lon_id < min_lon_id[lat_id + 1] || lon_id > max_lon_id[lat_id + 1] ||
+                            lat_id < min_lat_id[lon_id + 1] || lat_id > max_lat_id[lon_id + 1])
                         {
                             num_latlon_index[i]++;
                             if (add_cell_index(lat_id * num_longitude_cells + lon_id, &cumsum_index, latlon_cell_index,
@@ -1203,21 +1204,21 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
                             }
                         }
                     }
-                    if (lat_id < min_lat_id[lon_id])
+                    if (lat_id < min_lat_id[lon_id + 1])
                     {
-                        min_lat_id[lon_id] = lat_id;
+                        min_lat_id[lon_id + 1] = lat_id;
                     }
-                    if (lat_id > max_lat_id[lon_id])
+                    if (lat_id > max_lat_id[lon_id + 1])
                     {
-                        max_lat_id[lon_id] = lat_id;
+                        max_lat_id[lon_id + 1] = lat_id;
                     }
-                    if (lon_id < min_lon_id[lat_id])
+                    if (lon_id < min_lon_id[lat_id + 1])
                     {
-                        min_lon_id[lat_id] = lon_id;
+                        min_lon_id[lat_id + 1] = lon_id;
                     }
-                    if (lon_id > max_lon_id[lat_id])
+                    if (lon_id > max_lon_id[lat_id + 1])
                     {
-                        max_lon_id[lat_id] = lon_id;
+                        max_lon_id[lat_id + 1] = lon_id;
                     }
                 }
             }
@@ -1236,13 +1237,13 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
             /* add all grid cells that lie fully within the polygon */
             for (j = 0; j < num_latitude_cells; j++)
             {
-                if (min_lon_id[j] < max_lon_id[j])
+                if (min_lon_id[j + 1] < max_lon_id[j + 1])
                 {
-                    for (k = min_lon_id[j] + 1; k < max_lon_id[j]; k++)
+                    for (k = min_lon_id[j + 1] + 1; k < max_lon_id[j + 1]; k++)
                     {
                         long cell_index = j * num_longitude_cells + k;
 
-                        if (j > min_lat_id[k] && j < max_lat_id[k])
+                        if (j > min_lat_id[k + 1] && j < max_lat_id[k + 1])
                         {
                             long l;
 
