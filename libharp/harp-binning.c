@@ -709,7 +709,7 @@ static int add_cell_index(long cell_index, long *cumsum_index, long **latlon_cel
     return 0;
 }
 
-/* latitude_edges and longitude_edges and should contain just 2 elements (bounds of the cell) */
+/* latitude_edges and longitude_edges should contain just 2 elements (bounds of the cell) */
 static double find_weight_for_polygon_and_cell(long num_points, double *poly_latitude, double *poly_longitude,
                                                double *temp_latitude, double *temp_longitude,
                                                double *latitude_edges, double *longitude_edges)
