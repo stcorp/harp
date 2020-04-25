@@ -995,11 +995,11 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
             continue;
         }
 
-        /* - reorder polygon such that it is turning counter-clockwise
+        /* TODO:
+         * - reorder polygon such that it is turning counter-clockwise
          * - check that the polygon is convex
-         * this can be done by looking at the outer products of vec(0,k) X vec(0,k+1)
+         *   this can be done by looking at the outer products of vec(0,k) X vec(0,k+1)
          *   this should be positive (>=0) for all 0<k<n-1
-         * n should be > 2 (i.e. bounds needs to be at least a triangle)
          */
 
         make_2d_polygon(&num_vertices, poly_latitude, poly_longitude, longitude_edges[0], &lat_min, &lat_max, &lon_min,
