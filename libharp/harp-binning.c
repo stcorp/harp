@@ -1049,7 +1049,7 @@ static int find_matching_cells_and_weights_for_bounds(harp_variable *latitude_bo
             }
 
             /* iterate over all line segements and determine which grid cells are crossed */
-            /* we initially add each crossing cell with weight 0 */
+            /* we initially add each crossing cell with weight 1 */
             harp_interpolate_find_index(num_latitude_edges, latitude_edges, poly_latitude[0], &lat_id);
             if (lat_id == num_latitude_edges)
             {
