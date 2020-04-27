@@ -70,6 +70,28 @@ static void harp_operation_parser_error(const char *error)
     harp_set_error(HARP_ERROR_OPERATION_SYNTAX, "%s", error);
 }
 
+static int parse_int32(const char *buffer, int32_t *dst)
+{
+    int32_t value = 0;
+
+    while (*buffer != '\0')
+    {
+        int32_t digit;
+
+        digit = *buffer - '0';
+        if (value > (0x7FFFFFFFl - digit) / 10)
+        {
+            harp_set_error(HARP_ERROR_OPERATION_SYNTAX, "value too large for int32");
+            return -1;
+        }
+        value = 10 * value + digit;
+        buffer++;
+    }
+    *dst = value;
+
+    return 0;
+}
+
 int harp_sized_array_new(harp_data_type data_type, harp_sized_array **new_array)
 {
     harp_sized_array *sized_array;
@@ -355,9 +377,31 @@ double_value:
     ;
 
 int32_value:
-      INTEGER_VALUE { $$ = (int32_t)atol($1); free($1); }
-    | '+' INTEGER_VALUE { $$ = (int32_t)atol($2); free($2); }
-    | '-' INTEGER_VALUE { $$ = -(int32_t)atol($2); free($2); }
+      INTEGER_VALUE {
+            if (parse_int32($1, &$$) != 0)
+            {
+                free($1);
+                YYERROR;
+            }
+            free($1);
+        }
+    | '+' INTEGER_VALUE {
+            if (parse_int32($2, &$$) != 0)
+            {
+                free($2);
+                YYERROR;
+            }
+            free($2);
+        }
+    | '-' INTEGER_VALUE {
+            if (parse_int32($2, &$$) != 0)
+            {
+                free($2);
+                YYERROR;
+            }
+            $$ = -$$;
+            free($2);
+        }
     ;
 
 double_array:
