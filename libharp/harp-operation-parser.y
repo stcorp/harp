@@ -1699,6 +1699,10 @@ int harp_program_from_string(const char *str, harp_program **program)
     bufstate = (void *)harp_operation_parser__scan_string(str);
     if (harp_operation_parser_parse() != 0)
     {
+        if (parsed_program != NULL)
+        {
+            harp_program_delete(parsed_program);
+        }
         if (harp_errno == 0)
         {
             harp_set_error(HARP_ERROR_OPERATION_SYNTAX, NULL);
