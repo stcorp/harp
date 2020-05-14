@@ -511,6 +511,9 @@ LIBHARP_API void harp_done(void)
             harp_unit_done();
             harp_derived_variable_list_done();
             harp_ingestion_done();
+            /* explicitly clear search paths in case unit and/or ingestion init() routines were never called */ 
+            harp_set_coda_definition_path(NULL);
+            harp_set_udunits2_xml_path(NULL);
         }
     }
 }
