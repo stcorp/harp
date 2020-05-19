@@ -247,7 +247,13 @@
 <td>[hPa]</td>
 <td>uncertainty of the effective cloud pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-odd"><td><strong>validity</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>flags describing the processing quality</td>
+</tr>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -358,6 +364,10 @@
 <tr class="row-even"><td><strong>cloud_pressure_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/CloudFractionAndPressure/Data_Fields/CloudPressurePrecision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/CloudFractionAndPressure/Data_Fields/ProcessingQualityFlags[]</strong></td>
 </tr>
 </tbody>
 </table>

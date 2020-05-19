@@ -229,7 +229,13 @@
 <td>[hPa]</td>
 <td>effective cloud pressure</td>
 </tr>
-<tr class="row-even"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>validity</strong></td>
+<td>int32</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>flags describing the processing quality</td>
+</tr>
+<tr class="row-odd"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -296,6 +302,10 @@
 <tr class="row-even"><td><strong>cloud_pressure</strong></td>
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/Cloud_Product/Data_Fields/CloudPressureforO3[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>validity</strong></td>
+<td><em>path</em></td>
+<td><strong>/HDFEOS/SWATHS/Cloud_Product/Data_Fields/ProcessingQualityFlagsforO3[]</strong></td>
 </tr>
 </tbody>
 </table>

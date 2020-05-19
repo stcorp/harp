@@ -1036,6 +1036,13 @@ static int read_processing_quality_flags(void *user_data, harp_array data)
     return read_variable_int32(info, &info->swath_cursor, "ProcessingQualityFlags", data);
 }
 
+static int read_processing_quality_flags_o3(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_int32(info, &info->swath_cursor, "ProcessingQualityFlagsforO3", data);
+}
+
 static int read_quality_flags(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2619,6 +2626,15 @@ static void register_omcldo2_product(void)
                                                                      read_pressure_cloud_precision);
     path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Data_Fields/CloudPressurePrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* validity */
+    description = "flags describing the processing quality";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity",
+                                                                     harp_type_int32, 1, dimension_type, NULL,
+                                                                     description, NULL, NULL,
+                                                                     read_processing_quality_flags);
+    path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Data_Fields/ProcessingQualityFlags[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_omcldrr_product(void)
@@ -2686,6 +2702,15 @@ static void register_omcldrr_product(void)
                                                                      description, "hPa", NULL,
                                                                      read_pressure_cloud_for_o3);
     path = "/HDFEOS/SWATHS/Cloud_Product/Data_Fields/CloudPressureforO3[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* validity */
+    description = "flags describing the processing quality";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity",
+                                                                     harp_type_int32, 1, dimension_type, NULL,
+                                                                     description, NULL, NULL,
+                                                                     read_processing_quality_flags_o3);
+    path = "/HDFEOS/SWATHS/Cloud_Product/Data_Fields/ProcessingQualityFlagsforO3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
