@@ -1491,7 +1491,7 @@ static void register_no2_product(void)
     harp_ingestion_register_option(module, "total_column", "whether to use total_no2_vertical_column (which is "
                                    "derived from the total slant column diveded by the total amf) or "
                                    "summed_no2_total_vertical_column (which is the sum of the retrieved tropospheric "
-                                   "and statospheric columns); option values are 'summed' (default) and 'total'", 2,
+                                   "and stratospheric columns); option values are 'summed' (default) and 'total'", 2,
                                    total_column_options);
 
     harp_ingestion_register_option(module, "stratospheric_column", "whether to use the default NO2 stratospheric "

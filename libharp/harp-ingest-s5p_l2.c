@@ -6178,7 +6178,7 @@ static void register_no2_product(void)
     harp_ingestion_register_option(module, "total_column", "whether to use nitrogendioxide_total_column (which is "
                                    "derived from the total slant column diveded by the total amf) or "
                                    "nitrogendioxide_summed_total_column (which is the sum of the retrieved "
-                                   "tropospheric and statospheric columns); option values are 'summed' (default) and "
+                                   "tropospheric and stratospheric columns); option values are 'summed' (default) and "
                                    "'total'", 2, total_column_options);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
