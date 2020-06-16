@@ -1,7 +1,9 @@
+* Added derivation to retrieve angstrom exponent from aerosol optical depth.
+
 1.11 2020-05-19
 ~~~~~~~~~~~~~~~
 
-* Add derivations to retrieve column number density from column vmr.
+* Added derivations to retrieve column number density from column vmr.
 
 * Fixed issue in bin_spatial() where the weightfactor could be too high when
   oversampling the input data. Grid cells that intersected with the data

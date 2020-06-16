@@ -252,6 +252,8 @@ int harp_derived_variable_list_add_conversion(harp_variable_conversion *conversi
 void harp_derived_variable_list_done(void);
 
 /* Analysis functions */
+double harp_angstrom_exponent_from_aod(long num_wavelengths, const double *wavelength, const double *aod);
+
 double harp_fraction_of_day_from_datetime(double datetime);
 double harp_fraction_of_year_from_datetime(double datetime);
 

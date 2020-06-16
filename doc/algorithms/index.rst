@@ -21,6 +21,7 @@ Variable Conversions
    common
    derivations/aerosol_extinction_coefficient
    derivations/aerosol_optical_depth
+   derivations/angstrom_exponent
    derivations/altitude
    derivations/altitude_bounds
    derivations/cloud_height

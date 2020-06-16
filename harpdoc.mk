@@ -69,6 +69,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/aerosol_optical_depth.html \
 	doc/html/algorithms/derivations/altitude.html \
 	doc/html/algorithms/derivations/altitude_bounds.html \
+	doc/html/algorithms/derivations/angstrom_exponent.html \
 	doc/html/algorithms/derivations/cloud_height.html \
 	doc/html/algorithms/derivations/column_mass_density.html \
 	doc/html/algorithms/derivations/column_mass_mixing_ratio.html \
@@ -686,6 +687,8 @@ doc/html/algorithms/derivations/aerosol_optical_depth.html:
 doc/html/algorithms/derivations/altitude.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/altitude_bounds.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/angstrom_exponent.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/cloud_height.html:
 	$(MAKE) harp_doc

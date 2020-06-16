@@ -36,6 +36,43 @@
 #include <math.h>
 #include <stdlib.h>
 
+/** Calculate the angstrom exponent for aerosol optical depths at different wavelength values
+ * \param num_wavelength  Length of the spectral dimension (should be >= 2)
+ * \param wavelength  Wavelength [m]
+ * \param aod  Aerosol optical depth []
+ * \return the angstrom exponent [1]
+ */
+double harp_angstrom_exponent_from_aod(long num_wavelengths, const double *wavelength, const double *aod)
+{
+    double mean_log_wavelength = 0;
+    double mean_log_aod = 0;
+    double numerator = 0;
+    double denominator = 0;
+    long i;
+
+    if (num_wavelengths < 2)
+    {
+        return harp_nan();
+    }
+
+    for (i = 0; i < num_wavelengths; i++)
+    {
+        mean_log_wavelength += log(wavelength[i]);
+        mean_log_aod += log(aod[i]);
+    }
+    mean_log_wavelength /= num_wavelengths;
+    mean_log_aod /= num_wavelengths;
+
+    for (i = 0; i < num_wavelengths; i++)
+    {
+        double log_wavelength = log(wavelength[i]);
+        numerator += (log_wavelength - mean_log_wavelength) * (log(aod[i]) - mean_log_aod);
+        denominator += (log_wavelength - mean_log_wavelength) * (log_wavelength - mean_log_wavelength);
+    }
+
+    return -(numerator/denominator);
+}
+
 /** Calculate the fraction of the day
  * \param datetime   Datetime [s since 2000-01-01]
  * \return the fraction of the day [1]

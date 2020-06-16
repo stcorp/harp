@@ -91,6 +91,22 @@ static int get_altitude_from_pressure(harp_variable *variable, const harp_variab
     return 0;
 }
 
+static int get_angstrom_exponent_from_aod(harp_variable *variable, const harp_variable **source_variable)
+{
+    long num_spectral;
+    long i;
+
+    num_spectral = source_variable[0]->dimension[source_variable[0]->num_dimensions - 1];
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] =
+            harp_angstrom_exponent_from_aod(num_spectral, source_variable[0]->data.double_data,
+                                            &source_variable[1]->data.double_data[i * num_spectral]);
+    }
+
+    return 0;
+}
+
 static int get_area(harp_variable *variable, const harp_variable **source_variable)
 {
     long num_vertices;
@@ -5051,6 +5067,26 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         {
             return -1;
         }
+    }
+
+    /*** angstrom exponent ***/
+
+    /* angstrom exponent from aerosol optical depth */
+    dimension_type[num_dimensions] = harp_dimension_spectral;
+    if (harp_variable_conversion_new("angstrom_exponent", harp_type_double, HARP_UNIT_DIMENSIONLESS, num_dimensions,
+                                     dimension_type, 0, get_angstrom_exponent_from_aod, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "wavelength", harp_type_double, HARP_UNIT_WAVELENGTH,
+                                            1, &dimension_type[num_dimensions], 0) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "aerosol_optical_depth", harp_type_double,
+                                            HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0) != 0)
+    {
+        return -1;
     }
 
     /*** column (mass) density ***/
