@@ -1399,11 +1399,13 @@ operation:
                 free($5);
                 free($6);
                 harp_sized_array_delete($9);
+                harp_sized_array_delete($13);
                 YYERROR;
             }
             free($5);
             free($6);
             harp_sized_array_delete($9);
+            harp_sized_array_delete($13);
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' int32_value ',' double_value ',' double_value ')' {
             harp_sized_array *array;
