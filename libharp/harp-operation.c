@@ -1967,6 +1967,13 @@ int harp_operation_derive_variable_new(const char *variable_name, const harp_dat
 
     assert(variable_name != NULL);
 
+    if (num_dimensions > HARP_MAX_NUM_DIMS)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid number of dimensions (%d exceeds limit of %d)",
+                       num_dimensions, HARP_MAX_NUM_DIMS);
+        return -1;
+    }
+
     operation = (harp_operation_derive_variable *)malloc(sizeof(harp_operation_derive_variable));
     if (operation == NULL)
     {
@@ -2043,6 +2050,13 @@ int harp_operation_derive_smoothed_column_collocated_dataset_new(const char *var
     assert(axis_unit != NULL);
     assert(collocation_result != NULL);
     assert(dataset_dir != NULL);
+
+    if (num_dimensions > HARP_MAX_NUM_DIMS)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid number of dimensions (%d exceeds limit of %d)",
+                       num_dimensions, HARP_MAX_NUM_DIMS);
+        return -1;
+    }
 
     operation =
         (harp_operation_derive_smoothed_column_collocated_dataset
@@ -2138,6 +2152,13 @@ int harp_operation_derive_smoothed_column_collocated_product_new(const char *var
     assert(axis_variable_name != NULL);
     assert(axis_unit != NULL);
     assert(filename != NULL);
+
+    if (num_dimensions > HARP_MAX_NUM_DIMS)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid number of dimensions (%d exceeds limit of %d)",
+                       num_dimensions, HARP_MAX_NUM_DIMS);
+        return -1;
+    }
 
     operation =
         (harp_operation_derive_smoothed_column_collocated_product
