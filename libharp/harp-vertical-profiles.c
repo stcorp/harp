@@ -667,6 +667,60 @@ void harp_profile_column_avk_from_partial_column_avk(long num_levels, const doub
     }
 }
 
+/** Create a tropospheric column AVK from a total column AVK
+ * This sets all stratosheric layers of the AVK to zero.
+ * \param num_levels            Number of vertical levels
+ * \param column_density_avk column number density averaging kernel {num_levels}
+ * \param altitude_bounds altitude boundaries {num_levels, 2}
+ * \param tropopause_altitude altitude of the tropopause
+ * \param tropospheric_column_density_avk tropospheric column number density averaging kernel {num_levels}
+ */
+void harp_profile_tropospheric_column_avk_from_column_avk(long num_levels, const double *column_density_avk,
+                                                          const double *altitude_bounds, double tropopause_altitude,
+                                                          double *tropospheric_column_density_avk)
+{
+    long i;
+
+    for (i = 0; i < num_levels; i++)
+    {
+        if (altitude_bounds[2 * i] < tropopause_altitude)
+        {
+            tropospheric_column_density_avk[i] = column_density_avk[i];
+        }
+        else
+        {
+            tropospheric_column_density_avk[i] = 0;
+        }
+    }
+}
+
+/** Create a stratospheric column AVK from a total column AVK
+ * This sets all troposheric layers of the AVK to zero.
+ * \param num_levels            Number of vertical levels
+ * \param column_density_avk column number density averaging kernel {num_levels}
+ * \param altitude_bounds altitude boundaries {num_levels, 2}
+ * \param tropopause_altitude altitude of the tropopause
+ * \param stratospheric_column_density_avk stratospheric column number density averaging kernel {num_levels}
+ */
+void harp_profile_stratospheric_column_avk_from_column_avk(long num_levels, const double *column_density_avk,
+                                                           const double *altitude_bounds, double tropopause_altitude,
+                                                           double *stratospheric_column_density_avk)
+{
+    long i;
+
+    for (i = 0; i < num_levels; i++)
+    {
+        if (altitude_bounds[2 * i + 1] <= tropopause_altitude)
+        {
+            stratospheric_column_density_avk[i] = 0;
+        }
+        else
+        {
+            stratospheric_column_density_avk[i] = column_density_avk[i];
+        }
+    }
+}
+
 /** Convert a partial column avk to a density avk using the altitude boundaries profile
  * This is a generic routine to convert partial columns to a densities. It works for all cases where the
  * conversion is a matter of dividing the partial column value by the altitude height to get the density value.

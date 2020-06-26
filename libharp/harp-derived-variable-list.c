@@ -1314,6 +1314,24 @@ static int get_strato_column_from_partial_column_and_pressure(harp_variable *var
     return 0;
 }
 
+static int get_strato_column_avk_from_column_avk_and_tropopause(harp_variable *variable,
+                                                                const harp_variable **source_variable)
+{
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_profiles = variable->num_elements / length;
+    long i;
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        harp_profile_stratospheric_column_avk_from_column_avk(length, &source_variable[0]->data.double_data[i * length],
+                                                              &source_variable[1]->data.double_data[i * length * 2],
+                                                              source_variable[2]->data.double_data[i],
+                                                              &variable->data.double_data[i * length]);
+    }
+
+    return 0;
+}
+
 static int get_surface_gravity_from_latitude_and_surface_altitude(harp_variable *variable,
                                                                   const harp_variable **source_variable)
 {
@@ -1391,6 +1409,24 @@ static int get_tropo_column_from_partial_column_and_pressure(harp_variable *vari
             harp_profile_tropo_column_from_partial_column_and_pressure
             (num_levels, &source_variable[0]->data.double_data[i * num_levels],
              &source_variable[1]->data.double_data[i * num_levels * 2], source_variable[2]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
+static int get_tropo_column_avk_from_column_avk_and_tropopause(harp_variable *variable,
+                                                               const harp_variable **source_variable)
+{
+    long length = variable->dimension[variable->num_dimensions - 1];
+    long num_profiles = variable->num_elements / length;
+    long i;
+
+    for (i = 0; i < num_profiles; i++)
+    {
+        harp_profile_tropospheric_column_avk_from_column_avk(length, &source_variable[0]->data.double_data[i * length],
+                                                             &source_variable[1]->data.double_data[i * length * 2],
+                                                             source_variable[2]->data.double_data[i],
+                                                             &variable->data.double_data[i * length]);
     }
 
     return 0;
@@ -2204,8 +2240,10 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     char name_column_nd_avk[MAX_NAME_LENGTH];
     char name_strato_column_nd[MAX_NAME_LENGTH];
     char name_strato_column_nd_apriori[MAX_NAME_LENGTH];
+    char name_strato_column_nd_avk[MAX_NAME_LENGTH];
     char name_tropo_column_nd[MAX_NAME_LENGTH];
     char name_tropo_column_nd_apriori[MAX_NAME_LENGTH];
+    char name_tropo_column_nd_avk[MAX_NAME_LENGTH];
     char name_column_mmr[MAX_NAME_LENGTH];
     char name_column_mmr_dry[MAX_NAME_LENGTH];
     char name_strato_column_mmr[MAX_NAME_LENGTH];
@@ -2254,8 +2292,10 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
     snprintf(name_column_nd_avk, MAX_NAME_LENGTH, "%s_column_number_density_avk", species);
     snprintf(name_strato_column_nd, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density", species);
     snprintf(name_strato_column_nd_apriori, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_apriori", species);
+    snprintf(name_strato_column_nd_avk, MAX_NAME_LENGTH, "stratospheric_%s_column_number_density_avk", species);
     snprintf(name_tropo_column_nd, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", species);
     snprintf(name_tropo_column_nd_apriori, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_apriori", species);
+    snprintf(name_tropo_column_nd_avk, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_avk", species);
     snprintf(name_column_mmr, MAX_NAME_LENGTH, "%s_column_mass_mixing_ratio", species);
     snprintf(name_column_mmr_dry, MAX_NAME_LENGTH, "%s_column_mass_mixing_ratio_dry_air", species);
     snprintf(name_strato_column_mmr, MAX_NAME_LENGTH, "stratospheric_%s_column_mass_mixing_ratio", species);
@@ -2733,6 +2773,82 @@ static int add_species_conversions_for_grid(const char *species, int num_dimensi
         dimension_type[num_dimensions] = harp_dimension_independent;
         if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double, HARP_UNIT_LENGTH,
                                                 num_dimensions + 1, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** tropospheric column number density avk ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (add_time_indepedent_to_dependent_conversion(name_tropo_column_nd_avk, harp_type_double,
+                                                        HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+
+        /* tropospheric column number density avk from total column number density avk and tropopause */
+        if (harp_variable_conversion_new(name_tropo_column_nd_avk, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                         num_dimensions + 1, dimension_type, 0,
+                                         get_tropo_column_avk_from_column_avk_and_tropopause, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_nd_avk, harp_type_double,
+                                                HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions + 1] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double,
+                                                HARP_UNIT_LENGTH, num_dimensions + 2, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropopause_altitude", harp_type_double,
+                                                HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+    }
+
+    /*** stratospheric column number density avk ***/
+
+    if (!has_vertical)
+    {
+        /* time dependent from independent */
+        dimension_type[num_dimensions] = harp_dimension_vertical;
+        if (add_time_indepedent_to_dependent_conversion(name_strato_column_nd_avk, harp_type_double,
+                                                        HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0)
+            != 0)
+        {
+            return -1;
+        }
+
+        /* stratospheric column number density avk from total column number density avk and tropopause */
+        if (harp_variable_conversion_new(name_strato_column_nd_avk, harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                         num_dimensions + 1, dimension_type, 0,
+                                         get_strato_column_avk_from_column_avk_and_tropopause, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, name_column_nd_avk, harp_type_double,
+                                                HARP_UNIT_DIMENSIONLESS, num_dimensions + 1, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        dimension_type[num_dimensions + 1] = harp_dimension_independent;
+        if (harp_variable_conversion_add_source(conversion, "altitude_bounds", harp_type_double,
+                                                HARP_UNIT_LENGTH, num_dimensions + 2, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "tropopause_altitude", harp_type_double,
+                                                HARP_UNIT_LENGTH, num_dimensions, dimension_type, 0) != 0)
         {
             return -1;
         }

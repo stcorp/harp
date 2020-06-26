@@ -1,5 +1,8 @@
 * Added derivation to retrieve angstrom exponent from aerosol optical depth.
 
+* Added derivation to retrieve tropospheric/stratospheric column avk from
+  total column avk and tropopause altitude.
+
 1.11 2020-05-19
 ~~~~~~~~~~~~~~~
 
