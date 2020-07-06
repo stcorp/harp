@@ -1480,6 +1480,7 @@ int harp_operation_area_covers_point_filter_new(double latitude, const char *lat
         {
             if (harp_convert_unit(latitude_unit, "degree_north", 1, &operation->point.lat) != 0)
             {
+                area_covers_point_filter_delete(operation);
                 return -1;
             }
         }
@@ -1490,6 +1491,7 @@ int harp_operation_area_covers_point_filter_new(double latitude, const char *lat
         {
             if (harp_convert_unit(longitude_unit, "degree_east", 1, &operation->point.lon) != 0)
             {
+                area_covers_point_filter_delete(operation);
                 return -1;
             }
         }
@@ -2430,6 +2432,7 @@ int harp_operation_longitude_range_filter_new(double min, const char *min_unit, 
         {
             if (harp_convert_unit(min_unit, "degree_east", 1, &operation->min) != 0)
             {
+                longitude_range_filter_delete(operation);
                 return -1;
             }
         }
@@ -2440,6 +2443,7 @@ int harp_operation_longitude_range_filter_new(double min, const char *min_unit, 
         {
             if (harp_convert_unit(max_unit, "degree_east", 1, &operation->max) != 0)
             {
+                longitude_range_filter_delete(operation);
                 return -1;
             }
         }
@@ -2539,6 +2543,7 @@ int harp_operation_point_distance_filter_new(double latitude, const char *latitu
         {
             if (harp_convert_unit(latitude_unit, "degree_north", 1, &operation->point.lat) != 0)
             {
+                point_distance_filter_delete(operation);
                 return -1;
             }
         }
@@ -2549,6 +2554,7 @@ int harp_operation_point_distance_filter_new(double latitude, const char *latitu
         {
             if (harp_convert_unit(longitude_unit, "degree_east", 1, &operation->point.lon) != 0)
             {
+                point_distance_filter_delete(operation);
                 return -1;
             }
         }
@@ -2559,6 +2565,7 @@ int harp_operation_point_distance_filter_new(double latitude, const char *latitu
         {
             if (harp_convert_unit(distance_unit, "m", 1, &operation->distance) != 0)
             {
+                point_distance_filter_delete(operation);
                 return -1;
             }
         }
