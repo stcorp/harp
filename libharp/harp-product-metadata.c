@@ -69,7 +69,7 @@ LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata)
 
 /**
  * Create new product metadata.
- * The metadata will be intialized with 0.0 datetime_start/end.
+ * The metadata will be initialized with 0.0 datetime_start/end.
  * \param new_metadata Pointer to the C variable where the new HARP product metadata will be stored.
  * \return
  *   \arg \c 0, Success.

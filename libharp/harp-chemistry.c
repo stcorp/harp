@@ -234,7 +234,7 @@ harp_chemical_species harp_chemical_species_from_variable_name(const char *varia
 }
 
 /** Convert a partial column profile to a density profile using the altitude boundaries as provided
- * This is a generic routine to convert partial columns to a densitity profile. It works for all cases where the
+ * This is a generic routine to convert partial columns to a density profile. It works for all cases where the
  * conversion is a matter of dividing the partial column value by the altitude height to get the density value.
  * \param partial_column Partial column [?]
  * \param altitude_bounds Lower and upper altitude [m] boundaries [2]
@@ -348,7 +348,7 @@ double harp_number_density_from_volume_mixing_ratio(double volume_mixing_ratio, 
 }
 
 /** Convert a density to a partial column using the altitude boundaries
- * This is a generic routine to convert a densitity to a partial column. It works for all cases where the conversion
+ * This is a generic routine to convert a density to a partial column. It works for all cases where the conversion
  * is a matter of multiplying the density by the altitude height to get the partial column value.
  * \param density Density profile [?/m]
  * \param altitude_bounds Lower and upper altitude [m] boundaries [2]

@@ -207,7 +207,7 @@ static int auxiliary_data_init(void)
  * If multiple files for the same product class exist in the path, CODA will only use the one with the highest revision
  * number (this is normally equal to a last modification date that is stored in a .codadef file).
  * If there are two files for the same product class with identical revision numbers, CODA will use the definitions of
- * the first .codadef file in the path and ingore the second one.
+ * the first .codadef file in the path and ignore the second one.
  *
  * Specifying a path using this function will prevent CODA from using the CODA_DEFINITION environment variable.
  * If you still want CODA to acknowledge the CODA_DEFINITION environment variable then use something like this in your
@@ -719,7 +719,7 @@ LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char 
  * string of key=value pair; only used if the file is not in HARP format.
  * \param new_metadata Pointer to the variable where the metadata should be stored.
  * \return
- *   \arg \c 0, Succes.
+ *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_import_product_metadata(const char *filename, const char *options,

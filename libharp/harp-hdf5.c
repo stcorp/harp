@@ -76,7 +76,7 @@ typedef struct hdf5_object_id_struct
 } hdf5_object_id;
 
 /* List of HDF5 identifiers and sizes for each physical dimension.
- * The validity flag is needed because there is no obvious way to represent an unintialized hdf5_object_id,
+ * The validity flag is needed because there is no obvious way to represent an uninitialized hdf5_object_id,
  * since in principle all combinations of fileno and addr could be valid.
  */
 typedef struct hdf5_dimension_ids_struct

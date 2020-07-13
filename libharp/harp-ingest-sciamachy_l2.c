@@ -2437,7 +2437,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                       harp_type_double, 3, dimension_type,
                                                                       bounds_dimension, description, "km", NULL,
                                                                       read_altitude_bounds);
-    description = "the tangent heights are the lower bound altitudes; for the top of the heighest layer a TOA value "
+    description = "the tangent heights are the lower bound altitudes; for the top of the highest layer a TOA value "
         "of 100km is used";
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_height[]", dataset);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -2449,7 +2449,7 @@ static void register_common_limb_variables(harp_product_definition *product_defi
                                                                       bounds_dimension, description, "hPa", NULL,
                                                                       read_pressure_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/%s[]/tangent_pressure[]", dataset);
-    description = "the tangent pressures are the lower bound pressures; for the top of the heighest layer a pressure "
+    description = "the tangent pressures are the lower bound pressures; for the top of the highest layer a pressure "
         "value of 3.2e-4 hPa is used";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 

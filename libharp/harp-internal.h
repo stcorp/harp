@@ -47,7 +47,7 @@
 
 #include <stdarg.h>
 
-/* make sure that math.h on Windows als includes the defines for e.g. M_PI */
+/* make sure that math.h on Windows also includes the defines for e.g. M_PI */
 #define _USE_MATH_DEFINES
 
 /* This defines the amount of items that will be allocated per block for an auto-growing array (using realloc) */
@@ -56,7 +56,7 @@
 /* Maximum number of source variables that can be used to create derived variables */
 #define MAX_NUM_SOURCE_VARIABLES 10
 
-/* floating point precission */
+/* floating point precision */
 #define EPSILON 1e-10
 
 /* maximum length for file paths */

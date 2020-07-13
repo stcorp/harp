@@ -254,7 +254,7 @@ static int enable_include_for_species_in_file(ingest_info *info)
     /* We can't read the speciesname with with coda_cursor_read_string  */
     /* because that yields a 1-char string and cursor_read_array fails  */
     /* because the type is text and not an array. Also, the size of the */
-    /* name varies. Therefor we first get the size and read size chars. */
+    /* name varies. Therefore we first get the size and read size chars. */
     if (coda_cursor_get_array_dim(&cursor, &num_dims, dims) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);

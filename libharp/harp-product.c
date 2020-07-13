@@ -45,7 +45,7 @@
  *
  * The representation of a HARP product in C is a structure containing:
  * - an array of variables
- * - an array of dimension lengths for each dimension type (unvailable dimensions have length -1)
+ * - an array of dimension lengths for each dimension type (unavailable dimensions have length -1)
  * - the `source_product` global attribute (can be NULL)
  * - the `history` global attribute (can be NULL)
  *
@@ -789,7 +789,7 @@ int harp_product_get_storage_size(const harp_product *product, int with_attribut
  */
 
 /** Create new product.
- * The product will be intialized with 0 variables and 0 attributes.
+ * The product will be initialized with 0 variables and 0 attributes.
  * \param new_product Pointer to the C variable where the new HARP product will be stored.
  * \return
  *   \arg \c 0, Success.

@@ -935,7 +935,7 @@ int harp_spherical_polygon_overlapping_fraction(const harp_spherical_polygon *po
                             }
                             else
                             {
-                                /* line segements are on the same great circle, so no intermediate point needed */
+                                /* line segments are on the same great circle, so no intermediate point needed */
                                 num_intersection_points--;
                                 polygon_intersect->numberofpoints--;
                             }
