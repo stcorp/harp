@@ -2168,7 +2168,7 @@ static harp_product_definition *register_measurement_product(harp_ingestion_modu
         "4, 2, or 1 measurement(s) respectively for this band in a scan. ";
     harp_product_definition_add_mapping(product_definition, description, NULL);
     description = "Some readouts may even cover multiple scans if the integration time is larger than 6s. HARP will "
-        "combine the data for all bands into a single two-dimensional pixel_readout array and uses a fixed resulotion "
+        "combine the data for all bands into a single two-dimensional pixel_readout array and uses a fixed resolution "
         "of 187.5ms for the variables. Because bands might have higher integration time this means that for those "
         "bands there will be multiple rows in the pixel_readout array for a single readout. ";
     harp_product_definition_add_mapping(product_definition, description, NULL);

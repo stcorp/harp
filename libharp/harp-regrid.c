@@ -892,7 +892,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 }
             }
         }
-        /* Als make variable time dependent if the grid dimension is time and the variable does not depend on time */
+        /* Also make variable time dependent if the grid dimension is time and the variable does not depend on time */
         if (dimension_type == harp_dimension_time &&
             (variable->num_dimensions == 0 || variable->dimension_type[0] != harp_dimension_time))
         {

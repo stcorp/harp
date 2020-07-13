@@ -104,7 +104,7 @@ typedef enum grib_parameter_enum
     grib_param_c3h8,    /* 217047: Propane [kg/kg] */
     grib_param_tc_ch4,  /* 218004: Total column methane [kg/m2] */
     grib_param_tc_hno3, /* 218006: Total column nitric acid [kg/m2] */
-    grib_param_tc_pan,  /* 218013: Total colunn peroxyacetyl nitrate [kg/m2] */
+    grib_param_tc_pan,  /* 218013: Total column peroxyacetyl nitrate [kg/m2] */
     grib_param_tc_c5h8, /* 218016: Total column isoprene [kg/m2] */
     grib_param_tc_no,   /* 218027: Total column nitrogen oxide [kg/m2] */
     grib_param_tc_oh,   /* 218030: Total column hydroxyl radical [kg/m2] */
@@ -2044,7 +2044,7 @@ static int get_lat_lon_grid(coda_cursor *cursor, int grib_version, ingest_info *
         }
         if (info->grid_grib_version != grib_version)
         {
-            /* since GRIB1 and GRIB2 use different resolutions we need to compare with a tollerance of 1000 */
+            /* since GRIB1 and GRIB2 use different resolutions we need to compare with a tolerance of 1000 */
             if (fabs((double)longitudeOfFirstGridPoint - (double)info->longitudeOfFirstGridPoint) > 1e3 ||
                 fabs((double)longitudeOfLastGridPoint - (double)info->longitudeOfLastGridPoint) > 1e3 ||
                 fabs((double)iDirectionIncrement - (double)info->iDirectionIncrement) > 1e3)
@@ -3674,7 +3674,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                "(discipline,category,number) = (192,218,6)");
 
     /* tc_pan: C2H3NO5_column_density */
-    description = "total colunn peroxyacetyl nitrate";
+    description = "total column peroxyacetyl nitrate";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "C2H3NO5_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, "kg/m^2", include_tc_pan,

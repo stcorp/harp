@@ -793,7 +793,7 @@ static void register_fields_for_daily_l3u_cloud_data(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
-/* Code specific for montly data */
+/* Code specific for monthly data */
 
 static int ingestion_monthly_l3c_init(const harp_ingestion_module *module, coda_product *product,
                                       const harp_ingestion_options *options, harp_product_definition **definition,

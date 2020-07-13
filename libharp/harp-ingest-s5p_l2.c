@@ -3123,7 +3123,7 @@ static int read_o3_pr_ozone_profile_apriori_covariance(void *user_data, harp_arr
                 }
                 else
                 {
-                    /* since the matrix is symetric, use the value from the lower triangular part of the matrix */
+                    /* since the matrix is symmetric, use the value from the lower triangular part of the matrix */
                     value = data.float_data[offset + k * num_levels + j];
                 }
                 data.float_data[offset + j * num_levels + k] = (float)value;
@@ -3263,7 +3263,7 @@ static int read_o3_tcl_ozone_stratospheric_vertical_column(void *user_data, harp
         {
             return -1;
         }
-        /* replicate values accross longitude dimension */
+        /* replicate values across longitude dimension */
         for (i = info->num_latitudes - 1; i >= 0; i--)
         {
             float value = data.float_data[i];
@@ -3292,7 +3292,7 @@ static int read_o3_tcl_ozone_stratospheric_vertical_column_precision(void *user_
         {
             return -1;
         }
-        /* replicate values accross longitude dimension */
+        /* replicate values across longitude dimension */
         for (i = info->num_latitudes - 1; i >= 0; i--)
         {
             float value = data.float_data[i];

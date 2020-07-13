@@ -414,7 +414,7 @@ LIBHARP_API int harp_report_warning(const char *message, ...)
  * If no warning handler was set, the NULL pointer will be returned.
  * \param print Pointer to the variable in which the reference to the vprintf compatible function will be stored
  * \return
- *   \arg \c  0, Succes.
+ *   \arg \c  0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_get_warning_handler(int (**print) (const char *, va_list ap))
@@ -443,7 +443,7 @@ LIBHARP_API int harp_get_warning_handler(int (**print) (const char *, va_list ap
  * The warning handler can be set before a call to harp_init() is made.
  * \param print Reference to a vprintf compatible function.
  * \return
- *   \arg \c  0, Succes.
+ *   \arg \c  0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_set_warning_handler(int (*print) (const char *, va_list ap))

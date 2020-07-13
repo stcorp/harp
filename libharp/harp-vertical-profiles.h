@@ -84,10 +84,10 @@ double harp_profile_strato_column_from_partial_column_and_pressure(long num_leve
 void harp_profile_column_avk_from_partial_column_avk(long num_levels, const double *column_density_avk_2d,
                                                      double *column_density_avk_1d);
 void harp_profile_tropospheric_column_avk_from_column_avk(long num_levels, const double *column_density_avk,
-                                                          const double *altitude_bounds, double tropopuase_altitude,
+                                                          const double *altitude_bounds, double tropopause_altitude,
                                                           double *tropospheric_column_density_avk);
 void harp_profile_stratospheric_column_avk_from_column_avk(long num_levels, const double *column_density_avk,
-                                                           const double *altitude_bounds, double tropopuase_altitude,
+                                                           const double *altitude_bounds, double tropopause_altitude,
                                                            double *stratospheric_column_density_avk);
 void harp_density_avk_from_partial_column_avk_and_altitude_bounds(long num_levels, const double *partial_column_avk,
                                                                   const double *altitude_bounds, double *density_avk);

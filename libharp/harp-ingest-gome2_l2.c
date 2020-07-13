@@ -3654,7 +3654,7 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                    include_surface_albedo, read_surface_albedo);
     path = "/DETAILED_RESULTS/SurfaceAlbedo[,window], /META_DATA/MainSpecies[]";
     description =
-        "window is the index in MainSpecies[] that has the value for which the detailed_restults opion is set";
+        "window is the index in MainSpecies[] that has the value for which the detailed_results option is set";
     harp_variable_definition_add_mapping(variable_definition, "detailed_results set", "CODA product version >= 3", path,
                                          description);
 

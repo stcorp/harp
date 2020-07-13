@@ -1512,7 +1512,7 @@ LIBHARP_API int harp_variable_copy(const harp_variable *other_variable, harp_var
 /** Copy all attributes of a variable to a target variable.
  * This will copy all attribute information of a variable that is not available as a parameter of \a harp_variable_new.
  * \param variable Variable from which the attributes should be copied.
- * \param target_variable Variable into which the attribtes will be stored.
+ * \param target_variable Variable into which the attributes will be stored.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).

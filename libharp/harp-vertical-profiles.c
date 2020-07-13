@@ -646,7 +646,7 @@ void harp_profile_pressure_from_gph(long num_levels, const double *gph_profile, 
     }
 }
 
-/** Sum the columns of the 2D averaging kernal to arrive at a 1D column averaging kernel
+/** Sum the columns of the 2D averaging kernel to arrive at a 1D column averaging kernel
  * The 2D averaging kernel needs to be a partial column number density AVK.
  * \param num_levels            Number of vertical levels
  * \param column_density_avk_2d 2D column number density averaging kernel {num_levels,num_levels}
@@ -1553,7 +1553,7 @@ LIBHARP_API int harp_product_smooth_vertical_with_collocated_dataset(harp_produc
  * \param name Name of the variable that should be created.
  * \param unit Unit (optional) of the variable that should be created.
  * \param vertical_grid Variable containing the vertical grid of the column avk.
- * \param vertical_bounds Variable containig the grid boundaries of the column avk (optional).
+ * \param vertical_bounds Variable containing the grid boundaries of the column avk (optional).
  * \param column_avk Column averaging kernel variable.
  * \param apriori Apriori profile (optional).
  * \param variable Pointer to the C variable where the derived HARP variable will be stored.

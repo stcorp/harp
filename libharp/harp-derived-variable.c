@@ -1030,7 +1030,7 @@ int harp_variable_conversion_set_source_description(harp_variable_conversion *co
  * \param variable_name Name of the target variable for which to show conversions (can be NULL).
  * \param print Reference to a printf compatible function.
  * \return
- *   \arg \c  0, Succes.
+ *   \arg \c  0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const char *variable_name,

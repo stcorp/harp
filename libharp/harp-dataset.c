@@ -250,7 +250,7 @@ static int add_directory(harp_dataset *dataset, const char *pathname, const char
  */
 
 /** Create new HARP dataset.
- * The metadata will be intialized with zero product metadata elements.
+ * The metadata will be initialized with zero product metadata elements.
  * \param new_dataset Pointer to the C variable where the new HARP product metadata will be stored.
  * \return
  *   \arg \c 0, Success.
