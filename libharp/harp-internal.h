@@ -79,8 +79,8 @@ typedef enum harp_collocation_filter_type_enum
 
 /* dimsvar_name is the variable name prefixed with HARP_MAX_NUM_DIMS characters defining the dimension types
  * dimsvar_name is thus the unique name for the combination of variable name + dimension types
- * the character code for a dimension type is: '0' + dimension_type, which gives:
- * '/' = indepent, '0' = time, '1' = latitude, '2' = longitude, '3' = vertical, '4' = spectral
+ * the character code for a dimension type is:
+ * 'I' = independent, 'T' = time, 'A' = latitude, 'O' = longitude, 'V' = vertical, 'S' = spectral
  * unused dimensions use a space character.
  */
 typedef struct harp_source_variable_struct
