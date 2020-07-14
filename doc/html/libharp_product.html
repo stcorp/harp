@@ -174,7 +174,7 @@
 <dd><p>The HARP Products module contains everything related to HARP products. </p>
 <p>The representation of a HARP product in C is a structure containing:<ul class="simple">
 <li>an array of variables</li>
-<li>an array of dimension lengths for each dimension type (unvailable dimensions have length -1)</li>
+<li>an array of dimension lengths for each dimension type (unavailable dimensions have length -1)</li>
 <li>the <code class="docutils literal notranslate"><span class="pre">source_product</span></code> global attribute (can be NULL)</li>
 <li>the <code class="docutils literal notranslate"><span class="pre">history</span></code> global attribute (can be NULL)</li>
 </ul>
@@ -313,7 +313,7 @@
 <dl class="function">
 <dt id="_CPPv316harp_product_newPP12harp_product">
 <span id="_CPPv216harp_product_newPP12harp_product"></span><span id="harp_product_new__harp_productPP"></span><span class="target" id="group__harp__product_1ga0d4b0729140d78db3441be1b66451e91"></span>int <code class="descname">harp_product_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_product" title="harp_product">harp_product</a> **<em>new_product</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Create new product. The product will be intialized with 0 variables and 0 attributes. <dl class="docutils">
+<dd><p>Create new product. The product will be initialized with 0 variables and 0 attributes. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
@@ -882,7 +882,7 @@
 <li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the variable that should be created. </li>
 <li><code class="docutils literal notranslate"><span class="pre">unit</span></code>: Unit (optional) of the variable that should be created. </li>
 <li><code class="docutils literal notranslate"><span class="pre">vertical_grid</span></code>: Variable containing the vertical grid of the column avk. </li>
-<li><code class="docutils literal notranslate"><span class="pre">vertical_bounds</span></code>: Variable containig the grid boundaries of the column avk (optional). </li>
+<li><code class="docutils literal notranslate"><span class="pre">vertical_bounds</span></code>: Variable containing the grid boundaries of the column avk (optional). </li>
 <li><code class="docutils literal notranslate"><span class="pre">column_avk</span></code>: Column averaging kernel variable. </li>
 <li><code class="docutils literal notranslate"><span class="pre">apriori</span></code>: Apriori profile (optional). </li>
 <li><code class="docutils literal notranslate"><span class="pre">variable</span></code>: Pointer to the C variable where the derived HARP variable will be stored.</li>
@@ -1000,7 +1000,7 @@
 <p>This function retrieves the product metadata without performing a full import. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Succes. </li>
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
 <li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
 </ul>
 </dd>
