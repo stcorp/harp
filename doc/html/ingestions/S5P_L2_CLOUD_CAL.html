@@ -337,17 +337,29 @@
 <td>[m]</td>
 <td>uncertainty of the altitude of the cloud top using the OCRA/ROCINN CAL model</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
+<tr class="row-even"><td><strong>cloud_top_temperature</strong></td>
+<td>float</td>
+<td>{<em>time</em>}</td>
+<td>[K]</td>
+<td>atmospheric temperature at cloud top level using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>retrieved cloud optical depth using the OCRA/ROCINN CAL model</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_type</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>phase of the retrieved cloud; enumeration values: clear_sky (0), liquid_water_clouds (1), ice_clouds (2)</td>
 </tr>
 <tr class="row-even"><td><strong>surface_albedo</strong></td>
 <td>float</td>
@@ -581,45 +593,7 @@
 <td><em>path</em></td>
 <td><strong>/PRODUCT/cloud_top_height_precision[]</strong></td>
 </tr>
-<tr class="row-even"><td><strong>cloud_optical_depth</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/cloud_optical_thickness[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>cloud_optical_depth_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/cloud_optical_thickness_precision[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>surface_albedo_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>surface_altitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></td>
-</tr>
-<tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></td>
-</tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
-<td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><strong>surface_meridional_wind_velocity</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
-</tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>processor version &gt;= 02.00.00</td>
-</tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><strong>surface_zonal_wind_velocity</strong></td>
+<tr class="row-even"><td rowspan="3"><strong>cloud_top_temperature</strong></td>
 <td><em>available</em></td>
 <td>optional</td>
 </tr>
@@ -627,20 +601,81 @@
 <td>processor version &gt;= 02.00.00</td>
 </tr>
 <tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_optical_depth</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/cloud_optical_thickness[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>cloud_optical_depth_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/cloud_optical_thickness_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><strong>cloud_type</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>values are mapped to signed values, so 255 (undefined cloud phase) becomes -1</td>
+</tr>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>surface_albedo_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></td>
+</tr>
+<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></td>
+</tr>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
+<td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><strong>surface_meridional_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><strong>surface_zonal_wind_velocity</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><em>condition</em></td>
+<td>processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-odd"><td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>snow_ice_type</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>snow_ice_type</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>sea_ice_fraction</strong></td>
+<tr class="row-even"><td rowspan="2"><strong>sea_ice_fraction</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]</strong></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
+<tr class="row-odd"><td><em>description</em></td>
 <td>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</td>
 </tr>
 </tbody>

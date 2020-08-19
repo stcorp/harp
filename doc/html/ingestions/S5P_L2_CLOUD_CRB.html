@@ -313,73 +313,79 @@
 <td>[m]</td>
 <td>error of the retrieved altitude at the level of cloud using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-even"><td><strong>cloud_albedo</strong></td>
+<tr class="row-even"><td><strong>cloud_type</strong></td>
+<td>int8</td>
+<td>{<em>time</em>}</td>
+<td>&#160;</td>
+<td>phase of the retrieved cloud; enumeration values: clear_sky (0), liquid_water_clouds (1), ice_clouds (2)</td>
+</tr>
+<tr class="row-odd"><td><strong>cloud_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>albedo of cloud using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_albedo_uncertainty</strong></td>
+<tr class="row-even"><td><strong>cloud_albedo_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the albedo of cloud using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-even"><td><strong>surface_albedo</strong></td>
+<tr class="row-odd"><td><strong>surface_albedo</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>surface albedo fitted using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_albedo_uncertainty</strong></td>
+<tr class="row-even"><td><strong>surface_albedo_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>uncertainty of the surface albedo fitted using the OCRA/ROCINN CRB model</td>
 </tr>
-<tr class="row-even"><td><strong>surface_altitude</strong></td>
+<tr class="row-odd"><td><strong>surface_altitude</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>surface altitude</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_altitude_uncertainty</strong></td>
+<tr class="row-even"><td><strong>surface_altitude_uncertainty</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m]</td>
 <td>surface altitude precision</td>
 </tr>
-<tr class="row-even"><td><strong>surface_pressure</strong></td>
+<tr class="row-odd"><td><strong>surface_pressure</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[Pa]</td>
 <td>surface pressure</td>
 </tr>
-<tr class="row-odd"><td><strong>surface_meridional_wind_velocity</strong></td>
+<tr class="row-even"><td><strong>surface_meridional_wind_velocity</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m/s]</td>
 <td>northward wind</td>
 </tr>
-<tr class="row-even"><td><strong>surface_zonal_wind_velocity</strong></td>
+<tr class="row-odd"><td><strong>surface_zonal_wind_velocity</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[m/s]</td>
 <td>eastward wind</td>
 </tr>
-<tr class="row-odd"><td><strong>snow_ice_type</strong></td>
+<tr class="row-even"><td><strong>snow_ice_type</strong></td>
 <td>int8</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
 <td>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</td>
 </tr>
-<tr class="row-even"><td><strong>sea_ice_fraction</strong></td>
+<tr class="row-odd"><td><strong>sea_ice_fraction</strong></td>
 <td>float</td>
 <td>{<em>time</em>}</td>
 <td>[]</td>
 <td>sea-ice concentration (as a fraction)</td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
+<tr class="row-even"><td><strong>index</strong></td>
 <td>int32</td>
 <td>{<em>time</em>}</td>
 <td>&#160;</td>
@@ -540,6 +546,19 @@
 <tr class="row-odd"><td><strong>cloud_height_uncertainty</strong></td>
 <td><em>path</em></td>
 <td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]</strong></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><strong>cloud_type</strong></td>
+<td><em>available</em></td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><em>condition</em></td>
+<td>processor version &gt;= 02.00.00</td>
+</tr>
+<tr class="row-even"><td><em>path</em></td>
+<td><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]</strong></td>
+</tr>
+<tr class="row-odd"><td><em>description</em></td>
+<td>values are mapped to signed values, so 255 (undefined cloud phase) becomes -1</td>
 </tr>
 <tr class="row-even"><td><strong>cloud_albedo</strong></td>
 <td><em>path</em></td>

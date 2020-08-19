@@ -39,6 +39,7 @@
 #include <string.h>
 #include <ctype.h>
 
+static const char *cloud_type_values[] = { "clear_sky", "liquid_water_clouds", "ice_clouds" };
 static const char *snow_ice_type_values[] = { "snow_free_land", "sea_ice", "permanent_ice", "snow", "ocean" };
 
 typedef enum s5p_product_type_enum
@@ -2353,6 +2354,14 @@ static int read_results_cloud_height_crb_precision(void *user_data, harp_array d
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_cloud_phase(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_phase", harp_type_int8,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_cloud_pressure_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2366,6 +2375,14 @@ static int read_results_cloud_pressure_crb_precision(void *user_data, harp_array
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_pressure_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_top_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_top_temperature", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -5388,7 +5405,7 @@ static void register_hcho_product(void)
     description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
         "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
         "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
 }
 
 static void register_o3_product(void)
@@ -6685,7 +6702,7 @@ static void register_so2_product(void)
     description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
         "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
         "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
 }
 
 static void register_cloud_cal_variables(harp_product_definition *product_definition)
@@ -6808,6 +6825,15 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     path = "/PRODUCT/cloud_top_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* cloud_top_temperature */
+    description = "atmospheric temperature at cloud top level using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "K", include_from_020000,
+                                                   read_results_cloud_top_temperature);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, NULL);
+
     /* cloud_optical_depth */
     description = "retrieved cloud optical depth using the OCRA/ROCINN CAL model";
     variable_definition =
@@ -6825,6 +6851,17 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
                                                    read_product_cloud_optical_thickness_precision);
     path = "/PRODUCT/cloud_optical_thickness_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_type */
+    description = "phase of the retrieved cloud";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, include_from_020000,
+                                                   read_results_cloud_phase);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, cloud_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
+    description = "values are mapped to signed values, so 255 (undefined cloud phase) becomes -1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
 
     /* surface_albedo */
     description = "surface albedo fitted using the OCRA/ROCINN CAL model";
@@ -6930,6 +6967,17 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
                                                    read_results_cloud_height_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_type */
+    description = "phase of the retrieved cloud";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, include_from_020000,
+                                                   read_results_cloud_phase);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, cloud_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
+    description = "values are mapped to signed values, so 255 (undefined cloud phase) becomes -1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
 
     /* cloud_albedo */
     description = "albedo of cloud using the OCRA/ROCINN CRB model";

@@ -3,6 +3,9 @@
 * Added derivation to retrieve tropospheric/stratospheric column avk from
   total column avk and tropopause altitude.
 
+* Updates to product ingestions:
+  - S5P L2 CLOUD: added cloud_type and cloud_top_temperature
+
 1.11 2020-05-19
 ~~~~~~~~~~~~~~~
 
