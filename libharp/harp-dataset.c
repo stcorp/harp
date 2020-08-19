@@ -551,6 +551,13 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
             harp_product_metadata_delete(dataset->metadata[index]);
         }
 
+        /* Clear metadata history field if it was set (to reduce memory overhead) */
+        if (metadata->history != NULL)
+        {
+            free(metadata->history);
+            metadata->history = NULL;
+        }
+
         /* Set the metadata for this source_product */
         dataset->metadata[index] = metadata;
     }

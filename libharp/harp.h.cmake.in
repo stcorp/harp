@@ -316,7 +316,9 @@ struct harp_product_metadata_struct
     double datetime_start;
     double datetime_stop;
     long dimension[HARP_NUM_DIM_TYPES];
+    char *format;
     char *source_product;
+    char *history;
 };
 
 /** HARP Product Metadata typedef */

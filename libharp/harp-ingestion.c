@@ -2024,11 +2024,20 @@ int harp_ingest(const char *filename, const char *operations, const char *option
     return status;
 }
 
-static int ingest_metadata(const char *filename, const harp_ingestion_options *option_list, double *datetime_start,
-                           double *datetime_stop, long dimension[])
+static int ingest_metadata(const char *filename, const harp_ingestion_options *option_list,
+                           harp_product_metadata *metadata)
 {
     ingest_info *info;
     int i;
+
+    /* the source_product always equals the filename for ingestions */
+    metadata->source_product = strdup(harp_basename(filename));
+    if (metadata->source_product == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
 
     if (ingestion_init(&info) != 0)
     {
@@ -2053,6 +2062,15 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
     }
     assert(info->product_definition != NULL);
 
+    /* the format metadata field is equal to the product definition name */
+    metadata->format = strdup(info->product_definition->name);
+    if (metadata->format == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
     info->basename = harp_basename(filename);
 
     if (harp_product_new(&info->product) != 0)
@@ -2066,12 +2084,9 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
         ingestion_done(info);
         return -1;
     }
-    if (dimension != NULL)
+    for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
     {
-        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
-        {
-            dimension[i] = info->dimension[i];
-        }
+        metadata->dimension[i] = info->dimension[i];
     }
     if (init_variable_mask(info) != 0)
     {
@@ -2082,15 +2097,16 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
     if (product_has_empty_dimensions(info) || !product_has_variables(info))
     {
         /* empty product is not considered an error */
-        *datetime_start = harp_mininf();
-        *datetime_stop = harp_plusinf();
+        metadata->datetime_start = harp_mininf();
+        metadata->datetime_stop = harp_plusinf();
         ingestion_done(info);
         return 0;
     }
 
     if (info->product_definition->read_datetime_range != NULL)
     {
-        if (info->product_definition->read_datetime_range(info->user_data, datetime_start, datetime_stop) != 0)
+        if (info->product_definition->read_datetime_range(info->user_data, &metadata->datetime_start,
+                                                          &metadata->datetime_stop) != 0)
         {
             ingestion_done(info);
             return -1;
@@ -2127,7 +2143,7 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
             }
         }
 
-        if (harp_product_get_datetime_range(info->product, datetime_start, datetime_stop) != 0)
+        if (harp_product_get_datetime_range(info->product, &metadata->datetime_start, &metadata->datetime_stop) != 0)
         {
             ingestion_done(info);
             return -1;
@@ -2139,8 +2155,7 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
     return 0;
 }
 
-int harp_ingest_global_attributes(const char *filename, const char *options, double *datetime_start,
-                                  double *datetime_stop, long dimension[], char **source_product)
+int harp_ingest_metadata(const char *filename, const char *options, harp_product_metadata *metadata)
 {
     harp_ingestion_options *option_list;
     int perform_conversions;
@@ -2182,7 +2197,7 @@ int harp_ingest_global_attributes(const char *filename, const char *options, dou
     perform_boundary_checks = coda_get_option_perform_boundary_checks();
     coda_set_option_perform_boundary_checks(0);
 
-    status = ingest_metadata(filename, option_list, datetime_start, datetime_stop, dimension);
+    status = ingest_metadata(filename, option_list, metadata);
 
     /* set the libcoda options back to their original values */
     coda_set_option_perform_boundary_checks(perform_boundary_checks);
@@ -2193,18 +2208,6 @@ int harp_ingest_global_attributes(const char *filename, const char *options, dou
     if (status != 0)
     {
         return -1;
-    }
-
-    if (source_product != NULL)
-    {
-        /* the source_product always equals the filename for ingestions */
-        *source_product = strdup(harp_basename(filename));
-        if (*source_product == NULL)
-        {
-            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                           __LINE__);
-            return -1;
-        }
     }
 
     return 0;

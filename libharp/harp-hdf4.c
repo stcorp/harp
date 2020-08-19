@@ -831,15 +831,13 @@ static int update_dimensions_with_variable(long dimension[], int32 sds_id)
     return 0;
 }
 
-int harp_import_global_attributes_hdf4(const char *filename, double *datetime_start, double *datetime_stop,
-                                       long dimension[], char **source_product)
+int harp_import_metadata_hdf4(const char *filename, harp_product_metadata *metadata)
 {
-    char *attr_source_product = NULL;
-    harp_scalar attr_datetime_start;
-    harp_scalar attr_datetime_stop;
-    harp_data_type attr_data_type;
-    long attr_dimension[HARP_NUM_DIM_TYPES];
+    harp_scalar value;
+    harp_data_type data_type;
+    int32 hdf4_num_attributes;
     int32 hdf4_index;
+    int32 num_sds;
     int32 sd_id;
     int i;
 
@@ -863,139 +861,127 @@ int harp_import_global_attributes_hdf4(const char *filename, double *datetime_st
         return -1;
     }
 
-    if (datetime_start != NULL)
+    /* datetime_start */
+    hdf4_index = SDfindattr(sd_id, "datetime_start");
+    if (hdf4_index >= 0)
     {
-        hdf4_index = SDfindattr(sd_id, "datetime_start");
-        if (hdf4_index >= 0)
+        if (read_numeric_attribute(sd_id, hdf4_index, &data_type, &value) != 0)
         {
-            if (read_numeric_attribute(sd_id, hdf4_index, &attr_data_type, &attr_datetime_start) != 0)
-            {
-                SDend(sd_id);
-                return -1;
-            }
+            SDend(sd_id);
+            return -1;
+        }
 
-            if (attr_data_type != harp_type_double)
-            {
-                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_start' has invalid type");
-                SDend(sd_id);
-                return -1;
-            }
-        }
-        else
+        if (data_type != harp_type_double)
         {
-            attr_datetime_start.double_data = harp_mininf();
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_start' has invalid type");
+            SDend(sd_id);
+            return -1;
         }
+        metadata->datetime_start = value.double_data;
+    }
+    else
+    {
+        metadata->datetime_start = harp_mininf();
     }
 
-    if (datetime_stop != NULL)
+    /* datetime_stop */
+    hdf4_index = SDfindattr(sd_id, "datetime_stop");
+    if (hdf4_index >= 0)
     {
-        hdf4_index = SDfindattr(sd_id, "datetime_stop");
-        if (hdf4_index >= 0)
+        if (read_numeric_attribute(sd_id, hdf4_index, &data_type, &value) != 0)
         {
-            if (read_numeric_attribute(sd_id, hdf4_index, &attr_data_type, &attr_datetime_stop) != 0)
-            {
-                SDend(sd_id);
-                return -1;
-            }
+            SDend(sd_id);
+            return -1;
+        }
 
-            if (attr_data_type != harp_type_double)
-            {
-                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_stop' has invalid type");
-                SDend(sd_id);
-                return -1;
-            }
-        }
-        else
+        if (data_type != harp_type_double)
         {
-            attr_datetime_stop.double_data = harp_plusinf();
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_stop' has invalid type");
+            SDend(sd_id);
+            return -1;
         }
+        metadata->datetime_stop = value.double_data;
+    }
+    else
+    {
+        metadata->datetime_stop = harp_plusinf();
     }
 
-    if (dimension != NULL)
+    /* dimension */
+    if (SDfileinfo(sd_id, &num_sds, &hdf4_num_attributes) != 0)
     {
-        int32 hdf4_num_attributes;
-        int32 num_sds;
+        harp_set_error(HARP_ERROR_HDF4, NULL);
+        SDend(sd_id);
+        return -1;
+    }
 
-        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
-        {
-            attr_dimension[i] = -1;
-        }
+    for (i = 0; i < num_sds; i++)
+    {
+        int32 sds_id;
 
-        if (SDfileinfo(sd_id, &num_sds, &hdf4_num_attributes) != 0)
+        sds_id = SDselect(sd_id, i);
+        if (sds_id == -1)
         {
             harp_set_error(HARP_ERROR_HDF4, NULL);
             SDend(sd_id);
             return -1;
         }
 
-        for (i = 0; i < num_sds; i++)
+        if (update_dimensions_with_variable(metadata->dimension, sds_id) != 0)
         {
-            int32 sds_id;
-
-            sds_id = SDselect(sd_id, i);
-            if (sds_id == -1)
-            {
-                harp_set_error(HARP_ERROR_HDF4, NULL);
-                return -1;
-            }
-
-            if (update_dimensions_with_variable(attr_dimension, sds_id) != 0)
-            {
-                SDendaccess(sds_id);
-                return -1;
-            }
-
             SDendaccess(sds_id);
+            SDend(sd_id);
+            return -1;
+        }
+
+        SDendaccess(sds_id);
+    }
+
+    /* format */
+    metadata->format = strdup("HARP_HDF4");
+    if (metadata->format == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        SDend(sd_id);
+        return -1;
+    }
+
+    /* source_product */
+    hdf4_index = SDfindattr(sd_id, "source_product");
+    if (hdf4_index >= 0)
+    {
+        if (read_string_attribute(sd_id, hdf4_index, &metadata->source_product) != 0)
+        {
+            SDend(sd_id);
+            return -1;
+        }
+    }
+    else
+    {
+        /* use filename if there is no source_product attribute */
+        metadata->source_product = strdup(harp_basename(filename));
+        if (metadata->source_product == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            SDend(sd_id);
+            return -1;
         }
     }
 
-    if (source_product != NULL)
+    /* history */
+    hdf4_index = SDfindattr(sd_id, "history");
+    if (hdf4_index >= 0)
     {
-        hdf4_index = SDfindattr(sd_id, "source_product");
-        if (hdf4_index >= 0)
+        if (read_string_attribute(sd_id, hdf4_index, &metadata->history) != 0)
         {
-            if (read_string_attribute(sd_id, hdf4_index, &attr_source_product) != 0)
-            {
-                return -1;
-            }
-        }
-        else
-        {
-            /* use filename if there is no source_product attribute */
-            attr_source_product = strdup(harp_basename(filename));
-            if (attr_source_product == NULL)
-            {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                               __LINE__);
-                return -1;
-            }
+            SDend(sd_id);
+            return -1;
         }
     }
 
     SDend(sd_id);
-
-    if (datetime_start != NULL)
-    {
-        *datetime_start = attr_datetime_start.double_data;
-    }
-
-    if (datetime_stop != NULL)
-    {
-        *datetime_stop = attr_datetime_stop.double_data;
-    }
-
-    if (source_product != NULL)
-    {
-        *source_product = attr_source_product;
-    }
-
-    if (dimension != NULL)
-    {
-        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
-        {
-            dimension[i] = attr_dimension[i];
-        }
-    }
 
     return 0;
 }

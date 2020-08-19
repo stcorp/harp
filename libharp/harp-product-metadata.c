@@ -59,9 +59,17 @@ LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata)
         {
             free(metadata->filename);
         }
+        if (metadata->format != NULL)
+        {
+            free(metadata->format);
+        }
         if (metadata->source_product != NULL)
         {
             free(metadata->source_product);
+        }
+        if (metadata->history != NULL)
+        {
+            free(metadata->history);
         }
         free(metadata);
     }
@@ -89,7 +97,9 @@ LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata)
     }
 
     metadata->filename = NULL;
+    metadata->format = NULL;
     metadata->source_product = NULL;
+    metadata->history = NULL;
 
     for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
     {

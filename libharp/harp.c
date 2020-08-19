@@ -753,8 +753,7 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, const char *o
     {
         case format_hdf4:
 #ifdef HAVE_HDF4
-            result = harp_import_global_attributes_hdf4(filename, &metadata->datetime_start, &metadata->datetime_stop,
-                                                        metadata->dimension, &metadata->source_product);
+            result = harp_import_metadata_hdf4(filename, metadata);
 #else
             harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
             result = -1;
@@ -762,16 +761,14 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, const char *o
             break;
         case format_hdf5:
 #ifdef HAVE_HDF5
-            result = harp_import_global_attributes_hdf5(filename, &metadata->datetime_start, &metadata->datetime_stop,
-                                                        metadata->dimension, &metadata->source_product);
+            result = harp_import_metadata_hdf5(filename, metadata);
 #else
             harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
             result = -1;
 #endif
             break;
         case format_netcdf:
-            result = harp_import_global_attributes_netcdf(filename, &metadata->datetime_start, &metadata->datetime_stop,
-                                                          metadata->dimension, &metadata->source_product);
+            result = harp_import_metadata_netcdf(filename, metadata);
             break;
         default:
             harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
@@ -787,8 +784,7 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, const char *o
         }
 
         /* try ingest */
-        if (harp_ingest_global_attributes(filename, options, &metadata->datetime_start, &metadata->datetime_stop,
-                                          metadata->dimension, &metadata->source_product) != 0)
+        if (harp_ingest_metadata(filename, options, metadata) != 0)
         {
             harp_product_metadata_delete(metadata);
             return -1;

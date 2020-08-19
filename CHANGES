@@ -3,6 +3,8 @@
 * Added derivation to retrieve tropospheric/stratospheric column avk from
   total column avk and tropopause altitude.
 
+* Added format and history fields to harp_product_metadata.
+
 * Updates to product ingestions:
   - S5P L2 CLOUD: added cloud_type and cloud_top_temperature
 

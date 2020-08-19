@@ -206,22 +206,18 @@ int harp_export_hdf5(const char *filename, const harp_product *product);
 int harp_export_netcdf(const char *filename, const harp_product *product);
 
 #ifdef HAVE_HDF4
-int harp_import_global_attributes_hdf4(const char *filename, double *datetime_start, double *datetime_stop,
-                                       long dimension[], char **source_product);
+int harp_import_metadata_hdf4(const char *filename, harp_product_metadata *metadata);
 #endif
 #ifdef HAVE_HDF5
-int harp_import_global_attributes_hdf5(const char *filename, double *datetime_start, double *datetime_stop,
-                                       long dimension[], char **source_product);
+int harp_import_metadata_hdf5(const char *filename, harp_product_metadata *metadata);
 #endif
-int harp_import_global_attributes_netcdf(const char *filename, double *datetime_start, double *datetime_stop,
-                                         long dimension[], char **source_product);
+int harp_import_metadata_netcdf(const char *filename, harp_product_metadata *metadata);
 int harp_parse_file_convention(const char *str, int *major, int *minor);
 
 /* Ingest */
 int harp_ingest(const char *filename, const char *operations, const char *options, harp_product **product);
 int harp_ingest_test(const char *filename, int (*print) (const char *, ...));
-int harp_ingest_global_attributes(const char *filename, const char *options, double *datetime_start,
-                                  double *datetime_stop, long dimension[], char **source_product);
+int harp_ingest_metadata(const char *filename, const char *options, harp_product_metadata *metadata);
 void harp_ingestion_done(void);
 
 /* Units */

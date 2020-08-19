@@ -850,14 +850,14 @@ int harp_import_netcdf(const char *filename, harp_product **product)
     return 0;
 }
 
-int harp_import_global_attributes_netcdf(const char *filename, double *datetime_start, double *datetime_stop,
-                                         long dimension[], char **source_product)
+int harp_import_metadata_netcdf(const char *filename, harp_product_metadata *metadata)
 {
-    char *attr_source_product = NULL;
-    harp_scalar attr_datetime_start;
-    harp_scalar attr_datetime_stop;
-    harp_data_type attr_data_type;
-    long attr_dimension[HARP_NUM_DIM_TYPES];
+    harp_scalar value;
+    harp_data_type data_type;
+    int num_dimensions;
+    int num_variables;
+    int num_attributes;
+    int unlim_dim;
     int result;
     int ncid;
     int i;
@@ -881,121 +881,129 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
         return -1;
     }
 
-    if (datetime_start != NULL)
+    /* datetime_start */
+    if (nc_inq_att(ncid, NC_GLOBAL, "datetime_start", NULL, NULL) == NC_NOERR)
     {
-        if (nc_inq_att(ncid, NC_GLOBAL, "datetime_start", NULL, NULL) == NC_NOERR)
+        if (read_numeric_attribute(ncid, NC_GLOBAL, "datetime_start", &data_type, &value) != 0)
         {
-            if (read_numeric_attribute(ncid, NC_GLOBAL, "datetime_start", &attr_data_type, &attr_datetime_start) != 0)
-            {
-                nc_close(ncid);
-                return -1;
-            }
-
-            if (attr_data_type != harp_type_double)
-            {
-                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_start' has invalid type");
-                nc_close(ncid);
-                return -1;
-            }
-        }
-        else
-        {
-            attr_datetime_start.double_data = harp_mininf();
-        }
-    }
-
-    if (datetime_stop != NULL)
-    {
-        if (nc_inq_att(ncid, NC_GLOBAL, "datetime_stop", NULL, NULL) == NC_NOERR)
-        {
-            if (read_numeric_attribute(ncid, NC_GLOBAL, "datetime_stop", &attr_data_type, &attr_datetime_stop) != 0)
-            {
-                nc_close(ncid);
-                return -1;
-            }
-
-            if (attr_data_type != harp_type_double)
-            {
-                harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_stop' has invalid type");
-                nc_close(ncid);
-                return -1;
-            }
-        }
-        else
-        {
-            attr_datetime_stop.double_data = harp_plusinf();
-        }
-    }
-
-    if (dimension != NULL)
-    {
-        int num_dimensions;
-        int num_variables;
-        int num_attributes;
-        int unlim_dim;
-        int result;
-
-        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
-        {
-            attr_dimension[i] = -1;
-        }
-
-        result = nc_inq(ncid, &num_dimensions, &num_variables, &num_attributes, &unlim_dim);
-        if (result != NC_NOERR)
-        {
-            harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
+            nc_close(ncid);
             return -1;
         }
 
-        for (i = 0; i < num_dimensions; i++)
+        if (data_type != harp_type_double)
         {
-            netcdf_dimension_type netcdf_dim_type;
-            harp_dimension_type harp_dim_type;
-            char name[NC_MAX_NAME + 1];
-            size_t length;
-
-            result = nc_inq_dim(ncid, i, name, &length);
-            if (result != NC_NOERR)
-            {
-                harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
-                return -1;
-            }
-
-            if (parse_dimension_type(name, &netcdf_dim_type) != 0)
-            {
-                return -1;
-            }
-            if (netcdf_dim_type != netcdf_dimension_independent && netcdf_dim_type != netcdf_dimension_string)
-            {
-                if (get_harp_dimension_type(netcdf_dim_type, &harp_dim_type) != 0)
-                {
-                    return -1;
-                }
-                attr_dimension[harp_dim_type] = (long)length;
-            }
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_start' has invalid type");
+            nc_close(ncid);
+            return -1;
         }
+        metadata->datetime_start = value.double_data;
+    }
+    else
+    {
+        metadata->datetime_start = harp_mininf();
     }
 
-    if (source_product != NULL)
+    /* datatime_stop */
+    if (nc_inq_att(ncid, NC_GLOBAL, "datetime_stop", NULL, NULL) == NC_NOERR)
     {
-        if (nc_inq_att(ncid, NC_GLOBAL, "source_product", NULL, NULL) == NC_NOERR)
+        if (read_numeric_attribute(ncid, NC_GLOBAL, "datetime_stop", &data_type, &value) != 0)
         {
-            if (read_string_attribute(ncid, NC_GLOBAL, "source_product", &attr_source_product) != 0)
+            nc_close(ncid);
+            return -1;
+        }
+
+        if (data_type != harp_type_double)
+        {
+            harp_set_error(HARP_ERROR_IMPORT, "attribute 'datetime_stop' has invalid type");
+            nc_close(ncid);
+            return -1;
+        }
+        metadata->datetime_stop = value.double_data;
+    }
+    else
+    {
+        metadata->datetime_stop = harp_plusinf();
+    }
+
+    /* dimension */
+    result = nc_inq(ncid, &num_dimensions, &num_variables, &num_attributes, &unlim_dim);
+    if (result != NC_NOERR)
+    {
+        harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
+        nc_close(ncid);
+        return -1;
+    }
+
+    for (i = 0; i < num_dimensions; i++)
+    {
+        netcdf_dimension_type netcdf_dim_type;
+        harp_dimension_type harp_dim_type;
+        char name[NC_MAX_NAME + 1];
+        size_t length;
+
+        result = nc_inq_dim(ncid, i, name, &length);
+        if (result != NC_NOERR)
+        {
+            harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
+            nc_close(ncid);
+            return -1;
+        }
+
+        if (parse_dimension_type(name, &netcdf_dim_type) != 0)
+        {
+            nc_close(ncid);
+            return -1;
+        }
+        if (netcdf_dim_type != netcdf_dimension_independent && netcdf_dim_type != netcdf_dimension_string)
+        {
+            if (get_harp_dimension_type(netcdf_dim_type, &harp_dim_type) != 0)
             {
                 nc_close(ncid);
                 return -1;
             }
+            metadata->dimension[harp_dim_type] = (long)length;
         }
-        else
+    }
+
+    /* format */
+    metadata->format = strdup("HARP_NETCDF");
+    if (metadata->format == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        nc_close(ncid);
+        return -1;
+    }
+
+    /* source_product */
+    if (nc_inq_att(ncid, NC_GLOBAL, "source_product", NULL, NULL) == NC_NOERR)
+    {
+        if (read_string_attribute(ncid, NC_GLOBAL, "source_product", &metadata->source_product) != 0)
         {
-            /* use filename if there is no source_product attribute */
-            attr_source_product = strdup(harp_basename(filename));
-            if (attr_source_product == NULL)
-            {
-                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
-                               __LINE__);
-                return -1;
-            }
+            nc_close(ncid);
+            return -1;
+        }
+    }
+    else
+    {
+        /* use filename if there is no source_product attribute */
+        metadata->source_product = strdup(harp_basename(filename));
+        if (metadata->source_product == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                           __LINE__);
+            nc_close(ncid);
+            return -1;
+        }
+    }
+
+    /* history */
+    if (nc_inq_att(ncid, NC_GLOBAL, "history", NULL, NULL) == NC_NOERR)
+    {
+        if (read_string_attribute(ncid, NC_GLOBAL, "history", &metadata->history) != 0)
+        {
+            nc_close(ncid);
+            return -1;
         }
     }
 
@@ -1003,34 +1011,7 @@ int harp_import_global_attributes_netcdf(const char *filename, double *datetime_
     if (result != NC_NOERR)
     {
         harp_set_error(HARP_ERROR_NETCDF, "%s", nc_strerror(result));
-        free(attr_source_product);
         return -1;
-    }
-
-    if (datetime_start != NULL)
-    {
-        *datetime_start = attr_datetime_start.double_data;
-    }
-
-    if (datetime_stop != NULL)
-    {
-        *datetime_stop = attr_datetime_stop.double_data;
-    }
-
-    if (source_product != NULL)
-    {
-        *source_product = attr_source_product;
-    }
-
-    if (dimension != NULL)
-    {
-        for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
-        {
-            if (attr_dimension[i] >= 0)
-            {
-                dimension[i] = attr_dimension[i];
-            }
-        }
     }
 
     return 0;
