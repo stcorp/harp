@@ -591,7 +591,7 @@ static void register_module_l2_EMMA(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module = harp_ingestion_register_module_coda("ESACCI_GHG_L2_EMMA", "Green House Gases CCI", "ESACCI_GHG",
+    module = harp_ingestion_register_module("ESACCI_GHG_L2_EMMA", "Green House Gases CCI", "ESACCI_GHG",
                                                  "EMMA_L2", "CCI L2 Green House Gases profile calculated by EMMA",
                                                  ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_EMMA", NULL, read_dimensions);
@@ -606,7 +606,7 @@ static void register_module_l2_GOSAT(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module = harp_ingestion_register_module_coda("ESACCI_GHG_L2_GOSAT", "Green House Gases CCI", "ESACCI_GHG",
+    module = harp_ingestion_register_module("ESACCI_GHG_L2_GOSAT", "Green House Gases CCI", "ESACCI_GHG",
                                                  "GOSAT_L2", "CCI L2 Green House Gases profile from GOSAT",
                                                  ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_GOSAT", NULL, read_dimensions);
@@ -621,7 +621,7 @@ static void register_module_l2_SCIAMACHY(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module = harp_ingestion_register_module_coda("ESACCI_GHG_L2_SCIAMACHY", "Green House Gases CCI", "ESACCI_GHG",
+    module = harp_ingestion_register_module("ESACCI_GHG_L2_SCIAMACHY", "Green House Gases CCI", "ESACCI_GHG",
                                                  "SCIAMACHY_L2", "CCI L2 Green House Gases profile from SCIAMACHY",
                                                  ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_SCIAMACHY", NULL, read_dimensions);

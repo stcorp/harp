@@ -614,8 +614,7 @@ int harp_ingestion_module_npp_suomi_crimss_l2_init(void)
     harp_ingestion_module *module;
     const char *dataset_options[] = { "temp", "press" };
 
-    module =
-        harp_ingestion_register_module_coda("NPP_SUOMI_L2_CRIMSS_EDR_REDR", "NPP", "NPP_SUOMI", "CRIMSS_EDR_REDR_L2",
+    module = harp_ingestion_register_module("NPP_SUOMI_L2_CRIMSS_EDR_REDR", "NPP", "NPP_SUOMI", "CRIMSS_EDR_REDR_L2",
                                             "NPP Suomi CRIMSS EDR Atmospheric Vertical Profile", ingestion_init,
                                             ingestion_done);
 

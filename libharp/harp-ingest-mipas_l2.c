@@ -2029,7 +2029,7 @@ int harp_ingestion_module_mipas_l2_init(void)
     const char *path;
 
     description = "MIPAS Temperature, Pressure, and Atmospheric Constituents Profiles";
-    module = harp_ingestion_register_module_coda("MIPAS_L2", "MIPAS", "ENVISAT_MIPAS", "MIP_NL__2P", description,
+    module = harp_ingestion_register_module("MIPAS_L2", "MIPAS", "ENVISAT_MIPAS", "MIP_NL__2P", description,
                                                  ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "species", "if the option is provided then ingest only the specified "

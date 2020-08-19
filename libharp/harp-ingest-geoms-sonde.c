@@ -833,7 +833,7 @@ int harp_ingestion_module_geoms_sonde_init(void)
     const char *profile_options[] = { "false" };
     harp_ingestion_module *module;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-SONDE", "GEOMS", "GEOMS", "SONDE",
+    module = harp_ingestion_register_module("GEOMS-TE-SONDE", "GEOMS", "GEOMS", "SONDE",
                                                  "GEOMS template for Sondes", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "profile", "whether to ingest the sonde profile as a vertical profile "

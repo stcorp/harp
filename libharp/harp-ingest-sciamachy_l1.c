@@ -1836,7 +1836,7 @@ int harp_ingestion_module_sciamachy_l1_init(void)
     const char *data_options[] = { "nadir", "limb", "occultation", "sun_reference" };
 
     description = "SCIAMACHY Level 1c";
-    module = harp_ingestion_register_module_coda("SCIAMACHY_L1c", "SCIAMACHY", "ENVISAT_SCIAMACHY", "SCI_NLC_1P",
+    module = harp_ingestion_register_module("SCIAMACHY_L1c", "SCIAMACHY", "ENVISAT_SCIAMACHY", "SCI_NLC_1P",
                                                  description, ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "data",

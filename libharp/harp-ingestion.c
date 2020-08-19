@@ -1922,24 +1922,11 @@ static int ingest(const char *filename, harp_program *program, const harp_ingest
         ingestion_done(info);
         return -1;
     }
-    if (info->cproduct != NULL && info->module->ingestion_init_coda != NULL)
+    if (info->module->ingestion_init(info->module, info->cproduct, option_list, &info->product_definition,
+                                     &info->user_data) != 0)
     {
-        if (info->module->ingestion_init_coda(info->module, info->cproduct, option_list, &info->product_definition,
-                                              &info->user_data) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
-    }
-    else
-    {
-        assert(info->module->ingestion_init_custom != NULL);
-        if (info->module->ingestion_init_custom(info->module, filename, option_list, &info->product_definition,
-                                                &info->user_data) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
+        ingestion_done(info);
+        return -1;
     }
     assert(info->product_definition != NULL);
 
@@ -2057,24 +2044,12 @@ static int ingest_metadata(const char *filename, const harp_ingestion_options *o
         ingestion_done(info);
         return -1;
     }
-    if (info->cproduct != NULL && info->module->ingestion_init_coda != NULL)
+    assert(info->cproduct != NULL);
+    if (info->module->ingestion_init(info->module, info->cproduct, option_list, &info->product_definition,
+                                     &info->user_data) != 0)
     {
-        if (info->module->ingestion_init_coda(info->module, info->cproduct, option_list, &info->product_definition,
-                                              &info->user_data) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
-    }
-    else
-    {
-        assert(info->module->ingestion_init_custom != NULL);
-        if (info->module->ingestion_init_custom(info->module, filename, option_list, &info->product_definition,
-                                                &info->user_data) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
+        ingestion_done(info);
+        return -1;
     }
     assert(info->product_definition != NULL);
 
@@ -2360,17 +2335,8 @@ int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
             }
             fflush(stdout);
 
-            if (info->cproduct != NULL && info->module->ingestion_init_coda != NULL)
-            {
-                status = info->module->ingestion_init_coda(info->module, info->cproduct, option_list,
-                                                           &info->product_definition, &info->user_data);
-            }
-            else
-            {
-                assert(info->module->ingestion_init_custom != NULL);
-                status = info->module->ingestion_init_custom(info->module, filename, option_list,
-                                                             &info->product_definition, &info->user_data);
-            }
+            status = info->module->ingestion_init(info->module, info->cproduct, option_list, &info->product_definition,
+                                                  &info->user_data);
             if (status == 0)
             {
                 assert(info->product_definition != NULL);

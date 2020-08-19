@@ -1279,7 +1279,7 @@ int harp_ingestion_module_gome_l1_init(void)
     const char *sun_reference_options[] = { "sun_reference" };
 
     description = "GOME Level 1 Extracted data";
-    module = harp_ingestion_register_module_coda("GOME_L1_EXTRACTED", "GOME", "ERS_GOME", "GOM.LVL13_EXTRACTED",
+    module = harp_ingestion_register_module("GOME_L1_EXTRACTED", "GOME", "ERS_GOME", "GOM.LVL13_EXTRACTED",
                                                  description, ingestion_init, ingestion_done);
     harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
                                    "'band-2a', 'band-2b', 'band-3', 'band-4', 'blind-1a', 'straylight-1a', "

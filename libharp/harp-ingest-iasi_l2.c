@@ -631,8 +631,7 @@ int harp_ingestion_module_iasi_l2_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("IASI_L2", "IASI", "EPS", "IASI_SND_02", "IASI L2 total column densities",
+    module = harp_ingestion_register_module("IASI_L2", "IASI", "EPS", "IASI_SND_02", "IASI L2 total column densities",
                                             ingestion_init, ingestion_done);
     product_definition =
         harp_ingestion_register_product(module, "IASI_L2", "IASI L2 total column densities", read_dimensions);

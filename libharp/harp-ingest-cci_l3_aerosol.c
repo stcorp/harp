@@ -609,14 +609,12 @@ static void register_module_l3_aatsr_atsr2(void)
 {
     harp_ingestion_module *module;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L3_AATSR", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L3_AATSR", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "AATSR_L3", "CCI L3 Aerosol profile from AATSR",
                                             ingestion_init_aatsr_atsr2, ingestion_done);
     register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L3_AATSR");
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L3_ATSR2", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L3_ATSR2", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "ATSR2_L3", "CCI L3 Aerosol profile from ATSR-2",
                                             ingestion_init_aatsr_atsr2, ingestion_done);
     register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L3_ATSR2");
@@ -664,8 +662,7 @@ static void register_module_l3_gomos(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L3_GOMOS_AERGOM", "Aerosol CCI",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L3_GOMOS_AERGOM", "Aerosol CCI",
                                             "ESACCI_AEROSOL", "GOMOS_AERGOM_L3",
                                             "CCI L3 Aerosol profile from GOMOS processed by AERGOM",
                                             ingestion_init_gomos, ingestion_done);
@@ -790,8 +787,7 @@ static void register_module_l3_meris(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L3_MERIS_ALAMO", "Aerosol CCI",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L3_MERIS_ALAMO", "Aerosol CCI",
                                             "ESACCI_AEROSOL", "MERIS_ALAMO_L3",
                                             "CCI L3 Aerosol profile from MERIS processed by ALAMO",
                                             ingestion_init_meris, ingestion_done);
@@ -963,8 +959,7 @@ static void register_module_l3_iasi(void)
 {
     harp_ingestion_module *module;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L3_IASI", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L3_IASI", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "IASI_L3",
                                             "CCI L3 aerosol profile from IASI", ingestion_init_iasi, ingestion_done);
     register_iasi_product(module, "ESACCI_AEROSOL_L3_IASI");
@@ -1015,8 +1010,7 @@ static void register_module_l3_multi_sensor(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L3_Multi_Sensor_AAI", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L3_Multi_Sensor_AAI", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "Multi_Sensor_AAI_L3", "CCI L3 Absorbing Aerosol Index from Multi Sensor",
                                             ingestion_init_multi_sensor, ingestion_done);
 

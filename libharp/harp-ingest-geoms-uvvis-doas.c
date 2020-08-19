@@ -2629,7 +2629,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-DIRECTSUN", "GEOMS", "GEOMS",
+    module = harp_ingestion_register_module("GEOMS-TE-UVVIS-DOAS-DIRECTSUN", "GEOMS", "GEOMS",
                                                  "UVVIS_DOAS_DIRECTSUN_GAS",
                                                  "GEOMS template for UVVIS-DOAS direct sun measurements",
                                                  ingestion_init, ingestion_done);
@@ -2645,7 +2645,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
         init_product_definition(module, i, uvvis_doas_directsun, 7);
     }
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-OFFAXIS", "GEOMS", "GEOMS",
+    module = harp_ingestion_register_module("GEOMS-TE-UVVIS-DOAS-OFFAXIS", "GEOMS", "GEOMS",
                                                  "UVVIS_DOAS_OFFAXIS_GAS",
                                                  "GEOMS template for UVVIS-DOAS off-axis gas measurements",
                                                  ingestion_init, ingestion_done);
@@ -2660,7 +2660,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
         init_product_definition(module, i, uvvis_doas_offaxis, 7);
     }
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL", "GEOMS", "GEOMS",
+    module = harp_ingestion_register_module("GEOMS-TE-UVVIS-DOAS-OFFAXIS-AEROSOL", "GEOMS", "GEOMS",
                                                  "UVVIS_DOAS_OFFAXIS_AEROSOL",
                                                  "GEOMS template for UVVIS-DOAS off-axis aerosol measurements",
                                                  ingestion_init, ingestion_done);
@@ -2669,7 +2669,7 @@ int harp_ingestion_module_geoms_uvvis_doas_init()
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 6);
     init_product_definition(module, -1, uvvis_doas_offaxis_aerosol, 7);
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOAS-ZENITH", "GEOMS", "GEOMS",
+    module = harp_ingestion_register_module("GEOMS-TE-UVVIS-DOAS-ZENITH", "GEOMS", "GEOMS",
                                                  "UVVIS_DOAS_ZENITH_GAS",
                                                  "GEOMS template for UVVIS-DOAS zenith measurements", ingestion_init,
                                                  ingestion_done);

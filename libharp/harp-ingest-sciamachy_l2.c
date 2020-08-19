@@ -2543,7 +2543,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
         "2+stvec+2*n1*num_altitudes+num_altitudes; the vertical axis of the AVK are reversed";
 
     description = "SCIAMACHY Off-Line Level-2";
-    module = harp_ingestion_register_module_coda("SCIAMACHY_L2", "SCIAMACHY", "ENVISAT_SCIAMACHY", "SCI_OL__2P",
+    module = harp_ingestion_register_module("SCIAMACHY_L2", "SCIAMACHY", "ENVISAT_SCIAMACHY", "SCI_OL__2P",
                                                  description, ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "dataset", "the dataset of the L2 product to ingest; each dataset is a "

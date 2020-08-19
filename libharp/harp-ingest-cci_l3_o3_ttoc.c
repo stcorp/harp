@@ -338,7 +338,7 @@ int harp_ingestion_module_cci_l3_o3_ttoc_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_TTOC", "Ozone CCI", "ESACCI_OZONE", "L3_TTOC",
+    module = harp_ingestion_register_module("ESACCI_OZONE_L3_TTOC", "Ozone CCI", "ESACCI_OZONE", "L3_TTOC",
                                                  "CCI L3 O3 tropical tropospheric ozone", ingestion_init,
                                                  ingestion_done);
 

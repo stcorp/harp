@@ -655,7 +655,7 @@ static void register_co2_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("GOSAT_FTS_L2_CO2_TC", "GOSAT FTS", "GOSAT", "L2_FTS_C01S",
+    module = harp_ingestion_register_module("GOSAT_FTS_L2_CO2_TC", "GOSAT FTS", "GOSAT", "L2_FTS_C01S",
                                                  "GOSAT FTS L2 CO2 total column density", ingestion_init,
                                                  ingestion_done);
 
@@ -696,7 +696,7 @@ static void register_ch4_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("GOSAT_FTS_L2_CH4_TC", "GOSAT FTS", "GOSAT", "L2_FTS_C02S",
+    module = harp_ingestion_register_module("GOSAT_FTS_L2_CH4_TC", "GOSAT FTS", "GOSAT", "L2_FTS_C02S",
                                                  "GOSAT FTS L2 CH4 total column density", ingestion_init,
                                                  ingestion_done);
 

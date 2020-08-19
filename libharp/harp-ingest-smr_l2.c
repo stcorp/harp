@@ -640,8 +640,7 @@ int harp_ingestion_module_smr_l2_init(void)
     const char *path;
 
     description = "SMR Level 2";
-    module =
-        harp_ingestion_register_module_coda("SMR_L2", "SMR", "ODIN_SMR", "L2", description, ingestion_init,
+    module = harp_ingestion_register_module("SMR_L2", "SMR", "ODIN_SMR", "L2", description, ingestion_init,
                                             ingestion_done);
 
     description = "profile data";

@@ -369,7 +369,7 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("CLOUDNET_L2_classification", "CLOUDNET", "CLOUDNET", "classification",
+    module = harp_ingestion_register_module("CLOUDNET_L2_classification", "CLOUDNET", "CLOUDNET", "classification",
                                                  "Cloudnet L2A target classification and cloud boundaries",
                                                  ingestion_init, ingestion_done);
 

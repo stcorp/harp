@@ -417,7 +417,7 @@ int harp_ingestion_module_aeolus_l2a_init(void)
     dimension_type[1] = harp_dimension_vertical;
 
     description = "AEOLUS Level 2A Optical Properties Product";
-    module = harp_ingestion_register_module_coda("AEOLUS_L2A", "AEOLUS", "AEOLUS", "ALD_U_N_2A", description,
+    module = harp_ingestion_register_module("AEOLUS_L2A", "AEOLUS", "AEOLUS", "ALD_U_N_2A", description,
                                                  ingestion_init, ingestion_done);
 
     description = "AEOLUS Level 2A Standard Correct Algorithm (SCA) optical properties";

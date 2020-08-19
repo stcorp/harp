@@ -636,7 +636,7 @@ int harp_ingestion_module_geoms_pandora_init()
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-PANDORA-DIRECTSUN-GAS", "GEOMS", "GEOMS",
+    module = harp_ingestion_register_module("GEOMS-TE-PANDORA-DIRECTSUN-GAS", "GEOMS", "GEOMS",
                                                  "PANDORA_DIRECTSUN_GAS",
                                                  "GEOMS template for Pandora UVVIS-DOAS direct sun measurements",
                                                  ingestion_init, ingestion_done);

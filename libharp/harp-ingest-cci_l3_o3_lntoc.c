@@ -308,7 +308,7 @@ int harp_ingestion_module_cci_l3_o3_lntoc_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_LNTOC", "Ozone CCI", "ESACCI_OZONE", "L3_LNTOC",
+    module = harp_ingestion_register_module("ESACCI_OZONE_L3_LNTOC", "Ozone CCI", "ESACCI_OZONE", "L3_LNTOC",
                                                  "CCI L3 O3 limb nadir tropospheric columns", ingestion_init,
                                                  ingestion_done);
 

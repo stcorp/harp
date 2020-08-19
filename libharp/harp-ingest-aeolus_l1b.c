@@ -838,7 +838,7 @@ int harp_ingestion_module_aeolus_l1b_init(void)
     const char *description;
 
     description = "AEOLUS Level 1B Wind Measurement Product";
-    module = harp_ingestion_register_module_coda("AEOLUS_L1B", "AEOLUS", "AEOLUS", "ALD_U_N_1B", description,
+    module = harp_ingestion_register_module("AEOLUS_L1B", "AEOLUS", "AEOLUS", "ALD_U_N_1B", description,
                                                  ingestion_init, ingestion_done);
     harp_ingestion_register_option(module, "data", "the type of wind profile to ingest; option values are "
                                    "'rayleigh_observation' (default), 'mie_observation', 'rayleigh_measurement', "

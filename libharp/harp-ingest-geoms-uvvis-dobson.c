@@ -562,7 +562,7 @@ int harp_ingestion_module_geoms_uvvis_dobson_init()
 {
     harp_ingestion_module *module;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-UVVIS-DOBSON-TOTALCOL", "GEOMS", "GEOMS",
+    module = harp_ingestion_register_module("GEOMS-TE-UVVIS-DOBSON-TOTALCOL", "GEOMS", "GEOMS",
                                                  "UVVIS_DOBSON_TOTALCOL",
                                                  "GEOMS template for UVVIS Dobson measurements", ingestion_init,
                                                  ingestion_done);

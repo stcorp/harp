@@ -1390,7 +1390,7 @@ static void register_hcho_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
 
-    module = harp_ingestion_register_module_coda("QA4ECV_L2_HCHO", "QA4ECV", "QA4ECV", "L2_HCHO",
+    module = harp_ingestion_register_module("QA4ECV_L2_HCHO", "QA4ECV", "QA4ECV", "L2_HCHO",
                                                  "QA4ECV L2 HCHO total column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
@@ -1485,7 +1485,7 @@ static void register_no2_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
 
-    module = harp_ingestion_register_module_coda("QA4ECV_L2_NO2", "QA4ECV", "QA4ECV", "L2_NO2",
+    module = harp_ingestion_register_module("QA4ECV_L2_NO2", "QA4ECV", "QA4ECV", "L2_NO2",
                                                  "QA4ECV NO2 tropospheric column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "total_column", "whether to use total_no2_vertical_column (which is "

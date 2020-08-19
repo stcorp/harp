@@ -124,13 +124,9 @@ struct harp_ingestion_module_struct
     int num_option_definitions;
     harp_ingestion_option_definition **option_definition;
 
-    int (*verify_product_type) (const harp_ingestion_module *module, const char *filename);
-    int (*ingestion_init_coda) (const harp_ingestion_module *module, coda_product *product,
-                                const harp_ingestion_options *options, harp_product_definition **definition,
-                                void **user_data);
-    int (*ingestion_init_custom) (const harp_ingestion_module *module, const char *filename,
-                                  const harp_ingestion_options *options, harp_product_definition **definition,
-                                  void **user_data);
+    int (*ingestion_init) (const harp_ingestion_module *module, coda_product *product,
+                           const harp_ingestion_options *options, harp_product_definition **definition,
+                           void **user_data);
     void (*ingestion_done) (void *user_data);
 };
 
@@ -193,16 +189,10 @@ int harp_ingestion_find_module(const char *filename, harp_ingestion_module **mod
 harp_ingestion_module_register *harp_ingestion_get_module_register(void);
 
 /* Convenience functions. */
-harp_ingestion_module *harp_ingestion_register_module_coda
+harp_ingestion_module *harp_ingestion_register_module
     (const char *name, const char *product_group, const char *product_class, const char *product_type,
      const char *description,
      int (*ingestion_init) (const harp_ingestion_module *module, coda_product *product,
-                            const harp_ingestion_options *options, harp_product_definition **definition,
-                            void **user_data), void (*ingestion_done) (void *user_data));
-harp_ingestion_module *harp_ingestion_register_module_custom
-    (const char *name, const char *product_group, const char *description,
-     int (*verify_product_type) (const harp_ingestion_module *module, const char *filename),
-     int (*ingestion_init) (const harp_ingestion_module *module, const char *filename,
                             const harp_ingestion_options *options, harp_product_definition **definition,
                             void **user_data), void (*ingestion_done) (void *user_data));
 harp_ingestion_option_definition *harp_ingestion_register_option(harp_ingestion_module *module, const char *name,

@@ -617,8 +617,7 @@ int harp_ingestion_module_earlinet_l2_aerosol_init(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("EARLINET", "EARLINET", "EARLINET", "EARLINET",
+    module = harp_ingestion_register_module("EARLINET", "EARLINET", "EARLINET", "EARLINET",
                                             "EARLINET aerosol backscatter and extinction profiles", ingestion_init,
                                             ingestion_done);
     product_definition = harp_ingestion_register_product(module, "EARLINET", NULL, read_dimensions);

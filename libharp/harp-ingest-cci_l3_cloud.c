@@ -546,8 +546,7 @@ static void register_fields_for_daily_l3u_cloud_data(void)
     const char *orbit_options[] = { "ascending", "descending" };
     const char *corrected_options[] = { "false" };
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_CLOUD_L3U", "Cloud CCI", "ESACCI_CLOUD", "L3_DAILY",
+    module = harp_ingestion_register_module("ESACCI_CLOUD_L3U", "Cloud CCI", "ESACCI_CLOUD", "L3_DAILY",
                                             "CCI L3U Cloud profile", ingestion_daily_l3u_init, ingestion_done);
     harp_ingestion_register_option(module, "orbit", "the orbit of the L3 product to ingest; option values are "
                                    "'ascending' (default), 'descending'", 2, orbit_options);
@@ -873,8 +872,7 @@ static void register_fields_for_monthly_l3c_cloud_data(void)
     const char *path;
     const char *corrected_options[] = { "false" };
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_CLOUD_L3C", "Cloud CCI", "ESACCI_CLOUD", "L3_MONTHLY",
+    module = harp_ingestion_register_module("ESACCI_CLOUD_L3C", "Cloud CCI", "ESACCI_CLOUD", "L3_MONTHLY",
                                             "CCI L3C Cloud profile", ingestion_monthly_l3c_init, ingestion_done);
     harp_ingestion_register_option(module, "corrected", "ingest the corrected data (default) or uncorrected data "
                                    "(corrected=false)", 1, corrected_options);

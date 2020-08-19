@@ -861,7 +861,7 @@ int harp_ingestion_module_geoms_mwr_init()
     harp_ingestion_module *module;
     int i;
 
-    module = harp_ingestion_register_module_coda("GEOMS-TE-MWR", "GEOMS", "GEOMS", "MWR", "GEOMS template for MWR",
+    module = harp_ingestion_register_module("GEOMS-TE-MWR", "GEOMS", "GEOMS", "MWR", "GEOMS template for MWR",
                                                  ingestion_init, ingestion_done);
 
     for (i = 0; i < num_mwr_gas; i++)

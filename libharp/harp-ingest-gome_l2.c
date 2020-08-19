@@ -540,7 +540,7 @@ int harp_ingestion_module_gome_l2_init(void)
     error_mapping = "relative error is converted to absolute error by multiplying with measured value";
 
     description = "GOME Level-2 Data";
-    module = harp_ingestion_register_module_coda("GOME_L2", "GOME", "ERS_GOME", "GOM.LVL21",
+    module = harp_ingestion_register_module("GOME_L2", "GOME", "ERS_GOME", "GOM.LVL21",
                                                  description, ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "ozone", "the fitting window choice for ozone to ingest; either window 0 "

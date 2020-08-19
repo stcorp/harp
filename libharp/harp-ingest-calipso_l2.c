@@ -1124,8 +1124,7 @@ static void register_aerosol_layer_l2(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("CALIPSO_L2_CAL_LID_ALay", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_ALay",
+    module = harp_ingestion_register_module("CALIPSO_L2_CAL_LID_ALay", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_ALay",
                                             "CALIOP L2 Aerosol Layers", ingestion_init_aerosol_layer, ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
@@ -1143,8 +1142,7 @@ static void register_aerosol_profile_l2(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("CALIPSO_L2_CAL_LID_APro", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_APro",
+    module = harp_ingestion_register_module("CALIPSO_L2_CAL_LID_APro", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_APro",
                                             "CALIOP L2 Aerosol Profiles", ingestion_init_aerosol_profile,
                                             ingestion_done);
 
@@ -1163,8 +1161,7 @@ static void register_cloud_layer_l2(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("CALIPSO_L2_CAL_LID_CLay", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_CLay",
+    module = harp_ingestion_register_module("CALIPSO_L2_CAL_LID_CLay", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_CLay",
                                             "CALIOP L2 Cloud Layers", ingestion_init_cloud_layer, ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
@@ -1182,8 +1179,7 @@ static void register_cloud_profile_l2(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("CALIPSO_L2_CAL_LID_CPro", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_CPro",
+    module = harp_ingestion_register_module("CALIPSO_L2_CAL_LID_CPro", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_CPro",
                                             "CALIOP L2 Cloud Profiles", ingestion_init_cloud_profile, ingestion_done);
 
     harp_ingestion_register_option(module, "wavelength", "the wavelength whose measurements are ingested; option values"
@@ -1203,8 +1199,7 @@ static void register_merged_layer_l2(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("CALIPSO_L2_CAL_LID_MLay", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_MLay",
+    module = harp_ingestion_register_module("CALIPSO_L2_CAL_LID_MLay", "CALIPSO LIDAR", "CALIPSO", "CAL_LID_L2_MLay",
                                             "CALIOP L2 Merged Aerosol and Cloud Layers", ingestion_init_merged_layer,
                                             ingestion_done);
 

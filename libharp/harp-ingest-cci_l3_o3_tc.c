@@ -266,7 +266,7 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L3_TC", "Ozone CCI", "ESACCI_OZONE", "L3_TC",
+    module = harp_ingestion_register_module("ESACCI_OZONE_L3_TC", "Ozone CCI", "ESACCI_OZONE", "L3_TC",
                                                  "CCI L3 O3 total column", ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L3_TC product */

@@ -918,8 +918,7 @@ static void register_ace_fts_main(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("ACE_FTS_L2_main", "ACE", "ACE_FTS", "L2_ASCII_main",
+    module = harp_ingestion_register_module("ACE_FTS_L2_main", "ACE", "ACE_FTS", "L2_ASCII_main",
                                             "ACE_FTS_L2_ASCII_main_v2", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "ACE_FTS_L2_main", NULL, read_dimensions);
@@ -959,8 +958,7 @@ static void register_ace_fts_iso(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
-    module =
-        harp_ingestion_register_module_coda("ACE_FTS_L2_iso", "ACE", "ACE_FTS", "L2_ASCII_iso",
+    module = harp_ingestion_register_module("ACE_FTS_L2_iso", "ACE", "ACE_FTS", "L2_ASCII_iso",
                                             "ACE_FTS_L2_ASCII_iso_v2", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "ACE_FTS_L2_iso", NULL, read_dimensions);

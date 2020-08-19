@@ -541,14 +541,12 @@ static void register_module_l2_aatsr_atsr2(void)
 {
     harp_ingestion_module *module;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_AATSR", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L2_AATSR", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "AATSR_L2", "CCI L2 Aerosol profile from AATSR",
                                             ingestion_init_aatsr_atsr2, ingestion_done);
     register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L2_AATSR");
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_ATSR2", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L2_ATSR2", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "ATSR2_L2", "CCI L2 Aerosol profile from ATSR-2",
                                             ingestion_init_aatsr_atsr2, ingestion_done);
     register_aatsr_atsr2_product(module, "ESACCI_AEROSOL_L2_ATSR2");
@@ -593,8 +591,7 @@ static void register_module_l2_meris(void)
     const char *description;
     const char *path;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_MERIS_ALAMO", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L2_MERIS_ALAMO", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "MERIS_ALAMO_L2", "CCI L2 Aerosol profile from MERIS processed by ALAMO",
                                             ingestion_init_meris, ingestion_done);
 
@@ -797,8 +794,7 @@ static void register_module_l2_iasi(void)
 {
     harp_ingestion_module *module;
 
-    module =
-        harp_ingestion_register_module_coda("ESACCI_AEROSOL_L2_IASI", "Aerosol CCI", "ESACCI_AEROSOL",
+    module = harp_ingestion_register_module("ESACCI_AEROSOL_L2_IASI", "Aerosol CCI", "ESACCI_AEROSOL",
                                             "IASI_L2", "CCI L2 Aerosol profile from IASI",
                                             ingestion_init_iasi, ingestion_done);
     register_iasi_product(module, "ESACCI_AEROSOL_L2_IASI");

@@ -248,7 +248,7 @@ int harp_ingestion_module_cci_l2_o3_lp_init(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module_coda("ESACCI_OZONE_L2_LP", "Ozone CCI", "ESACCI_OZONE", "L2_LP",
+    module = harp_ingestion_register_module("ESACCI_OZONE_L2_LP", "Ozone CCI", "ESACCI_OZONE", "L2_LP",
                                                  "CCI L2 O3 limb profile", ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L2_LP product */

@@ -571,8 +571,7 @@ int harp_ingestion_module_iasi_l1_init(void)
     const char *path;
 
     description = "IASI Level 1";
-    module =
-        harp_ingestion_register_module_coda("IASI_L1", "IASI", "EPS", "IASI_xxx_1C", description, ingestion_init,
+    module = harp_ingestion_register_module("IASI_L1", "IASI", "EPS", "IASI_xxx_1C", description, ingestion_init,
                                             ingestion_done);
 
     description = "IASI Level 1 product";
