@@ -373,7 +373,7 @@ int harp_ingestion_module_mipas_l1_init(void)
 
     description = "MIPAS Level 1 data";
     module = harp_ingestion_register_module("MIPAS_L1", "MIPAS", "ENVISAT_MIPAS", "MIP_NL__1P",
-                                                 description, ingestion_init, ingestion_done);
+                                            description, ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "band", "only include data from the specified band ('A', 'AB', 'B', 'C',"
                                    " 'D'); by default data from all bands is retrieved", 5, band_name_as_option);

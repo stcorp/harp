@@ -664,7 +664,7 @@ int harp_ingestion_module_gomos_l2_init(void)
 
     description = "GOMOS Temperature and Atmospheric Constituents Profiles";
     module = harp_ingestion_register_module("GOMOS_L2", "GOMOS", "ENVISAT_GOMOS", "GOM_NL__2P", description,
-                                                 ingestion_init, ingestion_done);
+                                            ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "temperature", "retrieve the locally measured temperature (default) or the "
                                    "temperature from the external model (temperature=model)", 1, model_options);

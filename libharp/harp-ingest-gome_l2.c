@@ -541,7 +541,7 @@ int harp_ingestion_module_gome_l2_init(void)
 
     description = "GOME Level-2 Data";
     module = harp_ingestion_register_module("GOME_L2", "GOME", "ERS_GOME", "GOM.LVL21",
-                                                 description, ingestion_init, ingestion_done);
+                                            description, ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "ozone", "the fitting window choice for ozone to ingest; either window 0 "
                                    "(default) or window 1 (ozone=vcd1)", 1, ozone_options);

@@ -642,23 +642,22 @@ int harp_ingestion_module_geoms_lidar_init(void)
     harp_ingestion_module *module;
 
     module = harp_ingestion_register_module("GEOMS-TE-LIDAR-O3", "GEOMS", "GEOMS", "LIDAR_O3",
-                                                 "GEOMS template for LIDAR ozone", ingestion_init, ingestion_done);
+                                            "GEOMS template for LIDAR ozone", ingestion_init, ingestion_done);
 
     init_o3_product_definition(module, 3);
     init_o3_product_definition(module, 4);
     init_o3_product_definition(module, 5);
 
     module = harp_ingestion_register_module("GEOMS-TE-LIDAR-TEMPERATURE", "GEOMS", "GEOMS", "LIDAR_TEMPERATURE",
-                                                 "GEOMS template for LIDAR temperature", ingestion_init,
-                                                 ingestion_done);
+                                            "GEOMS template for LIDAR temperature", ingestion_init, ingestion_done);
 
     init_temperature_product_definition(module, 3);
     init_temperature_product_definition(module, 4);
     init_temperature_product_definition(module, 5);
 
     module = harp_ingestion_register_module("GEOMS-TE-LIDAR-H2O", "GEOMS", "GEOMS", "LIDAR_H2O",
-                                                 "GEOMS template for LIDAR water vapor (Raman)", ingestion_init,
-                                                 ingestion_done);
+                                            "GEOMS template for LIDAR water vapor (Raman)", ingestion_init,
+                                            ingestion_done);
 
     init_h2o_product_definition(module, 4);
     init_h2o_product_definition(module, 5);

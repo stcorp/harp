@@ -600,8 +600,8 @@ static void register_mzm_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("ESACCI_OZONE_L3_LP_MZM", "Ozone CCI", "ESACCI_OZONE", "L3_LP_MZM",
-                                                 "CCI O3 monthly zonal mean limb " "profile on a 10 degree latitude "
-                                                 "grid", ingestion_init_mzm, ingestion_done);
+                                            "CCI O3 monthly zonal mean limb " "profile on a 10 degree latitude "
+                                            "grid", ingestion_init_mzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MZM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MZM", NULL, read_dimensions);
@@ -674,8 +674,8 @@ static void register_mmzm_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("ESACCI_OZONE_L3_LP_MMZM", "Ozone CCI", "ESACCI_OZONE", "L3_LP_MMZM",
-                                                 "CCI O3 merged monthly zonal mean limb profile on a 10 degree "
-                                                 "latitude grid", ingestion_init_mmzm, ingestion_done);
+                                            "CCI O3 merged monthly zonal mean limb profile on a 10 degree "
+                                            "latitude grid", ingestion_init_mmzm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MMZM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MMZM", NULL, read_dimensions);
@@ -788,8 +788,8 @@ static void register_msmm_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("ESACCI_OZONE_L3_LP_MSMM", "Ozone CCI", "ESACCI_OZONE", "L3_LP_MSMM",
-                                                 "CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 "
-                                                 "degree grid", ingestion_init_msmm, ingestion_done);
+                                            "CCI O3 merged semi-monthly zonal mean limb profile on a 10x20 "
+                                            "degree grid", ingestion_init_msmm, ingestion_done);
 
     /* ESACCI_OZONE_L3_LP_MSMM product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L3_LP_MSMM", NULL, read_dimensions);

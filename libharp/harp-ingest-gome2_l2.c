@@ -3876,8 +3876,8 @@ static void register_o3mnto_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME2_L2_O3MNTO", "GOME-2", "ACSAF", "O3MNTO",
-                                                 "GOME2 near-real-time total column trace gas product", ingestion_init,
-                                                 ingestion_done);
+                                            "GOME2 near-real-time total column trace gas product", ingestion_init,
+                                            ingestion_done);
     register_common_options(module);
 
     /* O3MNTO product */
@@ -3893,8 +3893,8 @@ static void register_o3moto_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME2_L2_O3MOTO", "GOME-2", "ACSAF", "O3MOTO",
-                                                 "GOME2 offline total column trace gas product", ingestion_init,
-                                                 ingestion_done);
+                                            "GOME2 offline total column trace gas product", ingestion_init,
+                                            ingestion_done);
     register_common_options(module);
 
     /* O3MOTO product */
@@ -3910,8 +3910,8 @@ static void register_ersnto_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME_L2_ERSNTO", "GOME", "ACSAF", "ERSNTO",
-                                                 "GOME near-real-time total column trace gas product", ingestion_init,
-                                                 ingestion_done);
+                                            "GOME near-real-time total column trace gas product", ingestion_init,
+                                            ingestion_done);
     register_common_options(module);
 
     /* ERSNTO product */
@@ -3927,8 +3927,8 @@ static void register_ersoto_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME_L2_ERSOTO", "GOME", "ACSAF", "ERSOTO",
-                                                 "GOME offline total column trace gas product", ingestion_init,
-                                                 ingestion_done);
+                                            "GOME offline total column trace gas product", ingestion_init,
+                                            ingestion_done);
     register_common_options(module);
 
     /* ERSOTO product */

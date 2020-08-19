@@ -572,7 +572,7 @@ int harp_ingestion_module_cci_l4_o3_np_init(void)
     const char *path;
 
     module = harp_ingestion_register_module("ESACCI_OZONE_L4_NP", "Ozone CCI", "ESACCI_OZONE", "L4_NP",
-                                                 "CCI L4 O3 nadir profile", ingestion_init, ingestion_done);
+                                            "CCI L4 O3 nadir profile", ingestion_init, ingestion_done);
 
     /* ESACCI_OZONE_L4_NP product */
     product_definition = harp_ingestion_register_product(module, "ESACCI_OZONE_L4_NP", NULL, read_dimensions);

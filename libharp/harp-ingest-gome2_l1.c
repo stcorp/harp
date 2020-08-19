@@ -2197,7 +2197,7 @@ int harp_ingestion_module_gome2_l1_init(void)
 
     description = "GOME2 Level 1 data";
     module = harp_ingestion_register_module("GOME2_L1", "GOME-2", "EPS", "GOME_xxx_1B", description,
-                                                 ingestion_init, ingestion_done);
+                                            ingestion_init, ingestion_done);
     harp_ingestion_register_option(module, "band", "only include data from the specified band ('band-1a', 'band-1b', "
                                    "'band-2a', 'band-2b', 'band-3', 'band-4'); by default data from all bands is "
                                    "retrieved", 6, band_name_as_option);

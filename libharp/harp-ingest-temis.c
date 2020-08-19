@@ -423,13 +423,13 @@ int harp_ingestion_module_temis_init(void)
 
     /* o3field product */
     module = harp_ingestion_register_module("TEMIS_o3field", "TEMIS", "TEMIS", "o3field",
-                                                 "Assimilated Ozone Field", ingestion_init_o3field, ingestion_done);
+                                            "Assimilated Ozone Field", ingestion_init_o3field, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "TEMIS_o3field", NULL, read_dimensions);
     register_variables(product_definition, "O3_column", "O3_std");
 
     /* o3mean product */
     module = harp_ingestion_register_module("TEMIS_o3mean", "TEMIS", "TEMIS", "o3mean",
-                                                 "Monthly Mean Ozone", ingestion_init_o3mean, ingestion_done);
+                                            "Monthly Mean Ozone", ingestion_init_o3mean, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "TEMIS_o3mean", NULL, read_dimensions);
     register_variables(product_definition, "Average_O3_column", "Average_O3_std");
 

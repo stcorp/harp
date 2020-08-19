@@ -1837,7 +1837,7 @@ int harp_ingestion_module_sciamachy_l1_init(void)
 
     description = "SCIAMACHY Level 1c";
     module = harp_ingestion_register_module("SCIAMACHY_L1c", "SCIAMACHY", "ENVISAT_SCIAMACHY", "SCI_NLC_1P",
-                                                 description, ingestion_init, ingestion_done);
+                                            description, ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "data",
                                    "retrieve the nadir, limb, occultation or sun_reference spectra; by default "

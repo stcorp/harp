@@ -1056,7 +1056,7 @@ int harp_ingestion_module_geoms_tccon_init(void)
     harp_ingestion_module *module;
 
     module = harp_ingestion_register_module("GEOMS-TE-FTIR-TCCON", "GEOMS", "GEOMS", "FTIR_TCCON",
-                                                 "GEOMS template for TCCON FTIR", ingestion_init, ingestion_done);
+                                            "GEOMS template for TCCON FTIR", ingestion_init, ingestion_done);
 
     init_product_definition(module, 5);
 

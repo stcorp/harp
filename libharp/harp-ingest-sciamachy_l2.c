@@ -2544,7 +2544,7 @@ int harp_ingestion_module_sciamachy_l2_init(void)
 
     description = "SCIAMACHY Off-Line Level-2";
     module = harp_ingestion_register_module("SCIAMACHY_L2", "SCIAMACHY", "ENVISAT_SCIAMACHY", "SCI_OL__2P",
-                                                 description, ingestion_init, ingestion_done);
+                                            description, ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "dataset", "the dataset of the L2 product to ingest; each dataset is a "
                                    "combination of nadir/limb choice, retrieval window, and main quantity; option "

@@ -1663,7 +1663,7 @@ int harp_ingestion_module_geoms_ftir_init(void)
     int i;
 
     module = harp_ingestion_register_module("GEOMS-TE-FTIR", "GEOMS", "GEOMS", "FTIR", "GEOMS template for FTIR",
-                                                 ingestion_init, ingestion_done);
+                                            ingestion_init, ingestion_done);
 
     for (i = 0; i < num_ftir_gas; i++)
     {

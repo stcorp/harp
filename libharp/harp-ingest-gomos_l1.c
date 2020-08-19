@@ -763,7 +763,7 @@ static void register_limb_product(void)
 
     description = "GOMOS Level 1 Geolocated Calibrated Background Spectra (Limb)";
     module = harp_ingestion_register_module("GOMOS_L1_LIMB", "GOMOS", "ENVISAT_GOMOS", "GOM_LIM_1P", description,
-                                                 lim_ingestion_init, ingestion_done);
+                                            lim_ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "spectra", "retrieve the upper (default, spectra=upper) or lower "
                                    "(spectra=lower) background spectra", 2, upper_lower_options);
@@ -1108,7 +1108,7 @@ static void register_tra_product(void)
 
     description = "GOMOS Level 1 Geolocated Calibrated Transmission Spectra";
     module = harp_ingestion_register_module("GOMOS_L1_TRANSMISSION", "GOMOS", "ENVISAT_GOMOS", "GOM_TRA_1P",
-                                                 description, tra_ingestion_init, ingestion_done);
+                                            description, tra_ingestion_init, ingestion_done);
 
     description = "transmission data";
     product_definition = harp_ingestion_register_product(module, "GOMOS_L1_TRANSMISSION", description,

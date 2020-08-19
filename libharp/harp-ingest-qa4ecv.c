@@ -1391,7 +1391,7 @@ static void register_hcho_product(void)
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
 
     module = harp_ingestion_register_module("QA4ECV_L2_HCHO", "QA4ECV", "QA4ECV", "L2_HCHO",
-                                                 "QA4ECV L2 HCHO total column", ingestion_init, ingestion_done);
+                                            "QA4ECV L2 HCHO total column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
@@ -1486,7 +1486,7 @@ static void register_no2_product(void)
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
 
     module = harp_ingestion_register_module("QA4ECV_L2_NO2", "QA4ECV", "QA4ECV", "L2_NO2",
-                                                 "QA4ECV NO2 tropospheric column", ingestion_init, ingestion_done);
+                                            "QA4ECV NO2 tropospheric column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "total_column", "whether to use total_no2_vertical_column (which is "
                                    "derived from the total slant column diveded by the total amf) or "

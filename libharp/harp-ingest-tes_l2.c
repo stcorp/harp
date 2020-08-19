@@ -587,7 +587,7 @@ static void register_nadir_product(const char *gas_code, const char *gas_name, c
     sprintf(name, "TES_L2_%s_Nadir", gas_code);
     sprintf(description, "TES %s nadir profile", gas_name);
     module = harp_ingestion_register_module(name, "TES", "AURA_TES", product_type, description,
-                                                 ingestion_init, ingestion_done);
+                                            ingestion_init, ingestion_done);
 
     /* Nadir product */
     product_definition = harp_ingestion_register_product(module, name, NULL, read_dimensions);
@@ -644,7 +644,7 @@ static void register_limb_product(const char *gas_code, const char *gas_name, co
     sprintf(name, "TES_L2_%s_Limb", gas_code);
     sprintf(description, "TES %s limb profile", gas_name);
     module = harp_ingestion_register_module(name, "TES", "AURA_TES", product_type, description,
-                                                 ingestion_init, ingestion_done);
+                                            ingestion_init, ingestion_done);
 
     /* Limb product */
     product_definition = harp_ingestion_register_product(module, name, NULL, read_dimensions);

@@ -4738,7 +4738,7 @@ static void register_aer_ai_product(void)
     const char *description;
 
     module = harp_ingestion_register_module("S5P_L2_AER_AI", "Sentinel-5P", "Sentinel5P", "L2__AER_AI",
-                                                 "Sentinel-5P L2 aerosol index", ingestion_init_aer_ai, ingestion_done);
+                                            "Sentinel-5P L2 aerosol index", ingestion_init_aer_ai, ingestion_done);
 
     description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), or 340/380 nm";
     harp_ingestion_register_option(module, "wavelength_ratio", description, 2, wavelength_ratio_option_values);
@@ -4791,7 +4791,7 @@ static void register_aer_lh_product(void)
     const char *aerosol_pressure_option_values[1] = { "unclipped" };
 
     module = harp_ingestion_register_module("S5P_L2_AER_LH", "Sentinel-5P", "Sentinel5P", "L2__AER_LH",
-                                                 "Sentinel-5P L2 aerosol layer height", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 aerosol layer height", ingestion_init, ingestion_done);
 
     description = "ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) "
         "or the unclipped variant (aerosol_pressure=unclipped)";
@@ -4914,7 +4914,7 @@ static void register_ch4_product(void)
     long dimension[3] = { -1, -1, 2 };
 
     module = harp_ingestion_register_module("S5P_L2_CH4", "Sentinel-5P", "Sentinel5P", "L2__CH4___",
-                                                 "Sentinel-5P L2 CH4 total column", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 CH4 total column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "ch4", "whether to ingest the 'normal' CH4 column vmr (default) or the "
                                    "bias corrected CH4 column vmr (ch4=bias_corrected)", 1, ch4_options);
@@ -5093,7 +5093,7 @@ static void register_co_product(void)
     long pressure_bounds_dimension[3] = { -1, -1, 2 };
 
     module = harp_ingestion_register_module("S5P_L2_CO", "Sentinel-5P", "Sentinel5P", "L2__CO____",
-                                                 "Sentinel-5P L2 CO total column", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 CO total column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "co_avk", "whether to ingest the partial column number density column avk "
                                    "(default) for CO or the number density column avk (avk=number_density)", 1,
@@ -5236,7 +5236,7 @@ static void register_hcho_product(void)
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
 
     module = harp_ingestion_register_module("S5P_L2_HCHO", "Sentinel-5P", "Sentinel5P", "L2__HCHO__",
-                                                 "Sentinel-5P L2 HCHO total column", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 HCHO total column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
@@ -5422,7 +5422,7 @@ static void register_o3_product(void)
     long dimension[3] = { -1, -1, 2 };
 
     module = harp_ingestion_register_module("S5P_L2_O3", "Sentinel-5P", "Sentinel5P", "L2__O3____",
-                                                 "Sentinel-5P L2 O3 total column", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 O3 total column", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O3", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3]);
@@ -5927,7 +5927,7 @@ static void register_o3_pr_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("S5P_L2_O3_PR", "Sentinel-5P", "Sentinel5P", "L2__O3__PR",
-                                                 "Sentinel-5P L2 O3 profile", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 O3 profile", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O3_PR", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3_pr]);
@@ -5952,8 +5952,7 @@ static void register_o3_tcl_product(void)
     long pressure_bounds_dimension[4] = { -1, -1, -1, 2 };
 
     module = harp_ingestion_register_module("S5P_L2_O3_TCL", "Sentinel-5P", "Sentinel5P", "L2__O3_TCL",
-                                                 "Sentinel-5P L2 O3 tropospheric column", ingestion_init,
-                                                 ingestion_done);
+                                            "Sentinel-5P L2 O3 tropospheric column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "o3", "whether to ingest the tropical tropospheric ozone column with the "
                                    "Convective Cloud Differential (CCD) method (o3=ccd, default) or with the "
@@ -6189,8 +6188,7 @@ static void register_no2_product(void)
     long pressure_bounds_dimension[3] = { -1, -1, 2 };
 
     module = harp_ingestion_register_module("S5P_L2_NO2", "Sentinel-5P", "Sentinel5P", "L2__NO2___",
-                                                 "Sentinel-5P L2 NO2 tropospheric column", ingestion_init,
-                                                 ingestion_done);
+                                            "Sentinel-5P L2 NO2 tropospheric column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "total_column", "whether to use nitrogendioxide_total_column (which is "
                                    "derived from the total slant column diveded by the total amf) or "
@@ -6447,7 +6445,7 @@ static void register_so2_product(void)
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
 
     module = harp_ingestion_register_module("S5P_L2_SO2", "Sentinel-5P", "Sentinel5P", "L2__SO2___",
-                                                 "Sentinel-5P L2 SO2 total column", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 SO2 total column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "so2_column", "whether to ingest the SO2 column derived from the TM5 "
                                    "profile (default), from the 1km box profile (so2_column=1km), from the 7km box "
@@ -7028,7 +7026,7 @@ static void register_cloud_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("S5P_L2_CLOUD", "Sentinel-5P", "Sentinel5P", "L2__CLOUD_",
-                                                 "Sentinel-5P L2 cloud properties", ingestion_init, ingestion_done);
+                                            "Sentinel-5P L2 cloud properties", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "model", "whether to retrieve the cloud properties from the CAL model or "
                                    "the CRB model; option values are 'CAL' (default) and 'CRB'", 2, model_options);
@@ -7052,8 +7050,8 @@ static void register_fresco_product(void)
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
     module = harp_ingestion_register_module("S5P_L2_FRESCO", "Sentinel-5P", "Sentinel5P", "L2__FRESCO",
-                                                 "Sentinel-5P L2 KNMI cloud support product", ingestion_init,
-                                                 ingestion_done);
+                                            "Sentinel-5P L2 KNMI cloud support product", ingestion_init,
+                                            ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_FRESCO", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_fresco]);

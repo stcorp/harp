@@ -638,14 +638,12 @@ int harp_ingestion_module_npp_suomi_omps_profiles_l2_init(void)
 
     /* Ingestion of Nadir Profile Ozone IP (product type IMOP) */
     module = harp_ingestion_register_module("NPP_SUOMI_L2_OMPS_IP_IMOP", "NPP", "NPP_SUOMI", "OMPS_IP_IMOP_L2",
-                                                 "NPP Suomi OMPS IP Nadir Profile Ozone", ingestion_init,
-                                                 ingestion_done);
+                                            "NPP Suomi OMPS IP Nadir Profile Ozone", ingestion_init, ingestion_done);
     register_omps_profile_product(module, "IP", "NPP_SUOMI_L2_OMPS_IP_IMOP");
 
     /* Ingestion of Nadir Profile Ozone (product type OONP) */
     module = harp_ingestion_register_module("NPP_SUOMI_L2_OMPS_EDR_OONP", "NPP", "NPP_SUOMI", "OMPS_EDR_OONP_L2",
-                                                 "NPP Suomi OMPS EDR Nadir Profile Ozone", ingestion_init,
-                                                 ingestion_done);
+                                            "NPP Suomi OMPS EDR Nadir Profile Ozone", ingestion_init, ingestion_done);
     register_omps_profile_product(module, "EDR", "NPP_SUOMI_L2_OMPS_EDR_OONP");
 
     /* The INPAK data has its geo-location in another file so it can not be ingested in HARP */

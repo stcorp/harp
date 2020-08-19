@@ -834,7 +834,7 @@ int harp_ingestion_module_geoms_sonde_init(void)
     harp_ingestion_module *module;
 
     module = harp_ingestion_register_module("GEOMS-TE-SONDE", "GEOMS", "GEOMS", "SONDE",
-                                                 "GEOMS template for Sondes", ingestion_init, ingestion_done);
+                                            "GEOMS template for Sondes", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "profile", "whether to ingest the sonde profile as a vertical profile "
                                    "(default) or as a timeseries of points (profile=false)", 1, profile_options);

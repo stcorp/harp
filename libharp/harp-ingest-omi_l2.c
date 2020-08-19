@@ -2356,8 +2356,8 @@ static void register_omaeruv_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMAERUV", "OMI", "AURA_OMI", "OMAERUV",
-                                                 "OMI L2 aerosol product (AOD and AAOD)", ingestion_init_omaeruv,
-                                                 ingestion_done);
+                                            "OMI L2 aerosol product (AOD and AAOD)", ingestion_init_omaeruv,
+                                            ingestion_done);
 
     /* OMAERUV product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMAERUV", NULL, read_dimensions_omaeruv);
@@ -2435,7 +2435,7 @@ static void register_ombro_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMBRO", "OMI", "AURA_OMI", "OMBRO", "OMI L2 BrO total column",
-                                                 ingestion_init_ombro, ingestion_done);
+                                            ingestion_init_ombro, ingestion_done);
 
     /* destriped ingestion option */
     harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
@@ -2491,8 +2491,7 @@ static void register_omchocho_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMCHOCHO", "OMI", "AURA_OMI", "OMCHOCHO",
-                                                 "OMI L2 Glyoxal total column", ingestion_init_omchocho,
-                                                 ingestion_done);
+                                            "OMI L2 Glyoxal total column", ingestion_init_omchocho, ingestion_done);
 
     /* destriped ingestion option */
     harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
@@ -2549,8 +2548,8 @@ static void register_omcldo2_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMCLDO2", "OMI", "AURA_OMI", "OMCLDO2",
-                                                 "OMI L2 cloud pressure and cloud fraction (O2-O2 absorption)",
-                                                 ingestion_init_omcldo2, ingestion_done);
+                                            "OMI L2 cloud pressure and cloud fraction (O2-O2 absorption)",
+                                            ingestion_init_omcldo2, ingestion_done);
 
     /* clipped_cloud_fraction ingestion option */
     harp_ingestion_register_option(module, "clipped_cloud_fraction", "ingest regular cloud fraction values "
@@ -2647,8 +2646,8 @@ static void register_omcldrr_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMCLDRR", "OMI", "AURA_OMI", "OMCLDRR",
-                                                 "OMI L2 cloud pressure and cloud fraction (Raman scattering)",
-                                                 ingestion_init, ingestion_done);
+                                            "OMI L2 cloud pressure and cloud fraction (Raman scattering)",
+                                            ingestion_init, ingestion_done);
 
     /* OMCLDRR product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMCLDRR", NULL, read_dimensions);
@@ -2724,7 +2723,7 @@ static void register_omdoao3_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMDOAO3", "OMI", "AURA_OMI", "OMDOAO3",
-                                                 "OMI L2 O3 total column (DOAS)", ingestion_init, ingestion_done);
+                                            "OMI L2 O3 total column (DOAS)", ingestion_init, ingestion_done);
 
     /* OMDOAO3 product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMDOAO3", NULL, read_dimensions);
@@ -2826,7 +2825,7 @@ static void register_omdomino_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMDOMINO", "OMI", "AURA_OMI", "OMDOMINO",
-                                                 "OMI L2 DOMINO NO2 product", ingestion_init_omdomino, ingestion_done);
+                                            "OMI L2 DOMINO NO2 product", ingestion_init_omdomino, ingestion_done);
 
     /* OMDOMINO product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMDOMINO", NULL, read_dimensions);
@@ -2988,7 +2987,7 @@ static void register_omhcho_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMHCHO", "OMI", "AURA_OMI", "OMHCHO",
-                                                 "OMI L2 HCHO total column", ingestion_init_omhcho, ingestion_done);
+                                            "OMI L2 HCHO total column", ingestion_init_omhcho, ingestion_done);
 
     /* destriped ingestion option */
     harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
@@ -3044,8 +3043,8 @@ static void register_omno2_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMNO2", "OMI", "AURA_OMI", "OMNO2",
-                                                 "OMI L2 NO2 total and tropospheric column", ingestion_init_no2,
-                                                 ingestion_done);
+                                            "OMI L2 NO2 total and tropospheric column", ingestion_init_no2,
+                                            ingestion_done);
 
     /* destriped ingestion option */
     harp_ingestion_register_option(module, "destriped", "ingest slant column densities without destriping correction "
@@ -3281,7 +3280,7 @@ static void register_omo3pr_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMO3PR", "OMI", "AURA_OMI", "OMO3PR", "OMI L2 O3 profile",
-                                                 ingestion_init_omo3pr, ingestion_done);
+                                            ingestion_init_omo3pr, ingestion_done);
 
     /* OMO3PR product */
     product_definition = harp_ingestion_register_product(module, "OMI_L2_OMO3PR", NULL, read_dimensions_omo3pr);
@@ -3362,7 +3361,7 @@ static void register_omoclo_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMOCLO", "OMI", "AURA_OMI", "OMOCLO",
-                                                 "OMI L2 OClO slant column", ingestion_init_omoclo, ingestion_done);
+                                            "OMI L2 OClO slant column", ingestion_init_omoclo, ingestion_done);
 
     /* destriped ingestion option */
     harp_ingestion_register_option(module, "destriped", "ingest column densities without destriping correction "
@@ -3418,7 +3417,7 @@ static void register_omso2_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMSO2", "OMI", "AURA_OMI", "OMSO2", "OMI L2 SO2 total column",
-                                                 ingestion_init_omso2, ingestion_done);
+                                            ingestion_init_omso2, ingestion_done);
 
     /* so2_column_variant ingestion option */
     description = "for V2 products: anthropogenic SO2 pollution at the planet boundary layer (so2_column_variant=pbl, "
@@ -3523,7 +3522,7 @@ static void register_omto3_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMTO3", "OMI", "AURA_OMI", "OMTO3",
-                                                 "OMI L2 O3 total column (TOMS)", ingestion_init_omto3, ingestion_done);
+                                            "OMI L2 O3 total column (TOMS)", ingestion_init_omto3, ingestion_done);
 
     /* cloud_fraction_variant ingestion option */
     description = "ingest effective (cloud_fraction_variant=effective, default) or radiative cloud fraction "
@@ -3628,8 +3627,8 @@ static void register_omuvb_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L2_OMUVB", "OMI", "AURA_OMI", "OMUVB",
-                                                 "OMI L2 UV-B surface irradiance and erythemal dose rate",
-                                                 ingestion_init_omuvb, ingestion_done);
+                                            "OMI L2 UV-B surface irradiance and erythemal dose rate",
+                                            ingestion_init_omuvb, ingestion_done);
 
     /* clear_sky ingestion option */
     description = "ingest clear sky surface UV irradiance";

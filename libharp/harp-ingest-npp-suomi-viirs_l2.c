@@ -756,8 +756,8 @@ static void register_aeros_product_type(const char *product_type)
     const char *path;
 
     module = harp_ingestion_register_module("NPP_SUOMI_L2_VIIRS_EDR_VAOO", "NPP", "NPP_SUOMI", product_type,
-                                                 "NPP Suomi VIIRS EDR Aerosol Optical Thickness", ingestion_init,
-                                                 ingestion_done);
+                                            "NPP Suomi VIIRS EDR Aerosol Optical Thickness", ingestion_init,
+                                            ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "NPP_SUOMI_L2_VIIRS_EDR_VAOO", NULL, read_dimensions);
 
@@ -861,7 +861,7 @@ static void register_cloud_product_type(const char *product_type, const char *pr
     const char *path;
 
     module = harp_ingestion_register_module(product_name, "NPP", "NPP_SUOMI", product_type,
-                                                 "NPP Suomi VIIRS EDR", ingestion_init, ingestion_done);
+                                            "NPP Suomi VIIRS EDR", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, product_name, NULL, read_dimensions);
 

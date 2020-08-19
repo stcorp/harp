@@ -3145,7 +3145,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     const char *path;
 
     module = harp_ingestion_register_module("ECMWF_GRIB", "ECMWF GRIB", "ECMWF", "GRIB",
-                                                 "ECMWF model data in GRIB format", ingestion_init, ingestion_done);
+                                            "ECMWF model data in GRIB format", ingestion_init, ingestion_done);
 
     /* ECMWF GRIB product */
     description = "The file can use either the GRIB1 or GRIB2 format. "

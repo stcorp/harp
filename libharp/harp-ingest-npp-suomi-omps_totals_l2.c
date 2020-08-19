@@ -475,8 +475,7 @@ int harp_ingestion_module_npp_suomi_omps_totals_l2_init(void)
     const char *path;
 
     module = harp_ingestion_register_module("NPP_SUOMI_L2_OMPS_EDR_OOTC", "NPP", "NPP_SUOMI", "OMPS_EDR_OOTC_L2",
-                                                 "NPP Suomi OMPS EDR Ozone Total Column", ingestion_init,
-                                                 ingestion_done);
+                                            "NPP Suomi OMPS EDR Ozone Total Column", ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "NPP_SUOMI_L2_OMPS_EDR_OOTC", NULL, read_dimensions);
 
     /* datetime */
