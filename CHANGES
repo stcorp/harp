@@ -2,6 +2,8 @@
   file. This improves the performance of harpcollocate/harpmerge/etc. as they
   no longer need to open and extract metadata from files themselves anymore.
 
+* Added harp.import_product_metadata() to Python interface.
+
 * Added derivation to retrieve angstrom exponent from aerosol optical depth.
 
 * Added derivation to retrieve tropospheric/stratospheric column avk from

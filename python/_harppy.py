@@ -46,8 +46,8 @@ except ImportError:
 from harp._harpc import ffi as _ffi
 
 __all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensionError", "Variable", "Product",
-           "get_encoding", "set_encoding", "version", "import_product", "export_product", "concatenate",
-           "execute_operations", "convert_unit", "to_dict"]
+           "get_encoding", "set_encoding", "version", "import_product", "import_product_metadata", "export_product",
+           "concatenate", "execute_operations", "convert_unit", "to_dict"]
 
 
 class Error(Exception):
@@ -815,6 +815,30 @@ def _import_product(c_product):
     return product
 
 
+def _import_product_metadata(c_metadata):
+    metadata = OrderedDict()
+
+    metadata['filename'] = _decode_string(_ffi.string(c_metadata.filename))
+
+    metadata['datetime_start'] = datetime.datetime(2000,1,1) + datetime.timedelta(days=c_metadata.datetime_start)
+    metadata['datetime_stop'] = datetime.datetime(2000,1,1) + datetime.timedelta(days=c_metadata.datetime_stop)
+
+    metadata['time'] = c_metadata.dimension[0]
+    metadata['latitude'] = c_metadata.dimension[1]
+    metadata['longitude'] = c_metadata.dimension[2]
+    metadata['vertical'] = c_metadata.dimension[3]
+    metadata['spectral'] = c_metadata.dimension[4]
+
+    metadata['format'] = _decode_string(_ffi.string(c_metadata.format))
+
+    metadata['source_product'] = _decode_string(_ffi.string(c_metadata.source_product))
+
+    if c_metadata.history:
+        metadata['history'] = _decode_string(_ffi.string(c_metadata.history))
+
+    return metadata
+
+
 def _export_scalar(data, c_data_type, c_data):
     if c_data_type == _lib.harp_type_int8:
         c_data.int8_data = data
@@ -1208,6 +1232,37 @@ def import_product(filename, operations="", options="", reduce_operations="", po
 
     finally:
         _lib.harp_product_delete(c_product_ptr[0])
+
+
+def import_product_metadata(filename, options=""):
+    """Import specific metadata from a single file.
+
+    This will try to extract the following information from a file.
+    - datetime_start
+    - datetime_stop
+    - dimension lengths for time, latitude, longitude, vertical, and spectral
+    - source_product
+
+    If the file is not stored using the HARP format then it will try to import
+    the metadata using one of the available ingestion modules.
+
+    Arguments:
+    filename -- Filename of the product from which to extract the metadata
+    options -- Ingestion module specific options; should be specified as a semi-
+               colon separated string of key=value pairs; only used if a file is not
+               in HARP format.
+    """
+    c_metadata_ptr = _ffi.new("harp_product_metadata **")
+
+    # Import the product as a C product.
+    if _lib.harp_import_product_metadata(_encode_path(filename), _encode_string(options), c_metadata_ptr) != 0:
+        raise CLibraryError()
+
+    try:
+        # Convert the C metadata into its Python representation.
+        return _import_product_metadata(c_metadata_ptr[0])
+    finally:
+        _lib.harp_product_metadata_delete(c_metadata_ptr[0])
 
 
 def export_product(product, filename, file_format="netcdf", operations="", hdf5_compression=0):

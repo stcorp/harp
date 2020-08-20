@@ -379,6 +379,26 @@ This section describes the functions defined by the HARP Python library.
    :returns: Imported product.
    :rtype: harp.Product
 
+.. py:function:: harp.import_product_metadata(filename, options="")
+
+   Import specific metadata from a single file.
+
+   This will try to extract the following information from a file.
+    - datetime_start
+    - datetime_stop
+    - dimension lengths for time, latitude, longitude, vertical, and spectral
+    - source_product
+
+   If the file is not stored using the HARP format then it will try to import
+   the metadata using one of the available ingestion modules.
+
+   :param str filename: Filename of the product from which to extract the metadata
+   :param str options: Ingestion module specific options; should be specified as
+                       a semi-colon separated string of key=value pairs; only
+                       used if a file is not in HARP format.
+   :returns: Imported metadata.
+   :rtype: collections.OrderedDict
+
 .. py:function:: harp.export_product(product, filename, file_format="netcdf", \
                                      operations="", hdf5_compression=0)
 
