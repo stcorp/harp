@@ -1,9 +1,15 @@
+* The csv output of 'harpdump --dataset' can now be used as content of a .pth
+  file. This improves the performance of harpcollocate/harpmerge/etc. as they
+  no longer need to open and extract metadata from files themselves anymore.
+
 * Added derivation to retrieve angstrom exponent from aerosol optical depth.
 
 * Added derivation to retrieve tropospheric/stratospheric column avk from
   total column avk and tropopause altitude.
 
 * Added format and history fields to harp_product_metadata.
+
+* harp_dataset_add_product() now ignores files/directories starting with '.'.
 
 * Updates to product ingestions:
   - S5P L2 CLOUD: added cloud_type and cloud_top_temperature

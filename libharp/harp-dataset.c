@@ -30,7 +30,10 @@
  */
 
 #include "harp-internal.h"
+#include "harp-csv.h"
 #include "hashtable.h"
+
+#include "coda.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -86,9 +89,148 @@ static int is_directory(const char *directoryname)
     return 0;
 }
 
+static int parse_metadata_from_csv_line(char *line, harp_product_metadata *metadata)
+{
+    char *string = NULL;
+
+    /* filename */
+    if (harp_csv_parse_string(&line, &string) != 0)
+    {
+        return -1;
+    }
+    metadata->filename = strdup(string);
+    if (!metadata->filename)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    /* datetime_start */
+    if (harp_csv_parse_string(&line, &string) != 0)
+    {
+        return -1;
+    }
+    if (coda_time_string_to_double("yyyyMMdd'T'HHmmss", string, &metadata->datetime_start) != 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid datetime string '%s' in csv element", string);
+        return -1;
+    }
+    metadata->datetime_start /= 86400;
+
+    /* datetime_stop */
+    if (harp_csv_parse_string(&line, &string) != 0)
+    {
+        return -1;
+    }
+    if (coda_time_string_to_double("yyyyMMdd'T'HHmmss", string, &metadata->datetime_stop) != 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid datetime string '%s' in csv element", string);
+        return -1;
+    }
+    metadata->datetime_stop /= 86400;
+
+    /* time dimension */
+    if (harp_csv_parse_long(&line, &metadata->dimension[harp_dimension_time]) != 0)
+    {
+        return -1;
+    }
+
+    /* latitude dimension */
+    if (harp_csv_parse_long(&line, &metadata->dimension[harp_dimension_latitude]) != 0)
+    {
+        return -1;
+    }
+
+    /* longitude dimension */
+    if (harp_csv_parse_long(&line, &metadata->dimension[harp_dimension_longitude]) != 0)
+    {
+        return -1;
+    }
+
+    /* vertical dimension */
+    if (harp_csv_parse_long(&line, &metadata->dimension[harp_dimension_vertical]) != 0)
+    {
+        return -1;
+    }
+
+    /* spectral dimension */
+    if (harp_csv_parse_long(&line, &metadata->dimension[harp_dimension_spectral]) != 0)
+    {
+        return -1;
+    }
+
+    /* source_product */
+    if (harp_csv_parse_string(&line, &string) != 0)
+    {
+        return -1;
+    }
+    metadata->source_product = strdup(string);
+    if (!metadata->source_product)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not duplicate string) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    return 0;
+}
+
+static int add_path_csv_file(harp_dataset *dataset, const char *filename, FILE *stream)
+{
+    char line[HARP_CSV_LINE_LENGTH];
+
+    /* header line was already read by add_path_file(), so we only need to read the lines with metadata */
+    while (fgets(line, HARP_CSV_LINE_LENGTH, stream) != NULL)
+    {
+        harp_product_metadata *metadata = NULL;
+        long length = (long)strlen(line);
+
+        /* Trim the line */
+        while (length > 0 && (line[length - 1] == '\r' || line[length - 1] == '\n'))
+        {
+            length--;
+        }
+        line[length] = '\0';
+
+        /* Do not allow empty lines */
+        if (length == 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "empty line in file '%s'", filename);
+            return -1;
+        }
+
+        /* skip lines starting with '#' */
+        if (line[0] == '#')
+        {
+            continue;
+        }
+
+        if (harp_product_metadata_new(&metadata) != 0)
+        {
+            return -1;
+        }
+
+        if (parse_metadata_from_csv_line(line, metadata) != 0)
+        {
+            harp_product_metadata_delete(metadata);
+            return -1;
+        }
+
+        if (harp_dataset_add_product(dataset, metadata->source_product, metadata) != 0)
+        {
+            harp_product_metadata_delete(metadata);
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 static int add_path_file(harp_dataset *dataset, const char *filename, const char *options)
 {
     char line[HARP_MAX_PATH_LENGTH];
+    int first_line = 1;
     FILE *stream;
 
     stream = fopen(filename, "r");
@@ -112,6 +254,22 @@ static int add_path_file(harp_dataset *dataset, const char *filename, const char
         /* skip empty lines and lines starting with '#' */
         if (length > 0 && line[0] != '#')
         {
+            if (first_line)
+            {
+                if (strcmp(line, "filename,datetime_start,datetime_stop,time,latitude,longitude,vertical,spectral,"
+                           "source_product") == 0)
+                {
+                    /* this is a dataset csv file, import accordingly */
+                    if (add_path_csv_file(dataset, filename, stream) != 0)
+                    {
+                        fclose(stream);
+                        return -1;
+                    }
+                    fclose(stream);
+                    return 0;
+                }
+                first_line = 0;
+            }
             if (harp_dataset_import(dataset, line, options) != 0)
             {
                 fclose(stream);
@@ -354,6 +512,7 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
  * These file paths can be absolute or relative and can point to files, directories, or other .pth files.
  * If path references a product file then that file is added to the dataset. Trying to add a file that is not supported
  * by HARP will result in an error.
+ * Directories and files whose names start with a '.' will be ignored.
  *
  * Note that datasets cannot have multiple entries with the same 'source_product' value. Therefore, for each product
  * where the dataset already contained an entry with the same 'source_product' value, the metadata of that entry is
@@ -370,6 +529,12 @@ LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const c
 LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path, const char *options)
 {
     int result;
+
+    if (harp_basename(path)[0] == '.')
+    {
+        /* ignore directories/files whose name start with a '.' */
+        return 0;
+    }
 
     result = is_directory(path);
     if (result == -1)
