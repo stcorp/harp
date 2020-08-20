@@ -34,6 +34,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 #include <ctype.h>
 
 int harp_csv_parse_double(char **str, double *value)
@@ -222,7 +223,7 @@ int harp_csv_parse_variable_name_and_unit(char **str, char **variable_name, char
         {
             if (*cursor != ' ')
             {
-                harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid trailing characters in csv element", cursor);
+                harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid trailing characters in csv element");
                 return -1;
             }
             cursor++;
