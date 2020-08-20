@@ -32,8 +32,6 @@
 #ifndef HARP_CSV_H
 #define HARP_CSV_H
 
-#include <stdio.h>
-
 #define HARP_CSV_LINE_LENGTH 4096
 
 int harp_csv_parse_double(char **str, double *value);
