@@ -153,10 +153,7 @@ LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, in
     }
     for (i = 0; i < HARP_NUM_DIM_TYPES; i++)
     {
-        if (metadata->dimension[i] >= 0)
-        {
-            print("%ld", metadata->dimension[i]);
-        }
+        print("%ld", metadata->dimension[i]);
         print(",");
     }
     print("%s\n", metadata->source_product);

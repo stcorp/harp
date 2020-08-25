@@ -111,24 +111,38 @@ static int parse_metadata_from_csv_line(char *line, harp_product_metadata *metad
     {
         return -1;
     }
-    if (coda_time_string_to_double("yyyyMMdd'T'HHmmss", string, &metadata->datetime_start) != 0)
+    if (string[0] == '\0')
     {
-        harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid datetime string '%s' in csv element", string);
-        return -1;
+        metadata->datetime_start = harp_mininf();
     }
-    metadata->datetime_start /= 86400;
+    else
+    {
+        if (coda_time_string_to_double("yyyyMMdd'T'HHmmss", string, &metadata->datetime_start) != 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid datetime string '%s' in csv element", string);
+            return -1;
+        }
+        metadata->datetime_start /= 86400;
+    }
 
     /* datetime_stop */
     if (harp_csv_parse_string(&line, &string) != 0)
     {
         return -1;
     }
-    if (coda_time_string_to_double("yyyyMMdd'T'HHmmss", string, &metadata->datetime_stop) != 0)
+    if (string[0] == '\0')
     {
-        harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid datetime string '%s' in csv element", string);
-        return -1;
+        metadata->datetime_stop = harp_plusinf();
     }
-    metadata->datetime_stop /= 86400;
+    else
+    {
+        if (coda_time_string_to_double("yyyyMMdd'T'HHmmss", string, &metadata->datetime_stop) != 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid datetime string '%s' in csv element", string);
+            return -1;
+        }
+        metadata->datetime_stop /= 86400;
+    }
 
     /* time dimension */
     if (harp_csv_parse_long(&line, &metadata->dimension[harp_dimension_time]) != 0)

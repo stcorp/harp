@@ -127,11 +127,6 @@ int harp_csv_parse_string(char **str, char **value)
     }
     if (cursor[stringlength] == '\0')
     {
-        if (stringlength == 0)
-        {
-            harp_set_error(HARP_ERROR_INVALID_FORMAT, "could not parse string value from csv element");
-            return -1;
-        }
         *str = &cursor[stringlength];
     }
     else
