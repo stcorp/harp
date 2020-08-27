@@ -214,12 +214,6 @@ static int add_path_csv_file(harp_dataset *dataset, const char *filename, FILE *
             return -1;
         }
 
-        /* skip lines starting with '#' */
-        if (line[0] == '#')
-        {
-            continue;
-        }
-
         if (harp_product_metadata_new(&metadata) != 0)
         {
             return -1;
@@ -265,30 +259,33 @@ static int add_path_file(harp_dataset *dataset, const char *filename, const char
         }
         line[length] = '\0';
 
-        /* skip empty lines and lines starting with '#' */
-        if (length > 0 && line[0] != '#')
+        /* Do not allow empty lines */
+        if (length == 0)
         {
-            if (first_line)
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "empty line in file '%s'", filename);
+            return -1;
+        }
+
+        if (first_line)
+        {
+            if (strcmp(line, "filename,datetime_start,datetime_stop,time,latitude,longitude,vertical,spectral,"
+                       "source_product") == 0)
             {
-                if (strcmp(line, "filename,datetime_start,datetime_stop,time,latitude,longitude,vertical,spectral,"
-                           "source_product") == 0)
+                /* this is a dataset csv file, import accordingly */
+                if (add_path_csv_file(dataset, filename, stream) != 0)
                 {
-                    /* this is a dataset csv file, import accordingly */
-                    if (add_path_csv_file(dataset, filename, stream) != 0)
-                    {
-                        fclose(stream);
-                        return -1;
-                    }
                     fclose(stream);
-                    return 0;
+                    return -1;
                 }
-                first_line = 0;
-            }
-            if (harp_dataset_import(dataset, line, options) != 0)
-            {
                 fclose(stream);
-                return -1;
+                return 0;
             }
+            first_line = 0;
+        }
+        if (harp_dataset_import(dataset, line, options) != 0)
+        {
+            fclose(stream);
+            return -1;
         }
     }
 
