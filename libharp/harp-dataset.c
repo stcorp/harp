@@ -192,10 +192,10 @@ static int parse_metadata_from_csv_line(char *line, harp_product_metadata *metad
 
 static int add_path_csv_file(harp_dataset *dataset, const char *filename, FILE *stream)
 {
-    char line[HARP_CSV_LINE_LENGTH];
+    char line[HARP_CSV_LINE_LENGTH + 1];
 
     /* header line was already read by add_path_file(), so we only need to read the lines with metadata */
-    while (fgets(line, HARP_CSV_LINE_LENGTH, stream) != NULL)
+    while (fgets(line, HARP_CSV_LINE_LENGTH + 1, stream) != NULL)
     {
         harp_product_metadata *metadata = NULL;
         long length = (long)strlen(line);
@@ -206,6 +206,13 @@ static int add_path_csv_file(harp_dataset *dataset, const char *filename, FILE *
             length--;
         }
         line[length] = '\0';
+
+        if (length == HARP_CSV_LINE_LENGTH)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "line exceeds max line length (%ld) in file '%s'",
+                           HARP_CSV_LINE_LENGTH, filename);
+            return -1;
+        }
 
         /* Do not allow empty lines */
         if (length == 0)

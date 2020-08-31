@@ -30,14 +30,12 @@
  */
 
 #include "harp-area-mask.h"
+#include "harp-csv.h"
 
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#define AREA_MASK_BLOCK_SIZE 1024
-#define AREA_MASK_MAX_LINE_SIZE 1024
 
 int harp_area_mask_new(harp_area_mask **new_area_mask)
 {
@@ -85,16 +83,16 @@ int harp_area_mask_add_polygon(harp_area_mask *area_mask, harp_spherical_polygon
         return -1;
     }
 
-    if (area_mask->num_polygons % AREA_MASK_BLOCK_SIZE == 0)
+    if (area_mask->num_polygons % BLOCK_SIZE == 0)
     {
         harp_spherical_polygon **new_polygon = NULL;
 
-        new_polygon = realloc(area_mask->polygon, (area_mask->num_polygons + AREA_MASK_BLOCK_SIZE)
+        new_polygon = realloc(area_mask->polygon, (area_mask->num_polygons + BLOCK_SIZE)
                               * sizeof(harp_spherical_polygon *));
         if (new_polygon == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           (area_mask->num_polygons + AREA_MASK_BLOCK_SIZE) * sizeof(harp_spherical_polygon *),
+                           (area_mask->num_polygons + BLOCK_SIZE) * sizeof(harp_spherical_polygon *),
                            __FILE__, __LINE__);
             return -1;
         }
@@ -204,16 +202,6 @@ int harp_area_mask_intersects_area_with_fraction(const harp_area_mask *area_mask
     return 0;
 }
 
-static int is_blank_line(const char *str)
-{
-    while (*str != '\0' && isspace(*str))
-    {
-        str++;
-    }
-
-    return (*str == '\0');
-}
-
 static int parse_polygon(const char *str, harp_spherical_polygon **polygon)
 {
     harp_spherical_point *point_array = NULL;
@@ -244,8 +232,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **polygon)
         length = (int)(str - mark);
         if (harp_parse_double(mark, length, &point.lat, 0) != length || !harp_isfinite(point.lat))
         {
-            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid latitude '%.*s' (%s:%u)", length, mark, __FILE__,
-                           __LINE__);
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid latitude '%.*s'", length, mark);
             free(point_array);
             return -1;
         }
@@ -257,6 +244,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **polygon)
 
         if (*str != ',')
         {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "missing longitude for latitude/longitude pair");
             free(point_array);
             return -1;
         }
@@ -278,8 +266,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **polygon)
         length = (int)(str - mark);
         if (harp_parse_double(mark, length, &point.lon, 0) != length || !harp_isfinite(point.lon))
         {
-            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid longitude '%.*s' (%s:%u)", length, mark, __FILE__,
-                           __LINE__);
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "invalid longitude '%.*s'", length, mark);
             free(point_array);
             return -1;
         }
@@ -344,7 +331,7 @@ static int parse_polygon(const char *str, harp_spherical_polygon **polygon)
 static int read_area_mask(FILE *stream, harp_area_mask **new_area_mask)
 {
     harp_area_mask *area_mask;
-    char line[AREA_MASK_MAX_LINE_SIZE];
+    char line[HARP_CSV_LINE_LENGTH + 1];
     int read_header;
     long i;
 
@@ -355,15 +342,30 @@ static int read_area_mask(FILE *stream, harp_area_mask **new_area_mask)
 
     i = 1;
     read_header = 0;
-    while (fgets(line, AREA_MASK_MAX_LINE_SIZE, stream) != NULL)
+    while (fgets(line, HARP_CSV_LINE_LENGTH + 1, stream) != NULL)
     {
         harp_spherical_polygon *polygon;
+        long length = (long)strlen(line);
 
-        /* Skip blank lines. */
-        if (is_blank_line(line))
+        /* Trim the line */
+        while (length > 0 && (line[length - 1] == '\r' || line[length - 1] == '\n'))
         {
-            i++;
-            continue;
+            length--;
+        }
+        line[length] = '\0';
+
+        if (length == HARP_CSV_LINE_LENGTH)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "line exceeds max line length (%ld) (line %lu)",
+                           HARP_CSV_LINE_LENGTH, i);
+            return -1;
+        }
+
+        /* Do not allow empty lines */
+        if (length == 0)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "empty line (line %lu)", i);
+            return -1;
         }
 
         /* Skip header. */

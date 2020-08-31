@@ -779,14 +779,14 @@ LIBHARP_API int harp_collocation_result_remove_pair_at_index(harp_collocation_re
 
 static int read_header(FILE *file, harp_collocation_result *collocation_result)
 {
-    char line[HARP_CSV_LINE_LENGTH];
+    char line[HARP_CSV_LINE_LENGTH + 1];
     char *cursor = line;
     char *string = NULL;
     size_t length;
 
     rewind(file);
 
-    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
+    if (fgets(line, HARP_CSV_LINE_LENGTH + 1, file) == NULL)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading header");
         return -1;
@@ -799,6 +799,12 @@ static int read_header(FILE *file, harp_collocation_result *collocation_result)
         length--;
     }
     line[length] = '\0';
+
+    if (length == HARP_CSV_LINE_LENGTH)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "header exceeds max line length (%ld)", HARP_CSV_LINE_LENGTH);
+        return -1;
+    }
 
     if (harp_csv_parse_string(&cursor, &string) != 0)
     {
@@ -867,7 +873,7 @@ static int read_pair(FILE *file, long min_collocation_index, long max_collocatio
                      const char *source_product_a_filter, const char *source_product_b_filter,
                      harp_collocation_result *collocation_result)
 {
-    char line[HARP_CSV_LINE_LENGTH];
+    char line[HARP_CSV_LINE_LENGTH + 1];
     char *cursor = line;
     long collocation_index;
     char *source_product_a;
@@ -875,9 +881,10 @@ static int read_pair(FILE *file, long min_collocation_index, long max_collocatio
     long index_a;
     long index_b;
     double *difference = NULL;
+    long length;
     int i;
 
-    if (fgets(line, HARP_CSV_LINE_LENGTH, file) == NULL)
+    if (fgets(line, HARP_CSV_LINE_LENGTH + 1, file) == NULL)
     {
         if (ferror(file))
         {
@@ -886,6 +893,27 @@ static int read_pair(FILE *file, long min_collocation_index, long max_collocatio
         }
         /* EOF */
         return 1;
+    }
+
+    length = (long)strlen(line);
+
+    /* Trim the line */
+    while (length > 0 && (line[length - 1] == '\r' || line[length - 1] == '\n'))
+    {
+        length--;
+    }
+    line[length] = '\0';
+
+    if (length == HARP_CSV_LINE_LENGTH)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "line exceeds max line length (%ld)", HARP_CSV_LINE_LENGTH);
+        return -1;
+    }
+
+    if (length == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "empty line");
+        return -1;
     }
 
     if (harp_csv_parse_long(&cursor, &collocation_index) != 0)
