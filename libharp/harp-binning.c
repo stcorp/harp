@@ -46,6 +46,7 @@ typedef enum binning_type_enum
     binning_skip,
     binning_remove,
     binning_average,
+    binning_uncertainty,
     binning_sum,        /* only used for int32_t and float data */
     binning_angle,      /* will use averaging using complex values */
     binning_time_min,
@@ -54,7 +55,7 @@ typedef enum binning_type_enum
 } binning_type;
 
 
-static binning_type get_binning_type(harp_variable *variable)
+static binning_type get_binning_type(harp_variable *variable, int is_time_dimension)
 {
     long variable_name_length = (long)strlen(variable->name);
     int i;
@@ -118,10 +119,15 @@ static binning_type get_binning_type(harp_variable *variable)
         return binning_remove;
     }
 
-    /* uncertainty propagation needs to be handled differently (remove for now) */
     if (strstr(variable->name, "_uncertainty") != NULL)
     {
-        return binning_remove;
+        if (!is_time_dimension || strstr(variable->name, "_uncertainty_systematic") != NULL)
+        {
+            /* propagate uncertainty assuming full correlation */
+            return binning_average;
+        }
+        /* propagate uncertainty assuming no correlation */
+        return binning_uncertainty;
     }
 
     /* we can't bin averaging kernels */
@@ -166,7 +172,7 @@ static binning_type get_binning_type(harp_variable *variable)
 
 static binning_type get_spatial_binning_type(harp_variable *variable)
 {
-    binning_type type = get_binning_type(variable);
+    binning_type type = get_binning_type(variable, 0);
 
     if (type != binning_remove && type != binning_skip)
     {
@@ -1399,6 +1405,9 @@ static int find_matching_cells_for_points(harp_variable *latitude, harp_variable
  * For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains
  * the magnitude of the sum of the unit vectors that was used to calculate the angle average.
  *
+ * For uncertainty variables the first order propagation rules are used (assuming no correlation for total and random uncertainty variables
+ * and full correlation for systematic uncertainty variables).
+ *
  * \param product Product to regrid.
  * \param num_bins Number of target bins.
  * \param num_elements Length of bin_index array (should equal the length of the time dimension)
@@ -1448,7 +1457,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
     }
     for (k = 0; k < product->num_variables; k++)
     {
-        bintype[k] = get_binning_type(product->variable[k]);
+        bintype[k] = get_binning_type(product->variable[k], 1);
 
         /* determine the maximum number of elements (as size for the 'count' and 'weight' arrays) */
         if (bintype[k] != binning_remove && bintype[k] != binning_skip)
@@ -1589,7 +1598,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         }
 
         /* pre-multiply variables by existing counts/weights (weights have preference) */
-        if (bintype[k] == binning_average)
+        if (bintype[k] == binning_average || bintype[k] == binning_uncertainty)
         {
             result = get_weight_for_variable(product, variable, bintype, weight);
             if (result < 0)
@@ -1619,6 +1628,15 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                         variable->data.double_data[i] *= count[i];
                     }
                 }
+            }
+        }
+
+        /* square the pre-weighted uncertainties */
+        if (bintype[k] == binning_uncertainty)
+        {
+            for (i = 0; i < variable->num_elements; i++)
+            {
+                variable->data.double_data[i] *= variable->data.double_data[i];
             }
         }
     }
@@ -1692,7 +1710,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             int store_count_variable = 0;
             int store_weight_variable = 0;
 
-            assert(bintype[k] == binning_average);
+            assert(bintype[k] == binning_average || bintype[k] == binning_uncertainty);
 
             /* sum up all values of a bin into the location of the first sample */
 
@@ -1961,8 +1979,17 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             }
         }
 
+        /* take square root of the sum before dividing by the sum of the counts/weights */
+        if (bintype[k] == binning_uncertainty)
+        {
+            for (i = 0; i < variable->num_elements; i++)
+            {
+                variable->data.double_data[i] = sqrt(variable->data.double_data[i]);
+            }
+        }
+
         /* divide variables by the sample count/weight and/or set values to NaN if count/weight==0 */
-        if (bintype[k] == binning_average)
+        if (bintype[k] == binning_average || bintype[k] == binning_uncertainty)
         {
             result = get_weight_for_variable(product, variable, bintype, weight);
             if (result < 0)
@@ -2083,6 +2110,8 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
  *
  * Variables that have a time dimension but no unit (or using a string data type) will be removed.
  * Any existing count or weight variables will also be removed.
+ *
+ * For uncertainty variables the first order propagation rules are used (assuming full correlation).
  *
  * All variables that are binned are converted to a double data type. Cells that have no samples will end up with a NaN
  * value.
@@ -2265,6 +2294,8 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
     for (k = 0; k < product->num_variables; k++)
     {
         bintype[k] = get_spatial_binning_type(product->variable[k]);
+
+        assert(bintype[k] != binning_uncertainty);
 
         /* determine the maximum number of elements (as size for the 'weight' array) */
         if (bintype[k] != binning_remove && bintype[k] != binning_skip)
@@ -3088,7 +3119,7 @@ int harp_product_bin_with_variable(harp_product *product, int num_variables, con
 
     for (k = 0; k < num_variables; k++)
     {
-        if (get_binning_type(variable[k]) == binning_remove)
+        if (get_binning_type(variable[k], 1) == binning_remove)
         {
             /* we always want to keep the variable that we bin on */
             if (harp_variable_copy(variable[k], &variable_copy[k]) != 0)

@@ -9,6 +9,9 @@
 * Added derivation to retrieve tropospheric/stratospheric column avk from
   total column avk and tropopause altitude.
 
+* Added uncertainty propagation to bin() and bin_spatial() operations
+  (using uncorrelated assumption for bin() and correlated for bin_spatial()).
+
 * Added format and history fields to harp_product_metadata.
 
 * harp_dataset_add_product() now ignores files/directories starting with '.'.
