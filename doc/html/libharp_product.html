@@ -201,6 +201,7 @@
 <p>If the product did not already have a ‘count’ variable then a ‘count’ variable will be added to the product that will contain the number of samples per bin.</p>
 <p>Only non-NaN values will contribute to a bin. If there are NaN values and there is not already a variable-specific count or weight variable for that variable, then a separate variable-specific count variable will be created that will contain the number of non-NaN values that contributed to each bin. This count variable will have the same dimensions as the variable it provides the count for.</p>
 <p>For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains the magnitude of the sum of the unit vectors that was used to calculate the angle average.</p>
+<p>For uncertainty variables the first order propagation rules are used (assuming no correlation for total and random uncertainty variables and full correlation for systematic uncertainty variables).</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><ul class="simple">
@@ -229,6 +230,7 @@
 <p>If the product doesn’t have lat/lon bounds per sample, it should have latitude {time} and longitude {time} variables. The binning onto the lat/lon grid will then be a point binning. This means that each sample is allocated to only one grid cell based on its lat/lon coordinate. To achieve a unique assignment, for each cell the lower edge will be considered inclusive and the upper edge exclusive (except for the last cell (when there is no wrap-around)).</p>
 <p>The resulting value for each time/lat/lon cell will be the average of all values for that cell. This will be a weighted average in case an area binning is performed and a straight average for point binning. Variables with multiple dimensions will have all elements in its sub dimensions averaged on an element by element basis (i.e. sub dimensions will be retained).</p>
 <p>Variables that have a time dimension but no unit (or using a string data type) will be removed. Any existing count or weight variables will also be removed.</p>
+<p>For uncertainty variables the first order propagation rules are used (assuming full correlation).</p>
 <p>All variables that are binned are converted to a double data type. Cells that have no samples will end up with a NaN value.</p>
 <p>A ‘count’ variable will be added to the product that will contain the number of samples per time bin. In addition, a ‘weight’ variable will be added that will contain the sum of weights for the contribution to each cell. If a variable contained NaN values then a variable specific weight variable will be created with only the sum of weights for the non-NaN entries.</p>
 <p>Axis variables for the time dimension such as datetime, datetime_length, datetime_start, and datetime_stop will only be binned in the time dimension (and will not gain a latitude or longitude dimension).</p>

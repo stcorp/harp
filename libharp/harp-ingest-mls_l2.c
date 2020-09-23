@@ -74,22 +74,22 @@ static product_limits check_limits[] = {
     {"CO", 215.0, 146.0, 1.5, 1.03},
     {"GPH", 83.0, 0.001, 0.2, 1.03},
     {"GPH", 261.0, 100.0, 0.9, 1.03},
-    {"H2O", 83.0, 0.002, 1.45, 2.0},
-    {"H2O", 316.0, 100.0, 1.45, 2.0},
+    {"H2O", 83.0, 0.002, 0.7, 2.0},
+    {"H2O", 316.0, 100.0, 0.7, 2.0},
     {"HCl", 100.0, 0.32, 1.2, 1.05},
     {"HCN", 21.0, 0.1, 0.2, 2.0},
     {"HNO3", 215.0, 1.5, 0.8, 1.03},
-    {"HO2", 22.0, 0.046, 1.1, 1.1},
-    {"HOCl", 10.0, 2.2, 1.05, 1.05},
+    {"HO2", 22.0, 0.046, -1, 1.1},
+    {"HOCl", 10.0, 2.2, 1.2, 1.05},
     {"IWC", 215.0, 83.0, -1, -1},
     {"IWP", -1, -1, -1, -1},
-    {"N2O", 68.0, 0.46, 1.3, 2.0},
+    {"N2O", 68.0, 0.46, 1.0, 2.0},
     {"O3", 100.0, 0.02, 1.0, 1.03},
     {"O3", 261.0, 121.0, 1.0, 1.03},
     {"OH", 32.0, 0.0032, -1, 1.1},
     {"RHI", 316.0, 100.0, 1.45, 2.0},
-    {"RHI", 100.0, 86.0, -1, 2.0},
-    {"RHI", 86.0, 0.002, 1.45, 2.0},
+    {"RHI", 100.0, 83.0, -1, 2.0},
+    {"RHI", 83.0, 0.002, 1.45, 2.0},
     {"SO2", 215.0, 10.0, 0.95, 1.03},
     {"Temperature", 83.0, 0.001, 0.2, 1.03},
     {"Temperature", 261.0, 100.0, 0.9, 1.03},
@@ -102,7 +102,7 @@ static const char *quality_flag_description1 =
     "bit 5 LOWCLOUD, bit 6 NO_APRIORI_T, bit 7 NUM_ERROR, bit 8 TOO_FEW_RAD, bit 9 GLOB_FAILURE).\n\n"
     "Bits 11 to 14 denote specific checks as specified in the EOS MLS data quality document (the pressure range, ";
 static const char *quality_flag_description2 =
-    "quality and convergence thresholds come from table 1.1.1 in issue 4.2 of that document): "
+    "quality and convergence thresholds come from table 1.1.1 in issue 4.x-4.0 of that document): "
     "Bit 11 denotes pressure out of range, bit 12 denotes quality below threshold, bit 13 denotes convergence above "
     "threshold and bit 14 denotes a negative precision. Also, if any of the bits 11 to 14 is set, "
     "bit 0 is automatically set.\n\n";
@@ -444,28 +444,28 @@ static int perform_pressure_quality_convergence_precision_checks(ingest_info *in
     product_limits *limits;
 
     CHECKED_MALLOC(pressure_data.double_data, info->num_levels * sizeof(double));
-    quality_data.double_data = malloc(info->num_levels * sizeof(double));
+    quality_data.double_data = malloc(info->num_times * sizeof(double));
     if (quality_data.double_data == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_levels * sizeof(double), __FILE__, __LINE__);
+                       info->num_times * sizeof(double), __FILE__, __LINE__);
         free(pressure_data.double_data);
         return -1;
     }
-    convergence_data.double_data = malloc(info->num_levels * sizeof(double));
+    convergence_data.double_data = malloc(info->num_times * sizeof(double));
     if (convergence_data.double_data == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_levels * sizeof(double), __FILE__, __LINE__);
+                       info->num_times * sizeof(double), __FILE__, __LINE__);
         free(quality_data.double_data);
         free(pressure_data.double_data);
         return -1;
     }
-    precision_data.double_data = malloc(info->num_levels * sizeof(double));
+    precision_data.double_data = malloc(info->num_times * info->num_levels * sizeof(double));
     if (precision_data.double_data == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_levels * sizeof(double), __FILE__, __LINE__);
+                       info->num_times * info->num_levels * sizeof(double), __FILE__, __LINE__);
         free(convergence_data.double_data);
         free(quality_data.double_data);
         free(pressure_data.double_data);
@@ -596,19 +596,19 @@ static int perform_hno3_checks(ingest_info *info, int32_t *status_data)
         {
             pressure = pressure_data.double_data[j];
             vmr = vmr_data.double_data[i * info->num_levels + j];
-            /* Check on cloud contamination as specified on page 90 of the DQD issue 4.2 */
+            /* Check on cloud contamination as specified on page 90 of the DQD issue 4.x-4.0 */
             if ((pressure <= 68) && (status_data[i * info->num_levels + j] != 0))
             {
                 /* Set bit 15 (CLOUD_CONTAMINATION) + bit 0 (MLS_STATUS_BAD) */
                 status_data[i * info->num_levels + j] |= 0x8001;
             }
-            /* Check on HNO3 outlier as specified on page 91 of the DQD issue 4.2 */
+            /* Check on HNO3 outlier as specified on page 91 of the DQD issue 4.x-4.0 */
             if ((pressure >= 316.0) && (vmr < -2.0))
             {
                 /* Set bit 16 (HNO3_OUTLIER) + bit 0 (MLS_STATUS_BAD) */
                 status_data[i * info->num_levels + j] |= 0x10001;
             }
-            else if ((pressure >= 68.0) && (pressure <= 215.0) && (vmr < -1.2))
+            else if ((pressure >= 68.0) && (pressure <= 215.0) && (vmr < -1.6))
             {
                 /* Set bit 16 (HNO3_OUTLIER) + bit 0 (MLS_STATUS_BAD) */
                 status_data[i * info->num_levels + j] |= 0x10001;
@@ -624,23 +624,20 @@ static int read_validity(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long i, j;
-    harp_array status_data;
 
     /* The Status-field in the ingested file is 1-dimensional with size info->num_times but the       */
     /* validity-field in the HARP data is 2-dimensional with size info->num_times * info->num_levels. */
-    CHECKED_MALLOC(status_data.int32_data, info->num_times * sizeof(int32_t));
-    if (read_int32_variable(&info->swath_cursor, "Status", 1, info->num_times, 0, status_data) != 0)
+    if (read_int32_variable(&info->swath_cursor, "Status", 1, info->num_times, 0, data) != 0)
     {
         return -1;
     }
-    for (i = 0; i < info->num_times; i++)
+    for (i = info->num_times - 1; i >= 0; i--)
     {
         for (j = 0; j < info->num_levels; j++)
         {
-            data.int32_data[i * info->num_levels + j] = status_data.int32_data[i];
+            data.int32_data[i * info->num_levels + j] = data.int32_data[i];
         }
     }
-    free(status_data.int32_data);
 
     if (perform_pressure_quality_convergence_precision_checks(info, data.int32_data, info->swath_name) != 0)
     {
@@ -952,8 +949,10 @@ static void register_bro_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "BrO_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/BrO/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/BrO/Data_Fields/Status[], /HDFEOS/SWATHS/BrO/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/BrO/Data_Fields/Convergence[], /HDFEOS/SWATHS/BrO/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/BrO/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_ch3cl_product(void)
@@ -1010,8 +1009,10 @@ static void register_ch3cl_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "CH3Cl_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/CH3Cl/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/CH3Cl/Data_Fields/Status[], /HDFEOS/SWATHS/CH3Cl/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/CH3Cl/Data_Fields/Convergence[], /HDFEOS/SWATHS/CH3Cl/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/CH3Cl/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_ch3cn_product(void)
@@ -1068,8 +1069,10 @@ static void register_ch3cn_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "CH3CN_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/CH3CN/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/CH3CN/Data_Fields/Status[], /HDFEOS/SWATHS/CH3CN/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/CH3CN/Data_Fields/Convergence[], /HDFEOS/SWATHS/CH3CN/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/CH3CN/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_ch3oh_product(void)
@@ -1126,8 +1129,10 @@ static void register_ch3oh_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "CH3OH_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/CH3OH/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/CH3OH/Data_Fields/Status[], /HDFEOS/SWATHS/CH3OH/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/CH3OH/Data_Fields/Convergence[], /HDFEOS/SWATHS/CH3OH/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/CH3OH/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_clo_product(void)
@@ -1184,8 +1189,10 @@ static void register_clo_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "ClO_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/ClO/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/ClO/Data_Fields/Status[], /HDFEOS/SWATHS/ClO/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/ClO/Data_Fields/Convergence[], /HDFEOS/SWATHS/ClO/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/ClO/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_co_product(void)
@@ -1242,8 +1249,10 @@ static void register_co_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "CO_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/CO/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/CO/Data_Fields/Status[], /HDFEOS/SWATHS/CO/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/CO/Data_Fields/Convergence[], /HDFEOS/SWATHS/CO/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/CO/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_gph_product(void)
@@ -1300,8 +1309,10 @@ static void register_gph_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "geopotential_height_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/GPH/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/GPH/Data_Fields/Status[], /HDFEOS/SWATHS/GPH/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/GPH/Data_Fields/Convergence[], /HDFEOS/SWATHS/GPH/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/GPH/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_h2o_product(void)
@@ -1358,8 +1369,10 @@ static void register_h2o_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "H2O_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/H2O/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/H2O/Data_Fields/Status[], /HDFEOS/SWATHS/H2O/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/H2O/Data_Fields/Convergence[], /HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/H2O/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_hcl_product(void)
@@ -1416,8 +1429,10 @@ static void register_hcl_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "HCl_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/HCl/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/HCl/Data_Fields/Status[], /HDFEOS/SWATHS/HCl/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/HCl/Data_Fields/Convergence[], /HDFEOS/SWATHS/HCl/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/HCl/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_hcn_product(void)
@@ -1474,8 +1489,10 @@ static void register_hcn_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "HCN_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/HCN/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/HCN/Data_Fields/Status[], /HDFEOS/SWATHS/HCN/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/HCN/Data_Fields/Convergence[], /HDFEOS/SWATHS/HCN/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/HCN/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_hno3_product(void)
@@ -1533,8 +1550,10 @@ static void register_hno3_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "HNO3_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/HNO3/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/HNO3/Data_Fields/Status[], /HDFEOS/SWATHS/HNO3/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/HNO3/Data_Fields/Convergence[], /HDFEOS/SWATHS/HNO3/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/HNO3/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_ho2_product(void)
@@ -1591,8 +1610,10 @@ static void register_ho2_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "HO2_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/HO2/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/HO2/Data_Fields/Status[], /HDFEOS/SWATHS/HO2/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/HO2/Data_Fields/Convergence[], /HDFEOS/SWATHS/HO2/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/HO2/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_hocl_product(void)
@@ -1649,8 +1670,10 @@ static void register_hocl_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "HOCl_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/HOCl/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/HOCl/Data_Fields/Status[], /HDFEOS/SWATHS/HOCl/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/HOCl/Data_Fields/Convergence[], /HDFEOS/SWATHS/HOCl/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/HOCl/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_iwc_product(void)
@@ -1707,8 +1730,10 @@ static void register_iwc_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "ice_water_content_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/IWC/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/IWC/Data_Fields/Status[], /HDFEOS/SWATHS/IWC/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/IWC/Data_Fields/Convergence[], /HDFEOS/SWATHS/IWC/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/IWC/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_n2o_product(void)
@@ -1765,8 +1790,10 @@ static void register_n2o_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "N2O_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/N2O/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/N2O/Data_Fields/Status[], /HDFEOS/SWATHS/N2O/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/N2O/Data_Fields/Convergence[], /HDFEOS/SWATHS/N2O/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/N2O/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_o3_product(void)
@@ -1823,8 +1850,10 @@ static void register_o3_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/O3/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/O3/Data_Fields/Status[], /HDFEOS/SWATHS/O3/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/O3/Data_Fields/Convergence[], /HDFEOS/SWATHS/O3/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/O3/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_oh_product(void)
@@ -1881,8 +1910,10 @@ static void register_oh_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "OH_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/OH/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/OH/Data_Fields/Status[], /HDFEOS/SWATHS/OH/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/OH/Data_Fields/Convergence[], /HDFEOS/SWATHS/OH/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/OH/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_rhi_product(void)
@@ -1940,8 +1971,10 @@ static void register_rhi_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "relative_humidity_ice_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/RHI/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/RHI/Data_Fields/Status[], /HDFEOS/SWATHS/RHI/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/RHI/Data_Fields/Convergence[], /HDFEOS/SWATHS/RHI/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/RHI/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_so2_product(void)
@@ -1998,8 +2031,10 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "SO2_volume_mixing_ratio_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/SO2/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/SO2/Data_Fields/Status[], /HDFEOS/SWATHS/SO2/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/SO2/Data_Fields/Convergence[], /HDFEOS/SWATHS/SO2/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/SO2/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 static void register_t_product(void)
@@ -2055,8 +2090,10 @@ static void register_t_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "temperature_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
-    path = "/HDFEOS/SWATHS/Temperature/Data_Fields/Status[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/HDFEOS/SWATHS/Temperature/Data_Fields/Status[], /HDFEOS/SWATHS/Temperature/Data_Fields/Quality[], "
+        "/HDFEOS/SWATHS/Temperature/Data_Fields/Convergence[], /HDFEOS/SWATHS/Temperature/Data_Fields/L2gpPrecision[], "
+        "/HDFEOS/SWATHS/Temperature/Geolocation_Fields/Pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "see generic mapping description");
 }
 
 int harp_ingestion_module_mls_l2_init(void)

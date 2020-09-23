@@ -224,13 +224,13 @@
 <h2>Mapping description</h2>
 <p>Bits 4 to 9 and 11 to 14 in the quality flag denote a specific error condition while bits 0 to 2 denote the severity (bit 0 error, bit 1 warning, bit 2 comment).</p>
 <p>Bits 4 to 9 denote the MLS status (bit 4 HICLOUD, bit 5 LOWCLOUD, bit 6 NO_APRIORI_T, bit 7 NUM_ERROR, bit 8 TOO_FEW_RAD, bit 9 GLOB_FAILURE).</p>
-<p>Bits 11 to 14 denote specific checks as specified in the EOS MLS data quality document (the pressure range, quality and convergence thresholds come from table 1.1.1 in issue 4.2 of that document): Bit 11 denotes pressure out of range, bit 12 denotes quality below threshold, bit 13 denotes convergence above threshold and bit 14 denotes a negative precision. Also, if any of the bits 11 to 14 is set, bit 0 is automatically set.</p>
+<p>Bits 11 to 14 denote specific checks as specified in the EOS MLS data quality document (the pressure range, quality and convergence thresholds come from table 1.1.1 in issue 4.x-4.0 of that document): Bit 11 denotes pressure out of range, bit 12 denotes quality below threshold, bit 13 denotes convergence above threshold and bit 14 denotes a negative precision. Also, if any of the bits 11 to 14 is set, bit 0 is automatically set.</p>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="33%" />
-<col width="12%" />
-<col width="55%" />
+<col width="14%" />
+<col width="5%" />
+<col width="80%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">field name</th>
@@ -265,9 +265,12 @@
 <td><em>path</em></td>
 <td><strong>/HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[]</strong></td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_volume_mixing_ratio_validity</strong></td>
+<tr class="row-odd"><td rowspan="2"><strong>H2O_volume_mixing_ratio_validity</strong></td>
 <td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Data_Fields/Status[]</strong></td>
+<td><strong>/HDFEOS/SWATHS/H2O/Data_Fields/Status[], /HDFEOS/SWATHS/H2O/Data_Fields/Quality[], /HDFEOS/SWATHS/H2O/Data_Fields/Convergence[], /HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[], /HDFEOS/SWATHS/H2O/Geolocation_Fields/Pressure[]</strong></td>
+</tr>
+<tr class="row-even"><td><em>description</em></td>
+<td>see generic mapping description</td>
 </tr>
 </tbody>
 </table>
