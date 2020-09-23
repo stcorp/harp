@@ -45,9 +45,9 @@ except ImportError:
 
 from harp._harpc import ffi as _ffi
 
-__all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensionError", "Variable", "Product",
-           "get_encoding", "set_encoding", "version", "import_product", "import_product_metadata", "export_product",
-           "concatenate", "execute_operations", "convert_unit", "to_dict"]
+__all__ = ["Error", "CLibraryError", "UnsupportedTypeError", "UnsupportedDimensionError", "NoDataError", "Variable",
+           "Product", "get_encoding", "set_encoding", "version", "import_product", "import_product_metadata",
+           "export_product", "concatenate", "execute_operations", "convert_unit", "to_dict"]
 
 
 class Error(Exception):
