@@ -1453,9 +1453,8 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
  *
  * if one of the operations results in an empty product then the function will immediately return with
  * the empty product (and return code 0) and will not execute any of the remaining actions anymore.
- * \param  product Product that the operations should be executed on.
- * \param  operations Operations to execute; should be specified as a semi-colon
- *                 separated string of operations.
+ * \param product Product that the operations should be executed on.
+ * \param operations Operations to execute; should be specified as a semi-colon separated string of operations.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).

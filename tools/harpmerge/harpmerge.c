@@ -275,6 +275,11 @@ static int merge(int argc, char *argv[])
             harp_dataset_delete(dataset);
             return -1;
         }
+        if (harp_dataset_prefilter(dataset, operations) != 0)
+        {
+            harp_dataset_delete(dataset);
+            return -1;
+        }
         if (merge_dataset(&merged_product, dataset, operations, options, reduce_operations, verbose) != 0)
         {
             harp_product_delete(merged_product);

@@ -30,6 +30,7 @@
  */
 
 #include "harp-internal.h"
+#include "harp-program.h"
 #include "harp-csv.h"
 #include "hashtable.h"
 
@@ -444,7 +445,14 @@ LIBHARP_API int harp_dataset_new(harp_dataset **new_dataset)
         return -1;
     }
 
-    dataset->product_to_index = hashtable_new(0);
+    dataset->product_to_index = hashtable_new(1);
+    if (dataset->product_to_index == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not create hashtable) (%s:%u)", __FILE__,
+                       __LINE__);
+        free(dataset);
+        return -1;
+    }
     dataset->sorted_index = NULL;
     dataset->num_products = 0;
     dataset->metadata = NULL;
@@ -744,6 +752,230 @@ LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *sour
         /* Set the metadata for this source_product */
         dataset->metadata[index] = metadata;
     }
+
+    return 0;
+}
+
+/** @} */
+
+static harp_dataset *sort_dataset = NULL;
+
+static int compare_source_product(const void *a, const void *b)
+{
+    return strcmp(sort_dataset->source_product[*(long *)a], sort_dataset->source_product[*(long *)b]);
+}
+
+int harp_dataset_filter(harp_dataset *dataset, uint8_t *mask)
+{
+    long new_num_products = 0;
+    long target_index;
+    long i;
+
+    for (i = 0; i < dataset->num_products; i++)
+    {
+        if (mask[i])
+        {
+            new_num_products++;
+        }
+    }
+
+    if (new_num_products == dataset->num_products)
+    {
+        /* no change necessary */
+        return 0;
+    }
+
+    target_index = 0;
+    for (i = 0; i < dataset->num_products; i++)
+    {
+        if (mask[i])
+        {
+            if (target_index != i)
+            {
+                dataset->source_product[target_index] = dataset->source_product[i];
+                dataset->metadata[target_index] = dataset->metadata[i];
+            }
+            dataset->sorted_index[target_index] = target_index; /* intialize unsorted */
+            target_index++;
+        }
+        else
+        {
+            free(dataset->source_product[i]);
+            harp_product_metadata_delete(dataset->metadata[i]);
+        }
+    }
+    dataset->num_products = new_num_products;
+
+    /* resort sorted_index */
+    sort_dataset = dataset;
+    qsort(dataset->sorted_index, dataset->num_products, sizeof(long), compare_source_product);
+
+    /* rebuild hashtable */
+    hashtable_delete(dataset->product_to_index);
+    dataset->product_to_index = hashtable_new(1);
+    if (dataset->product_to_index == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not create hashtable) (%s:%u)", __FILE__,
+                       __LINE__);
+        return -1;
+    }
+    for (i = 0; i < dataset->num_products; i++)
+    {
+        if (hashtable_add_name(dataset->product_to_index, dataset->source_product[i]) != 0)
+        {
+            assert(0);
+            exit(1);
+        }
+    }
+
+    return 0;
+}
+
+static int prefilter_comparison(harp_dataset *dataset, uint8_t *mask, harp_operation_comparison_filter *operation)
+{
+    long i;
+
+    if (strcmp(operation->variable_name, "datetime") != 0 && strcmp(operation->variable_name, "datetime_start") != 0 &&
+        strcmp(operation->variable_name, "datetime_stop") != 0)
+    {
+        /* not a variable we can pre-filter on */
+        return 0;
+    }
+
+    if (harp_operation_set_value_unit((harp_operation *)operation, "days since 2000-01-01") != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < dataset->num_products; i++)
+    {
+        if (mask[i] && dataset->metadata[i] != NULL)
+        {
+            double datetime_start = harp_unit_converter_convert(operation->unit_converter,
+                                                                dataset->metadata[i]->datetime_start);
+            double datetime_stop = harp_unit_converter_convert(operation->unit_converter,
+                                                               dataset->metadata[i]->datetime_stop);
+            switch (operation->operator_type)
+            {
+                case operator_eq:
+                    if (datetime_stop < operation->value || datetime_start > operation->value)
+                    {
+                        mask[i] = 0;
+                    }
+                    break;
+                case operator_ne:
+                    if (datetime_start == operation->value && datetime_stop == operation->value)
+                    {
+                        mask[i] = 0;
+                    }
+                    break;
+                case operator_lt:
+                    if (datetime_start >= operation->value)
+                    {
+                        mask[i] = 0;
+                    }
+                    break;
+                case operator_le:
+                    if (datetime_start > operation->value)
+                    {
+                        mask[i] = 0;
+                    }
+                    break;
+                case operator_gt:
+                    if (datetime_stop <= operation->value)
+                    {
+                        mask[i] = 0;
+                    }
+                    break;
+                case operator_ge:
+                    if (datetime_stop < operation->value)
+                    {
+                        mask[i] = 0;
+                    }
+                    break;
+            }
+        }
+    }
+
+    return 0;
+}
+
+/** \addtogroup harp_dataset
+ * @{
+ */
+
+/** Filter products in dataset based on operations.
+ * Remove any entries from the dataset that can already be discarded based on filters at the start of the operations
+ * string. This includes comparisons against datetime/datetime_start/datetime_stop and collocate_left/collocate_right
+ * operations.
+ * The filters will be matched against the metadata in the dataset. The datatime_start and datetime_stop attributes
+ * will be used for the datetime filters and the source_product attribute for the collocation filters.
+ * \param dataset Dataset that should be filtered.
+ * \param operations Operations to execute; should be specified as a semi-colon separated string of operations.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_dataset_prefilter(harp_dataset *dataset, const char *operations)
+{
+    harp_program *program;
+    uint8_t *mask;
+    long i;
+
+    if (operations == NULL || dataset->num_products == 0)
+    {
+        return 0;
+    }
+
+    if (harp_program_from_string(operations, &program) != 0)
+    {
+        return -1;
+    }
+
+    mask = malloc(dataset->num_products);
+    if (mask == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %ld bytes) (%s:%u)",
+                       dataset->num_products, __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < dataset->num_products; i++)
+    {
+        mask[i] = 1;
+    }
+
+    for (i = 0; i < program->num_operations; i++)
+    {
+        harp_operation *operation = program->operation[i];
+
+        switch (operation->type)
+        {
+            case operation_comparison_filter:
+                if (prefilter_comparison(dataset, mask, (harp_operation_comparison_filter *)operation) != 0)
+                {
+                    harp_program_delete(program);
+                    free(mask);
+                    return -1;
+                }
+                /* we can skip over other variable filters, since they won't impact our pre-filtering */
+                break;
+            case operation_collocation_filter:
+                break;
+            default:
+                /* unsupported -> terminate loop */
+                i = program->num_operations;
+                break;
+        }
+    }
+
+    harp_program_delete(program);
+
+    if (harp_dataset_filter(dataset, mask) != 0)
+    {
+        free(mask);
+        return -1;
+    }
+
+    free(mask);
 
     return 0;
 }

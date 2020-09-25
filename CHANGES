@@ -4,6 +4,11 @@
 
 * Added harp.import_product_metadata() to Python interface.
 
+* Added harp_dataset_prefilter(). This function is now also called within
+  harpmerge and harpcollocate to pre-filter the input dataset(s) for datetime
+  and collocate left/right filters that are at the start of the operations
+  string.
+
 * Added derivation to retrieve angstrom exponent from aerosol optical depth.
 
 * Added derivation to retrieve tropospheric/stratospheric column avk from

@@ -1565,6 +1565,17 @@ int matchup(int argc, char *argv[])
         return -1;
     }
 
+    if (harp_dataset_prefilter(info->dataset_a, info->operations_a) != 0)
+    {
+        collocation_info_delete(info);
+        return -1;
+    }
+    if (harp_dataset_prefilter(info->dataset_b, info->operations_b) != 0)
+    {
+        collocation_info_delete(info);
+        return -1;
+    }
+
     if (collocation_info_update(info) != 0)
     {
         collocation_info_delete(info);

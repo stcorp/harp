@@ -572,6 +572,7 @@ LIBHARP_API int harp_dataset_get_index_from_source_product(harp_dataset *dataset
 LIBHARP_API int harp_dataset_has_product(harp_dataset *dataset, const char *source_product);
 LIBHARP_API int harp_dataset_add_product(harp_dataset *dataset, const char *source_product,
                                          harp_product_metadata *metadata);
+LIBHARP_API int harp_dataset_prefilter(harp_dataset *dataset, const char *operations);
 
 /* Import */
 LIBHARP_API int harp_import(const char *filename, const char *operations, const char *options, harp_product **product);
