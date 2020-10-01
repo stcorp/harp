@@ -899,7 +899,7 @@ static int prefilter_comparison(harp_dataset *dataset, uint8_t *mask, harp_opera
     return 0;
 }
 
-static int match_collocation_line(char *line, harp_collocation_filter_type filter_type, harp_dataset *dataset,
+static int match_collocation_line(char *line, harp_operation_collocation_filter *operation, harp_dataset *dataset,
                                   uint8_t *available)
 {
     char *source_product;
@@ -932,11 +932,22 @@ static int match_collocation_line(char *line, harp_collocation_filter_type filte
     {
         return -1;
     }
+
+    /* skip line if collocation_index is outside the requested range */
+    if (operation->min_collocation_index >= 0 && index < operation->min_collocation_index)
+    {
+        return 0;
+    }
+    if (operation->max_collocation_index >= 0 && index > operation->max_collocation_index)
+    {
+        return 0;
+    }
+
     if (harp_csv_parse_string(&cursor, &source_product) != 0)
     {
         return -1;
     }
-    if (filter_type == harp_collocation_left)
+    if (operation->filter_type == harp_collocation_left)
     {
         /* match source_product_a */
         index = hashtable_get_index_from_name(dataset->product_to_index, source_product);
@@ -946,11 +957,11 @@ static int match_collocation_line(char *line, harp_collocation_filter_type filte
         }
         return 0;
     }
-
     if (harp_csv_parse_long(&cursor, &index) != 0)
     {
         return -1;
     }
+
     if (harp_csv_parse_string(&cursor, &source_product) != 0)
     {
         return -1;
@@ -1017,7 +1028,7 @@ static int prefilter_collocation(harp_dataset *dataset, uint8_t *mask, harp_oper
             /* EOF */
             break;
         }
-        if (match_collocation_line(line, operation->filter_type, dataset, available) != 0)
+        if (match_collocation_line(line, operation, dataset, available) != 0)
         {
             fclose(file);
             free(available);
