@@ -9,6 +9,10 @@
   and collocate left/right filters that are at the start of the operations
   string.
 
+* Added global option to determine whether uncertainty propagation should
+  use a correlated or uncorrelated approach.
+  Currently only used for the bin() operation.
+
 * Added derivation to retrieve angstrom exponent from aerosol optical depth.
 
 * Added derivation to retrieve tropospheric/stratospheric column avk from

@@ -421,6 +421,8 @@ LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable);
 LIBHARP_API int harp_get_option_enable_aux_usstd76(void);
 LIBHARP_API int harp_set_option_hdf5_compression(int level);
 LIBHARP_API int harp_get_option_hdf5_compression(void);
+LIBHARP_API int harp_set_option_propagate_uncertainty(int method);
+LIBHARP_API int harp_get_option_propagate_uncertainty(void);
 LIBHARP_API int harp_set_option_regrid_out_of_bounds(int method);
 LIBHARP_API int harp_get_option_regrid_out_of_bounds(void);
 

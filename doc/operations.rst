@@ -414,6 +414,14 @@ Supported functions:
               conversions (using seasonal and latitude band dependence)
             - ``usstd76`` enable AFGL86 using US Standard profiles
 
+        ``propagate_uncertainty``
+            Determine how to propagate uncertainties for operations that
+            support this (and where there is a choice).
+            Possible values are:
+
+            - ``uncorrelated`` (default) to assume fully uncorrelated uncertainties
+            - ``correlated`` to assume fully correlated uncertainties
+
         ``regrid_out_of_bounds``
             Determine how to deal with interpolation of target grid values
             that fall outside the source grid range.

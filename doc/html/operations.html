@@ -599,6 +599,15 @@ conversions (using seasonal and latitude band dependence)</li>
 <li><code class="docutils literal notranslate"><span class="pre">usstd76</span></code> enable AFGL86 using US Standard profiles</li>
 </ul>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">propagate_uncertainty</span></code></dt>
+<dd><p class="first">Determine how to propagate uncertainties for operations that
+support this (and where there is a choice).
+Possible values are:</p>
+<ul class="last simple">
+<li><code class="docutils literal notranslate"><span class="pre">uncorrelated</span></code> (default) to assume fully uncorrelated uncertainties</li>
+<li><code class="docutils literal notranslate"><span class="pre">correlated</span></code> to assume fully correlated uncertainties</li>
+</ul>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">regrid_out_of_bounds</span></code></dt>
 <dd><p class="first">Determine how to deal with interpolation of target grid values
 that fall outside the source grid range.

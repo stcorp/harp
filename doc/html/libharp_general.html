@@ -851,6 +851,45 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv337harp_set_option_propagate_uncertaintyi">
+<span id="_CPPv237harp_set_option_propagate_uncertaintyi"></span><span id="harp_set_option_propagate_uncertainty__i"></span><span class="target" id="group__harp__general_1ga31e452a3e090b3d9cc143f86553b76db"></span>int <code class="descname">harp_set_option_propagate_uncertainty</code><span class="sig-paren">(</span>int <em>method</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set how to propagate uncertainty. This is only applicable for operations that support propagation of uncertainties. And then only if there is a choice. The propagation can either assume uncertainties to be fully uncorrelated (the default) or fully correlated. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">method</span></code>: <ul>
+<li>0: Assume uncertainties to be uncorrelated. </li>
+<li>1: Assume uncertainties to be fully correlated. </li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv337harp_get_option_propagate_uncertaintyv">
+<span id="_CPPv237harp_get_option_propagate_uncertaintyv"></span><span id="harp_get_option_propagate_uncertainty__void"></span><span class="target" id="group__harp__general_1ga9fea5f821a70646daeb1915bf2ae3ddb"></span>int <code class="descname">harp_get_option_propagate_uncertainty</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><br /></dt>
+<dd><p>Retrieve the current setting for how to propagate uncertainty. <dl class="docutils">
+<dt><strong>See</strong></dt>
+<dd><a class="reference internal" href="#group__harp__general_1ga31e452a3e090b3d9cc143f86553b76db"><span class="std std-ref">harp_set_option_propagate_uncertainty()</span></a> </dd>
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code> Assume uncertainties to be uncorrelated. </li>
+<li><code class="docutils literal notranslate"><span class="pre">1</span></code> Assume uncertainties to be fully correlated. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv336harp_set_option_regrid_out_of_boundsi">
 <span id="_CPPv236harp_set_option_regrid_out_of_boundsi"></span><span id="harp_set_option_regrid_out_of_bounds__i"></span><span class="target" id="group__harp__general_1ga83bdb60fc511d16c19e7c51d48aae84d"></span>int <code class="descname">harp_set_option_regrid_out_of_bounds</code><span class="sig-paren">(</span>int <em>method</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set how to treat out of bound values during regridding operations. This is only applicable for point interpolation regridding. Any point that falls outside the target grid can be either set to NaN (the default), set to the nearest edge value, or set based on extrapolation (of two nearest points). This global HARP option determines which of the three cases will be used. <dl class="docutils">

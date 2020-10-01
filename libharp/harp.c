@@ -54,6 +54,7 @@ static int harp_init_counter = 0;
 int harp_option_enable_aux_afgl86 = 0;
 int harp_option_enable_aux_usstd76 = 0;
 int harp_option_hdf5_compression = 0;
+int harp_option_propagate_uncertainty = 0;
 int harp_option_regrid_out_of_bounds = 0;
 
 typedef enum file_format_enum
@@ -410,6 +411,41 @@ LIBHARP_API int harp_set_option_hdf5_compression(int level)
 LIBHARP_API int harp_get_option_hdf5_compression(void)
 {
     return harp_option_hdf5_compression;
+}
+
+/** Set how to propagate uncertainty.
+ * This is only applicable for operations that support propagation of uncertainties. And then only if there is a choice.
+ * The propagation can either assume uncertainties to be fully uncorrelated (the default) or fully correlated.
+ * \param method
+ *   \arg 0: Assume uncertainties to be uncorrelated.
+ *   \arg 1: Assume uncertainties to be fully correlated.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_set_option_propagate_uncertainty(int method)
+{
+    if (method < 0 || method > 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "method argument (%d) is not valid (%s:%u)", method, __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    harp_option_propagate_uncertainty = method;
+
+    return 0;
+}
+
+/** Retrieve the current setting for how to propagate uncertainty.
+ * \see harp_set_option_propagate_uncertainty()
+ * \return
+ *   \arg \c 0 Assume uncertainties to be uncorrelated.
+ *   \arg \c 1 Assume uncertainties to be fully correlated.
+ */
+LIBHARP_API int harp_get_option_propagate_uncertainty(void)
+{
+    return harp_option_propagate_uncertainty;
 }
 
 /** Set how to treat out of bound values during regridding operations.

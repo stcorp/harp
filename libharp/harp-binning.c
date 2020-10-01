@@ -55,7 +55,7 @@ typedef enum binning_type_enum
 } binning_type;
 
 
-static binning_type get_binning_type(harp_variable *variable, int is_time_dimension)
+static binning_type get_binning_type(harp_variable *variable, int force_correlated_uncertainty)
 {
     long variable_name_length = (long)strlen(variable->name);
     int i;
@@ -121,7 +121,8 @@ static binning_type get_binning_type(harp_variable *variable, int is_time_dimens
 
     if (strstr(variable->name, "_uncertainty") != NULL)
     {
-        if (!is_time_dimension || strstr(variable->name, "_uncertainty_systematic") != NULL)
+        if (force_correlated_uncertainty || strstr(variable->name, "_uncertainty_systematic") != NULL ||
+            harp_get_option_propagate_uncertainty() == 1)
         {
             /* propagate uncertainty assuming full correlation */
             return binning_average;
@@ -172,7 +173,7 @@ static binning_type get_binning_type(harp_variable *variable, int is_time_dimens
 
 static binning_type get_spatial_binning_type(harp_variable *variable)
 {
-    binning_type type = get_binning_type(variable, 0);
+    binning_type type = get_binning_type(variable, 1);
 
     if (type != binning_remove && type != binning_skip)
     {
@@ -1405,8 +1406,9 @@ static int find_matching_cells_for_points(harp_variable *latitude, harp_variable
  * For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains
  * the magnitude of the sum of the unit vectors that was used to calculate the angle average.
  *
- * For uncertainty variables the first order propagation rules are used (assuming no correlation for total and random uncertainty variables
- * and full correlation for systematic uncertainty variables).
+ * For uncertainty variables the first order propagation rules are used (assuming full correlation for systematic
+ * uncertainty variables and using the harp_get_option_propagate_uncertainty() setting for total and random uncertainty
+ * variables).
  *
  * \param product Product to regrid.
  * \param num_bins Number of target bins.
@@ -1457,7 +1459,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
     }
     for (k = 0; k < product->num_variables; k++)
     {
-        bintype[k] = get_binning_type(product->variable[k], 1);
+        bintype[k] = get_binning_type(product->variable[k], 0);
 
         /* determine the maximum number of elements (as size for the 'count' and 'weight' arrays) */
         if (bintype[k] != binning_remove && bintype[k] != binning_skip)
@@ -3119,7 +3121,7 @@ int harp_product_bin_with_variable(harp_product *product, int num_variables, con
 
     for (k = 0; k < num_variables; k++)
     {
-        if (get_binning_type(variable[k], 1) == binning_remove)
+        if (get_binning_type(variable[k], 0) == binning_remove)
         {
             /* we always want to keep the variable that we bin on */
             if (harp_variable_copy(variable[k], &variable_copy[k]) != 0)
