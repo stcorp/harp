@@ -854,6 +854,7 @@ static int prefilter_comparison(harp_dataset *dataset, uint8_t *mask, harp_opera
                                                                 dataset->metadata[i]->datetime_start);
             double datetime_stop = harp_unit_converter_convert(operation->unit_converter,
                                                                dataset->metadata[i]->datetime_stop);
+
             switch (operation->operator_type)
             {
                 case operator_eq:
