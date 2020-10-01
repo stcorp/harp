@@ -899,6 +899,147 @@ static int prefilter_comparison(harp_dataset *dataset, uint8_t *mask, harp_opera
     return 0;
 }
 
+static int match_collocation_line(char *line, harp_collocation_filter_type filter_type, harp_dataset *dataset,
+                                  uint8_t *available)
+{
+    char *source_product;
+    char *cursor = line;
+    long length;
+    long index;
+
+    length = (long)strlen(line);
+
+    /* Trim the line */
+    while (length > 0 && (line[length - 1] == '\r' || line[length - 1] == '\n'))
+    {
+        length--;
+    }
+    line[length] = '\0';
+
+    if (length == HARP_CSV_LINE_LENGTH)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "line exceeds max line length (%ld)", HARP_CSV_LINE_LENGTH);
+        return -1;
+    }
+
+    if (length == 0)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "empty line");
+        return -1;
+    }
+
+    if (harp_csv_parse_long(&cursor, &index) != 0)
+    {
+        return -1;
+    }
+    if (harp_csv_parse_string(&cursor, &source_product) != 0)
+    {
+        return -1;
+    }
+    if (filter_type == harp_collocation_left)
+    {
+        /* match source_product_a */
+        index = hashtable_get_index_from_name(dataset->product_to_index, source_product);
+        if (index >= 0)
+        {
+            available[index] = 1;
+        }
+        return 0;
+    }
+
+    if (harp_csv_parse_long(&cursor, &index) != 0)
+    {
+        return -1;
+    }
+    if (harp_csv_parse_string(&cursor, &source_product) != 0)
+    {
+        return -1;
+    }
+    /* match source_product_b */
+    index = hashtable_get_index_from_name(dataset->product_to_index, source_product);
+    if (index >= 0)
+    {
+        available[index] = 1;
+    }
+
+    return 0;
+}
+
+static int prefilter_collocation(harp_dataset *dataset, uint8_t *mask, harp_operation_collocation_filter *operation)
+{
+    char line[HARP_CSV_LINE_LENGTH + 1];
+    uint8_t *available;
+    FILE *file;
+    long i;
+
+    available = malloc(dataset->num_products);
+    if (available == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %ld bytes) (%s:%u)",
+                       dataset->num_products, __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < dataset->num_products; i++)
+    {
+        available[i] = 0;
+    }
+
+    /* Open the collocation result file */
+    file = fopen(operation->filename, "r");
+    if (file == NULL)
+    {
+        harp_set_error(HARP_ERROR_FILE_OPEN, "error opening collocation result file '%s'", operation->filename);
+        free(available);
+        return -1;
+    }
+
+    /* read+skip header */
+    if (fgets(line, HARP_CSV_LINE_LENGTH + 1, file) == NULL)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading header");
+        fclose(file);
+        free(available);
+        return -1;
+    }
+
+    /* Read the pairs */
+    while (1)
+    {
+        if (fgets(line, HARP_CSV_LINE_LENGTH + 1, file) == NULL)
+        {
+            if (ferror(file))
+            {
+                harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "error reading line");
+                fclose(file);
+                free(available);
+                return -1;
+            }
+            /* EOF */
+            break;
+        }
+        if (match_collocation_line(line, operation->filter_type, dataset, available) != 0)
+        {
+            fclose(file);
+            free(available);
+            return -1;
+        }
+    }
+
+    fclose(file);
+
+    /* mask out all products that are not in the collocation result file */
+    for (i = 0; i < dataset->num_products; i++)
+    {
+        if (!available[i])
+        {
+            mask[i] = 0;
+        }
+    }
+    free(available);
+
+    return 0;
+}
+
 /** \addtogroup harp_dataset
  * @{
  */
@@ -959,6 +1100,12 @@ LIBHARP_API int harp_dataset_prefilter(harp_dataset *dataset, const char *operat
                 /* we can skip over other variable filters, since they won't impact our pre-filtering */
                 break;
             case operation_collocation_filter:
+                if (prefilter_collocation(dataset, mask, (harp_operation_collocation_filter *)operation) != 0)
+                {
+                    harp_program_delete(program);
+                    free(mask);
+                    return -1;
+                }
                 break;
             default:
                 /* unsupported -> terminate loop */
