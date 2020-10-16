@@ -27,6 +27,8 @@
 
 * Updates to product ingestions:
   - S5P L2 CLOUD: added cloud_type and cloud_top_temperature
+  - S5P L2 O3: added qa_filter=custom ingestion option to set validity based
+    on official PRF recommendation for processor V1.x generated products
   - MLS L2: fixed memory issue in reading of validity variable and updated
     validity flag mapping to version 4.x-4.0 of the Data Quality document
 

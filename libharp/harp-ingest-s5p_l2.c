@@ -99,6 +99,7 @@ typedef struct ingest_info_struct
     int use_co_nd_avk;
     int use_o3_tcl_csa;
     int use_o3_tcl_strat_reference;
+    int use_custom_qa_filter;
     int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
 
     s5p_product_type product_type;
@@ -565,6 +566,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_co_nd_avk = 0;
     info->use_o3_tcl_csa = 0;
     info->use_o3_tcl_strat_reference = 0;
+    info->use_custom_qa_filter = 0;
     info->so2_column_type = 0;
     info->num_times = 0;
     info->num_scanlines = 0;
@@ -639,6 +641,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "o3_strat"))
     {
         info->use_o3_tcl_strat_reference = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "qa_filter"))
+    {
+        info->use_custom_qa_filter = 1;
     }
     if (harp_ingestion_options_has_option(options, "so2_column"))
     {
@@ -2216,6 +2222,89 @@ static int read_product_ozone_tropospheric_column_precision(void *user_data, har
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int apply_custom_qa_filter_o3_v1(ingest_info *info, harp_array qa_value)
+{
+    harp_array data;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long i;
+
+    /* For processor V1 generated products the following samples should be omitted (-> qa_value:=0)
+     * - ozone_total_vertical_column out of [0 to 0.45]
+     * - ozone_effective_temperature out of [180 to 260]
+     * - ring_scale_factor out of [0 to 0.15]
+     * - effective_albedo out of [-0.5 to 1.5]
+     */
+
+    data.ptr = malloc(num_elements * sizeof(float));
+    if (data.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        /* all data that does not fall outside the ranges should be included */
+        qa_value.int8_data[i] = 100;
+    }
+
+    if (read_dataset(info->product_cursor, "ozone_total_vertical_column", harp_type_float, num_elements, data) != 0)
+    {
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.float_data[i] < 0 || data.float_data[i] > 0.45 || harp_isnan(data.float_data[i]))
+        {
+            qa_value.int8_data[i] = 0;
+        }
+    }
+
+    if (read_dataset(info->detailed_results_cursor, "ozone_effective_temperature", harp_type_float, num_elements, data)
+        != 0)
+    {
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.float_data[i] < 180 || data.float_data[i] > 260 || harp_isnan(data.float_data[i]))
+        {
+            qa_value.int8_data[i] = 0;
+        }
+    }
+
+    if (read_dataset(info->detailed_results_cursor, "ring_scale_factor", harp_type_float, num_elements, data) != 0)
+    {
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.float_data[i] < 0 || data.float_data[i] > 0.15 || harp_isnan(data.float_data[i]))
+        {
+            qa_value.int8_data[i] = 0;
+        }
+    }
+
+    if (read_dataset(info->detailed_results_cursor, "effective_albedo", harp_type_float, num_elements, data) != 0)
+    {
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.float_data[i] < -0.5 || data.float_data[i] > 1.5 || harp_isnan(data.float_data[i]))
+        {
+            qa_value.int8_data[i] = 0;
+        }
+    }
+
+    free(data.ptr);
+    return 0;
+}
+
 static int read_product_qa_value(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2226,6 +2315,20 @@ static int read_product_qa_value(void *user_data, harp_array data)
     result = read_dataset(info->product_cursor, "qa_value", harp_type_int8, info->num_scanlines * info->num_pixels,
                           data);
     coda_set_option_perform_conversions(1);
+
+    if (info->use_custom_qa_filter)
+    {
+        if (info->product_type == s5p_type_o3)
+        {
+            if (info->processor_version >= 10000 && info->processor_version < 20000)
+            {
+                if (apply_custom_qa_filter_o3_v1(info, data) != 0)
+                {
+                    return -1;
+                }
+            }
+        }
+    }
 
     return result;
 }
@@ -5410,6 +5513,7 @@ static void register_hcho_product(void)
 
 static void register_o3_product(void)
 {
+    const char *qa_filter_options[] = { "custom" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -5423,6 +5527,10 @@ static void register_o3_product(void)
 
     module = harp_ingestion_register_module("S5P_L2_O3", "Sentinel-5P", "Sentinel5P", "L2__O3____",
                                             "Sentinel-5P L2 O3 total column", ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "qa_filter", "if enabled (qa_filter=custom) then for data generated by L2 "
+                                   "processor V1.x the validity will be set to 0 or 100 based on the recommended "
+                                   "filtering (see PRF) instead of using the qa_value variable", 1, qa_filter_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O3", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3]);
