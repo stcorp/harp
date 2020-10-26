@@ -749,7 +749,7 @@ static int collocation_info_update(collocation_info *info)
                 return -1;
             }
             strcpy(info->collocation_result->difference_variable_name[i], info->criterium[i]->variable_name);
-            strcat(info->collocation_result->difference_variable_name[i], "_absdiff");
+            strcat(info->collocation_result->difference_variable_name[i], "_diff");
         }
         /* we only populate the unit if we already have it, we will update this information during matchup */
         if (info->criterium[i]->unit != NULL)
@@ -840,8 +840,8 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
         }
         else
         {
-            info->difference[i] = fabs(info->variables_a.criterium[i]->data.double_data[index_a] -
-                                       info->variables_b.criterium[i]->data.double_data[index_b]);
+            info->difference[i] = info->variables_a.criterium[i]->data.double_data[index_a] -
+                info->variables_b.criterium[i]->data.double_data[index_b];
             if (i == info->datetime_index)
             {
                 info->difference[i] *= info->datetime_conversion_factor;
@@ -857,9 +857,17 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
             {
                 info->difference[i] = info->criterium[i]->modulo_value - info->difference[i];
             }
+            while (info->difference[i] < -info->criterium[i]->modulo_value)
+            {
+                info->difference[i] += info->criterium[i]->modulo_value;
+            }
+            if (info->difference[i] < -info->criterium[i]->modulo_value / 2)
+            {
+                info->difference[i] = -info->criterium[i]->modulo_value - info->difference[i];
+            }
         }
         /* we use !(x<=y) instead of x>y so a NaN value for the difference will also result in a mismatch */
-        if (!(info->difference[i] <= info->criterium[i]->value))
+        if (!(fabs(info->difference[i]) <= info->criterium[i]->value))
         {
             return 0;
         }
@@ -953,8 +961,8 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
 
                     if (pair->product_index_a == product_index && pair->sample_index_a == sample_index)
                     {
-                        if (pair->difference[info->nearest_neighbour_x_criterium_index] <=
-                            info->difference[info->nearest_neighbour_x_criterium_index])
+                        if (fabs(pair->difference[info->nearest_neighbour_x_criterium_index]) <=
+                            fabs(info->difference[info->nearest_neighbour_x_criterium_index]))
                         {
                             /* existing pair is closer -> ignore the new pair */
                             return 0;
@@ -992,8 +1000,8 @@ static int perform_matchup_on_measurements(collocation_info *info, long index_a,
 
                     if (pair->product_index_b == product_index && pair->sample_index_b == sample_index)
                     {
-                        if (pair->difference[info->nearest_neighbour_y_criterium_index] <=
-                            info->difference[info->nearest_neighbour_y_criterium_index])
+                        if (fabs(pair->difference[info->nearest_neighbour_y_criterium_index]) <=
+                            fabs(info->difference[info->nearest_neighbour_y_criterium_index]))
                         {
                             /* existing pair is closer -> ignore the new pair */
                             return 0;

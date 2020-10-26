@@ -414,6 +414,16 @@ Supported functions:
               conversions (using seasonal and latitude band dependence)
             - ``usstd76`` enable AFGL86 using US Standard profiles
 
+        ``collocation_datetime``
+            Determine whether to create a collocation_datetime variable when
+            a collocate_left or collocation_right operation is performed.
+            The collocation_datetime variable will contain the datetime of
+            the sample from the other dataset for the collocated pair.
+            Possible values are:
+
+            - ``disabled`` (default) variable will not be created
+            - ``enabled`` variable will not be created
+
         ``propagate_uncertainty``
             Determine how to propagate uncertainties for operations that
             support this (and where there is a choice).

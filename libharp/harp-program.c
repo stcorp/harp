@@ -1081,6 +1081,23 @@ static int execute_set(harp_product *product, harp_operation_set *operation)
             return -1;
         }
     }
+    else if (strcmp(operation->option, "collocation_datetime") == 0)
+    {
+        if (strcmp(operation->value, "enabled") == 0)
+        {
+            harp_set_option_create_collocation_datetime(1);
+        }
+        else if (strcmp(operation->value, "disabled") == 0)
+        {
+            harp_set_option_create_collocation_datetime(0);
+        }
+        else
+        {
+            harp_set_error(HARP_ERROR_OPERATION, "invalid value '%s' for option '%s'", operation->value,
+                           operation->option);
+            return -1;
+        }
+    }
     else if (strcmp(operation->option, "propagate_uncertainty") == 0)
     {
         if (strcmp(operation->value, "uncorrelated") == 0)

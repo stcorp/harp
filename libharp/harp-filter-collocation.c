@@ -53,6 +53,17 @@ static int compare_by_index(const void *a, const void *b)
         return 1;
     }
 
+    /* if indices are the same then compare by collocation index to maintain a deterministic ordering */
+    if (pair_a->collocation_index < pair_b->collocation_index)
+    {
+        return -1;
+    }
+
+    if (pair_a->collocation_index > pair_b->collocation_index)
+    {
+        return 1;
+    }
+
     return 0;
 }
 
@@ -106,7 +117,8 @@ void harp_collocation_mask_delete(harp_collocation_mask *mask)
     }
 }
 
-static int collocation_mask_add_index_pair(harp_collocation_mask *mask, long collocation_index, long index)
+static int collocation_mask_add_index_pair(harp_collocation_mask *mask, long collocation_index, long index,
+                                           double datetime_diff)
 {
     if (mask->num_index_pairs % COLLOCATION_MASK_BLOCK_SIZE == 0)
     {
@@ -127,6 +139,7 @@ static int collocation_mask_add_index_pair(harp_collocation_mask *mask, long col
 
     mask->index_pair[mask->num_index_pairs].collocation_index = collocation_index;
     mask->index_pair[mask->num_index_pairs].index = index;
+    mask->index_pair[mask->num_index_pairs].datetime_diff = datetime_diff;
     mask->num_index_pairs++;
 
     return 0;
@@ -146,9 +159,10 @@ static int collocation_mask_from_result(const harp_collocation_result *collocati
                                         harp_collocation_filter_type filter_type, const char *source_product,
                                         harp_collocation_mask **new_mask)
 {
-    long i;
-    long product_index = -1;
     harp_collocation_mask *mask;
+    long product_index = -1;
+    int datetime_diff_index = -1;
+    long i;
 
     if (collocation_result == NULL)
     {
@@ -181,12 +195,23 @@ static int collocation_mask_from_result(const harp_collocation_result *collocati
         }
     }
 
+    for (i = 0; i < collocation_result->num_differences; i++)
+    {
+        if (strcmp(collocation_result->difference_variable_name[i], "datetime_diff") == 0)
+        {
+            datetime_diff_index = i;
+            break;
+        }
+    }
+
     /* if product_index is -1, no match will be found */
     for (i = 0; i < collocation_result->num_pairs && product_index >= 0; i++)
     {
         const harp_collocation_pair *pair;
+        double datetime_diff;
 
         pair = collocation_result->pair[i];
+        datetime_diff = datetime_diff_index >= 0 ? pair->difference[datetime_diff_index] : harp_nan();
         if (filter_type == harp_collocation_left)
         {
             if (pair->product_index_a != product_index)
@@ -194,7 +219,8 @@ static int collocation_mask_from_result(const harp_collocation_result *collocati
                 continue;
             }
 
-            if (collocation_mask_add_index_pair(mask, pair->collocation_index, pair->sample_index_a) != 0)
+            if (collocation_mask_add_index_pair(mask, pair->collocation_index, pair->sample_index_a, -datetime_diff) !=
+                0)
             {
                 harp_collocation_mask_delete(mask);
                 return -1;
@@ -207,13 +233,34 @@ static int collocation_mask_from_result(const harp_collocation_result *collocati
                 continue;
             }
 
-            if (collocation_mask_add_index_pair(mask, pair->collocation_index, pair->sample_index_b) != 0)
+            if (collocation_mask_add_index_pair(mask, pair->collocation_index, pair->sample_index_b, datetime_diff) !=
+                0)
             {
                 harp_collocation_mask_delete(mask);
                 return -1;
             }
         }
+    }
 
+    /* convert datetime_diff to [s] */
+    if (datetime_diff_index >= 0)
+    {
+        harp_unit_converter *unit_converter = NULL;
+        const char *source_unit = collocation_result->difference_unit[datetime_diff_index];
+
+        if (harp_unit_compare(source_unit, HARP_UNIT_TIME) != 0)
+        {
+            if (harp_unit_converter_new(source_unit, HARP_UNIT_TIME, &unit_converter) != 0)
+            {
+                harp_collocation_mask_delete(mask);
+                return -1;
+            }
+            for (i = 0; i < mask->num_index_pairs; i++)
+            {
+                mask->index_pair[i].datetime_diff = harp_unit_converter_convert(unit_converter,
+                                                                                mask->index_pair[i].datetime_diff);
+            }
+        }
     }
 
     *new_mask = mask;
@@ -514,6 +561,44 @@ int harp_product_apply_collocation_mask(harp_product *product, harp_collocation_
             return -1;
         }
         free(dimension_index);
+    }
+
+    if (harp_get_option_create_collocation_datetime() == 1)
+    {
+        harp_dimension_type dimension_type = harp_dimension_time;
+        harp_data_type data_type = harp_type_double;
+        harp_variable *variable;
+        long i;
+
+        if (harp_product_get_derived_variable(product, "datetime", &data_type, HARP_UNIT_DATETIME, 1, &dimension_type,
+                                              &variable) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_rename(variable, "collocation_datetime") != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
+        collocation_mask_sort_by_collocation_index(collocation_mask);
+        assert(collocation_index->num_elements == variable->num_elements);
+        for (i = 0; i < variable->num_elements; i++)
+        {
+            long index;
+
+            if (!find_collocation_pair_for_collocation_index(collocation_mask, collocation_index->data.int32_data[i],
+                                                             &index))
+            {
+                harp_variable_delete(variable);
+                return -1;
+            }
+            variable->data.double_data[i] += collocation_mask->index_pair[index].datetime_diff;
+        }
+        if (harp_product_add_variable(product, variable) != 0)
+        {
+            harp_variable_delete(variable);
+            return -1;
+        }
     }
 
     return 0;

@@ -415,6 +415,8 @@ LIBHARP_API int harp_set_udunits2_xml_path(const char *path);
 LIBHARP_API int harp_set_udunits2_xml_path_conditional(const char *file, const char *searchpath,
                                                        const char *relative_location);
 
+LIBHARP_API int harp_set_option_create_collocation_datetime(int enable);
+LIBHARP_API int harp_get_option_create_collocation_datetime(void);
 LIBHARP_API int harp_set_option_enable_aux_afgl86(int enable);
 LIBHARP_API int harp_get_option_enable_aux_afgl86(void);
 LIBHARP_API int harp_set_option_enable_aux_usstd76(int enable);

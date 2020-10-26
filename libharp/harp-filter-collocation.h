@@ -38,6 +38,7 @@ typedef struct harp_collocation_index_pair_struct
 {
     long collocation_index;
     long index;
+    double datetime_diff;
 } harp_collocation_index_pair;
 
 typedef struct harp_collocation_mask_struct

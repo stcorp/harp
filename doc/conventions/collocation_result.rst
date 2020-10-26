@@ -33,4 +33,4 @@ collocation criteria...
   The remaining columns cover the collocation criteria that were provided to harpcollocate. For each collocation
   criterium the column will provide the exact distance value for the given collocated measurement pair for that
   criterium. The column label used for each criteria is the HARP variable name of the associate difference variable
-  together with the unit (e.g. `datetime_absdiff [s]`)
+  together with the unit (e.g. `datetime_diff [s]`)

@@ -599,6 +599,17 @@ conversions (using seasonal and latitude band dependence)</li>
 <li><code class="docutils literal notranslate"><span class="pre">usstd76</span></code> enable AFGL86 using US Standard profiles</li>
 </ul>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">collocation_datetime</span></code></dt>
+<dd><p class="first">Determine whether to create a collocation_datetime variable when
+a collocate_left or collocation_right operation is performed.
+The collocation_datetime variable will contain the datetime of
+the sample from the other dataset for the collocated pair.
+Possible values are:</p>
+<ul class="last simple">
+<li><code class="docutils literal notranslate"><span class="pre">disabled</span></code> (default) variable will not be created</li>
+<li><code class="docutils literal notranslate"><span class="pre">enabled</span></code> variable will not be created</li>
+</ul>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">propagate_uncertainty</span></code></dt>
 <dd><p class="first">Determine how to propagate uncertainties for operations that
 support this (and where there is a choice).

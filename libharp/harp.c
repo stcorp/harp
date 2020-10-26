@@ -51,6 +51,7 @@ LIBHARP_API const char *libharp_version = HARP_VERSION;
 
 static int harp_init_counter = 0;
 
+int harp_option_create_collocation_datetime = 0;
 int harp_option_enable_aux_afgl86 = 0;
 int harp_option_enable_aux_usstd76 = 0;
 int harp_option_hdf5_compression = 0;
@@ -284,6 +285,43 @@ LIBHARP_API int harp_set_coda_definition_path_conditional(const char *file, cons
     }
 
     return 0;
+}
+
+/** Enable/Disable the creation of collocation_datetime variables
+ * Enabling this option will create a collocation_datetime variable when a collocate_left or collocation_right operation is performed.
+ * The collocation_datetime variable will contain the datetime of the sample from the other dataset for the collocated pair.
+ * The variable will only be created if the collocation result file contains a datetime_diff column.
+ * By default the creation of the collocation_datetime variable is disabled.
+ * \param enable
+ *   \arg 0: Disable creation of collocation_datetime variables.
+ *   \arg 1: Enable creation of collocation_datetime variables.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_set_option_create_collocation_datetime(int enable)
+{
+    if (enable != 0 && enable != 1)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "enable argument (%d) is not valid (%s:%u)", enable, __FILE__,
+                       __LINE__);
+        return -1;
+    }
+
+    harp_option_create_collocation_datetime = enable;
+
+    return 0;
+}
+
+/** Retrieve the current setting for the creation of collocation_datetime variables option.
+ * \see harp_set_option_create_collocation_datetime()
+ * \return
+ *   \arg \c 0, Creation of collocation_datetime variables is disabled.
+ *   \arg \c 1, Ceation of collocation_datetime variables is enabled.
+ */
+LIBHARP_API int harp_get_option_create_collocation_datetime(void)
+{
+    return harp_option_create_collocation_datetime;
 }
 
 /** Enable/Disable the use of AFGL86 climatology in variable conversions

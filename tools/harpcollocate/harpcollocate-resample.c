@@ -37,6 +37,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 typedef struct resample_info_struct
 {
@@ -112,7 +113,8 @@ static int get_criterium_index_for_variable_name(harp_collocation_result *colloc
         else if (variable_name_length < difference_name_length)
         {
             if (strncmp(variable_name, collocation_result->difference_variable_name[i], variable_name_length) == 0 &&
-                strcmp(&collocation_result->difference_variable_name[i][variable_name_length], "_absdiff") == 0)
+                (strcmp(&collocation_result->difference_variable_name[i][variable_name_length], "_diff") == 0 ||
+                 strcmp(&collocation_result->difference_variable_name[i][variable_name_length], "_absdiff") == 0))
             {
                 *index = i;
                 return 0;
@@ -159,8 +161,8 @@ int resample_nearest_a(harp_collocation_result *collocation_result, int differen
         if (collocation_result->pair[i]->product_index_a == collocation_result->pair[i - 1]->product_index_a &&
             collocation_result->pair[i]->sample_index_a == collocation_result->pair[i - 1]->sample_index_a)
         {
-            if (collocation_result->pair[i]->difference[difference_index] >=
-                collocation_result->pair[i - 1]->difference[difference_index])
+            if (fabs(collocation_result->pair[i]->difference[difference_index]) >=
+                fabs(collocation_result->pair[i - 1]->difference[difference_index]))
             {
                 if (harp_collocation_result_remove_pair_at_index(collocation_result, i) != 0)
                 {
@@ -193,8 +195,8 @@ int resample_nearest_b(harp_collocation_result *collocation_result, int differen
         if (collocation_result->pair[i]->product_index_b == collocation_result->pair[i - 1]->product_index_b &&
             collocation_result->pair[i]->sample_index_b == collocation_result->pair[i - 1]->sample_index_b)
         {
-            if (collocation_result->pair[i]->difference[difference_index] >=
-                collocation_result->pair[i - 1]->difference[difference_index])
+            if (fabs(collocation_result->pair[i]->difference[difference_index]) >=
+                fabs(collocation_result->pair[i - 1]->difference[difference_index]))
             {
                 if (harp_collocation_result_remove_pair_at_index(collocation_result, i) != 0)
                 {
