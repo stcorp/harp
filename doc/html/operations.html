@@ -437,11 +437,15 @@ axis-variable (see also <code class="docutils literal notranslate"><span class="
 <div><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(O3_column_number_density</span> <span class="pre">{time}</span> <span class="pre">[molec/cm2],</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;./collocated_file.nc&quot;)</span></code></div></blockquote>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">exclude(variable,</span> <span class="pre">...)</span></code></dt>
-<dd>Mark the specified variable(s) for exclusion from the
-ingested product. All variables marked for exclusion
-will be excluded from the ingested product, all other
-variables will be kept.
-Variables that do not exist will be ignored.</dd>
+<dd><p class="first">Mark the specified variable(s) for exclusion from the ingested product.
+All variables marked for exclusion will be excluded from the ingested
+product, all other variables will be kept.
+Variables that do not exist will be ignored.
+Instead of a variable name, a pattern using ‘*’ and ‘?’ can be provided.</p>
+<p>Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal notranslate"><span class="pre">exclude(datetime,</span> <span class="pre">*uncertainty*)</span></code></div></blockquote>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">flatten(dimension)</span></code></dt>
 <dd><p class="first">Flatten a product for a certain dimension by collapsing the
 given dimension into the time dimension. The time dimension
@@ -464,12 +468,16 @@ Example:</p>
 </div></blockquote>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt>
-<dd>Mark the specified variable(s) for inclusion in the
-ingested product. All variables marked for inclusion
-will be kept in the ingested product, all other
-variables will be excluded.
-Trying to keep a variable that does not exist will
-result in an error.</dd>
+<dd><p class="first">Mark the specified variable(s) for inclusion in the ingested product.
+All variables marked for inclusion will be kept in the ingested
+product, all other variables will be excluded.
+Trying to keep a variable that does not exist will result in an error.
+Instead of a variable name, a pattern using ‘*’ and ‘?’ can be
+provided (unmatched patterns will not result in an error).</p>
+<p>Example:</p>
+<blockquote class="last">
+<div><code class="docutils literal notranslate"><span class="pre">keep(datetime*,</span> <span class="pre">latitude,</span> <span class="pre">longitude)</span></code></div></blockquote>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">longitude_range(minimum</span> <span class="pre">[unit],</span> <span class="pre">maximum</span> <span class="pre">[unit])</span></code></dt>
 <dd><p class="first">Exclude measurements of which the longitude of the
 measurement location falls outside the specified range.

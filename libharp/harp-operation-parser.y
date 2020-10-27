@@ -231,6 +231,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 }
 
 %token  <string_val>    NAME
+%token  <string_val>    NAME_PATTERN
 %token  <string_val>    STRING_VALUE
 %token  <string_val>    INTEGER_VALUE
 %token  <string_val>    DOUBLE_VALUE
@@ -276,17 +277,17 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %type   <operation>             operation
 %type   <int32_val>             int32_value
 %type   <double_val>            double_value
-%type   <string_val>            identifier
+%type   <string_val>            identifier identifier_pattern
 %type   <const_string_val>      reserved_identifier
-%type   <array>                 double_array int32_array string_array identifier_array dimension_array dimensionspec
+%type   <array>                 double_array int32_array string_array identifier_array identifier_pattern_array dimension_array dimensionspec
 %type   <membership_operator>   membership_operator;
 %type   <comparison_operator>   comparison_operator;
 %type   <bit_mask_operator>     bit_mask_operator;
 
-%destructor { harp_sized_array_delete($$); } double_array int32_array string_array identifier_array dimension_array dimensionspec
+%destructor { harp_sized_array_delete($$); } double_array int32_array string_array identifier_array identifier_pattern_array dimension_array dimensionspec
 %destructor { harp_operation_delete($$); } operation
 %destructor { harp_program_delete($$); } program
-%destructor { free($$); } STRING_VALUE INTEGER_VALUE DOUBLE_VALUE NAME UNIT identifier
+%destructor { free($$); } STRING_VALUE INTEGER_VALUE DOUBLE_VALUE NAME NAME_PATTERN UNIT identifier
 
 %error-verbose
 
@@ -337,6 +338,11 @@ reserved_identifier:
 identifier:
       NAME
     | reserved_identifier { $$ = strdup($1); }
+    ;
+
+identifier_pattern:
+      NAME_PATTERN
+    | identifier
     ;
 
 double_value:
@@ -465,6 +471,33 @@ identifier_array:
             free($3);
         }
     | identifier {
+            if (harp_sized_array_new(harp_type_string, &$$) != 0)
+            {
+                free($1);
+                YYERROR;
+            }
+            if (harp_sized_array_add_string($$, $1) != 0)
+            {
+                harp_sized_array_delete($$);
+                free($1);
+                YYERROR;
+            }
+            free($1);
+        }
+    ;
+
+identifier_pattern_array:
+      identifier_pattern_array ',' identifier_pattern {
+            if (harp_sized_array_add_string($1, $3) != 0)
+            {
+                harp_sized_array_delete($1);
+                free($3);
+                YYERROR;
+            }
+            $$ = $1;
+            free($3);
+        }
+    | identifier_pattern {
             if (harp_sized_array_new(harp_type_string, &$$) != 0)
             {
                 free($1);
@@ -1203,7 +1236,7 @@ operation:
             free($8);
             free($10);
         }
-    | FUNC_EXCLUDE '(' identifier_array ')' {
+    | FUNC_EXCLUDE '(' identifier_pattern_array ')' {
             if (harp_operation_exclude_variable_new($3->num_elements, (const char **)$3->array.string_data, &$$) != 0)
             {
                 harp_sized_array_delete($3);
@@ -1214,7 +1247,7 @@ operation:
     | FUNC_FLATTEN '(' DIMENSION ')' {
             if (harp_operation_flatten_new($3, &$$) != 0) YYERROR;
         }
-    | FUNC_KEEP '(' identifier_array ')' {
+    | FUNC_KEEP '(' identifier_pattern_array ')' {
             if (harp_operation_keep_variable_new($3->num_elements, (const char **)$3->array.string_data, &$$) != 0)
             {
                 harp_sized_array_delete($3);

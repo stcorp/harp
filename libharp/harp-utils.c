@@ -68,6 +68,47 @@ int harp_is_identifier(const char *name)
     return 1;
 }
 
+int harp_match_wildcard(const char *pattern, const char *name)
+{
+    for (;;)
+    {
+        char p = *pattern;
+        char c = *name;
+
+        if (p == 0)
+        {
+            return (c == 0);
+        }
+        if (p == '*')
+        {
+            if (harp_match_wildcard(pattern + 1, name))
+            {
+                return 1;
+            }
+            if (c == 0)
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            if (p == '?')
+            {
+                if (c == 0)
+                {
+                    return 0;
+                }
+            }
+            else if (p != c)
+            {
+                return 0;
+            }
+            pattern++;
+        }
+        name++;
+    }
+}
+
 static void clean_path(char *path)
 {
     int from;

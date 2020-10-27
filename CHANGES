@@ -26,6 +26,8 @@
 * Added global option to create a collocation_datetime variable when performing
   a collocate_left() or collocate_right() operation.
 
+* Added wildcard pattern matching ('*'/'?') to keep() and exclude() operations.
+
 * Added derivation to retrieve angstrom exponent from aerosol optical depth.
 
 * Added derivation to retrieve tropospheric/stratospheric column avk from

@@ -56,6 +56,7 @@ FL_MANTISSA  ({INTEGER}".")|("."{INTEGER})|({INTEGER}"."{INTEGER})
 FL_EXPONENT  [Ee]{SIGN}?{INTEGER}
 FLOAT        ({FL_MANTISSA}{FL_EXPONENT}?)|({INTEGER}{FL_EXPONENT})
 IDENTIFIER   [[:alpha:]][[:alnum:]_]*
+ID_PATTERN   [[:alpha:]\*\?][[:alnum:]_\*\?]*
 WHITESPACE   [[:space:]]+
 
 %%
@@ -168,6 +169,10 @@ WHITESPACE   [[:space:]]+
 {IDENTIFIER}            {
                             yylval.string_val = strdup(yytext);
                             return NAME;
+                        }
+{ID_PATTERN}            {
+                            yylval.string_val = strdup(yytext);
+                            return NAME_PATTERN;
                         }
 {INTEGER}               {
                             yylval.string_val = strdup(yytext);

@@ -867,15 +867,18 @@ static int execute_derive_smoothed_column_collocated_product
 
 static int execute_exclude_variable(harp_product *product, harp_operation_exclude_variable *operation)
 {
-    int j;
+    int i, j;
 
-    for (j = 0; j < operation->num_variables; j++)
+    for (i = product->num_variables - 1; i >= 0; i--)
     {
-        if (harp_product_has_variable(product, operation->variable_name[j]))
+        for (j = 0; j < operation->num_variables; j++)
         {
-            if (harp_product_remove_variable_by_name(product, operation->variable_name[j]) != 0)
+            if (harp_match_wildcard(operation->variable_name[j], product->variable[i]->name))
             {
-                return -1;
+                if (harp_product_remove_variable(product, product->variable[i]) != 0)
+                {
+                    return -1;
+                }
             }
         }
     }
@@ -890,51 +893,42 @@ static int execute_flatten(harp_product *product, harp_operation_flatten *operat
 
 static int execute_keep_variable(harp_product *product, harp_operation_keep_variable *operation)
 {
-    uint8_t *included;
-    int index;
-    int j;
+    int i, j;
 
-    included = (uint8_t *)calloc(product->num_variables, sizeof(uint8_t));
-    if (included == NULL)
+    for (i = product->num_variables - 1; i >= 0; i--)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       product->num_variables * sizeof(uint8_t), __FILE__, __LINE__);
-        return -1;
-    }
+        int included = 0;
 
-    /* assume all variables are excluded */
-    for (j = 0; j < product->num_variables; j++)
-    {
-        included[j] = 0;
-    }
-
-    /* set the 'keep' flags in the mask */
-    for (j = 0; j < operation->num_variables; j++)
-    {
-        if (harp_product_get_variable_index_by_name(product, operation->variable_name[j], &index) != 0)
+        for (j = 0; j < operation->num_variables; j++)
         {
-            harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existent variable %s", operation->variable_name[j]);
-            free(included);
-            return -1;
+            if (harp_match_wildcard(operation->variable_name[j], product->variable[i]->name))
+            {
+                included = 1;
+                break;
+            }
         }
 
-        included[index] = 1;
-    }
-
-    /* filter the variables using the mask */
-    for (j = product->num_variables - 1; j >= 0; j--)
-    {
-        if (!included[j])
+        if (!included)
         {
-            if (harp_product_remove_variable(product, product->variable[j]) != 0)
+            if (harp_product_remove_variable(product, product->variable[i]) != 0)
             {
-                free(included);
                 return -1;
             }
         }
     }
 
-    free(included);
+    for (j = 0; j < operation->num_variables; j++)
+    {
+        if (strchr(operation->variable_name[j], '*') == NULL && strchr(operation->variable_name[j], '?') == NULL)
+        {
+            if (harp_product_get_variable_index_by_name(product, operation->variable_name[j], &i) != 0)
+            {
+                harp_set_error(HARP_ERROR_OPERATION, "cannot keep non-existent variable %s",
+                               operation->variable_name[j]);
+                return -1;
+            }
+        }
+    }
 
     return 0;
 }

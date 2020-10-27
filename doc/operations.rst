@@ -262,11 +262,15 @@ Supported functions:
             ``derive_smoothed_column(O3_column_number_density {time} [molec/cm2], altitude [km], "./collocated_file.nc")``
 
     ``exclude(variable, ...)``
-        Mark the specified variable(s) for exclusion from the
-        ingested product. All variables marked for exclusion
-        will be excluded from the ingested product, all other
-        variables will be kept.
+        Mark the specified variable(s) for exclusion from the ingested product.
+        All variables marked for exclusion will be excluded from the ingested
+        product, all other variables will be kept.
         Variables that do not exist will be ignored.
+        Instead of a variable name, a pattern using '*' and '?' can be provided.
+
+        Example:
+
+            ``exclude(datetime, *uncertainty*)``
 
     ``flatten(dimension)``
         Flatten a product for a certain dimension by collapsing the
@@ -287,12 +291,16 @@ Supported functions:
             | (vertically slice the product at 20 km altitude)
 
     ``keep(variable, ...)``
-        Mark the specified variable(s) for inclusion in the
-        ingested product. All variables marked for inclusion
-        will be kept in the ingested product, all other
-        variables will be excluded.
-        Trying to keep a variable that does not exist will
-        result in an error.
+        Mark the specified variable(s) for inclusion in the ingested product.
+        All variables marked for inclusion will be kept in the ingested
+        product, all other variables will be excluded.
+        Trying to keep a variable that does not exist will result in an error.
+        Instead of a variable name, a pattern using '*' and '?' can be
+        provided (unmatched patterns will not result in an error).
+
+        Example:
+
+            ``keep(datetime*, latitude, longitude)``
 
     ``longitude_range(minimum [unit], maximum [unit])``
         Exclude measurements of which the longitude of the
