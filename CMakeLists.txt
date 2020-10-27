@@ -5,12 +5,12 @@ endif()
 
 project(HARP)
 
-set(VERSION 1.11)
+set(VERSION 1.12)
 set(HARP_VERSION \"${VERSION}\")
 set(CPACK_PACKAGE_VERSION ${VERSION})
 
 # Set dynamic library version
-set(LIBHARP_CURRENT 11)
+set(LIBHARP_CURRENT 12)
 set(LIBHARP_REVISION 0)
 set(LIBHARP_AGE 0)
 math(EXPR LIBHARP_MAJOR "${LIBHARP_CURRENT} - ${LIBHARP_AGE}")
