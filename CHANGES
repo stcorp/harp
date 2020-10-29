@@ -1,4 +1,4 @@
-1.12 2020-10-27
+1.12 2020-10-29
 ~~~~~~~~~~~~~~~
 
 * The csv output of 'harpdump --dataset' can now be used as content of a .pth
