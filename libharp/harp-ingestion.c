@@ -1651,7 +1651,7 @@ static int execute_exclude_variable(ingest_info *info, harp_operation_exclude_va
         {
             for (j = 0; j < operation->num_variables; j++)
             {
-                if (!harp_match_wildcard(operation->variable_name[j], variable_name))
+                if (harp_match_wildcard(operation->variable_name[j], variable_name))
                 {
                     info->variable_mask[i] = 0;
                     break;

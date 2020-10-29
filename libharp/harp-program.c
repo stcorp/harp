@@ -879,6 +879,7 @@ static int execute_exclude_variable(harp_product *product, harp_operation_exclud
                 {
                     return -1;
                 }
+                break;
             }
         }
     }
