@@ -963,8 +963,12 @@ static int add_missing_count_and_weight_variables(harp_product *product, harp_pr
                         }
                         for (j = 1; j < variable->num_dimensions; j++)
                         {
-                            if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j],
-                                                            variable->dimension[j]) != 0)
+                            long dim_length;
+
+                            dim_length = variable->dimension_type[j] < 0 ? variable->dimension[j] :
+                                product->dimension[variable->dimension_type[j]];
+                            if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j], dim_length) !=
+                                0)
                             {
                                 harp_variable_delete(new_variable);
                                 return -1;
@@ -1034,8 +1038,12 @@ static int add_missing_count_and_weight_variables(harp_product *product, harp_pr
                         }
                         for (j = weight_variable->num_dimensions; j < variable->num_dimensions; j++)
                         {
-                            if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j],
-                                                            variable->dimension[j]) != 0)
+                            long dim_length;
+
+                            dim_length = variable->dimension_type[j] < 0 ? variable->dimension[j] :
+                                product->dimension[variable->dimension_type[j]];
+                            if (harp_variable_add_dimension(new_variable, j, variable->dimension_type[j], dim_length) !=
+                                0)
                             {
                                 harp_variable_delete(new_variable);
                                 return -1;
