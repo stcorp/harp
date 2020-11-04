@@ -1,18 +1,24 @@
 [submodule "definitions/ERS_GOME"]
 	path = definitions/ERS_GOME
 	url = https://github.com/stcorp/codadef-ers-gome
+	update = rebase
 [submodule "definitions/ENVISAT_GOMOS"]
 	path = definitions/ENVISAT_GOMOS
 	url = https://github.com/stcorp/codadef-envisat-gomos
+	update = rebase
 [submodule "definitions/ENVISAT_MIPAS"]
 	path = definitions/ENVISAT_MIPAS
 	url = https://github.com/stcorp/codadef-envisat-mipas
+	update = rebase
 [submodule "definitions/ENVISAT_SCIAMACHY"]
 	path = definitions/ENVISAT_SCIAMACHY
 	url = https://github.com/stcorp/codadef-envisat-sciamachy
+	update = rebase
 [submodule "definitions/EPS"]
 	path = definitions/EPS
 	url = https://github.com/stcorp/codadef-eps
+	update = rebase
 [submodule "definitions/AEOLUS"]
 	path = definitions/AEOLUS
 	url = https://github.com/stcorp/codadef-aeolus
+	update = rebase
