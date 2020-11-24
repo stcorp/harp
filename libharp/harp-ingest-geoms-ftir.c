@@ -1109,7 +1109,7 @@ static int get_dynamic_units(ingest_info *info)
     {
         return -1;
     }
-    if (info->gas != ftir_H2CO)
+    if (info->gas != ftir_H2O)
     {
         snprintf(path, MAX_PATH_LENGTH, "/H2O_MIXING_RATIO%s_ABSORPTION_%s",
                  info->product_version == 1 ? "" : "_VOLUME", info->lunar ? "LUNAR" : "SOLAR");
