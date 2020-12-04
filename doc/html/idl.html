@@ -237,30 +237,30 @@ to instances of type <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
-<div class="highlight-IDL notranslate"><div class="highlight"><pre><span></span><span class="c c-Singleline">; Import a file as a HARP product.</span>
+<div class="highlight-IDL notranslate"><div class="highlight"><pre><span></span><span class="c1">; Import a file as a HARP product.</span>
 prod <span class="o">=</span> harp_import(<span class="s2">&quot;filename.ext&quot;</span>)
 
-<span class="c c-Singleline">; Print information about the product.</span>
+<span class="c1">; Print information about the product.</span>
 <span class="nb">help</span>, prod, <span class="o">/</span>struct
 
-<span class="c c-Singleline">; Print information about the variable &#39;temperature&#39;.</span>
+<span class="c1">; Print information about the variable &#39;temperature&#39;.</span>
 <span class="nb">help</span>, prod.temperature, <span class="o">/</span>struct
 
-<span class="c c-Singleline">; Print the contents of the variable &#39;temperature&#39;.</span>
+<span class="c1">; Print the contents of the variable &#39;temperature&#39;.</span>
 <span class="nb">print</span>, prod.temperature.data
 
-<span class="c c-Singleline">; Export the updated product as an HDF4 file (the format must be</span>
-<span class="c c-Singleline">; HDF4, HDF5 or netCDF, if no format is specified netCDF is used).</span>
+<span class="c1">; Export the updated product as an HDF4 file (the format must be</span>
+<span class="c1">; HDF4, HDF5 or netCDF, if no format is specified netCDF is used).</span>
 result <span class="o">=</span> harp_export(prod, <span class="s2">&quot;filename.hdf&quot;</span>, <span class="s2">&quot;hdf4&quot;</span>)
 
-<span class="c c-Singleline">; Print the result of the export.</span>
+<span class="c1">; Print the result of the export.</span>
 <span class="nb">print</span>, result
 
-<span class="c c-Singleline">; Import the HDF4 file and perform an operation to exclude the variable</span>
-<span class="c c-Singleline">; temperature (variable name must be in uppercase).</span>
+<span class="c1">; Import the HDF4 file and perform an operation to exclude the variable</span>
+<span class="c1">; temperature (variable name must be in uppercase).</span>
 prod2 <span class="o">=</span> harp_import(<span class="s2">&quot;filename.hdf&quot;</span>, <span class="s2">&quot;exclude(temperature)&quot;</span>);
 
-<span class="c c-Singleline">; Print information about the product.</span>
+<span class="c1">; Print information about the product.</span>
 <span class="nb">help</span>, prod2, <span class="o">/</span>struct
 </pre></div>
 </div>

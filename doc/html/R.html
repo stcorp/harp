@@ -228,22 +228,22 @@ to arrays of mxCHAR in R which is a unicode string.</p>
 <h2>Examples</h2>
 <div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ingest a file and convert it to a HARP product (the</span>
 <span class="c1"># file that is used in this example is an S5P L2 HCHO product).</span>
-hcho_product <span class="o">=</span> harp<span class="o">::</span>import<span class="p">(</span><span class="s">&quot;S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc&quot;</span><span class="p">,</span>
+<span class="n">hcho_product</span> <span class="o">=</span> <span class="n">harp</span><span class="o">::</span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;S5P_NRTI_L2__HCHO___20080808T224727_20080808T234211_21635_01_021797_00000000T000000.nc&quot;</span><span class="p">,</span>
                             <span class="s">&quot;solar_zenith_angle &lt; 60 [degree]; latitude &gt; 30 [degree_north]; latitude &lt; 60 [degree_north]&quot;</span><span class="p">)</span>
 
 <span class="c1"># Print product</span>
-<span class="kp">print</span><span class="p">(</span>hcho_product<span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">)</span>
 
 <span class="c1"># Print variable &#39;tropospheric_HCHO_column_number_density&#39;.</span>
-<span class="kp">print</span><span class="p">(</span>hcho_product<span class="o">$</span>tropospheric_HCHO_column_number_density<span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hcho_product</span><span class="o">$</span><span class="n">tropospheric_HCHO_column_number_density</span><span class="p">)</span>
 
 <span class="c1"># Export the updated product as an HDF5 file (the format must be</span>
 <span class="c1"># HDF4, HDF5 or netCDF, if no format is specified netCDF is used).</span>
-harp<span class="o">::</span>export<span class="p">(</span>hcho_product<span class="p">,</span> <span class="s">&quot;product.h5&quot;</span><span class="p">,</span> <span class="s">&quot;hdf5&quot;</span><span class="p">)</span>
+<span class="n">harp</span><span class="o">::</span><span class="nf">export</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s">&quot;product.h5&quot;</span><span class="p">,</span> <span class="s">&quot;hdf5&quot;</span><span class="p">)</span>
 
 <span class="c1"># Import the HDF5 file and perform an operation to exclude the variable</span>
 <span class="c1"># solar_azimuth_angle.</span>
-hcho_product2 <span class="o">=</span> harp<span class="o">::</span>import<span class="p">(</span><span class="s">&quot;product.h5&quot;</span><span class="p">,</span> <span class="s">&quot;exclude(solar_azimuth_angle)&quot;</span><span class="p">);</span>
+<span class="n">hcho_product2</span> <span class="o">=</span> <span class="n">harp</span><span class="o">::</span><span class="nf">import</span><span class="p">(</span><span class="s">&quot;product.h5&quot;</span><span class="p">,</span> <span class="s">&quot;exclude(solar_azimuth_angle)&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>

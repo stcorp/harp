@@ -493,20 +493,20 @@ default encoding is <code class="docutils literal notranslate"><span class="pre"
 <span class="n">product</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
 <span class="n">product</span><span class="o">.</span><span class="n">strings</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">)),</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
 <span class="n">product</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">harp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                                    <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span>
+                                    <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
 <span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
 <span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;temperature&quot;</span>
 
 <span class="c1"># Pretty print information about the product.</span>
-<span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
 
 <span class="c1"># Pretty print information about the variable &#39;temperature&#39;.</span>
-<span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
 
 <span class="c1"># Set valid minimum value of the variable &#39;temperature&#39;. Note the use of item</span>
 <span class="c1"># access syntax instead of attribute access syntax.</span>
 <span class="n">product</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">valid_min</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">temperature</span><span class="p">)</span>
 
 <span class="c1"># Export the updated product as an HDF4 file.</span>
 <span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;non-empty.hdf&quot;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;hdf4&quot;</span><span class="p">)</span>
@@ -519,7 +519,7 @@ default encoding is <code class="docutils literal notranslate"><span class="pre"
                                    <span class="s2">&quot;solar_zenith_angle &lt; 60 [degree]; latitude &gt; 30 [degree_north]; latitude &lt; 60 [degree_north]&quot;</span><span class="p">)</span>
 
 <span class="c1"># Pretty print information about the product.</span>
-<span class="k">print</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">)</span>
 
 <span class="c1"># Export the product as a HARP compliant data product.</span>
 <span class="n">harp</span><span class="o">.</span><span class="n">export_product</span><span class="p">(</span><span class="n">hcho_product</span><span class="p">,</span> <span class="s2">&quot;hcho.h5&quot;</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">,</span> <span class="n">hdf5_compression</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
@@ -560,7 +560,7 @@ syntax, or the item access <code class="docutils literal notranslate"><span clas
 <span class="c1"># Iterate over all variables in the product. For imported  products, the</span>
 <span class="c1"># order of the variables is the same as the order in the source product.</span>
 <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">product</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Product attributes can be accessed in the same way as variables, but are
@@ -568,8 +568,8 @@ syntax, or the item access <code class="docutils literal notranslate"><span clas
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="c1"># Print product attributes.</span>
-<span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">source_product</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">source_product</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -866,7 +866,7 @@ information.</p>
 <span class="c1"># Iterate over all variables in the product. For imported products, the</span>
 <span class="c1"># order of the variables is the same as the order in the source product.</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">product</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="k">print</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span>
+    <span class="nb">print</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">

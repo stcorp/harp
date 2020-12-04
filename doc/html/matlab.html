@@ -224,31 +224,31 @@ to arrays of mxCHAR in MATLAB which is an unicode string.</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples</h2>
-<div class="highlight-MATLAB notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">Ingest</span> <span class="n">a</span> <span class="n">file</span> <span class="n">and</span> <span class="n">convert</span> <span class="n">it</span> <span class="n">to</span> <span class="n">a</span> <span class="n">HARP</span> <span class="n">product</span> <span class="p">(</span><span class="n">the</span>
-<span class="p">;</span> <span class="n">file</span> <span class="n">that</span> <span class="n">is</span> <span class="n">used</span> <span class="n">in</span> <span class="n">this</span> <span class="n">example</span> <span class="n">is</span> <span class="n">an</span> <span class="n">ACE</span><span class="o">-</span><span class="n">FTS</span> <span class="n">file</span><span class="p">).</span>
-<span class="n">product1</span> <span class="p">=</span> <span class="n">harp_import</span><span class="p">(</span>&quot;<span class="n">ss13799</span><span class="p">.</span><span class="n">asc</span>&quot;<span class="p">)</span>
+<div class="highlight-MATLAB notranslate"><div class="highlight"><pre><span></span><span class="p">;</span><span class="n"> Ingest </span><span class="s">a file and convert it to a HARP product (the</span><span class="p"></span>
+<span class="p">;</span><span class="n"> file </span><span class="s">that is used in this example is an ACE-FTS file).</span><span class="p"></span>
+<span class="n">product1</span> <span class="p">=</span> <span class="n">harp_import</span><span class="p">(</span><span class="s">&quot;ss13799.asc&quot;</span><span class="p">)</span>
 
-<span class="p">;</span> <span class="n">Print</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">product</span><span class="p">.</span>
+<span class="p">;</span><span class="n"> Print </span><span class="s">information about the product.</span><span class="p"></span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">product1</span><span class="p">)</span>
 
-<span class="p">;</span> <span class="n">Print</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">variable</span> <span class="s">&#39;temperature&#39;</span><span class="p">.</span>
+<span class="p">;</span><span class="n"> Print </span><span class="s">information about the variable &#39;temperature&#39;.</span><span class="p"></span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">product1</span><span class="p">.</span><span class="n">temperature</span><span class="p">)</span>
 
-<span class="p">;</span> <span class="n">Print</span> <span class="n">the</span> <span class="n">contents</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span> <span class="s">&#39;temperature&#39;</span><span class="p">.</span>
+<span class="p">;</span><span class="n"> Print </span><span class="s">the contents of the variable &#39;temperature&#39;.</span><span class="p"></span>
 <span class="n">product1</span><span class="p">.</span><span class="n">temperature</span><span class="p">.</span><span class="n">value</span>
 
-<span class="p">;</span> <span class="n">Export</span> <span class="n">the</span> <span class="n">updated</span> <span class="n">product</span> <span class="n">as</span> <span class="n">an</span> <span class="n">HDF4</span> <span class="n">file</span> <span class="p">(</span><span class="n">the</span> <span class="n">format</span> <span class="n">must</span> <span class="n">be</span>
+<span class="p">;</span><span class="n"> Export </span><span class="s">the updated product as an HDF4 file (the format must be</span><span class="p"></span>
 <span class="p">;</span> <span class="n">HDF4</span><span class="p">,</span> <span class="n">HDF5</span> <span class="n">or</span> <span class="n">netCDF</span><span class="p">,</span> <span class="k">if</span> <span class="n">no</span> <span class="n">format</span> <span class="n">is</span> <span class="n">specified</span> <span class="n">netCDF</span> <span class="n">is</span> <span class="n">used</span><span class="p">).</span>
-<span class="n">result</span> <span class="p">=</span> <span class="n">harp_export</span><span class="p">(</span><span class="n">product1</span><span class="p">,</span> &quot;<span class="n">ace_fts_ss13799</span><span class="p">.</span><span class="n">hdf</span>&quot;<span class="p">,</span> &quot;<span class="n">hdf4</span>&quot;<span class="p">)</span>
+<span class="n">result</span> <span class="p">=</span> <span class="n">harp_export</span><span class="p">(</span><span class="n">product1</span><span class="p">,</span> <span class="s">&quot;ace_fts_ss13799.hdf&quot;</span><span class="p">,</span> <span class="s">&quot;hdf4&quot;</span><span class="p">)</span>
 
-<span class="p">;</span> <span class="n">Print</span> <span class="n">the</span> <span class="n">result</span> <span class="n">of</span> <span class="n">the</span> <span class="n">export</span><span class="p">.</span>
+<span class="p">;</span><span class="n"> Print </span><span class="s">the result of the export.</span><span class="p"></span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-<span class="p">;</span> <span class="n">Import</span> <span class="n">the</span> <span class="n">HDF4</span> <span class="n">file</span> <span class="n">and</span> <span class="n">perform</span> <span class="n">an</span> <span class="n">operation</span> <span class="n">to</span> <span class="n">exclude</span> <span class="n">the</span> <span class="n">variable</span>
+<span class="p">;</span><span class="n"> Import </span><span class="s">the HDF4 file and perform an operation to exclude the variable</span><span class="p"></span>
 <span class="p">;</span> <span class="n">temperature</span> <span class="p">(</span><span class="n">variable</span> <span class="n">name</span> <span class="n">must</span> <span class="n">be</span> <span class="n">in</span> <span class="n">uppercase</span><span class="p">).</span>
-<span class="n">product2</span> <span class="p">=</span> <span class="n">harp_import</span><span class="p">(</span>&quot;<span class="n">ace_fts_ss13799</span><span class="p">.</span><span class="n">hdf</span>&quot;<span class="p">,</span> &quot;<span class="n">exclude</span><span class="p">(</span><span class="n">TEMPERATURE</span><span class="p">)</span>&quot;<span class="p">);</span>
+<span class="n">product2</span> <span class="p">=</span> <span class="n">harp_import</span><span class="p">(</span><span class="s">&quot;ace_fts_ss13799.hdf&quot;</span><span class="p">,</span> <span class="s">&quot;exclude(TEMPERATURE)&quot;</span><span class="p">);</span>
 
-<span class="p">;</span> <span class="n">Print</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">product</span><span class="p">.</span>
+<span class="p">;</span><span class="n"> Print </span><span class="s">information about the product.</span><span class="p"></span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">product2</span><span class="p">)</span>
 </pre></div>
 </div>
