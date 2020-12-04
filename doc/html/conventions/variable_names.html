@@ -2196,11 +2196,11 @@ If the ‘difference postfix’ comes after a ‘quality postfix’ then we are 
 The supported differences are:</p>
 <ul class="simple">
 <li>&lt;variable&gt;_diff (<span class="math notranslate nohighlight">\(x-y\)</span>)</li>
-<li>&lt;variable&gt;_diffrelx (<span class="math notranslate nohighlight">\(\frac{x-y}{x}\)</span>)</li>
-<li>&lt;variable&gt;_diffrely (<span class="math notranslate nohighlight">\(\frac{x-y}{y}\)</span>)</li>
-<li>&lt;variable&gt;_diffrelmin (<span class="math notranslate nohighlight">\(\frac{x-y}{\min(x,y)}\)</span>)</li>
-<li>&lt;variable&gt;_diffrelmax (<span class="math notranslate nohighlight">\(\frac{x-y}{\max(x,y)}\)</span>)</li>
-<li>&lt;variable&gt;_diffrelavg (<span class="math notranslate nohighlight">\(\frac{2(x-y)}{x+y}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelx (<span class="math notranslate nohighlight">\(\frac{x-y}{|x|}\)</span>)</li>
+<li>&lt;variable&gt;_diffrely (<span class="math notranslate nohighlight">\(\frac{x-y}{|y|}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmin (<span class="math notranslate nohighlight">\(\frac{x-y}{\min(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelmax (<span class="math notranslate nohighlight">\(\frac{x-y}{\max(|x|,|y|)}\)</span>)</li>
+<li>&lt;variable&gt;_diffrelavg (<span class="math notranslate nohighlight">\(\frac{2(x-y)}{|x+y|}\)</span>)</li>
 <li>&lt;variable&gt;_diffabs (<span class="math notranslate nohighlight">\(|x-y|\)</span>)</li>
 <li>&lt;variable&gt;_diffabsrelx (<span class="math notranslate nohighlight">\(\frac{|x-y|}{|x|}\)</span>)</li>
 <li>&lt;variable&gt;_diffabsrely (<span class="math notranslate nohighlight">\(\frac{|x-y|}{|y|}\)</span>)</li>

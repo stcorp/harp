@@ -353,11 +353,11 @@ If the 'difference postfix' comes after a 'quality postfix' then we are talking 
 The supported differences are:
 
 - <variable>_diff (:math:`x-y`)
-- <variable>_diffrelx (:math:`\frac{x-y}{x}`)
-- <variable>_diffrely (:math:`\frac{x-y}{y}`)
-- <variable>_diffrelmin (:math:`\frac{x-y}{\min(x,y)}`)
-- <variable>_diffrelmax (:math:`\frac{x-y}{\max(x,y)}`)
-- <variable>_diffrelavg (:math:`\frac{2(x-y)}{x+y}`)
+- <variable>_diffrelx (:math:`\frac{x-y}{|x|}`)
+- <variable>_diffrely (:math:`\frac{x-y}{|y|}`)
+- <variable>_diffrelmin (:math:`\frac{x-y}{\min(|x|,|y|)}`)
+- <variable>_diffrelmax (:math:`\frac{x-y}{\max(|x|,|y|)}`)
+- <variable>_diffrelavg (:math:`\frac{2(x-y)}{|x+y|}`)
 - <variable>_diffabs (:math:`|x-y|`)
 - <variable>_diffabsrelx (:math:`\frac{|x-y|}{|x|}`)
 - <variable>_diffabsrely (:math:`\frac{|x-y|}{|y|}`)
