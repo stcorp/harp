@@ -386,7 +386,7 @@ For the mean of a value, the original variable name itself is used. Other quanti
 
 - <variable>_count
 - <variable>_weight
-- <variable>_stddev
+- <variable>_stddev (sample standard deviation)
 - <variable>_skewness
 - <variable>_kurtosis
 - <variable>_min
