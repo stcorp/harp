@@ -357,13 +357,13 @@ The supported differences are:
 - <variable>_diffrely (:math:`\frac{x-y}{|y|}`)
 - <variable>_diffrelmin (:math:`\frac{x-y}{\min(|x|,|y|)}`)
 - <variable>_diffrelmax (:math:`\frac{x-y}{\max(|x|,|y|)}`)
-- <variable>_diffrelavg (:math:`\frac{2(x-y)}{|x+y|}`)
+- <variable>_diffrelavg (:math:`\frac{2(x-y)}{|x|+|y|}`)
 - <variable>_diffabs (:math:`|x-y|`)
 - <variable>_diffabsrelx (:math:`\frac{|x-y|}{|x|}`)
 - <variable>_diffabsrely (:math:`\frac{|x-y|}{|y|}`)
 - <variable>_diffabsrelmin (:math:`\frac{|x-y|}{\min(|x|,|y|)}`)
 - <variable>_diffabsrelmax (:math:`\frac{|x-y|}{\max(|x|,|y|)}`)
-- <variable>_diffabsrelavg (:math:`\frac{2|x-y|}{|x+y|}`)
+- <variable>_diffabsrelavg (:math:`\frac{2|x-y|}{|x|+|y|}`)
 
 The postfix 'avk' is used for averaging kernels of atmospheric vertical profiles.
 An AVK that only depends once on the vertical dimension is a column averaging kernel,
