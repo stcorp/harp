@@ -689,7 +689,7 @@ avk, dfs, sic</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>&#160;</td>
-<td>number of samples per bin for binning operation</td>
+<td>number of samples per bin for binning/averaging</td>
 </tr>
 <tr class="row-even"><td>datetime</td>
 <td>&#160;</td>
@@ -1558,7 +1558,7 @@ only to be used if validity flag is for multiple variables combined</td>
 <td>X</td>
 <td>&#160;</td>
 <td>&#160;</td>
-<td>weighting factors used for spatial binning</td>
+<td>weighting factors used for binning/averaging</td>
 </tr>
 <tr class="row-even"><td>wind_speed</td>
 <td>surface</td>
@@ -2175,14 +2175,17 @@ Variables having an ‘X’ in the Quality column can have any of the following 
 <code class="docutils literal notranslate"><span class="pre">tropospheric_O3_column_number_density_uncertainty</span></code>, <code class="docutils literal notranslate"><span class="pre">O3_column_number_density_apriori_uncertainty</span></code>.</p>
 <p>The <cite>Vert</cite>, <cite>Lat/Lon</cite>, and <cite>Spec</cite> columns indicate whether a variable can be dependent on the <code class="docutils literal notranslate"><span class="pre">vertical</span></code>,
 <code class="docutils literal notranslate"><span class="pre">latitude</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">spectral</span></code> dimensions (any variable can be dependent on the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension).</p>
+<p><strong>surface quantities</strong></p>
 <p>The ‘surface’ prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
 If a product just contains surface quantities then don’t use a ‘surface’ prefix but just omit the vertical dimension and
 indicate the vertical level (i.e. location of the surface) using a ‘pressure’, ‘altitude’, and/or ‘geopotential_height’ variable.</p>
 <p>Surface wind velocity variables are actually near-surface wind velocities (usually at surface_altitude + 10m).</p>
+<p><strong>azimuth angles</strong></p>
 <p>All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing
 and the angle is increasing when moving Eastwards (i.e. clockwise).
 Wind direction follows the same rules as for azimuth angles (North = 0, East = 90 degrees),
 but the direction indicates where the wind is coming <em>from</em>.</p>
+<p><strong>differences</strong></p>
 <p>In addition to the conventions above there can also be variables that describe a ‘difference’.
 These difference variables can only be used to describe differences of the same quantity between different datasets
 (‘x’ and ‘y’) and only for variables that have a unit.
@@ -2208,6 +2211,27 @@ The supported differences are:</p>
 <li>&lt;variable&gt;_diffabsrelmax (<span class="math notranslate nohighlight">\(\frac{|x-y|}{\max(|x|,|y|)}\)</span>)</li>
 <li>&lt;variable&gt;_diffabsrelavg (<span class="math notranslate nohighlight">\(\frac{2|x-y|}{|x|+|y|}\)</span>)</li>
 </ul>
+<p><strong>statistics</strong></p>
+<p>There are also ‘postfix’ variables available for statistics.
+HARP only provides naming conventions for statistical quantities that can be propagated
+(i.e. deriving statistics of a joined set of values based on statistics of disjoint subsets of those values).
+Quantities like count, standard deviation, skewness, kurtosis, minimum, and maximum, can be propagated, but median and IQR cannot.
+Variances should be stored as standard deviations.
+For the mean of a value, the original variable name itself is used. Other quantities are indicated by a postfix:</p>
+<ul class="simple">
+<li>&lt;variable&gt;_count</li>
+<li>&lt;variable&gt;_weight</li>
+<li>&lt;variable&gt;_stddev</li>
+<li>&lt;variable&gt;_skewness</li>
+<li>&lt;variable&gt;_kurtosis</li>
+<li>&lt;variable&gt;_min</li>
+<li>&lt;variable&gt;_max</li>
+</ul>
+<p>The ‘count’ and ‘weight’ are also available as variables on their own.
+The variable-specific postfix versions of ‘count’ and ‘weight’ should only be used
+when filtering out invalid values of a variable during binning/averaging would result
+in different count/weight values.</p>
+<p><strong>vertical profiles</strong></p>
 <p>The postfix ‘avk’ is used for averaging kernels of atmospheric vertical profiles.
 An AVK that only depends once on the vertical dimension is a column averaging kernel,
 and an AVK that depends twice on the vertical dimension is a profile averaging kernel.
@@ -2217,8 +2241,6 @@ diagonal of the two-dimensional AVK and provides information on the vertical res
 profiles.
 The ‘sic’ postfix is used for the ‘Shannon information content’ for vertical profiles which can be derived from the
 two-dimensional AVK.</p>
-<p>Both ‘count’ and ‘weight’ can also be used as a postfix for other variables to describe the counts/weights for those
-variables based on filtering out the invalid values during binning.</p>
 </div>
 
 

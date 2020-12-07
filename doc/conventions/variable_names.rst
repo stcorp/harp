@@ -69,7 +69,7 @@ column_density                                stratospheric,  amf, apriori,   X 
                                               tropospheric    avk, dfs, sic
 column_number_density                         stratospheric,  amf, apriori,   X       X    X             [molec/m2]
                                               tropospheric    avk, dfs, sic
-count                                                                                                                         number of samples per bin for binning operation
+count                                                                                                                         number of samples per bin for binning/averaging
 datetime                                                                                                 [s since 2000-01-01]
 datetime_length                                                                                          [s]
 datetime_start                                                                                           [s since 2000-01-01]
@@ -164,7 +164,7 @@ wavenumber_photon_radiance                                                    X 
 wavenumber_photon_transmittance                                               X                    X     []
 wavenumber_radiance                                                           X                    X     [Wm/sr/m2]
 wavenumber_transmittance                                                      X                    X     []
-weight                                                                                     X                                  weighting factors used for spatial binning
+weight                                                                                     X                                  weighting factors used for binning/averaging
 wind_speed                                    surface                         X       X    X             [m/s]
 wind_direction                                surface                         X       X    X             [degree]
 year                                                                                                                          integer value representing a year
@@ -329,16 +329,25 @@ Some examples of valid variable names are: ``tropospheric_O3_column_number_densi
 The `Vert`, `Lat/Lon`, and `Spec` columns indicate whether a variable can be dependent on the ``vertical``,
 ``latitude`` & ``longitude``, and/or ``spectral`` dimensions (any variable can be dependent on the ``time`` dimension).
 
+
+**surface quantities**
+
 The 'surface' prefix should only be used when quantities are combined together with quantities that have a vertical dimension.
 If a product just contains surface quantities then don't use a 'surface' prefix but just omit the vertical dimension and
 indicate the vertical level (i.e. location of the surface) using a 'pressure', 'altitude', and/or 'geopotential_height' variable.
 
 Surface wind velocity variables are actually near-surface wind velocities (usually at surface_altitude + 10m).
 
+
+**azimuth angles**
+
 All (horizontal) azimuth angles in HARP should follow the convention that 0 is North facing
 and the angle is increasing when moving Eastwards (i.e. clockwise).
 Wind direction follows the same rules as for azimuth angles (North = 0, East = 90 degrees),
 but the direction indicates where the wind is coming *from*.
+
+
+**differences**
 
 In addition to the conventions above there can also be variables that describe a 'difference'.
 These difference variables can only be used to describe differences of the same quantity between different datasets
@@ -365,6 +374,32 @@ The supported differences are:
 - <variable>_diffabsrelmax (:math:`\frac{|x-y|}{\max(|x|,|y|)}`)
 - <variable>_diffabsrelavg (:math:`\frac{2|x-y|}{|x|+|y|}`)
 
+
+**statistics**
+
+There are also 'postfix' variables available for statistics.
+HARP only provides naming conventions for statistical quantities that can be propagated
+(i.e. deriving statistics of a joined set of values based on statistics of disjoint subsets of those values).
+Quantities like count, standard deviation, skewness, kurtosis, minimum, and maximum, can be propagated, but median and IQR cannot.
+Variances should be stored as standard deviations.
+For the mean of a value, the original variable name itself is used. Other quantities are indicated by a postfix:
+
+- <variable>_count
+- <variable>_weight
+- <variable>_stddev
+- <variable>_skewness
+- <variable>_kurtosis
+- <variable>_min
+- <variable>_max
+
+The 'count' and 'weight' are also available as variables on their own.
+The variable-specific postfix versions of 'count' and 'weight' should only be used
+when filtering out invalid values of a variable during binning/averaging would result
+in different count/weight values.
+
+
+**vertical profiles**
+
 The postfix 'avk' is used for averaging kernels of atmospheric vertical profiles.
 An AVK that only depends once on the vertical dimension is a column averaging kernel,
 and an AVK that depends twice on the vertical dimension is a profile averaging kernel.
@@ -375,5 +410,3 @@ profiles.
 The 'sic' postfix is used for the 'Shannon information content' for vertical profiles which can be derived from the
 two-dimensional AVK.
 
-Both 'count' and 'weight' can also be used as a postfix for other variables to describe the counts/weights for those
-variables based on filtering out the invalid values during binning.
