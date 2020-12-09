@@ -6424,7 +6424,7 @@ static void register_no2_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "stratospheric_NO2_column_number_density",
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_results_nitrogendioxide_stratospheric_column);
-    path = "/PRODUCT/nitrogendioxide_tropospheric_column[]";
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_stratospheric_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* stratospheric_NO2_column_number_density_uncertainty */
@@ -6434,7 +6434,7 @@ static void register_no2_product(void)
                                                    "stratospheric_NO2_column_number_density_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_results_nitrogendioxide_stratospheric_column_precision);
-    path = "/PRODUCT/nitrogendioxide_tropospheric_column_precision[]";
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_stratospheric_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* stratospheric_NO2_column_number_density_amf */
