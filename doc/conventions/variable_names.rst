@@ -164,6 +164,9 @@ wavenumber_photon_radiance                                                    X 
 wavenumber_photon_transmittance                                               X                    X     []
 wavenumber_radiance                                                           X                    X     [Wm/sr/m2]
 wavenumber_transmittance                                                      X                    X     []
+weekday                                                                                                                       category variable for day of week ('Monday', ..., 'Sunday')
+week                                                                                                                          integer value representing an ISO week number within a year (1, ..., 53)
+weekyear                                                                                                                      integer value representing an ISO week year
 weight                                                                                     X                                  weighting factors used for binning/averaging
 wind_speed                                    surface                         X       X    X             [m/s]
 wind_direction                                surface                         X       X    X             [degree]
