@@ -71,6 +71,7 @@ column_number_density                         stratospheric,  amf, apriori,   X 
                                               tropospheric    avk, dfs, sic
 count                                                                                                                         number of samples per bin for binning/averaging
 datetime                                                                                                 [s since 2000-01-01]
+datetime_bounds                                                                                          [s since 2000-01-01]
 datetime_length                                                                                          [s]
 datetime_start                                                                                           [s since 2000-01-01]
 datetime_stop                                                                                            [s since 2000-01-01]

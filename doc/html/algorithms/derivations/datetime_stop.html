@@ -95,6 +95,7 @@
 <li class="toctree-l3"><a class="reference internal" href="column_number_density_avk.html">column number density averaging kernel derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="column_volume_mixing_ratio.html">column volume mixing ratio derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="datetime.html">datetime derivations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="datetime_bounds.html">datetime bounds derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="datetime_length.html">datetime length derivations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="datetime_start.html">datetime start derivations</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">datetime stop derivations</a></li>
@@ -218,10 +219,10 @@
 <li><p class="first">datetime stop from start and length</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="21%" />
 <col width="18%" />
-<col width="33%" />
-<col width="30%" />
+<col width="34%" />
+<col width="27%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">symbol</th>
@@ -234,22 +235,55 @@
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(t_{e}\)</span></td>
 <td>datetime stop</td>
 <td><span class="math notranslate nohighlight">\(s\)</span> since 2000-01-01</td>
-<td><cite>datetime_stop {time}</cite></td>
+<td><cite>datetime_stop {:}</cite></td>
 </tr>
 <tr class="row-odd"><td><span class="math notranslate nohighlight">\(t_{s}\)</span></td>
 <td>datetime start</td>
 <td><span class="math notranslate nohighlight">\(s\)</span> since 2000-01-01</td>
-<td><cite>datetime_start {time}</cite></td>
+<td><cite>datetime_start {:}</cite></td>
 </tr>
 <tr class="row-even"><td><span class="math notranslate nohighlight">\(\Delta t\)</span></td>
 <td>time duration</td>
 <td><span class="math notranslate nohighlight">\(s\)</span></td>
-<td><cite>datetime_length {time}</cite></td>
+<td><cite>datetime_length {:}</cite></td>
 </tr>
 </tbody>
 </table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimension at all.</p>
 <div class="math notranslate nohighlight">
 \[t_{e} = t_{s} + \Delta t\]</div>
+</li>
+<li><p class="first">datetime stop from datetime_bounds</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="40%" />
+<col width="24%" />
+<col width="21%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">symbol</th>
+<th class="head">description</th>
+<th class="head">unit</th>
+<th class="head">variable name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math notranslate nohighlight">\(t^{B}(l)\)</span></td>
+<td>datetime boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
+<td><span class="math notranslate nohighlight">\(s\)</span> since 2000-01-01</td>
+<td><cite>datetime_bounds {:,2}</cite></td>
+</tr>
+<tr class="row-odd"><td><span class="math notranslate nohighlight">\(t_{e}\)</span></td>
+<td>datetime stop</td>
+<td><span class="math notranslate nohighlight">\(s\)</span> since 2000-01-01</td>
+<td><cite>datetime_stop {:}</cite></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{time}</cite>, or no dimension at all.</p>
+<div class="math notranslate nohighlight">
+\[t_{e} = t^{B}(2)\]</div>
 </li>
 </ol>
 </div>

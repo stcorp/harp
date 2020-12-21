@@ -36,12 +36,13 @@ There are two special cases for intervals, which are described below.
 Time intervals
 ~~~~~~~~~~~~~~
 One special case is the time dimension.
-Instead of a ``datetime_bounds`` variable, HARP uses separate ``datetime_start`` and ``datetime_stop`` variables
+In addition to a ``datetime_bounds`` variable, HARP supports separate ``datetime_start`` and ``datetime_stop`` variables
 to define the edges of a time interval.
 Be aware that in HARP the ``datetime`` variable always needs to represent the center of a time interval.
 
 If you provide two out of ``datetime``, ``datetime_start``, ``datetime_stop``, ``datetime_length`` then you can use
 the HARP derivation operations to automatically have the other two variables calculated.
+In addition any of these two can be converted into a ``datetime_bounds`` variable and vice-versa.
 
 Spatial extent
 ~~~~~~~~~~~~~~

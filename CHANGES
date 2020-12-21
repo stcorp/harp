@@ -1,3 +1,5 @@
+* Added support for datetime_bounds variable.
+
 * Updates to product ingestions:
   - GEOMS FTIR H2CO: fixed issue in determining unit for H2O data (that would
     fail the ingestion)

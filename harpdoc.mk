@@ -77,6 +77,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/column_number_density_avk.html \
 	doc/html/algorithms/derivations/column_volume_mixing_ratio.html \
 	doc/html/algorithms/derivations/datetime.html \
+	doc/html/algorithms/derivations/datetime_bounds.html \
 	doc/html/algorithms/derivations/datetime_length.html \
 	doc/html/algorithms/derivations/datetime_start.html \
 	doc/html/algorithms/derivations/datetime_stop.html \
@@ -703,6 +704,8 @@ doc/html/algorithms/derivations/column_number_density_avk.html:
 doc/html/algorithms/derivations/column_volume_mixing_ratio.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/datetime.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/datetime_bounds.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/datetime_length.html:
 	$(MAKE) harp_doc

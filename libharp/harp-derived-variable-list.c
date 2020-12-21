@@ -190,6 +190,18 @@ static int get_aux_variable_usstd76(harp_variable *variable, const harp_variable
     return 0;
 }
 
+static int get_begin_from_bounds(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = source_variable[0]->data.double_data[2 * i];
+    }
+
+    return 0;
+}
+
 static int get_begin_from_midpoint_and_length(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -211,6 +223,19 @@ static int get_begin_from_end_and_length(harp_variable *variable, const harp_var
     {
         variable->data.double_data[i] =
             source_variable[0]->data.double_data[i] - source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
+static int get_bounds_from_begin_and_end(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements / 2; i++)
+    {
+        variable->data.double_data[2 * i] = source_variable[0]->data.double_data[i];
+        variable->data.double_data[2 * i + 1] = source_variable[1]->data.double_data[i];
     }
 
     return 0;
@@ -428,6 +453,18 @@ static int get_end_from_begin_and_length(harp_variable *variable, const harp_var
     {
         variable->data.double_data[i] =
             source_variable[0]->data.double_data[i] + source_variable[1]->data.double_data[i];
+    }
+
+    return 0;
+}
+
+static int get_end_from_bounds(harp_variable *variable, const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = source_variable[0]->data.double_data[2 * i + 1];
     }
 
     return 0;
@@ -7130,142 +7167,178 @@ static int add_axis_conversions(void)
 {
     harp_variable_conversion *conversion;
     harp_dimension_type dimension_type[HARP_MAX_NUM_DIMS];
+    int num_dimensions;
     int i;
 
-    dimension_type[0] = harp_dimension_time;
+    for (num_dimensions = 0; num_dimensions < 2; num_dimensions++)
+    {
+        if (num_dimensions > 0)
+        {
+            dimension_type[0] = harp_dimension_time;
+        }
+        dimension_type[num_dimensions] = harp_dimension_independent;
 
-    /*** datetime ***/
+        /*** datetime ***/
 
-    if (add_time_indepedent_to_dependent_conversion("datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /* midpoint from start/stop */
+        if (harp_variable_conversion_new("datetime", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
+                                         dimension_type, 0, get_midpoint_from_begin_and_end, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
 
-    /* midpoint from start/top */
-    if (harp_variable_conversion_new("datetime", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_midpoint_from_begin_and_end, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /*** datetime_bounds ***/
 
-    /*** datetime_length ***/
+        /* range from start/stop */
+        if (harp_variable_conversion_new("datetime_bounds", harp_type_double, HARP_UNIT_DATETIME, num_dimensions + 1,
+                                         dimension_type, 2, get_bounds_from_begin_and_end, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
 
-    if (add_time_indepedent_to_dependent_conversion("datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /*** datetime_length ***/
 
-    /* length from start/stop */
-    if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, 1, dimension_type, 0,
-                                     get_length_from_begin_and_end, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        if (num_dimensions > 0)
+        {
+            if (add_time_indepedent_to_dependent_conversion("datetime_length", harp_type_double, HARP_UNIT_TIME,
+                                                            num_dimensions, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+        }
 
-    /*** datetime_start ***/
+        /* length from start/stop */
+        if (harp_variable_conversion_new("datetime_length", harp_type_double, HARP_UNIT_TIME, num_dimensions,
+                                         dimension_type, 0, get_length_from_begin_and_end, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
 
-    if (add_time_indepedent_to_dependent_conversion("datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /*** datetime_start ***/
 
-    /* start from mid/length */
-    if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_begin_from_midpoint_and_length, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /* start from bounds */
+        if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
+                                         dimension_type, 0, get_begin_from_bounds, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_bounds", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions + 1, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
 
-    /* start from stop/length */
-    if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_begin_from_end_and_length, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /* start from mid/length */
+        if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
+                                         dimension_type, 0, get_begin_from_midpoint_and_length, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
 
-    /*** datetime_stop ***/
+        /* start from stop/length */
+        if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
+                                         dimension_type, 0, get_begin_from_end_and_length, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_stop", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
 
-    if (add_time_indepedent_to_dependent_conversion("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                                    dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /*** datetime_stop ***/
 
-    /* stop from mid/length */
-    if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_end_from_midpoint_and_length, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
+        /* stop from bounds */
+        if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
+                                         dimension_type, 0, get_end_from_bounds, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_bounds", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions + 1, dimension_type, 2) != 0)
+        {
+            return -1;
+        }
 
-    /* stop from start/length */
-    if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, 1, dimension_type, 0,
-                                     get_end_from_begin_and_length, &conversion) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
+        /* stop from mid/length */
+        if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
+                                         dimension_type, 0, get_end_from_midpoint_and_length, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+
+        /* stop from start/length */
+        if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
+                                         dimension_type, 0, get_end_from_begin_and_length, &conversion) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_start", harp_type_double, HARP_UNIT_DATETIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime_length", harp_type_double, HARP_UNIT_TIME,
+                                                num_dimensions, dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** latitude ***/

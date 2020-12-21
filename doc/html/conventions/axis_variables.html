@@ -204,11 +204,12 @@ then the corresponding intervals could be <code class="docutils literal notransl
 <div class="section" id="time-intervals">
 <h3>Time intervals</h3>
 <p>One special case is the time dimension.
-Instead of a <code class="docutils literal notranslate"><span class="pre">datetime_bounds</span></code> variable, HARP uses separate <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> and <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> variables
+In addition to a <code class="docutils literal notranslate"><span class="pre">datetime_bounds</span></code> variable, HARP supports separate <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> and <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> variables
 to define the edges of a time interval.
 Be aware that in HARP the <code class="docutils literal notranslate"><span class="pre">datetime</span></code> variable always needs to represent the center of a time interval.</p>
 <p>If you provide two out of <code class="docutils literal notranslate"><span class="pre">datetime</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_length</span></code> then you can use
-the HARP derivation operations to automatically have the other two variables calculated.</p>
+the HARP derivation operations to automatically have the other two variables calculated.
+In addition any of these two can be converted into a <code class="docutils literal notranslate"><span class="pre">datetime_bounds</span></code> variable and vice-versa.</p>
 </div>
 <div class="section" id="spatial-extent">
 <h3>Spatial extent</h3>
