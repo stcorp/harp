@@ -585,7 +585,7 @@ int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dime
  */
 
 /**
- * Resample all variables in product against a specified grid.
+ * Resample all variables in the product against a specified grid.
  * The target grid variable should be an axis variable containing the target grid (as 'double' values).
  * It should be a one-dimensional variable (for a time independent grid or when regridding in the time dimension)
  * or a two-dimensional variable (for a time dependent grid when not regridding in the time dimension).
