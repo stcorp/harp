@@ -74,15 +74,11 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
     {
         /* also remove these variables if they are provided as scalars (without time dimension) */
 
-        /* we can't interpolate these datetime boundary edge values */
-        if (strcmp(variable->name, "datetime_start") == 0 || strcmp(variable->name, "datetime_stop") == 0)
+        /* we can't interpolate these datetime boundary edge/length values (same issue as _bounds variables) */
+        if (strcmp(variable->name, "datetime_start") == 0 || strcmp(variable->name, "datetime_stop") == 0 ||
+            strcmp(variable->name, "datetime_length") == 0)
         {
             return resample_remove;
-        }
-        /* datetime_length requires interval interpolation which is currently not supported for the time dimension */
-        if (strcmp(variable->name, "datetime_length") == 0)
-        {
-            return resample_interval;
         }
     }
 
@@ -116,8 +112,7 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
 
     if (num_matching_dims != 1)
     {
-        /* remove all variables with more than one matching dimension */
-        /* TODO: how to resample 2D AVKs */
+        /* remove all variables with more than one matching dimension (including 2D AVKs) */
         return resample_remove;
     }
 
