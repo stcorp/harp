@@ -67,6 +67,7 @@ static long get_unpadded_length(double *vector, long vector_length)
 
 static resample_type get_resample_type(harp_variable *variable, harp_dimension_type dimension_type)
 {
+    long variable_name_length = (long)strlen(variable->name);
     int num_matching_dims;
     int i;
 
@@ -130,15 +131,17 @@ static resample_type get_resample_type(harp_variable *variable, harp_dimension_t
 
     if (dimension_type == harp_dimension_vertical)
     {
-        /* use interval interpolation for vertical regridding of 1D column AVKs */
-        if (strstr(variable->name, "_avk") != NULL)
-        {
-            return resample_interval;
-        }
         /* use interval interpolation for vertical regridding of partial column profiles */
         if (strstr(variable->name, "_column_") != NULL)
         {
-            return resample_interval;
+            /* only when this is a density quantity, the column avk, or the dfs */
+            if (strcmp(&variable->name[variable_name_length - 8], "_density") == 0 ||
+                strcmp(&variable->name[variable_name_length - 8], "_apriori") == 0 ||
+                strcmp(&variable->name[variable_name_length - 4], "_avk") == 0 ||
+                strcmp(&variable->name[variable_name_length - 4], "_dfs") == 0)
+            {
+                return resample_interval;
+            }
         }
     }
 

@@ -136,15 +136,17 @@ static binning_type get_binning_type(harp_variable *variable, harp_dimension_typ
             {
                 return binning_remove;
             }
-            /* use integrated quantity rebinning for vertical regridding of 1D column AVKs */
-            if (strstr(variable->name, "_avk") != NULL)
-            {
-                return binning_sum;
-            }
             /* use integrated quantity rebinning for vertical regridding of partial column profiles */
             if (strstr(variable->name, "_column_") != NULL)
             {
-                return binning_sum;
+                /* only when this is a density quantity, the column avk, or the dfs */
+                if (strcmp(&variable->name[variable_name_length - 8], "_density") == 0 ||
+                    strcmp(&variable->name[variable_name_length - 8], "_apriori") == 0 ||
+                    strcmp(&variable->name[variable_name_length - 4], "_avk") == 0 ||
+                    strcmp(&variable->name[variable_name_length - 4], "_dfs") == 0)
+                {
+                    return binning_sum;
+                }
             }
             break;
         case harp_dimension_spectral:
