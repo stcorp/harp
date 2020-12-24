@@ -2723,7 +2723,7 @@ int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *ax
             return -1;
         }
         free(bounds_name);
-        if (harp_variable_set_unit(operation->axis_variable, axis_unit) != 0)
+        if (harp_variable_set_unit(operation->axis_bounds_variable, axis_unit) != 0)
         {
             regrid_delete(operation);
             return -1;
