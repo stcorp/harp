@@ -615,7 +615,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     long source_grid_num_dim_elements;
     long target_grid_max_dim_elements;
     long target_grid_num_dim_elements;
-    long source_num_time_elements;
+    long grid_num_time_elements = 1;
     int source_grid_num_dims = 1;
     int target_grid_num_dims;
     int out_of_bound_flag;
@@ -664,6 +664,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     }
     target_grid_max_dim_elements = target_grid->dimension[target_grid_num_dims - 1];
 
+    /* we create a local copy so we can modify it for logarithmic interpolation */
     if (harp_variable_copy(target_grid, &local_target_grid) != 0)
     {
         goto error;
@@ -711,8 +712,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
 
     if (dimension_type == harp_dimension_time)
     {
-        source_num_time_elements = 1;
-
         /* Derive the source grid */
         if (harp_product_get_derived_variable(product, target_grid->name, &target_grid->data_type, target_grid->unit, 1,
                                               target_grid->dimension_type, &source_grid) != 0)
@@ -725,14 +724,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     else
     {
         harp_dimension_type grid_dim_type[2];
-
-        if (product->dimension[harp_dimension_time] == 0)
-        {
-            /* if the product did not have a time dimension then introduce one with length 1
-             * all variables that will be regridded will have this dimension added as first dimension */
-            product->dimension[harp_dimension_time] = 1;
-        }
-        source_num_time_elements = product->dimension[harp_dimension_time];
 
         grid_dim_type[0] = harp_dimension_time;
         grid_dim_type[1] = dimension_type;
@@ -748,10 +739,16 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             {
                 goto error;
             }
+            grid_num_time_elements = product->dimension[harp_dimension_time];
             source_grid_num_dims = 2;
         }
         source_grid_max_dim_elements = source_grid->dimension[source_grid->num_dimensions - 1];
         source_max_dim_elements = source_grid_max_dim_elements;
+
+        if (target_grid->num_dimensions == 2 || source_grid->num_dimensions == 2)
+        {
+            grid_num_time_elements = product->dimension[harp_dimension_time];
+        }
     }
 
     /* derive bounds variables if necessary for resampling */
@@ -877,11 +874,11 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         }
 
         /* Make time independent variables time dependent if source grid or target grid is 2D (i.e. time dependent) */
-        if (source_grid_num_dims > 1 || target_grid_num_dims > 1)
+        if (target_grid->num_dimensions == 2 || source_grid->num_dimensions == 2)
         {
             if (variable->dimension_type[0] != harp_dimension_time)
             {
-                if (harp_variable_add_dimension(variable, 0, harp_dimension_time, source_num_time_elements) != 0)
+                if (harp_variable_add_dimension(variable, 0, harp_dimension_time, grid_num_time_elements) != 0)
                 {
                     goto error;
                 }
@@ -926,7 +923,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             long k, l;
 
             /* keep track of time index for 2D grids */
-            if (j % (num_blocks / source_num_time_elements) == 0)
+            if (j % (num_blocks / grid_num_time_elements) == 0)
             {
                 if (source_grid_num_dims == 2 && j > 0)
                 {
