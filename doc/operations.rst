@@ -332,6 +332,32 @@ Supported functions:
         Exclude measurements whose point location does not fall inside one of
         the areas from the area mask file.
 
+    ``rebin(dimension, axis-bounds-variable unit, (value, ...))``
+        Regrid all variables in the product for the given dimension using
+        the given axis boundaries variable as target grid. The operation will
+        use a ``derive(axis-variable {[time,]dimension,2} unit)`` to determine
+        the current grid. The target grid is specified as a list of N+1 boundary
+        edge values (for N adjacent intervals).
+        Rebinning uses a weighted average of the overlapping intervals of the
+        current grid with the interval of the target grid.
+        Example:
+
+            | ``rebin(longitude, longitude_bounds [degree_east], (-180, -90, 0, 90, 180))``
+            | ``rebin(vertical, altitude [km], (0.0, 1.5, 3.0, 7.0))``
+
+    ``rebin(dimension, axis-bounds-variable unit, length, offset, step)``
+        Regrid all variables in the product for the given dimension using
+        the given axis boundaries variable as target grid. The operation will
+        use a ``derive(axis-variable {[time,]dimension,2} unit)`` to determine
+        the current grid. The N+1 edges of the target grid are specified as
+        length, offset, and step parameters.
+        Rebinning uses a weighted average of the overlapping intervals of the
+        current grid with the interval of the target grid.
+        Example:
+
+            | ``rebin(longitude, longitude_bounds [degree_east], 5, -180, 90)``
+            | ``rebin(vertical, altitude [km], 11, 0, 1.0)``
+
     ``regrid(dimension, axis-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using
         the given axis variable as target grid. The operation will use a
@@ -651,6 +677,8 @@ Formal definition
        'point_distance', '(', floatvalue, [unit], ',', floatvalue, [unit], ',', floatvalue, [unit], ')' |
        'point_in_area', '(', '(', floatvaluelist, ')', [unit], '(', floatvaluelist, ')', [unit], ')' |
        'point_in_area', '(', stringvalue, ')' |
+       'rebin', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ')' |
+       'rebin', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', '(', floatvaluelist, ')', ',', '(', floatvaluelist, ')', ')' |
        'regrid', '(', dimension, ',', variable, unit, ',', intvalue, ',', floatvalue, ',', floatvalue, ')' |

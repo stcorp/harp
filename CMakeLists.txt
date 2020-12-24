@@ -361,6 +361,7 @@ set(LIBHARP_SOURCES
   libharp/harp-program.h
   libharp/harp-program.c
   libharp/harp-sea-surface.c
+  libharp/harp-rebin.c
   libharp/harp-regrid.c
   libharp/harp-units.c
   libharp/harp-utils.c

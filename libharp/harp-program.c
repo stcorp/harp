@@ -934,10 +934,24 @@ static int execute_keep_variable(harp_product *product, harp_operation_keep_vari
     return 0;
 }
 
+static int execute_rebin(harp_product *product, harp_operation_rebin *operation)
+{
+    if (operation->axis_bounds_variable->dimension_type[0] == harp_dimension_independent)
+    {
+        harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
+                       harp_get_dimension_type_name(operation->axis_bounds_variable->dimension_type[0]));
+        return -1;
+    }
+
+    if (harp_product_rebin_with_axis_bounds_variable(product, operation->axis_bounds_variable) != 0)
+    {
+        return -1;
+    }
+    return 0;
+}
+
 static int execute_regrid(harp_product *product, harp_operation_regrid *operation)
 {
-    harp_variable *target_grid = NULL;
-
     if (operation->axis_variable->dimension_type[0] == harp_dimension_independent)
     {
         harp_set_error(HARP_ERROR_OPERATION, "regridding of '%s' dimension not supported",
@@ -947,7 +961,6 @@ static int execute_regrid(harp_product *product, harp_operation_regrid *operatio
 
     if (harp_product_regrid_with_axis_variable(product, operation->axis_variable, operation->axis_bounds_variable) != 0)
     {
-        harp_variable_delete(target_grid);
         return -1;
     }
     return 0;
@@ -1392,6 +1405,12 @@ int harp_product_execute_program(harp_product *product, harp_program *program)
                 break;
             case operation_keep_variable:
                 if (execute_keep_variable(product, (harp_operation_keep_variable *)operation) != 0)
+                {
+                    return -1;
+                }
+                break;
+            case operation_rebin:
+                if (execute_rebin(product, (harp_operation_rebin *)operation) != 0)
                 {
                     return -1;
                 }

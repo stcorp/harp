@@ -1,3 +1,7 @@
+* Added rebin() operation.
+
+* Added harp_product_rebin_with_axis_bounds_variable() function.
+
 * Added support for datetime_bounds variable.
 
 * Updates to product ingestions:

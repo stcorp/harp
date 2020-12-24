@@ -107,6 +107,7 @@ WHITESPACE   [[:space:]]+
 "longitude_range"       return FUNC_LONGITUDE_RANGE;
 "point_distance"        return FUNC_POINT_DISTANCE;
 "point_in_area"         return FUNC_POINT_IN_AREA;
+"rebin"                 return FUNC_REBIN;
 "regrid"                return FUNC_REGRID;
 "rename"                return FUNC_RENAME;
 "set"                   return FUNC_SET;

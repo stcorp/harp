@@ -1788,6 +1788,7 @@ static int evaluate_ingestion_mask(ingest_info *info, harp_program *program)
             case operation_derive_smoothed_column_collocated_dataset:
             case operation_derive_smoothed_column_collocated_product:
             case operation_flatten:
+            case operation_rebin:
             case operation_regrid:
             case operation_regrid_collocated_dataset:
             case operation_regrid_collocated_product:

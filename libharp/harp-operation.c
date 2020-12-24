@@ -977,6 +977,19 @@ static void point_in_area_filter_delete(harp_operation_point_in_area_filter *ope
     }
 }
 
+static void rebin_delete(harp_operation_rebin *operation)
+{
+    if (operation != NULL)
+    {
+        if (operation->axis_bounds_variable != NULL)
+        {
+            harp_variable_delete(operation->axis_bounds_variable);
+        }
+
+        free(operation);
+    }
+}
+
 static void regrid_delete(harp_operation_regrid *operation)
 {
     if (operation != NULL)
@@ -1343,6 +1356,9 @@ void harp_operation_delete(harp_operation *operation)
             break;
         case operation_point_in_area_filter:
             point_in_area_filter_delete((harp_operation_point_in_area_filter *)operation);
+            break;
+        case operation_rebin:
+            rebin_delete((harp_operation_rebin *)operation);
             break;
         case operation_regrid:
             regrid_delete((harp_operation_regrid *)operation);
@@ -2642,6 +2658,59 @@ int harp_operation_point_in_area_filter_new(const char *filename, int num_latitu
             point_in_area_filter_delete(operation);
             return -1;
         }
+    }
+
+    *new_operation = (harp_operation *)operation;
+    return 0;
+}
+
+int harp_operation_rebin_new(harp_dimension_type dimension_type, const char *axis_bounds_variable_name,
+                             const char *axis_unit, long num_bounds_values, double *bounds_values,
+                             harp_operation **new_operation)
+{
+    harp_operation_rebin *operation;
+    harp_dimension_type dimension_type_bounds[2];
+    long dimension[2];
+    long i;
+
+    assert(axis_bounds_variable_name != NULL);
+    assert(axis_unit != NULL);
+
+    if (num_bounds_values < 2)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "number of boundary values (%ld) should be at least 2",
+                       num_bounds_values);
+        return -1;
+    }
+    operation = (harp_operation_rebin *)malloc(sizeof(harp_operation_rebin));
+    if (operation == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(harp_operation_rebin), __FILE__, __LINE__);
+        return -1;
+    }
+    operation->type = operation_rebin;
+    operation->axis_bounds_variable = NULL;
+
+    dimension_type_bounds[0] = dimension_type;
+    dimension_type_bounds[1] = harp_dimension_independent;
+    dimension[0] = num_bounds_values - 1;
+    dimension[1] = 2;
+    if (harp_variable_new(axis_bounds_variable_name, harp_type_double, 2, dimension_type_bounds, dimension,
+                          &operation->axis_bounds_variable) != 0)
+    {
+        rebin_delete(operation);
+        return -1;
+    }
+    if (harp_variable_set_unit(operation->axis_bounds_variable, axis_unit) != 0)
+    {
+        rebin_delete(operation);
+        return -1;
+    }
+    for (i = 0; i < num_bounds_values - 1; i++)
+    {
+        operation->axis_bounds_variable->data.double_data[2 * i] = bounds_values[i];
+        operation->axis_bounds_variable->data.double_data[2 * i + 1] = bounds_values[i + 1];
     }
 
     *new_operation = (harp_operation *)operation;

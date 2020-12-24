@@ -741,6 +741,30 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv344harp_product_rebin_with_axis_bounds_variableP12harp_productP13harp_variable">
+<span id="_CPPv244harp_product_rebin_with_axis_bounds_variableP12harp_productP13harp_variable"></span><span id="harp_product_rebin_with_axis_bounds_variable__harp_productP.harp_variableP"></span><span class="target" id="group__harp__product_1gafff2379c782c653ac75a743d0df868ca"></span>int <code class="descname">harp_product_rebin_with_axis_bounds_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv313harp_variable" title="harp_variable">harp_variable</a> *<em>target_bounds</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Rebin all variables in the product to a specified interval grid. The target bounds variable should be an axis bounds variable containing the interval edges (bins) of the target grid (as ‘double’ values). It should be a two-dimensional variable (for a time independent grid) or a three-dimensional variable (for a time dependent grid). The last dimension should be an independent dimension of length 2 (for the lower/upper bound of each interval). The dimension to use for regridding is based on the type of the second to last dimenion of the target grid variable. This function cannot be used to rebin an independent dimension or rebin the time dimension.</p>
+<p>For each variable in the product, a dimension-specific rule based on the variable name will determine how to rebin the variable. For most variables the result will be the interval weighted average of all values overlapping the target interval. Variables that represent an integrated quantity for the rebinned dimension will use an interval weighted sum. For uncertainty variables the first order propagation rules are used (assuming full correlation).</p>
+<p>Variables that depend on the rebinned dimenion but have no unit (or use a string data type) will be removed. Any existing count or weight variables will also be removed.</p>
+<p>All variables that are rebinned are converted to a double data type. Bins that have no overlapping source boundaries will end up with a NaN value.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
+<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">product</span></code>: Product to rebin. </li>
+<li><code class="docutils literal notranslate"><span class="pre">target_bounds</span></code>: Target grid boundaries variable.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv338harp_product_regrid_with_axis_variableP12harp_productP13harp_variableP13harp_variable">
 <span id="_CPPv238harp_product_regrid_with_axis_variableP12harp_productP13harp_variableP13harp_variable"></span><span id="harp_product_regrid_with_axis_variable__harp_productP.harp_variableP.harp_variableP"></span><span class="target" id="group__harp__product_1ga07a808c69fa7972af739aad407860ee1"></span>int <code class="descname">harp_product_regrid_with_axis_variable</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv312harp_product" title="harp_product">harp_product</a> *<em>product</em>, <a class="reference internal" href="libharp_variable.html#_CPPv313harp_variable" title="harp_variable">harp_variable</a> *<em>target_grid</em>, <a class="reference internal" href="libharp_variable.html#_CPPv313harp_variable" title="harp_variable">harp_variable</a> *<em>target_bounds</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Resample all variables in the product against a specified grid. The target grid variable should be an axis variable containing the target grid (as ‘double’ values). It should be a one-dimensional variable (for a time independent grid or when regridding in the time dimension) or a two-dimensional variable (for a time dependent grid when not regridding in the time dimension). The dimension to use for regridding is based on the type of the last dimenion of the target grid variable. This function cannot be used to regrid an independent dimension.</p>

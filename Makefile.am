@@ -168,6 +168,7 @@ libharp_la_SOURCES = \
 	libharp/harp-product-metadata.c \
 	libharp/harp-program.h \
 	libharp/harp-program.c \
+	libharp/harp-rebin.c \
 	libharp/harp-regrid.c \
 	libharp/harp-sea-surface.c \
 	libharp/harp-units.c \

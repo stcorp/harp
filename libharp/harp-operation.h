@@ -63,6 +63,7 @@ typedef enum harp_operation_type_enum
     operation_membership_filter,
     operation_point_distance_filter,
     operation_point_in_area_filter,
+    operation_rebin,
     operation_regrid,
     operation_regrid_collocated_dataset,
     operation_regrid_collocated_product,
@@ -135,6 +136,7 @@ typedef enum harp_membership_operator_type_enum
  *   |-  harp_operation_exclude_variable
  *   |-  harp_operation_flatten
  *   |-  harp_operation_keep_variable
+ *   |-  harp_operation_rebin
  *   |-  harp_operation_regrid
  *   |-  harp_operation_regrid_collocated_dataset
  *   |-  harp_operation_regrid_collocated_product
@@ -428,6 +430,13 @@ typedef struct harp_operation_point_in_area_filter_struct
     harp_area_mask *area_mask;
 } harp_operation_point_in_area_filter;
 
+typedef struct harp_operation_rebin_struct
+{
+    harp_operation_type type;
+    /* parameters */
+    harp_variable *axis_bounds_variable;
+} harp_operation_rebin;
+
 typedef struct harp_operation_regrid_struct
 {
     harp_operation_type type;
@@ -636,6 +645,9 @@ int harp_operation_point_distance_filter_new(double latitude, const char *latitu
 int harp_operation_point_in_area_filter_new(const char *filename, int num_latitudes, double *latitude,
                                             const char *latitude_unit, int num_longitudes, double *longitude,
                                             const char *longitude_unit, harp_operation **operation);
+int harp_operation_rebin_new(harp_dimension_type dimension_type, const char *axis_bounds_variable_name,
+                             const char *axis_unit, long num_bounds_values, double *bounds_values,
+                             harp_operation **new_operation);
 int harp_operation_regrid_new(harp_dimension_type dimension_type, const char *axis_variable_name, const char *axis_unit,
                               long num_values, double *values, long num_bounds_values, double *bounds_values,
                               harp_operation **new_operation);

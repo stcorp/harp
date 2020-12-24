@@ -258,6 +258,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_LONGITUDE_RANGE
 %token                  FUNC_POINT_DISTANCE
 %token                  FUNC_POINT_IN_AREA
+%token                  FUNC_REBIN
 %token                  FUNC_REGRID
 %token                  FUNC_RENAME
 %token                  FUNC_SET
@@ -325,6 +326,7 @@ reserved_identifier:
     | FUNC_LONGITUDE_RANGE { $$ = "longitude_range"; }
     | FUNC_POINT_DISTANCE { $$ = "point_distance"; }
     | FUNC_POINT_IN_AREA { $$ = "point_in_area"; }
+    | FUNC_REBIN { $$ = "rebin"; }
     | FUNC_REGRID { $$ = "regrid"; }
     | FUNC_RENAME { $$ = "rename"; }
     | FUNC_SET { $$ = "set"; }
@@ -1412,6 +1414,49 @@ operation:
                 YYERROR;
             }
             free($3);
+        }
+    | FUNC_REBIN '(' DIMENSION ',' identifier UNIT ',' '(' double_array ')' ')' {
+            if (harp_operation_rebin_new($3, $5, $6, $9->num_elements, $9->array.double_data, &$$) != 0)
+            {
+                free($5);
+                free($6);
+                harp_sized_array_delete($9);
+                YYERROR;
+            }
+            free($5);
+            free($6);
+            harp_sized_array_delete($9);
+        }
+    | FUNC_REBIN '(' DIMENSION ',' identifier UNIT ',' int32_value ',' double_value ',' double_value ')' {
+            harp_sized_array *array;
+            long i;
+
+            if (harp_sized_array_new(harp_type_double, &array) != 0)
+            {
+                free($5);
+                free($6);
+                YYERROR;
+            }
+            for (i = 0; i < $8; i++)
+            {
+                if (harp_sized_array_add_double(array, $10 + i * $12) != 0)
+                {
+                    harp_sized_array_delete(array);
+                    free($5);
+                    free($6);
+                    YYERROR;
+                }
+            }
+            if (harp_operation_rebin_new($3, $5, $6, array->num_elements, array->array.double_data, &$$) != 0)
+            {
+                harp_sized_array_delete(array);
+                free($5);
+                free($6);
+                YYERROR;
+            }
+            harp_sized_array_delete(array);
+            free($5);
+            free($6);
         }
     | FUNC_REGRID '(' DIMENSION ',' identifier UNIT ',' '(' double_array ')' ')' {
             if (harp_operation_regrid_new($3, $5, $6, $9->num_elements, $9->array.double_data, 0, NULL, &$$) != 0)

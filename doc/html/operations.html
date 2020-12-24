@@ -510,6 +510,38 @@ Example:</p>
 <dt><code class="docutils literal notranslate"><span class="pre">point_in_area(area-mask-file)</span></code></dt>
 <dd>Exclude measurements whose point location does not fall inside one of
 the areas from the area mask file.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rebin(dimension,</span> <span class="pre">axis-bounds-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
+<dd><p class="first">Regrid all variables in the product for the given dimension using
+the given axis boundaries variable as target grid. The operation will
+use a <code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension,2}</span> <span class="pre">unit)</span></code> to determine
+the current grid. The target grid is specified as a list of N+1 boundary
+edge values (for N adjacent intervals).
+Rebinning uses a weighted average of the overlapping intervals of the
+current grid with the interval of the target grid.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(longitude,</span> <span class="pre">longitude_bounds</span> <span class="pre">[degree_east],</span> <span class="pre">(-180,</span> <span class="pre">-90,</span> <span class="pre">0,</span> <span class="pre">90,</span> <span class="pre">180))</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(0.0,</span> <span class="pre">1.5,</span> <span class="pre">3.0,</span> <span class="pre">7.0))</span></code></div>
+</div>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rebin(dimension,</span> <span class="pre">axis-bounds-variable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt>
+<dd><p class="first">Regrid all variables in the product for the given dimension using
+the given axis boundaries variable as target grid. The operation will
+use a <code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension,2}</span> <span class="pre">unit)</span></code> to determine
+the current grid. The N+1 edges of the target grid are specified as
+length, offset, and step parameters.
+Rebinning uses a weighted average of the overlapping intervals of the
+current grid with the interval of the target grid.
+Example:</p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(longitude,</span> <span class="pre">longitude_bounds</span> <span class="pre">[degree_east],</span> <span class="pre">5,</span> <span class="pre">-180,</span> <span class="pre">90)</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">11,</span> <span class="pre">0,</span> <span class="pre">1.0)</span></code></div>
+</div>
+</div></blockquote>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
 <dd><p class="first">Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a
@@ -833,6 +865,8 @@ Each polygon consists of the vertices as defined on that line.</p>
    <span class="s1">&#39;point_distance&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;point_in_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">unit</span><span class="p">],</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;point_in_area&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">stringvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;rebin&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
+   <span class="s1">&#39;rebin&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">floatvaluelist</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
    <span class="s1">&#39;regrid&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">intvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">floatvalue</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span> <span class="o">|</span>
