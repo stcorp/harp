@@ -100,6 +100,7 @@ integration_time                                                                
 land_type                                                                     X            X
 latitude                                      sensor                          X            (lat)         [degree_north]
 latitude_bounds                                                                            (lat)         [degree_north]
+location_name                                                                                                                 name of the geographical location of the data
 longitude                                     sensor                          X            (lon)         [degree_east]
 longitude_bounds                                                                           (lon)         [degree_east]
 meridional_wind_velocity                      surface                         X       X    X             [m/s]
@@ -128,7 +129,6 @@ sensor_azimuth_angle                                                          X 
 sensor_elevation_angle                                                        X                          [degree]
 sensor_name                                                                                                                   used mainly for ground based networks to provide a unique sensor id
 sensor_zenith_angle                                                           X                          [degree]
-site_name                                                                                                                     used for data of a specific named geographical location
 solar_azimuth_angle                           sensor,                         X                          [degree]
                                               surface, toa
 solar_declination_angle                                                                                  [degree]

@@ -411,11 +411,11 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                                      NULL, read_data_source);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/@DATA.SOURCE", NULL);
 
-    /* site_name */
+    /* location_name */
     description = "name of the site at which the sensor is located";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "site_name", harp_type_string,
-                                                                     0, NULL, NULL, description, NULL, NULL,
-                                                                     read_data_location);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "location_name",
+                                                                     harp_type_string, 0, NULL, NULL, description, NULL,
+                                                                     NULL, read_data_location);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/@DATA.LOCATION", NULL);
 
     /* sensor_latitude */
