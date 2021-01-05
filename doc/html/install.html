@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Installation &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Conventions" href="conventions/index.html" />
     <link rel="prev" title="HARP manual" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -103,6 +111,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -137,18 +146,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Installation</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -176,7 +187,7 @@ Linux, Windows, and macOS.</p>
 <h2>What you will need</h2>
 <blockquote>
 <div><ul>
-<li><p class="first">The HARP package : You can choose between a source installation
+<li><p>The HARP package : You can choose between a source installation
 (<code class="docutils literal notranslate"><span class="pre">harp-x.y.z.tar.gz</span></code>) or a binary installation (<code class="docutils literal notranslate"><span class="pre">harp-x.y.z-win64.msi</span></code>
 (Windows only)).
 Note that x.y.z stands for the version number of the package.
@@ -196,15 +207,13 @@ If you do not have the HARP package, you can download it from GitHub:</p>
 </ul>
 <p>The following items are needed if you use the HARP source distribution:</p>
 <ul>
-<li><p class="first">A C compiler : Most Unix platforms come with their own C compiler so this
+<li><p>A C compiler : Most Unix platforms come with their own C compiler so this
 should not be a problem. For macOS you should make sure you have installed
-the Developer Tools.</p>
-</li>
-<li><p class="first">A recent version of CODA. You will need a version of CODA that is compiled
+the Developer Tools.</p></li>
+<li><p>A recent version of CODA. You will need a version of CODA that is compiled
 using the same HDF4 and HDF5 libraries as you will use for building HARP.
-CODA can be downloaded from <a class="reference external" href="https://github.com/stcorp/coda/releases/latest">https://github.com/stcorp/coda/releases/latest</a></p>
-</li>
-<li><p class="first">A recent version of HDF4. You will also need the additional libraries
+CODA can be downloaded from <a class="reference external" href="https://github.com/stcorp/coda/releases/latest">https://github.com/stcorp/coda/releases/latest</a></p></li>
+<li><p>A recent version of HDF4. You will also need the additional libraries
 libjpeg, zlib, and szlib depending on whether HDF4 was build against them.
 In order to prevent conflicts of the HDF4 library with the netCDF interface
 that HARP uses, make sure you build the HDF4 software from source and use
@@ -216,17 +225,14 @@ the following options when configuring the package:</p>
 shared library path (e.g. update your <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code> environment
 variable).</p>
 </li>
-<li><p class="first">A recent version of HDF5 (version 1.8.0 or higher). You will also need the
+<li><p>A recent version of HDF5 (version 1.8.0 or higher). You will also need the
 additional libraries zlib, and szlib depending on whether HDF5 was build
-against them.</p>
-</li>
-<li><p class="first">If you plan on using the Python interface you need either Python 2
+against them.</p></li>
+<li><p>If you plan on using the Python interface you need either Python 2
 (version 2.7 or higher) or Python 3 (version 3.4 or higher).
 You will also need the Python packages <code class="docutils literal notranslate"><span class="pre">numpy</span></code> (version 1.4 or higher)
-and <code class="docutils literal notranslate"><span class="pre">cffi</span></code> (version 1.5.2 or higher).</p>
-</li>
-<li><p class="first">If you plan on using the R interface you need R version 3 or higher.</p>
-</li>
+and <code class="docutils literal notranslate"><span class="pre">cffi</span></code> (version 1.5.2 or higher).</p></li>
+<li><p>If you plan on using the R interface you need R version 3 or higher.</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -237,11 +243,10 @@ recommended to be used by users who want to co-develop HARP and it will only
 work on Unix-based systems.
 You will need to have additional software installed and need to perform
 additional steps if you want to build HARP from the GitHub git repository.</p>
-<dl class="docutils">
-<dt>Additional software that you will need:</dt>
-<dd><ul class="first last simple">
-<li>autoconf + automake + libtool</li>
-<li>flex + bison</li>
+<dl class="simple">
+<dt>Additional software that you will need:</dt><dd><ul class="simple">
+<li><p>autoconf + automake + libtool</p></li>
+<li><p>flex + bison</p></li>
 </ul>
 </dd>
 </dl>
@@ -286,7 +291,7 @@ Building with CMake is also supported, but not documented here.</p>
 library and executables:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">Go to the directory that contains the downloaded harp-x.y.z.tar.gz
+<li><p>Go to the directory that contains the downloaded harp-x.y.z.tar.gz
 file and unpack this package:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gzip -d harp-x.y.z.tar.gz
 $ tar xf harp-x.y.z.tar
@@ -294,17 +299,16 @@ $ tar xf harp-x.y.z.tar
 </div>
 <p>Make sure you replace <code class="docutils literal notranslate"><span class="pre">x.y.z</span></code> with the appropriate version number.</p>
 </li>
-<li><p class="first">You should now have a <code class="docutils literal notranslate"><span class="pre">harp-x.y.z</span></code> directory. Go to this directory:</p>
+<li><p>You should now have a <code class="docutils literal notranslate"><span class="pre">harp-x.y.z</span></code> directory. Go to this directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd harp-x.y.z
 </pre></div>
 </div>
 </li>
-<li><p class="first">Next you will have to execute the <code class="docutils literal notranslate"><span class="pre">configure</span></code> script that checks what
+<li><p>Next you will have to execute the <code class="docutils literal notranslate"><span class="pre">configure</span></code> script that checks what
 system you are on and sets up the build environment. There are several
 options you can pass to this script. The most important ones are:</p>
-<dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">--prefix</span> <span class="pre">&lt;HARP</span> <span class="pre">installation</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">By default, if you perform an installation of the HARP package
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--prefix</span> <span class="pre">&lt;HARP</span> <span class="pre">installation</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>By default, if you perform an installation of the HARP package
 (see further below on how to do this) all
 files are installed in subdirectories under <code class="docutils literal notranslate"><span class="pre">/usr/local</span></code>.
 Executables will appear under <code class="docutils literal notranslate"><span class="pre">/usr/local/bin</span></code>, libraries under
@@ -318,32 +322,28 @@ installation directory. For instance, you can use
 <code class="docutils literal notranslate"><span class="pre">--prefix=$HOME/harp</span></code> to install the software in the subdirectory
 <code class="docutils literal notranslate"><span class="pre">harp</span></code> of your home directory.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">CODA_LIB=&lt;CODA</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">The configure script will automatically try to locate the CODA library
+<dt><code class="docutils literal notranslate"><span class="pre">CODA_LIB=&lt;CODA</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>The configure script will automatically try to locate the CODA library
 in the default locations for libraries (<code class="docutils literal notranslate"><span class="pre">/usr/local/lib</span></code> is usually
 not considered a default location!).
 If <code class="docutils literal notranslate"><span class="pre">./configure</span></code> complains that it can’t find the <code class="docutils literal notranslate"><span class="pre">coda</span></code> library
 files, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with the location of this
 library file.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">CODA_INCLUDE=&lt;CODA</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">The configure script will automatically try to locate the CODA include
+<dt><code class="docutils literal notranslate"><span class="pre">CODA_INCLUDE=&lt;CODA</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>The configure script will automatically try to locate the CODA include
 files in the default locations for include files
 (<code class="docutils literal notranslate"><span class="pre">/usr/local/include</span></code> is usually not considered a default location!).
 If <code class="docutils literal notranslate"><span class="pre">./configure</span></code> complains that it can’t find the <code class="docutils literal notranslate"><span class="pre">coda.h</span></code> include
 file, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with the location of this
 include file.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">HDF4_LIB=&lt;HDF4</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">The configure script will automatically try to locate the HDF4
+<dt><code class="docutils literal notranslate"><span class="pre">HDF4_LIB=&lt;HDF4</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>The configure script will automatically try to locate the HDF4
 libraries in the default locations for libraries (<code class="docutils literal notranslate"><span class="pre">/usr/local/lib</span></code>
 is usually not considered a default location!).
 If <code class="docutils literal notranslate"><span class="pre">./configure</span></code> complains that it can’t find the <code class="docutils literal notranslate"><span class="pre">df</span></code>, <code class="docutils literal notranslate"><span class="pre">hdf</span></code>,
 or <code class="docutils literal notranslate"><span class="pre">mfhdf</span></code> library files, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with
 the location of these library files.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">HDF4_INCLUDE=&lt;HDF4</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">The configure script will automatically try to locate the HDF4 include
+<dt><code class="docutils literal notranslate"><span class="pre">HDF4_INCLUDE=&lt;HDF4</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>The configure script will automatically try to locate the HDF4 include
 files in the default locations for include files
 (<code class="docutils literal notranslate"><span class="pre">/usr/local/include</span></code> is usually not considered a default
 location!).
@@ -351,55 +351,47 @@ If <code class="docutils literal notranslate"><span class="pre">./configure</spa
 <code class="docutils literal notranslate"><span class="pre">mfhdf.h</span></code> include files, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with
 the location of these include files.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">HDF5_LIB=&lt;HDF5</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">The configure script will automatically try to locate the HDF5 library
+<dt><code class="docutils literal notranslate"><span class="pre">HDF5_LIB=&lt;HDF5</span> <span class="pre">library</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>The configure script will automatically try to locate the HDF5 library
 in the default locations for libraries (<code class="docutils literal notranslate"><span class="pre">/usr/local/lib</span></code> is usually
 not considered a default location!).
 If <code class="docutils literal notranslate"><span class="pre">./configure</span></code> complains that it can’t find the <code class="docutils literal notranslate"><span class="pre">hdf5</span></code> library
 files, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with the location of this
 library file.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">HDF5_INCLUDE=&lt;HDF5</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">The configure script will automatically try to locate the HDF5 include
+<dt><code class="docutils literal notranslate"><span class="pre">HDF5_INCLUDE=&lt;HDF5</span> <span class="pre">include</span> <span class="pre">file</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>The configure script will automatically try to locate the HDF5 include
 files in the default locations for include files
 (<code class="docutils literal notranslate"><span class="pre">/usr/local/include</span></code> is usually not considered a default location!).
 If <code class="docutils literal notranslate"><span class="pre">./configure</span></code> complains that it can’t find the <code class="docutils literal notranslate"><span class="pre">hdf5.h</span></code> include
 file, pass this option to <code class="docutils literal notranslate"><span class="pre">./configure</span></code> with the location of this
 include file.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">--enable-python</span></code> :</dt>
-<dd><p class="first last">By default HARP is built without the Python interface. Use this option
+<dt><code class="docutils literal notranslate"><span class="pre">--enable-python</span></code> :</dt><dd><p>By default HARP is built without the Python interface. Use this option
 to enable building of the interface to Python. Make sure that you choose
 the install prefix option (<code class="docutils literal notranslate"><span class="pre">--prefix</span></code>) such that the target location
 of the python package (e.g. <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;/lib/python3.7/site-packages</span></code>)
 ends up in your python path. Also, if you enable the Python interface
 then make sure you have installed the numpy and cffi packages for Python.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">PYTHON=&lt;Python</span> <span class="pre">executable&gt;</span></code> :</dt>
-<dd><p class="first last">If you want to build the Python interface you should also use this option
+<dt><code class="docutils literal notranslate"><span class="pre">PYTHON=&lt;Python</span> <span class="pre">executable&gt;</span></code> :</dt><dd><p>If you want to build the Python interface you should also use this option
 to tell the configuration script where your Python executable is located
 (e.g. <code class="docutils literal notranslate"><span class="pre">PYTHON=/usr/bin/python</span></code>). Make sure that you provide an absolute
 path for the Python executable (i.e. the path should start with a <code class="docutils literal notranslate"><span class="pre">/</span></code>).</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">--enable-R</span></code> :</dt>
-<dd><p class="first last">By default HARP is built without the R interface. Use this option to
+<dt><code class="docutils literal notranslate"><span class="pre">--enable-R</span></code> :</dt><dd><p>By default HARP is built without the R interface. Use this option to
 enable building of the interface to R. Make sure that you choose the
 install prefix option (<code class="docutils literal notranslate"><span class="pre">--prefix</span></code>) such that the target location
 of the R package (e.g. <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;/lib/R/site-library</span></code>) ends up in your R
 path.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">R=&lt;R</span> <span class="pre">executable&gt;</span></code> :</dt>
-<dd><p class="first last">If you want to build the R interface you might have to use this option to
+<dt><code class="docutils literal notranslate"><span class="pre">R=&lt;R</span> <span class="pre">executable&gt;</span></code> :</dt><dd><p>If you want to build the R interface you might have to use this option to
 tell the configuration script where your R executable is located
 (e.g. <code class="docutils literal notranslate"><span class="pre">R=/usr/bin/R</span></code>). Make sure that you provide an absolute path for
 the R executable (i.e. the path should start with a <code class="docutils literal notranslate"><span class="pre">/</span></code>).</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">--enable-idl</span></code> :</dt>
-<dd><p class="first last">By default HARP is built without the IDL interface.
+<dt><code class="docutils literal notranslate"><span class="pre">--enable-idl</span></code> :</dt><dd><p>By default HARP is built without the IDL interface.
 Use this option to enable building of the interface to IDL.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">IDL=&lt;IDL</span> <span class="pre">root</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">If you want to build the IDL interface you should also use this
+<dt><code class="docutils literal notranslate"><span class="pre">IDL=&lt;IDL</span> <span class="pre">root</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>If you want to build the IDL interface you should also use this
 option to tell the configuration script where you have installed IDL.
 The &lt;IDL root directory&gt; is the root directory of your IDL
 installation. It should contain for instance the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory with
@@ -407,12 +399,10 @@ the idl executable and an <code class="docutils literal notranslate"><span class
 <code class="docutils literal notranslate"><span class="pre">export.h</span></code>. Also make sure that you provide an absolute path for the
 IDL root directory (i.e. starting with a <code class="docutils literal notranslate"><span class="pre">/</span></code>).</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">--enable-matlab</span></code> :</dt>
-<dd><p class="first last">By default HARP is built without the MATLAB interface.
+<dt><code class="docutils literal notranslate"><span class="pre">--enable-matlab</span></code> :</dt><dd><p>By default HARP is built without the MATLAB interface.
 Use this option to enable building of the interface to MATLAB.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">MATLAB=&lt;MATLAB</span> <span class="pre">root</span> <span class="pre">directory&gt;</span></code> :</dt>
-<dd><p class="first last">If you want to build the MATLAB interface you should also use this
+<dt><code class="docutils literal notranslate"><span class="pre">MATLAB=&lt;MATLAB</span> <span class="pre">root</span> <span class="pre">directory&gt;</span></code> :</dt><dd><p>If you want to build the MATLAB interface you should also use this
 option to tell the configuration script where you have installed
 MATLAB. The &lt;MATLAB root directory&gt; is the root directory of your
 MATLAB installation. It should contain for instance the <code class="docutils literal notranslate"><span class="pre">bin</span></code>
@@ -430,7 +420,7 @@ configure would be:</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">If this completes successfully, you are now able to build the library by
+<li><p>If this completes successfully, you are now able to build the library by
 executing the <code class="docutils literal notranslate"><span class="pre">make</span></code> command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make
 </pre></div>
@@ -441,7 +431,7 @@ before you can use it). If you encountered any problems while building
 HARP and if you need help contact us (see the Feedback section at the
 bottom for contact information).</p>
 </li>
-<li><p class="first">In order to make use of the HARP library and tools, you should install
+<li><p>In order to make use of the HARP library and tools, you should install
 HARP as build in the previous step. Please make sure you have provided
 the appropriate installation directory option (<code class="docutils literal notranslate"><span class="pre">--prefix=&lt;installdir&gt;</span></code>)
 to the configure script, as explained in the previous section, if you do
@@ -451,7 +441,7 @@ running the configure script, issue the following command:</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">If you enabled the IDL interface then you will have to add
+<li><p>If you enabled the IDL interface then you will have to add
 <code class="docutils literal notranslate"><span class="pre">&lt;HARP</span> <span class="pre">installdir&gt;/lib/harp/idl</span></code> to your <code class="docutils literal notranslate"><span class="pre">DLM_PATH</span></code>. You do this by
 setting an <code class="docutils literal notranslate"><span class="pre">IDL_DLM_PATH</span></code> environment variable and add this setting to
 your system shell startup script (if you don’t now how to set environment
@@ -475,14 +465,14 @@ HARP or CODA functions using e.g.:</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">If you enabled the MATLAB interface then you should create a <code class="docutils literal notranslate"><span class="pre">startup.m</span></code>
+<li><p>If you enabled the MATLAB interface then you should create a <code class="docutils literal notranslate"><span class="pre">startup.m</span></code>
 file in a <code class="docutils literal notranslate"><span class="pre">matlab</span></code> directory in your home directory
 (<code class="docutils literal notranslate"><span class="pre">~/matlab/startup.m</span></code>) that contains the line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">addpath</span> <span class="o">&lt;</span><span class="n">HARP</span> <span class="n">installdir</span><span class="o">&gt;/</span><span class="n">lib</span><span class="o">/</span><span class="n">harp</span><span class="o">/</span><span class="n">matlab</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Make sure that the CODA definition path is correctly set.
+<li><p>Make sure that the CODA definition path is correctly set.
 If you followed the instructions normally, then HARP and CODA should be
 able to find the coda definition files (.codadef files) inside the
 installation path automatically.
@@ -499,7 +489,7 @@ file.</p>
 environment variable set that points to a different location than where
 the .codadef files that come with HARP are located.</p>
 </li>
-<li><p class="first">Make sure that the udunits2 xml path is correctly set.
+<li><p>Make sure that the udunits2 xml path is correctly set.
 If you followed the instructions normally, then HARP should be able to
 find the udunits2 xml files inside the installation path automatically.
 If you are getting ‘invalid unit’ errors then you may have to set the
@@ -595,7 +585,8 @@ your installation directory (<code class="docutils literal notranslate"><span cl
 components of the HARP package then create a topic on the Atmospheric Toolbox
 Forum:</p>
 <blockquote>
-<div><a class="reference external" href="https://forum.atmospherictoolbox.org/">https://forum.atmospherictoolbox.org/</a></div></blockquote>
+<div><p><a class="reference external" href="https://forum.atmospherictoolbox.org/">https://forum.atmospherictoolbox.org/</a></p>
+</div></blockquote>
 <p>If you are using the source package on a Unix based system, please provide a
 copy of the config.log file that is created when you run <code class="docutils literal notranslate"><span class="pre">./configure</span></code> and a
 copy of the output of <code class="docutils literal notranslate"><span class="pre">make</span></code> with your e-mail.</p>
@@ -610,28 +601,21 @@ functionality of HARP.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="conventions/index.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="HARP manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="conventions/index.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="HARP manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -640,27 +624,16 @@ functionality of HARP.</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>common derivations &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="next" title="aerosol extinction coefficient derivations" href="derivations/aerosol_extinction_coefficient.html" />
     <link rel="prev" title="Common formula" href="formula.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -154,6 +162,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -188,11 +197,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Algorithms</a> &raquo;</li>
         
@@ -201,7 +212,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -215,43 +226,45 @@
             
   <div class="section" id="common-derivations">
 <h1>common derivations</h1>
-<ol class="arabic">
-<li><p class="first">time dependent from time independent variable:</p>
+<blockquote>
+<div></div></blockquote>
+<ol class="arabic" id="time-dependent-from-time-independent-variable">
+<li><p>time dependent from time independent variable</p>
 <div class="math notranslate nohighlight">
 \[\forall t: x(t,:) = x(:)\]</div>
 </li>
-<li><p class="first">total uncertainty from random and systematic uncertainty:</p>
-<table border="1" class="docutils">
+<li id="derivation-total-uncertainty-from-random-and-systematic-uncertainty"><p>total uncertainty from random and systematic uncertainty</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="16%" />
-<col width="29%" />
-<col width="21%" />
-<col width="33%" />
+<col style="width: 16%" />
+<col style="width: 29%" />
+<col style="width: 21%" />
+<col style="width: 33%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\mu_{x}\)</span></td>
-<td>total uncertainty for a variable x</td>
-<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
-<td><cite>&lt;variable&gt;_uncertainty {:}</cite></td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mu_{x}\)</span></p></td>
+<td><p>total uncertainty for a variable x</p></td>
+<td><p>same as that of <span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td><p><cite>&lt;variable&gt;_uncertainty {:}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\mu^{r}_{x}\)</span></td>
-<td>uncertainty due to random effects
-for a variable x</td>
-<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
-<td><cite>&lt;variable&gt;_uncertainty_random {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mu^{r}_{x}\)</span></p></td>
+<td><p>uncertainty due to random effects
+for a variable x</p></td>
+<td><p>same as that of <span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td><p><cite>&lt;variable&gt;_uncertainty_random {:}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\mu^{s}_{x}\)</span></td>
-<td>uncertainty due to systematic
-effects for a variable x</td>
-<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
-<td><cite>&lt;variable&gt;_uncertainty_systematic {:}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mu^{s}_{x}\)</span></p></td>
+<td><p>uncertainty due to systematic
+effects for a variable x</p></td>
+<td><p>same as that of <span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td><p><cite>&lt;variable&gt;_uncertainty_systematic {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -259,31 +272,31 @@ effects for a variable x</td>
 <div class="math notranslate nohighlight">
 \[\mu_{x} = \sqrt{{\mu^{r}_{x}}^2 + {\mu^{s}_{x}}^2}\]</div>
 </li>
-<li><p class="first">total uncertainty from vertical covariance:</p>
-<table border="1" class="docutils">
+<li id="derivation-total-uncertainty-from-vertical-covariance"><p>total uncertainty from vertical covariance</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="15%" />
-<col width="27%" />
-<col width="22%" />
-<col width="36%" />
+<col style="width: 15%" />
+<col style="width: 27%" />
+<col style="width: 22%" />
+<col style="width: 36%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(S_{x}(i,j)\)</span></td>
-<td>covariance for a variable x</td>
-<td>square of that of <span class="math notranslate nohighlight">\(x\)</span></td>
-<td><cite>&lt;variable&gt;_covariance {:,vertical,vertical}</cite></td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(S_{x}(i,j)\)</span></p></td>
+<td><p>covariance for a variable x</p></td>
+<td><p>square of that of <span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td><p><cite>&lt;variable&gt;_covariance {:,vertical,vertical}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\mu_{x}(i)\)</span></td>
-<td>total uncertainty for a variable x</td>
-<td>same as that of <span class="math notranslate nohighlight">\(x\)</span></td>
-<td><cite>&lt;variable&gt;_uncertainty {:,vertical}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mu_{x}(i)\)</span></p></td>
+<td><p>total uncertainty for a variable x</p></td>
+<td><p>same as that of <span class="math notranslate nohighlight">\(x\)</span></p></td>
+<td><p><cite>&lt;variable&gt;_uncertainty {:,vertical}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -299,28 +312,21 @@ effects for a variable x</td>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="derivations/aerosol_extinction_coefficient.html" class="btn btn-neutral float-right" title="aerosol extinction coefficient derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="formula.html" class="btn btn-neutral" title="Common formula" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="derivations/aerosol_extinction_coefficient.html" class="btn btn-neutral float-right" title="aerosol extinction coefficient derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="formula.html" class="btn btn-neutral float-left" title="Common formula" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -329,27 +335,16 @@ effects for a variable x</td>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

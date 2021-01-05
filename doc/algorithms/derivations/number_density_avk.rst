@@ -1,7 +1,9 @@
 number density averaging kernel derivations
 ===========================================
 
-#. number density AVK of air component from column number density AVK:
+   .. _derivation_number_density_AVK_of_air_component_from_column_number_density_AVK:
+
+#. number density AVK of air component from column number density AVK
 
    ====================== ============================================= =================================== ===========================================================
    symbol                 description                                   unit                                variable name
@@ -24,7 +26,9 @@ number density averaging kernel derivations
       \end{cases}
 
 
-#. number density AVK from volume mixing ratio AVK:
+   .. _derivation_number_density_AVK_from_volume_mixing_ratio_AVK:
+
+#. number density AVK from volume mixing ratio AVK
 
    ======================== =============================================== =================================== =========================================================
    symbol                   description                                     unit                                variable name
@@ -47,7 +51,9 @@ number density averaging kernel derivations
       \end{cases}
 
 
-#. number density AVK from volume mixing ratio dry air AVK:
+   .. _derivation_number_density_AVK_from_volume_mixing_ratio_dry_air_AVK:
+
+#. number density AVK from volume mixing ratio dry air AVK
 
    ============================== ===================================================== =================================== =================================================================
    symbol                         description                                           unit                                variable name

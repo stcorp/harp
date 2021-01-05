@@ -1,49 +1,56 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>HARP manual &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="next" title="Installation" href="install.html" /> 
 
   
-  <script src="_static/js/modernizr.min.js"></script>
+  
 
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="next" title="Installation" href="install.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -67,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -91,6 +99,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -125,18 +134,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
       <li>HARP manual</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -285,8 +296,8 @@
 sensing data, model data, in-situ data, and ground based remote sensing data.
 The toolkit is composed of:</p>
 <ul class="simple">
-<li>A set of <a class="reference internal" href="#command-line-tools"><span class="std std-ref">command line tools</span></a></li>
-<li>A library of analysis functions</li>
+<li><p>A set of <a class="reference internal" href="#command-line-tools"><span class="std std-ref">command line tools</span></a></p></li>
+<li><p>A library of analysis functions</p></li>
 </ul>
 <p>The main goal of HARP is to assist in the inter-comparison of data sets. By
 appropriately chaining calls to HARP command line tools one can pre-process
@@ -369,30 +380,32 @@ products into HARP products.</p>
 <div class="section" id="a-typical-inter-comparison">
 <h2>A typical inter-comparison</h2>
 <p>Typical sequence when comparing two datasets of measurements:</p>
-<dl class="docutils">
-<dt>harpconvert …</dt>
-<dd>Convert all products that do not already follow the HARP format conventions
+<dl class="simple">
+<dt>harpconvert …</dt><dd><p>Convert all products that do not already follow the HARP format conventions
 to a common data format.
 Filter/convert the data in each file: remove unneeded
 parameters/measurements, add derived physical parameters, perform unit
-conversion, regrid dimensions, etc.</dd>
-<dt>harpcollocate matchup …</dt>
-<dd>Find the measurement pairs that match within the specified collocation
-criteria and save the result into a collocation result file.</dd>
-<dt>harpcollocate resample …</dt>
-<dd>Apply resampling to the collocation result file.</dd>
-<dt>harpconvert -a ‘collocate-left(&lt;csvfile&gt;)’ …</dt>
-<dd>Apply the collocation filter for each file in the primary dataset</dd>
-<dt>harpconvert -a ‘collocate-right(&lt;csvfile&gt;)’ …</dt>
-<dd>Apply the collocation filter for each file in the secondary dataset</dd>
+conversion, regrid dimensions, etc.</p>
+</dd>
+<dt>harpcollocate matchup …</dt><dd><p>Find the measurement pairs that match within the specified collocation
+criteria and save the result into a collocation result file.</p>
+</dd>
+<dt>harpcollocate resample …</dt><dd><p>Apply resampling to the collocation result file.</p>
+</dd>
+<dt>harpconvert -a ‘collocate-left(&lt;csvfile&gt;)’ …</dt><dd><p>Apply the collocation filter for each file in the primary dataset</p>
+</dd>
+<dt>harpconvert -a ‘collocate-right(&lt;csvfile&gt;)’ …</dt><dd><p>Apply the collocation filter for each file in the secondary dataset</p>
+</dd>
 </dl>
 <p>Input files can be verified with</p>
 <blockquote>
-<div>harpcheck …</div></blockquote>
+<div><p>harpcheck …</p>
+</div></blockquote>
 <p>and after each stage, the contents of each file can be inspected from the
 command line using:</p>
 <blockquote>
-<div>harpdump …</div></blockquote>
+<div><p>harpdump …</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -401,26 +414,20 @@ command line using:</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -429,27 +436,16 @@ command line using:</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

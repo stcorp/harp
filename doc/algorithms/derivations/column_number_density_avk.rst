@@ -1,7 +1,9 @@
 column number density averaging kernel derivations
 ==================================================
 
-#. column number density column AVK of air component from column number density AVK:
+   .. _derivation_column_number_density_column_AVK_of_air_component_from_column_number_density_AVK:
+
+#. column number density column AVK of air component from column number density AVK
 
    ====================== =============================================== =================================== ===========================================================
    symbol                 description                                     unit                                variable name
@@ -20,7 +22,9 @@ column number density averaging kernel derivations
       A^{c}_{x}(i) = \sum_{j}{A^{c}_{x}(j,i)}
 
 
-#. tropospheric column number density column AVK of air component from total column number density column AVK:
+   .. _derivation_tropospheric_column_number_density_column_AVK_of_air_component_from_total_column_number_density_column_AVK:
+
+#. tropospheric column number density column AVK of air component from total column number density column AVK
 
    ============================ ======================================================== =================================== ===============================================================
    symbol                       description                                              unit                                variable name
@@ -44,7 +48,9 @@ column number density averaging kernel derivations
       \end{cases}
 
 
-#. stratospheric column number density column AVK of air component from total column number density column AVK:
+   .. _derivation_stratospheric_column_number_density_column_AVK_of_air_component_from_total_column_number_density_column_AVK:
+
+#. stratospheric column number density column AVK of air component from total column number density column AVK
 
    ============================ ========================================================= =================================== ===============================================================
    symbol                       description                                               unit                                variable name
@@ -68,7 +74,9 @@ column number density averaging kernel derivations
       \end{cases}
 
 
-#. column number density AVK of air component from number density AVK:
+   .. _derivation_column_number_density_AVK_of_air_component_from_number_density_AVK:
+
+#. column number density AVK of air component from number density AVK
 
    ====================== ============================================= =================================== ===========================================================
    symbol                 description                                   unit                                variable name

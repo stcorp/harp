@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>geopotential height derivations &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="next" title="gravity derivations" href="gravity.html" />
     <link rel="prev" title="geopotential derivations" href="geopotential.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -154,6 +162,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -188,11 +197,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Algorithms</a> &raquo;</li>
         
@@ -201,7 +212,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -215,37 +226,39 @@
             
   <div class="section" id="geopotential-height-derivations">
 <h1>geopotential height derivations</h1>
-<ol class="arabic">
-<li><p class="first">geopotential height from geopotential</p>
-<table border="1" class="docutils">
+<blockquote>
+<div></div></blockquote>
+<ol class="arabic" id="derivation-geopotential-height-from-geopotential">
+<li><p>geopotential height from geopotential</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="16%" />
-<col width="24%" />
-<col width="29%" />
-<col width="31%" />
+<col style="width: 16%" />
+<col style="width: 24%" />
+<col style="width: 29%" />
+<col style="width: 31%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
-<td>mean earth gravity</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(g_{0}\)</span></p></td>
+<td><p>mean earth gravity</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{g}\)</span></td>
-<td>geopotential height</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>geopotential_height {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(z_{g}\)</span></p></td>
+<td><p>geopotential height</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>geopotential_height {:}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\Phi\)</span></td>
-<td>geopotential</td>
-<td><span class="math notranslate nohighlight">\(\frac{m^2}{s^2}\)</span></td>
-<td><cite>geopotential {:}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\Phi\)</span></p></td>
+<td><p>geopotential</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m^2}{s^2}\)</span></p></td>
+<td><p><cite>geopotential {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -254,51 +267,51 @@
 <div class="math notranslate nohighlight">
 \[z_{g} = \frac{\Phi}{g_{0}}\]</div>
 </li>
-<li><p class="first">geopotential height from altitude</p>
-<table border="1" class="docutils">
+<li id="derivation-geopotential-height-from-altitude"><p>geopotential height from altitude</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="19%" />
-<col width="31%" />
-<col width="23%" />
-<col width="27%" />
+<col style="width: 19%" />
+<col style="width: 31%" />
+<col style="width: 23%" />
+<col style="width: 27%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
-<td>mean earth gravity</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(g_{0}\)</span></p></td>
+<td><p>mean earth gravity</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>nominal gravity at sea level</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(g\)</span></p></td>
+<td><p>nominal gravity at sea level</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
-<td>local earth curvature radius</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td>&#160;</td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(R\)</span></p></td>
+<td><p>local earth curvature radius</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z\)</span></td>
-<td>altitude</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>altitude {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(z\)</span></p></td>
+<td><p>altitude</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>altitude {:}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{g}\)</span></td>
-<td>geopotential height</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>geopotential_height {:}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(z_{g}\)</span></p></td>
+<td><p>geopotential height</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>geopotential_height {:}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
-<td>latitude</td>
-<td><span class="math notranslate nohighlight">\(degN\)</span></td>
-<td><cite>latitude {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\phi\)</span></p></td>
+<td><p>latitude</p></td>
+<td><p><span class="math notranslate nohighlight">\(degN\)</span></p></td>
+<td><p><cite>latitude {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -311,61 +324,61 @@
       \left(\frac{\sin(\frac{\pi}{180}\phi)}{6378137.0}\right)^2}} \\
    z_{g} &amp; = &amp; \frac{g}{g_{0}}\frac{Rz}{z + R}
 \end{eqnarray}</div></li>
-<li><p class="first">geopotential height from pressure</p>
-<table border="1" class="docutils">
+<li id="derivation-geopotential-height-from-pressure"><p>geopotential height from pressure</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="16%" />
-<col width="25%" />
-<col width="29%" />
-<col width="30%" />
+<col style="width: 16%" />
+<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 30%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
-<td>mean earth gravity</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(g_{0}\)</span></p></td>
+<td><p>mean earth gravity</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(M_{air}(i)\)</span></td>
-<td>molar mass of total air</td>
-<td><span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span></td>
-<td><cite>molar_mass {:,vertical}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(M_{air}(i)\)</span></p></td>
+<td><p>molar mass of total air</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span></p></td>
+<td><p><cite>molar_mass {:,vertical}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(p(i)\)</span></td>
-<td>pressure</td>
-<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
-<td><cite>pressure {:,vertical}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(p(i)\)</span></p></td>
+<td><p>pressure</p></td>
+<td><p><span class="math notranslate nohighlight">\(Pa\)</span></p></td>
+<td><p><cite>pressure {:,vertical}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(p_{surf}\)</span></td>
-<td>surface pressure</td>
-<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
-<td><cite>surface_pressure {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(p_{surf}\)</span></p></td>
+<td><p>surface pressure</p></td>
+<td><p><span class="math notranslate nohighlight">\(Pa\)</span></p></td>
+<td><p><cite>surface_pressure {:}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
-<td>universal gas constant</td>
-<td><span class="math notranslate nohighlight">\(\frac{kg m^2}{K mol s^2}\)</span></td>
-<td>&#160;</td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(R\)</span></p></td>
+<td><p>universal gas constant</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{kg m^2}{K mol s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(T(i)\)</span></td>
-<td>temperature</td>
-<td><span class="math notranslate nohighlight">\(K\)</span></td>
-<td><cite>temperature {:,vertical}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(T(i)\)</span></p></td>
+<td><p>temperature</p></td>
+<td><p><span class="math notranslate nohighlight">\(K\)</span></p></td>
+<td><p><cite>temperature {:,vertical}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{g}(i)\)</span></td>
-<td>geopotential height</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>geopotential_height {:,vertical}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(z_{g}(i)\)</span></p></td>
+<td><p>geopotential height</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>geopotential_height {:,vertical}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></td>
-<td>surface geopotential height</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>surface_geopotential_height {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></p></td>
+<td><p>surface geopotential height</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>surface_geopotential_height {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -381,36 +394,36 @@ and <span class="math notranslate nohighlight">\(p^{B}(1,2)\)</span> (which is g
    z_{g}(1) &amp; = &amp; z_{g,surf} + 10^{3}\frac{T(1)}{M_{air}(1)}\frac{R}{g_{0}}\ln\left(\frac{p_{surf}}{p(i)}\right) \\
    z_{g}(i) &amp; = &amp; z_{g}(i-1) + 10^{3}\frac{T(i-1)+T(i)}{M_{air}(i-1)+M_{air}(i)}\frac{R}{g_{0}}\ln\left(\frac{p(i-1)}{p(i)}\right), 1 &lt; i \leq N
 \end{eqnarray}</div></li>
-<li><p class="first">surface geopotential height from surface geopotential</p>
-<table border="1" class="docutils">
+<li id="derivation-surface-geopotential-height-from-surface-geopotential"><p>surface geopotential height from surface geopotential</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="19%" />
-<col width="26%" />
-<col width="23%" />
-<col width="32%" />
+<col style="width: 19%" />
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 32%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
-<td>mean earth gravity</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(g_{0}\)</span></p></td>
+<td><p>mean earth gravity</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></td>
-<td>surface geopotential height</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>surface_geopotential_height {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></p></td>
+<td><p>surface geopotential height</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>surface_geopotential_height {:}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\Phi_{surf}\)</span></td>
-<td>surface geopotential</td>
-<td><span class="math notranslate nohighlight">\(\frac{m^2}{s^2}\)</span></td>
-<td><cite>surface_geopotential {:}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\Phi_{surf}\)</span></p></td>
+<td><p>surface geopotential</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m^2}{s^2}\)</span></p></td>
+<td><p><cite>surface_geopotential {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -419,51 +432,51 @@ or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
 \[z_{g,surf} = \frac{\Phi_{surf}}{g_{0}}\]</div>
 </li>
-<li><p class="first">surface geopotential height from surface altitude</p>
-<table border="1" class="docutils">
+<li id="derivation-surface-geopotential-height-from-surface-altitude"><p>surface geopotential height from surface altitude</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="18%" />
-<col width="28%" />
-<col width="21%" />
-<col width="33%" />
+<col style="width: 18%" />
+<col style="width: 28%" />
+<col style="width: 21%" />
+<col style="width: 33%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
-<td>mean earth gravity</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(g_{0}\)</span></p></td>
+<td><p>mean earth gravity</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g\)</span></td>
-<td>nominal gravity at sea level</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(g\)</span></p></td>
+<td><p>nominal gravity at sea level</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(R\)</span></td>
-<td>local earth curvature radius</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td>&#160;</td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(R\)</span></p></td>
+<td><p>local earth curvature radius</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(z_{surf}\)</span></td>
-<td>surface altitude</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>surface_altitude {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(z_{surf}\)</span></p></td>
+<td><p>surface altitude</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>surface_altitude {:}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></td>
-<td>surface geopotential height</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>surface_geopotential_height {:}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(z_{g,surf}\)</span></p></td>
+<td><p>surface geopotential height</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>surface_geopotential_height {:}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\phi\)</span></td>
-<td>latitude</td>
-<td><span class="math notranslate nohighlight">\(degN\)</span></td>
-<td><cite>latitude {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\phi\)</span></p></td>
+<td><p>latitude</p></td>
+<td><p><span class="math notranslate nohighlight">\(degN\)</span></p></td>
+<td><p><cite>latitude {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -485,28 +498,21 @@ or no dimensions at all.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="gravity.html" class="btn btn-neutral float-right" title="gravity derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="geopotential.html" class="btn btn-neutral" title="geopotential derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="gravity.html" class="btn btn-neutral float-right" title="gravity derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="geopotential.html" class="btn btn-neutral float-left" title="geopotential derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -515,27 +521,16 @@ or no dimensions at all.</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

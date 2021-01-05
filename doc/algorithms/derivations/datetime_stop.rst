@@ -1,6 +1,8 @@
 datetime stop derivations
 =========================
 
+   .. _derivation_datetime_stop_from_start_and_length:
+
 #. datetime stop from start and length
 
    ================ ============== ========================== =====================
@@ -17,6 +19,8 @@ datetime stop derivations
 
       t_{e} = t_{s} + \Delta t
 
+
+   .. _derivation_datetime_stop_from_datetime_bounds:
 
 #. datetime stop from datetime_bounds
 

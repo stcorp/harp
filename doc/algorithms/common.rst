@@ -1,14 +1,18 @@
 common derivations
 ==================
 
-#. time dependent from time independent variable:
+   .. _time dependent_from_time_independent_variable:
+
+#. time dependent from time independent variable
 
    .. math::
 
       \forall t: x(t,:) = x(:)
 
 
-#. total uncertainty from random and systematic uncertainty:
+   .. _derivation_total_uncertainty_from_random_and_systematic_uncertainty:
+
+#. total uncertainty from random and systematic uncertainty
 
    =================== ================================== ========================= =======================================
    symbol              description                        unit                      variable name
@@ -27,7 +31,9 @@ common derivations
       \mu_{x} = \sqrt{{\mu^{r}_{x}}^2 + {\mu^{s}_{x}}^2}
 
 
-#. total uncertainty from vertical covariance:
+   .. _derivation_total_uncertainty_from_vertical_covariance:
+
+#. total uncertainty from vertical covariance
 
    ================== ================================== =========================== =============================================
    symbol             description                        unit                        variable name

@@ -1,6 +1,8 @@
 solar azimuth angle derivations
 ===============================
 
+   .. _derivation_solar_azimuth_angle_from_latitude_and_solar_declination_hour_zenith_angles:
+
 #. solar azimuth angle from latitude and solar declination/hour/zenith angles
 
    =================== ======================= ========================== ================================

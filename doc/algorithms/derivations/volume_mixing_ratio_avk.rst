@@ -1,7 +1,9 @@
 volume mixing ratio averaging kernel derivations
 ================================================
 
-#. volume mixing ratio AVK from number density AVK:
+   .. _derivation_volume_mixing_ratio_AVK_from_number_density_AVK:
+
+#. volume mixing ratio AVK from number density AVK
 
    ======================== =============================================== =================================== =========================================================
    symbol                   description                                     unit                                variable name
@@ -24,7 +26,9 @@ volume mixing ratio averaging kernel derivations
       \end{cases}
 
 
-#. volume mixing ratio dry air AVK from number density AVK:
+   .. _derivation_volume_mixing_ratio_dry_air_AVK_from_number_density_AVK:
+
+#. volume mixing ratio dry air AVK from number density AVK
 
    ============================== ===================================================== =================================== =================================================================
    symbol                         description                                           unit                                variable name

@@ -1,6 +1,8 @@
 solar hour angle derivations
 ============================
 
+   .. _derivation_solar_hour_angle_from_datetime_and_longitude:
+
 #. solar hour angle from datetime and longitude
 
    =================== ======================= ========================== ================================

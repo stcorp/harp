@@ -1,6 +1,8 @@
 mass mixing ratio derivations
 =============================
 
+   .. _derivation_mass_mixing_ratio_from_mass_density:
+
 #. mass mixing ratio from mass density
 
    ================ ==================================== ====================== =================================
@@ -20,6 +22,8 @@ mass mixing ratio derivations
 
       q_{x} = \frac{\rho_{x}}{\rho}
 
+
+   .. _derivation_mass_mixing_ratio_from_volume_mixing_ratio:
 
 #. mass mixing ratio from volume mixing ratio
 
@@ -42,6 +46,8 @@ mass mixing ratio derivations
       q_{x} = \nu_{x}\frac{M_{x}}{M_{air}}
 
 
+   .. _derivation_mass_mixing_ratio_from_mass_mixing_ratio_dry_air:
+
 #. mass mixing ratio from mass mixing ratio dry air
 
    ==================== ==================================== ===================== =========================================
@@ -63,6 +69,8 @@ mass mixing ratio derivations
       q_{x} = \bar{q}_{x}q_{dry\_air}
 
 
+   .. _derivation_mass_mixing_ratio_dry_air_from_mass_density:
+
 #. mass mixing ratio dry air from mass density
 
    ======================= ==================================== ====================== =========================================
@@ -82,6 +90,8 @@ mass mixing ratio derivations
 
       q_{x} = \frac{\rho_{x}}{\rho_{dry\_air}}
 
+
+   .. _derivation_mass_mixing_ratio_dry_air_from_volume_mixing_ratio_dry_air:
 
 #. mass mixing ratio dry air from volume mixing ratio dry air
 
@@ -104,6 +114,8 @@ mass mixing ratio derivations
       \bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}
 
 
+   .. _derivation_mass_mixing_ratio_dry_air_from_mass_mixing_ratio:
+
 #. mass mixing ratio dry air from mass mixing ratio
 
    ==================== ==================================== ===================== =========================================
@@ -125,6 +137,8 @@ mass mixing ratio derivations
       \bar{q}_{x} = \frac{q_{x}}{q_{dry\_air}}
 
 
+   .. _derivation_dry_air_mass_mixing_ratio_from_H2O_mass_mixing_ratio:
+
 #. dry air mass mixing ratio from H2O mass mixing ratio
 
    ==================== ============================ ===================== ===============================
@@ -143,6 +157,8 @@ mass mixing ratio derivations
 
       q_{dry\_air} = 1 - q_{H_{2}O}
 
+
+  .. _derivation_H2O_mass_mixing_ratio_from_dry_air_mass_mixing_ratio:
 
 #. H2O mass mixing ratio from dry air mass mixing ratio
 

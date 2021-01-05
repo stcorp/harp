@@ -1,6 +1,8 @@
 sensor elevation angle derivations
 ==================================
 
+   .. _sensor elevation_angle_from_sensor_zenith_angle:
+
 #. sensor elevation angle from sensor zenith angle
 
    ================== ====================== =========== ============================

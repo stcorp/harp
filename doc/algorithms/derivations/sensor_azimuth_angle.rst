@@ -1,6 +1,8 @@
 sensor azimuth angle derivations
 ================================
 
+   .. _derivation_sensor_azimuth_angle_from_viewing_azimuth_angle:
+
 #. sensor azimuth angle from viewing azimuth angle
 
    =================== ===================== =========== ===========================

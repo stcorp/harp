@@ -1,6 +1,8 @@
 aerosol extinction coefficient derivations
 ==========================================
 
+   .. _derivation_aerosol_extinction_coefficient_from_aerosol_optical_depth:
+
 #. aerosol extinction coefficient from aerosol optical depth
 
    ================ =========================================== =================== ====================================

@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>sensor azimuth angle derivations &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="next" title="sensor elevation angle derivations" href="sensor_elevation_angle.html" />
     <link rel="prev" title="scattering angle derivations" href="scattering_angle.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -154,6 +162,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -188,11 +197,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Algorithms</a> &raquo;</li>
         
@@ -201,7 +212,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -215,32 +226,34 @@
             
   <div class="section" id="sensor-azimuth-angle-derivations">
 <h1>sensor azimuth angle derivations</h1>
-<ol class="arabic">
-<li><p class="first">sensor azimuth angle from viewing azimuth angle</p>
-<table border="1" class="docutils">
+<blockquote>
+<div></div></blockquote>
+<ol class="arabic" id="derivation-sensor-azimuth-angle-from-viewing-azimuth-angle">
+<li><p>sensor azimuth angle from viewing azimuth angle</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="24%" />
-<col width="27%" />
-<col width="14%" />
-<col width="35%" />
+<col style="width: 24%" />
+<col style="width: 27%" />
+<col style="width: 14%" />
+<col style="width: 35%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\varphi_{S}\)</span></td>
-<td>sensor azimuth angle</td>
-<td><span class="math notranslate nohighlight">\(deg\)</span></td>
-<td><cite>sensor_azimuth_angle {:}</cite></td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\varphi_{S}\)</span></p></td>
+<td><p>sensor azimuth angle</p></td>
+<td><p><span class="math notranslate nohighlight">\(deg\)</span></p></td>
+<td><p><cite>sensor_azimuth_angle {:}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\varphi_{V}\)</span></td>
-<td>viewing azimuth angle</td>
-<td><span class="math notranslate nohighlight">\(deg\)</span></td>
-<td><cite>viewing_azimuth_angle {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\varphi_{V}\)</span></p></td>
+<td><p>viewing azimuth angle</p></td>
+<td><p><span class="math notranslate nohighlight">\(deg\)</span></p></td>
+<td><p><cite>viewing_azimuth_angle {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -256,28 +269,21 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="sensor_elevation_angle.html" class="btn btn-neutral float-right" title="sensor elevation angle derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="scattering_angle.html" class="btn btn-neutral" title="scattering angle derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="sensor_elevation_angle.html" class="btn btn-neutral float-right" title="sensor elevation angle derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="scattering_angle.html" class="btn btn-neutral float-left" title="scattering angle derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -286,27 +292,16 @@
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

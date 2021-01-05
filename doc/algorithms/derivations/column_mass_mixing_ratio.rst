@@ -1,6 +1,8 @@
 column mass mixing ratio derivations
 ====================================
 
+   .. _derivation_column_mass_mixing_ratio_from_column_mass_density:
+
 #. column mass mixing ratio from column mass density
 
    ================== ==================================== ====================== ========================================
@@ -21,7 +23,9 @@ column mass mixing ratio derivations
       q_{x} = \frac{\sigma_{x}}{\sigma}
 
 
-#. column mass mixing ratio from column mass density
+   .. _derivation_column_mass_mixing_ratio_dry_air_from_column_mass_density:
+
+#. column mass mixing ratio dry air from column mass density
 
    ========================= ==================================== ====================== ================================================
    symbol                    description                          unit                   variable name
@@ -40,6 +44,8 @@ column mass mixing ratio derivations
 
       \bar{q}_{x} = \frac{\sigma_{x}}{\sigma_{dry\_air}}
 
+
+   .. _derivation_column_mass_mixing_ratio_from_column_volume_mixing_ratio:
 
 #. column mass mixing ratio from column volume mixing ratio
 
@@ -62,6 +68,8 @@ column mass mixing ratio derivations
       q_{x} = \nu_{x}\frac{M_{x}}{M_{air}}
 
 
+   .. _derivation_column_mass_mixing_ratio_dry_air_from_column_volume_mixing_ratio_dry_air:
+
 #. column mass mixing ratio dry air from column volume mixing ratio dry air
 
    ===================== ======================================== ===================== ==================================================
@@ -83,6 +91,8 @@ column mass mixing ratio derivations
       \bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}
 
 
+   .. _derivation_stratospheric_column_mass_mixing_ratio_dry_air_from_stratospheric_column_volume_mixing_ratio_dry_air:
+
 #. stratospheric column mass mixing ratio dry air from stratospheric column volume mixing ratio dry air
 
    ===================== ======================================== ===================== ================================================================
@@ -103,6 +113,8 @@ column mass mixing ratio derivations
 
       \bar{q}_{x} = \bar{\nu}_{x}\frac{M_{x}}{M_{dry\_air}}
 
+
+   .. _derivation_tropospheric_column_mass_mixing_ratio_dry_air_from_tropospheric_column_volume_mixing_ratio_dry_air:
 
 #. tropospheric column mass mixing ratio dry air from tropospheric column volume mixing ratio dry air
 

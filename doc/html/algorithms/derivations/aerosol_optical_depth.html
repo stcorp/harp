@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>aerosol optical depth derivations &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="next" title="angstrom exponent derivations" href="angstrom_exponent.html" />
     <link rel="prev" title="aerosol extinction coefficient derivations" href="aerosol_extinction_coefficient.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -154,6 +162,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -188,11 +197,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Algorithms</a> &raquo;</li>
         
@@ -201,7 +212,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -215,32 +226,34 @@
             
   <div class="section" id="aerosol-optical-depth-derivations">
 <h1>aerosol optical depth derivations</h1>
-<ol class="arabic">
-<li><p class="first">total aerosol optical depth from partial aerosol optical depth profile</p>
-<table border="1" class="docutils">
+<blockquote>
+<div></div></blockquote>
+<ol class="arabic" id="derivation-total-aerosol-optical-depth-from-partial-aerosol-optical-depth-profile">
+<li><p>total aerosol optical depth from partial aerosol optical depth profile</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="17%" />
-<col width="31%" />
-<col width="10%" />
-<col width="41%" />
+<col style="width: 17%" />
+<col style="width: 31%" />
+<col style="width: 10%" />
+<col style="width: 41%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\tau\)</span></td>
-<td>total aerosol optical depth</td>
-<td><span class="math notranslate nohighlight">\(-\)</span></td>
-<td><cite>aerosol_optical_depth {:}</cite></td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\tau\)</span></p></td>
+<td><p>total aerosol optical depth</p></td>
+<td><p><span class="math notranslate nohighlight">\(-\)</span></p></td>
+<td><p><cite>aerosol_optical_depth {:}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\tau(i)\)</span></td>
-<td>aerosol optical depth</td>
-<td><span class="math notranslate nohighlight">\(-\)</span></td>
-<td><cite>aerosol_optical_depth {:,vertical}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\tau(i)\)</span></p></td>
+<td><p>aerosol optical depth</p></td>
+<td><p><span class="math notranslate nohighlight">\(-\)</span></p></td>
+<td><p><cite>aerosol_optical_depth {:,vertical}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -249,36 +262,36 @@ or no dimensions at all.</p>
 <div class="math notranslate nohighlight">
 \[\tau = \sum_{i}{\tau(i)}\]</div>
 </li>
-<li><p class="first">aerosol optical depth from aerosol extinction coefficient</p>
-<table border="1" class="docutils">
+<li id="derivation-aerosol-optical-depth-from-aerosol-extinction-coefficient"><p>aerosol optical depth from aerosol extinction coefficient</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="14%" />
-<col width="38%" />
-<col width="17%" />
-<col width="32%" />
+<col style="width: 14%" />
+<col style="width: 38%" />
+<col style="width: 17%" />
+<col style="width: 32%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">description</th>
-<th class="head">unit</th>
-<th class="head">variable name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(z^{B}(l)\)</span></td>
-<td>altitude boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><cite>altitude_bounds {:,2}</cite></td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(z^{B}(l)\)</span></p></td>
+<td><p>altitude boundaries (<span class="math notranslate nohighlight">\(l \in \{1,2\}\)</span>)</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><cite>altitude_bounds {:,2}</cite></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\sigma\)</span></td>
-<td>aerosol extinction coefficient</td>
-<td><span class="math notranslate nohighlight">\(\frac{1}{m}\)</span></td>
-<td><cite>aerosol_extinction_coefficient {:}</cite></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\sigma\)</span></p></td>
+<td><p>aerosol extinction coefficient</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{1}{m}\)</span></p></td>
+<td><p><cite>aerosol_extinction_coefficient {:}</cite></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(\tau\)</span></td>
-<td>aerosol optical depth</td>
-<td><span class="math notranslate nohighlight">\(-\)</span></td>
-<td><cite>aerosol_optical_depth {:}</cite></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\tau\)</span></p></td>
+<td><p>aerosol optical depth</p></td>
+<td><p><span class="math notranslate nohighlight">\(-\)</span></p></td>
+<td><p><cite>aerosol_optical_depth {:}</cite></p></td>
 </tr>
 </tbody>
 </table>
@@ -295,28 +308,21 @@ or no dimensions at all.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="angstrom_exponent.html" class="btn btn-neutral float-right" title="angstrom exponent derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="aerosol_extinction_coefficient.html" class="btn btn-neutral" title="aerosol extinction coefficient derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="angstrom_exponent.html" class="btn btn-neutral float-right" title="angstrom exponent derivations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="aerosol_extinction_coefficient.html" class="btn btn-neutral float-left" title="aerosol extinction coefficient derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -325,27 +331,16 @@ or no dimensions at all.</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

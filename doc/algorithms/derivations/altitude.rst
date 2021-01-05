@@ -1,6 +1,8 @@
 altitude derivations
 ====================
 
+   .. _derivation_altitude_from_geopotential_height:
+
 #. altitude from geopotential height
 
    ================= ============================ ===================== =========================
@@ -28,6 +30,8 @@ altitude derivations
       \end{eqnarray}
 
 
+   .. _derivation_altitude_from_bounds:
+
 #. altitude from bounds
 
    ================ =========================================== ========= =======================
@@ -44,6 +48,8 @@ altitude derivations
       z = \frac{z^{B}(2) + z^{B}(1)}{2}
 
 
+   .. _derivation_altitude_from_sensor_altitude:
+
 #. altitude from sensor altitude
 
    ================= ====================== ========= =====================
@@ -59,6 +65,8 @@ altitude derivations
 
       z = z_{instr}
 
+
+   .. _derivation_altitude_from_pressure:
 
 #. altitude from pressure
 
@@ -108,6 +116,8 @@ altitude derivations
       \end{eqnarray}
 
 
+   .. _derivation_surface_altitude_from_surface_geopotential_height:
+
 #. surface altitude from surface geopotential height
 
    ================== ============================ ===================== =================================
@@ -135,6 +145,8 @@ altitude derivations
          z_{surf} & = & \frac{g_{0}Rz_{g,surf}}{gR - g_{0}z_{g,surf}}
       \end{eqnarray}
 
+
+   .. _derivation_tropopause_altitude_from_temperature_and_altitude_pressure:
 
 #. tropopause altitude from temperature and altitude/pressure
 

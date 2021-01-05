@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Python interface &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="R interface" href="R.html" />
     <link rel="prev" title="MATLAB interface" href="matlab.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -104,6 +112,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -138,18 +147,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Python interface</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -202,22 +213,22 @@ Python by <code class="docutils literal notranslate"><span class="pre">None</spa
 which is a list of dimension types. For each dimension of a variable, the
 <code class="docutils literal notranslate"><span class="pre">dimension</span></code> attribute indicates the dimension type it is associated with.</p>
 <p>The dimension types supported by HARP are:</p>
-<dl class="docutils">
-<dt>time</dt>
-<dd>Temporal dimension; this is the only appendable dimension.</dd>
-<dt>vertical</dt>
-<dd>Vertical dimension, indicating height or depth.</dd>
-<dt>spectral</dt>
-<dd>Spectral dimension, associated with wavelength, wavenumber, or frequency.</dd>
-<dt>latitude</dt>
-<dd>Latitude dimension, only to be used for the latitude axis of a regular
-(latitude, longitude) grid.</dd>
-<dt>longitude</dt>
-<dd>Longitude dimension, only to be used for the longitude axis of a regular
-(latitude, longitude) grid.</dd>
-<dt>independent</dt>
-<dd>Independent dimension, used to index other quantities, such as the corner
-coordinates of ground pixel polygons.</dd>
+<dl class="simple">
+<dt>time</dt><dd><p>Temporal dimension; this is the only appendable dimension.</p>
+</dd>
+<dt>vertical</dt><dd><p>Vertical dimension, indicating height or depth.</p>
+</dd>
+<dt>spectral</dt><dd><p>Spectral dimension, associated with wavelength, wavenumber, or frequency.</p>
+</dd>
+<dt>latitude</dt><dd><p>Latitude dimension, only to be used for the latitude axis of a regular
+(latitude, longitude) grid.</p>
+</dd>
+<dt>longitude</dt><dd><p>Longitude dimension, only to be used for the longitude axis of a regular
+(latitude, longitude) grid.</p>
+</dd>
+<dt>independent</dt><dd><p>Independent dimension, used to index other quantities, such as the corner
+coordinates of ground pixel polygons.</p>
+</dd>
 </dl>
 </div>
 <div class="section" id="data-types">
@@ -227,22 +238,22 @@ from the C domain to the Python domain and back. This section describes the
 relation between types in the C domain and types in the Python domain.</p>
 <p>The table below shows the type map that is used to convert the high level
 concepts product and variable.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="45%" />
-<col width="55%" />
+<col style="width: 45%" />
+<col style="width: 55%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">C type</th>
-<th class="head">Python type</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>C type</p></th>
+<th class="head"><p>Python type</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>harp_product</td>
-<td>harp.Product</td>
+<tbody>
+<tr class="row-even"><td><p>harp_product</p></td>
+<td><p>harp.Product</p></td>
 </tr>
-<tr class="row-odd"><td>harp_variable</td>
-<td>harp.Variable</td>
+<tr class="row-odd"><td><p>harp_variable</p></td>
+<td><p>harp.Variable</p></td>
 </tr>
 </tbody>
 </table>
@@ -259,50 +270,50 @@ type map.</p>
 <p>Zero-terminated C strings are always converted to instances of type <code class="docutils literal notranslate"><span class="pre">str</span></code> in
 Python. See section <a class="reference internal" href="#unicode-details"><span class="std std-ref">Unicode</span></a> for details on unicode
 decoding in Python 3.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="28%" />
-<col width="25%" />
-<col width="20%" />
-<col width="28%" />
+<col style="width: 28%" />
+<col style="width: 25%" />
+<col style="width: 20%" />
+<col style="width: 28%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP data type</th>
-<th class="head">NumPy dtype</th>
-<th class="head">Python type</th>
-<th class="head">unicode decoding</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>HARP data type</p></th>
+<th class="head"><p>NumPy dtype</p></th>
+<th class="head"><p>Python type</p></th>
+<th class="head"><p>unicode decoding</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>harp_type_int8</td>
-<td>numpy.int8</td>
-<td>int</td>
-<td>&#160;</td>
+<tbody>
+<tr class="row-even"><td><p>harp_type_int8</p></td>
+<td><p>numpy.int8</p></td>
+<td><p>int</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>harp_type_int16</td>
-<td>numpy.int16</td>
-<td>int</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>harp_type_int16</p></td>
+<td><p>numpy.int16</p></td>
+<td><p>int</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>harp_type_int32</td>
-<td>numpy.int32</td>
-<td>int</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>harp_type_int32</p></td>
+<td><p>numpy.int32</p></td>
+<td><p>int</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>harp_type_float</td>
-<td>numpy.float32</td>
-<td>float</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>harp_type_float</p></td>
+<td><p>numpy.float32</p></td>
+<td><p>float</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>harp_type_double</td>
-<td>numpy.float64</td>
-<td>float</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>harp_type_double</p></td>
+<td><p>numpy.float64</p></td>
+<td><p>float</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>harp_type_string</td>
-<td>numpy.object_</td>
-<td>str</td>
-<td>Python 3</td>
+<tr class="row-odd"><td><p>harp_type_string</p></td>
+<td><p>numpy.object_</p></td>
+<td><p>str</p></td>
+<td><p>Python 3</p></td>
 </tr>
 </tbody>
 </table>
@@ -326,141 +337,141 @@ according to the rules described above is assumed to be numeric. An attempt will
 be made to determine the minimal HARP data type that it, or its elements, can be
 safely cast to (according to the function <code class="docutils literal notranslate"><span class="pre">numpy.can_cast()</span></code> using the
 <code class="docutils literal notranslate"><span class="pre">'safe'</span></code> casting option). See the type map for details.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="13%" />
-<col width="12%" />
-<col width="14%" />
-<col width="15%" />
-<col width="19%" />
-<col width="14%" />
-<col width="14%" />
+<col style="width: 13%" />
+<col style="width: 12%" />
+<col style="width: 14%" />
+<col style="width: 15%" />
+<col style="width: 19%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Python type</th>
-<th class="head">NumPy dtype</th>
-<th class="head">type test</th>
-<th class="head">array element type</th>
-<th class="head">array element type test</th>
-<th class="head">HARP data type</th>
-<th class="head">unicode encoding</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Python type</p></th>
+<th class="head"><p>NumPy dtype</p></th>
+<th class="head"><p>type test</p></th>
+<th class="head"><p>array element type</p></th>
+<th class="head"><p>array element type test</p></th>
+<th class="head"><p>HARP data type</p></th>
+<th class="head"><p>unicode encoding</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="9">numpy.ndarray
-numpy.generic</td>
-<td rowspan="2">numpy.object_</td>
-<td rowspan="2">numpy.issubdtype</td>
-<td>str</td>
-<td>isinstance</td>
-<td>harp_type_string</td>
-<td>Python 3</td>
+<tbody>
+<tr class="row-even"><td rowspan="9"><p>numpy.ndarray
+numpy.generic</p></td>
+<td rowspan="2"><p>numpy.object_</p></td>
+<td rowspan="2"><p>numpy.issubdtype</p></td>
+<td><p>str</p></td>
+<td><p>isinstance</p></td>
+<td><p>harp_type_string</p></td>
+<td><p>Python 3</p></td>
 </tr>
-<tr class="row-odd"><td>bytes</td>
-<td>isinstance</td>
-<td>harp_type_string</td>
-<td>no</td>
+<tr class="row-odd"><td><p>bytes</p></td>
+<td><p>isinstance</p></td>
+<td><p>harp_type_string</p></td>
+<td><p>no</p></td>
 </tr>
-<tr class="row-even"><td>numpy.str_</td>
-<td>numpy.issubdtype</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_string</td>
-<td>Python 3</td>
+<tr class="row-even"><td><p>numpy.str_</p></td>
+<td><p>numpy.issubdtype</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_string</p></td>
+<td><p>Python 3</p></td>
 </tr>
-<tr class="row-odd"><td>numpy.bytes_</td>
-<td>numpy.issubdtype</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_string</td>
-<td>no</td>
+<tr class="row-odd"><td><p>numpy.bytes_</p></td>
+<td><p>numpy.issubdtype</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_string</p></td>
+<td><p>no</p></td>
 </tr>
-<tr class="row-even"><td>numpy.int8</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_int8</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>numpy.int8</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_int8</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>numpy.int16</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_int16</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>numpy.int16</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_int16</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>numpy.int32</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_int32</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>numpy.int32</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_int32</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>numpy.float32</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_float32</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>numpy.float32</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_float32</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>numpy.float64</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_float64</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>numpy.float64</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_float64</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>str</td>
-<td>&#160;</td>
-<td>isinstance</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_string</td>
-<td>Python 3</td>
+<tr class="row-odd"><td><p>str</p></td>
+<td></td>
+<td><p>isinstance</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_string</p></td>
+<td><p>Python 3</p></td>
 </tr>
-<tr class="row-even"><td>bytes</td>
-<td>&#160;</td>
-<td>isinstance</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_string</td>
-<td>no</td>
+<tr class="row-even"><td><p>bytes</p></td>
+<td></td>
+<td><p>isinstance</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_string</p></td>
+<td><p>no</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="5">any other type</td>
-<td>numpy.int8</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_int8</td>
-<td>&#160;</td>
+<tr class="row-odd"><td rowspan="5"><p>any other type</p></td>
+<td><p>numpy.int8</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_int8</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>numpy.int16</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_int16</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>numpy.int16</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_int16</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>numpy.int32</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_int32</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>numpy.int32</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_int32</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td>numpy.float32</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_float32</td>
-<td>&#160;</td>
+<tr class="row-even"><td><p>numpy.float32</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_float32</p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td>numpy.float64</td>
-<td>numpy.can_cast</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>harp_type_float64</td>
-<td>&#160;</td>
+<tr class="row-odd"><td><p>numpy.float64</p></td>
+<td><p>numpy.can_cast</p></td>
+<td></td>
+<td></td>
+<td><p>harp_type_float64</p></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -533,21 +544,21 @@ Python interface.</p>
 <div class="section" id="types">
 <h3>Types</h3>
 <p>This section describes the types defined by the HARP Python interface.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="harp.Product">
-<em class="property">class </em><code class="descclassname">harp.</code><code class="descname">Product</code><span class="sig-paren">(</span><em>source_product=&quot;&quot;</em>, <em>history=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="sig-prename descclassname">harp.</code><code class="sig-name descname">Product</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source_product</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">history</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Python representation of a HARP product.</p>
 <p>A product consists of product attributes and variables. Any attribute of a
 Product instance of which the name does not start with an underscore is
 either a variable or a product attribute. Product attribute names are
 reserved and cannot be used for variables.</p>
 <p>The list of names reserved for product attributes is:</p>
-<dl class="docutils">
-<dt>source_product</dt>
-<dd>Name of the original product this product is derived from.</dd>
-<dt>history</dt>
-<dd>New-line separated list of invocations of HARP command line tools that
-have been performed on the product.</dd>
+<dl class="simple">
+<dt>source_product</dt><dd><p>Name of the original product this product is derived from.</p>
+</dd>
+<dt>history</dt><dd><p>New-line separated list of invocations of HARP command line tools that
+have been performed on the product.</p>
+</dd>
 </dl>
 <p>Variables can be accessed by name using either the attribute access <code class="docutils literal notranslate"><span class="pre">'.'</span></code>
 syntax, or the item access <code class="docutils literal notranslate"><span class="pre">'[]'</span></code> syntax. For example:</p>
@@ -572,61 +583,53 @@ syntax, or the item access <code class="docutils literal notranslate"><span clas
 <span class="nb">print</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>source_product</strong> (<em>str</em>) – Name of the original product this product is
-derived from.</li>
-<li><strong>history</strong> (<em>str</em>) – New-line separated list of invocations of HARP command
-line tools that have been performed on the product.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_product</strong> (<em>str</em>) – Name of the original product this product is
+derived from.</p></li>
+<li><p><strong>history</strong> (<em>str</em>) – New-line separated list of invocations of HARP command
+line tools that have been performed on the product.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="harp.Variable">
-<em class="property">class </em><code class="descclassname">harp.</code><code class="descname">Variable</code><span class="sig-paren">(</span><em>data</em>, <em>dimension=[]</em>, <em>unit=None</em>, <em>valid_min=None</em>, <em>valid_max=None</em>, <em>description=None</em>, <em>enum=None</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="sig-prename descclassname">harp.</code><code class="sig-name descname">Variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">dimension</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">valid_min</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">valid_max</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">enum</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Python representation of a HARP variable.</p>
 <p>A variable consists of data (either a scalar or NumPy array), a list of
 dimension types that describe the dimensions of the data, and a number of
 optional attributes: physical unit, minimum valid value, maximum valid value,
 human-readable description, and enumeration name list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> – Value(s) associated with the variable; can be either a scalar or
-a NumPy array.</li>
-<li><strong>dimension</strong> (<em>list</em>) – List of strings indicating the dimensions the variable
-depends on.</li>
-<li><strong>unit</strong> (<em>str</em>) – Physical unit the values associated with the variable are
-expressed in.</li>
-<li><strong>valid_min</strong> – Minimum valid value; any value below this threshold is
-considered to be invalid.</li>
-<li><strong>valid_max</strong> – Maximum valid value; any value above this threshold is
-considered to be invalid.</li>
-<li><strong>description</strong> (<em>str</em>) – Humand-readble description of the variable.</li>
-<li><strong>enum</strong> (<em>list</em>) – List of strings with the names of each enumeration value.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Value(s) associated with the variable; can be either a scalar or
+a NumPy array.</p></li>
+<li><p><strong>dimension</strong> (<em>list</em>) – List of strings indicating the dimensions the variable
+depends on.</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – Physical unit the values associated with the variable are
+expressed in.</p></li>
+<li><p><strong>valid_min</strong> – Minimum valid value; any value below this threshold is
+considered to be invalid.</p></li>
+<li><p><strong>valid_max</strong> – Maximum valid value; any value above this threshold is
+considered to be invalid.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – Humand-readble description of the variable.</p></li>
+<li><p><strong>enum</strong> (<em>list</em>) – List of strings with the names of each enumeration value.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="functions">
 <h3>Functions</h3>
 <p>This section describes the functions defined by the HARP Python library.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="harp.import_product">
-<code class="descclassname">harp.</code><code class="descname">import_product</code><span class="sig-paren">(</span><em>filename</em>, <em>operations=&quot;&quot;</em>, <em>options=&quot;&quot;</em>, <em>reduce_operations=&quot;&quot;</em>, <em>post_operations=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">import_product</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">operations</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">options</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">reduce_operations</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">post_operations</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Import a product from a file.</p>
 <p>This will first try to import the file as an HDF4, HDF5, or netCDF file that
 complies to the HARP Data Format. If the file is not stored using the HARP
@@ -636,109 +639,96 @@ modules.</p>
 pattern, or a list of globbing patterns then the harp.import_product() function
 will be called on each individual matching file. All imported products will then
 be appended into a single merged product and that merged product will be returned.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em><em>,</em><em>list</em>) – Filename, file pattern, or list of filenames/patterns
-of the product(s) to import</li>
-<li><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the import; should be
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em><em>,</em><em>list</em>) – Filename, file pattern, or list of filenames/patterns
+of the product(s) to import</p></li>
+<li><p><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the import; should be
 specified as a semi-colon separated string of operations;
 in case a list of products is ingested these operations will be
-performed on each product individually before the data is merged.</li>
-<li><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
+performed on each product individually before the data is merged.</p></li>
+<li><p><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
 a semi-colon separated string of key=value pairs; only
-used if a file is not in HARP format.</li>
-<li><strong>reduce_operations</strong> (<em>str</em>) – Actions to apply after each append; should be specified as a
+used if a file is not in HARP format.</p></li>
+<li><p><strong>reduce_operations</strong> (<em>str</em>) – Actions to apply after each append; should be specified as a
 semi-colon separated string of operations;
 these operations will only be applied if the filename argument is
 a file pattern or a list of filenames/patterns;
 this advanced option allows for memory efficient application
 of time reduction operations (such as bin()) that would
-normally be provided as part of post_operations.</li>
-<li><strong>post_operations</strong> (<em>str</em>) – Actions to apply after the list of products is merged;
+normally be provided as part of post_operations.</p></li>
+<li><p><strong>post_operations</strong> (<em>str</em>) – Actions to apply after the list of products is merged;
 should be specified as a semi-colon separated string of operations;
 these operations will only be applied if the filename argument is
-a file pattern or a list of filenames/patterns.</li>
+a file pattern or a list of filenames/patterns.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Imported product.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Imported product.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.import_product_metadata">
-<code class="descclassname">harp.</code><code class="descname">import_product_metadata</code><span class="sig-paren">(</span><em>filename</em>, <em>options=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">import_product_metadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">options</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Import specific metadata from a single file.</p>
-<dl class="docutils">
-<dt>This will try to extract the following information from a file.</dt>
-<dd><ul class="first last simple">
-<li>datetime_start</li>
-<li>datetime_stop</li>
-<li>dimension lengths for time, latitude, longitude, vertical, and spectral</li>
-<li>source_product</li>
+<dl class="simple">
+<dt>This will try to extract the following information from a file.</dt><dd><ul class="simple">
+<li><p>datetime_start</p></li>
+<li><p>datetime_stop</p></li>
+<li><p>dimension lengths for time, latitude, longitude, vertical, and spectral</p></li>
+<li><p>source_product</p></li>
 </ul>
 </dd>
 </dl>
 <p>If the file is not stored using the HARP format then it will try to import
 the metadata using one of the available ingestion modules.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em>) – Filename of the product from which to extract the metadata</li>
-<li><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – Filename of the product from which to extract the metadata</p></li>
+<li><p><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
 a semi-colon separated string of key=value pairs; only
-used if a file is not in HARP format.</li>
+used if a file is not in HARP format.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Imported metadata.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">collections.OrderedDict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Imported metadata.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>collections.OrderedDict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.export_product">
-<code class="descclassname">harp.</code><code class="descname">export_product</code><span class="sig-paren">(</span><em>product</em>, <em>filename</em>, <em>file_format=&quot;netcdf&quot;</em>, <em>operations=&quot;&quot;</em>, <em>hdf5_compression=0</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">export_product</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product</span></em>, <em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">file_format</span><span class="o">=</span><span class="default_value">'netcdf'</span></em>, <em class="sig-param"><span class="n">operations</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">hdf5_compression</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Export a HARP compliant product.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>product</strong> (<em>str</em>) – Product to export.</li>
-<li><strong>filename</strong> (<em>str</em>) – Filename of the exported product.</li>
-<li><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the export; should be
-specified as a semi-colon separated string of operations.</li>
-<li><strong>file_format</strong> (<em>str</em>) – File format to use; one of ‘netcdf’, ‘hdf4’, or
-‘hdf5’.</li>
-<li><strong>hdf5_compression</strong> – Compression level when exporting to hdf5
-(0=disabled, 1=low, …, 9=high).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>product</strong> (<em>str</em>) – Product to export.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Filename of the exported product.</p></li>
+<li><p><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the export; should be
+specified as a semi-colon separated string of operations.</p></li>
+<li><p><strong>file_format</strong> (<em>str</em>) – File format to use; one of ‘netcdf’, ‘hdf4’, or
+‘hdf5’.</p></li>
+<li><p><strong>hdf5_compression</strong> – Compression level when exporting to hdf5
+(0=disabled, 1=low, …, 9=high).</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.concatenate">
-<code class="descclassname">harp.</code><code class="descname">concatenate</code><span class="sig-paren">(</span><em>productlist</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">concatenate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">productlist</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Combines all HARP products in the list into a single HARP output product.</p>
 <p>All non-time dependent variables from the input products are made time
 dependent before concatenating them.</p>
@@ -747,23 +737,22 @@ will result in an error.</p>
 <p>The ‘index’ variable will not be included in the concatenated product.</p>
 <p>The resulting product will not have a ‘source_product’ or ‘history’ global
 attribute set.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>productlist</strong> (<em>list</em>) – List of harp.Product objects.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Single product containing concatenated content.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>productlist</strong> (<em>list</em>) – List of harp.Product objects.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Single product containing concatenated content.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.execute_operations">
-<code class="descclassname">harp.</code><code class="descname">execute_operations</code><span class="sig-paren">(</span><em>productlist</em>, <em>operations=&quot;&quot;</em>, <em>post_operations=&quot;&quot;</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">execute_operations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">productlist</span></em>, <em class="sig-param"><span class="n">operations</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">post_operations</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Apply operations on the given list of products. ‘productlist’ can be either
 a single ‘harp.Product()’ instance or a list of ‘harp.Product()’ instances.</p>
 <p>If a list of products is provided then the products will be concatenated/merged after
@@ -771,8 +760,8 @@ the ‘operations’ on each product has been performed.</p>
 <p>If a ‘post_operations’ parameter is provided then these operations will be applied to
 the concatenated/merged product before it is returned.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Note that this function will first export all products to the HARP
+<p class="admonition-title">Warning</p>
+<p>Note that this function will first export all products to the HARP
 C library and will import the final result back from the C library to the Python
 domain. This can have a considerable performance impact when products are large.
 You should therefore only use this function if the operation cannot be performed
@@ -780,63 +769,55 @@ easily within the Python domain itself. Also, when using this function try to
 pass a ‘harp.Product()’ instance that contains the minimal set of variables that
 are needed to execute the operations.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>productlist</strong> (<em>list</em>) – List of harp.Product objects or single harp.Product object.</li>
-<li><strong>operations</strong> (<em>str</em>) – Actions to apply on the product(s); should be
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>productlist</strong> (<em>list</em>) – List of harp.Product objects or single harp.Product object.</p></li>
+<li><p><strong>operations</strong> (<em>str</em>) – Actions to apply on the product(s); should be
 specified as a semi-colon separated string of operations;
 in case a list of products is provided these operations will be
-performed on each product individually before the data is merged.</li>
-<li><strong>post_operations</strong> (<em>str</em>) – Actions to apply after the list of products is merged;
+performed on each product individually before the data is merged.</p></li>
+<li><p><strong>post_operations</strong> (<em>str</em>) – Actions to apply after the list of products is merged;
 should be specified as a semi-colon separated string of operations;
 these operations will only be applied if the productlist parameter
-is a list of harp.Product objects.</li>
+is a list of harp.Product objects.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Single product containing concatenated content with operations being performed.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Single product containing concatenated content with operations being performed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.convert_unit">
-<code class="descclassname">harp.</code><code class="descname">convert_unit</code><span class="sig-paren">(</span><em>from_unit</em>, <em>to_unit</em>, <em>values</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">convert_unit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_unit</span></em>, <em class="sig-param"><span class="n">to_unit</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Perform unit conversion on the list of values.
 The list of values will be converted to an array of double values after which the
 HARP C library is used to convert the values from ‘from_unit’ to ‘to_unit’.
 The function will return a copy of the values with converted units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>from_unit</strong> (<em>str</em>) – Existing unit of the data that should be converted
-(use udunits2 compliant units)</li>
-<li><strong>to_unit</strong> (<em>str</em>) – Unit to which the data should be converted
-(use udunits2 compliant units).</li>
-<li><strong>values</strong> – an array with values on which unit conversion needs to be applied</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_unit</strong> (<em>str</em>) – Existing unit of the data that should be converted
+(use udunits2 compliant units)</p></li>
+<li><p><strong>to_unit</strong> (<em>str</em>) – Unit to which the data should be converted
+(use udunits2 compliant units).</p></li>
+<li><p><strong>values</strong> – an array with values on which unit conversion needs to be applied</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Numpy array of unit converted values</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Numpy array of unit converted values</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.to_dict">
-<code class="descclassname">harp.</code><code class="descname">to_dict</code><span class="sig-paren">(</span><em>product</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Convert a <a class="reference internal" href="#harp.Product" title="harp.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">harp.Product</span></code></a> instance to an <code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code> representation provides direct access to the data
 associated with each variable. All product attributes and all variable
@@ -869,142 +850,121 @@ information.</p>
     <span class="nb">print</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>product</strong> (<a class="reference internal" href="#harp.Product" title="harp.Product"><em>harp.Product</em></a>) – Product to convert.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Converted product.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">collections.OrderedDict</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>product</strong> (<a class="reference internal" href="#harp.Product" title="harp.Product"><em>harp.Product</em></a>) – Product to convert.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted product.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>collections.OrderedDict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.get_encoding">
-<code class="descclassname">harp.</code><code class="descname">get_encoding</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">get_encoding</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Return the encoding used to convert between unicode strings and C strings
 (only relevant when using Python 3).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Encoding currently in use.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Encoding currently in use.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.set_encoding">
-<code class="descclassname">harp.</code><code class="descname">set_encoding</code><span class="sig-paren">(</span><em>encoding</em><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">set_encoding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">encoding</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Set the encoding used to convert between unicode strings and C strings
 (only relevant when using Python 3).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>encoding</strong> (<em>str</em>) – Encoding to use.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>encoding</strong> (<em>str</em>) – Encoding to use.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="harp.version">
-<code class="descclassname">harp.</code><code class="descname">version</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<code class="sig-prename descclassname">harp.</code><code class="sig-name descname">version</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Return the version of the HARP C library.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">HARP C library version.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>HARP C library version.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="exceptions">
 <h3>Exceptions</h3>
 <p>This sections describes the exceptions defined by the HARP Python interface.</p>
-<dl class="exception">
+<dl class="py exception">
 <dt id="harp.Error">
-<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">Error</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span></dt>
+<em class="property">exception </em><code class="sig-prename descclassname">harp.</code><code class="sig-name descname">Error</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Exception base class for all HARP Python interface errors.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
-single string containing an error message.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
+single string containing an error message.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="harp.CLibraryError">
-<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">CLibraryError</code><span class="sig-paren">(</span><em>errno=None</em>, <em>strerror=None</em><span class="sig-paren">)</span></dt>
+<em class="property">exception </em><code class="sig-prename descclassname">harp.</code><code class="sig-name descname">CLibraryError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">errno</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">strerror</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Exception raised when an error occurs inside the HARP C library.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>errno</strong> (<em>str</em>) – error code; if None, the error code will be retrieved from
-the HARP C library.</li>
-<li><strong>strerror</strong> (<em>str</em>) – error message; if None, the error message will be
-retrieved from the HARP C library.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>errno</strong> (<em>str</em>) – error code; if None, the error code will be retrieved from
+the HARP C library.</p></li>
+<li><p><strong>strerror</strong> (<em>str</em>) – error message; if None, the error message will be
+retrieved from the HARP C library.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="harp.UnsupportedTypeError">
-<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">UnsupportedTypeError</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span></dt>
+<em class="property">exception </em><code class="sig-prename descclassname">harp.</code><code class="sig-name descname">UnsupportedTypeError</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Exception raised when unsupported types are encountered, either on the Python
 or on the C side of the interface.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
-single string containing an error message.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
+single string containing an error message.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="harp.UnsupportedDimensionError">
-<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">UnsupportedDimensionError</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span></dt>
+<em class="property">exception </em><code class="sig-prename descclassname">harp.</code><code class="sig-name descname">UnsupportedDimensionError</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span></dt>
 <dd><p>Exception raised when unsupported dimensions are encountered, either on the
 Python or on the C side of the interface.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
-single string containing an error message.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
+single string containing an error message.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="exception">
+<dl class="py exception">
 <dt id="harp.NoDataError">
-<em class="property">exception </em><code class="descclassname">harp.</code><code class="descname">NoDataError</code></dt>
+<em class="property">exception </em><code class="sig-prename descclassname">harp.</code><code class="sig-name descname">NoDataError</code></dt>
 <dd><p>Exception raised when the product returned from an import contains no
 variables, or variables without data.</p>
 </dd></dl>
@@ -1018,28 +978,21 @@ variables, or variables without data.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="R.html" class="btn btn-neutral float-right" title="R interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="matlab.html" class="btn btn-neutral" title="MATLAB interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="R.html" class="btn btn-neutral float-right" title="R interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="matlab.html" class="btn btn-neutral float-left" title="MATLAB interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -1048,27 +1001,16 @@ variables, or variables without data.</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

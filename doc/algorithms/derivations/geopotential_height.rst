@@ -1,6 +1,8 @@
 geopotential height derivations
 ===============================
 
+   .. _derivation_geopotential_height_from_geopotential:
+
 #. geopotential height from geopotential
 
    ============= =================== ======================= =========================
@@ -18,6 +20,8 @@ geopotential height derivations
 
       z_{g} = \frac{\Phi}{g_{0}}
 
+
+   .. _derivation_geopotential_height_from_altitude:
 
 #. geopotential height from altitude
 
@@ -45,6 +49,8 @@ geopotential height derivations
          z_{g} & = & \frac{g}{g_{0}}\frac{Rz}{z + R}
       \end{eqnarray}
 
+
+   .. _derivation_geopotential_height_from_pressure:
 
 #. geopotential height from pressure
 
@@ -80,6 +86,8 @@ geopotential height derivations
       \end{eqnarray}
 
 
+   .. _derivation_surface_geopotential_height_from_surface_geopotential:
+
 #. surface geopotential height from surface geopotential
 
    =================== =========================== ======================= =================================
@@ -97,6 +105,8 @@ geopotential height derivations
 
       z_{g,surf} = \frac{\Phi_{surf}}{g_{0}}
 
+
+   .. _derivation_surface_geopotential_height_from_surface_altitude:
 
 #. surface geopotential height from surface altitude
 

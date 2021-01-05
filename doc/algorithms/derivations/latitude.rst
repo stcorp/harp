@@ -1,7 +1,7 @@
 latitude derivations
 ====================
 
-.. _`latitude from polygon derivation`:
+   .. _derivation_latitude_from_polygon:
 
 #. latitude from polygon
 
@@ -26,6 +26,8 @@ latitude derivations
    The vector :math:`\mathbf{p}_{center}` is converted back to :math:`\phi` and :math:`\lambda`
 
 
+   .. _derivation_latitude_from_range:
+
 #. latitude from range
 
    =================== =========================================== ============ =======================
@@ -41,6 +43,8 @@ latitude derivations
 
       \phi = \frac{\phi^{B}(2) + \phi^{B}(1)}{2}
 
+
+   .. _derivation_latitude_from_vertical_profile_latitudes:
 
 #. latitude from vertical profile latitudes
 
@@ -61,6 +65,8 @@ latitude derivations
         \phi & = & \phi(N/2)
       \end{eqnarray}
 
+
+   .. _derivation_latitude_from_sensor_latitude:
 
 #. latitude from sensor latitude
 

@@ -1,7 +1,9 @@
 number density derivations
 ==========================
 
-#. number density of air component from mass density:
+   .. _derivation_number_density_of_air_component_from_mass_density:
+
+#. number density of air component from mass density
 
    ================ ================================= ========================= ==============================
    symbol           description                       unit                      variable name
@@ -22,7 +24,9 @@ number density derivations
       n_{x} = \frac{\rho_{x}N_{A}}{10^{-3}M_{x}}
 
 
-#. number density of total air from mass density:
+   .. _derivation_number_density_of_total_air_from_mass_density:
+
+#. number density of total air from mass density
 
    =============== =========================== ========================= ====================
    symbol          description                 unit                      variable name
@@ -40,6 +44,8 @@ number density derivations
 
       n = \frac{\rho N_{A}}{10^{-3}M_{air}}
 
+
+   .. _derivation_number_density_of_total_air_from_pressure_and_temperature:
 
 #. number density of total air from pressure and temperature
 
@@ -59,6 +65,8 @@ number density derivations
 
       n = \frac{p}{kT}
 
+
+   .. _derivation_number_density_from_volume_mixing_ratio:
 
 #. number density from volume mixing ratio
 
@@ -80,6 +88,8 @@ number density derivations
       n_{x} = \nu_{x}n
 
 
+   .. _derivation_number_density_from_volume_mixing_ratio_dry_air:
+
 #. number density from volume mixing ratio dry air
 
    ===================== ====================================== ========================= ===========================================
@@ -99,6 +109,8 @@ number density derivations
 
       n_{x} = \bar{\nu}_{x}n_{dry\_air}
 
+
+   .. _derivation_number_density_of_air_component_from_column_number_density:
 
 #. number density of air component from column number density
 
@@ -120,6 +132,8 @@ number density derivations
      n_{x} = \frac{c_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
 
+   .. _derivation_number_density_of_total_air_from_dry_air_number_density_and_H2O_number_density:
+
 #. number density of total air from dry air number density and H2O number density
 
    ==================== ========================= ========================= ============================
@@ -137,6 +151,8 @@ number density derivations
 
      n = n_{dry\_air} + n_{H_{2}O}
 
+
+   .. _derivation_number_density_of_dry_air_from_total_air_number_density_and_H2O_number_density:
 
 #. number density of dry air from total air number density and H2O number density
 
@@ -156,6 +172,8 @@ number density derivations
      n_{dry\_air} = n - n_{H_{2}O}
 
 
+   .. _derivation_number_density_of_H2O_from_total_air_number_density_and_dry_air_number_density:
+
 #. number density of H2O from total air number density and dry air number density
 
    ==================== ========================= ========================= ============================
@@ -174,6 +192,8 @@ number density derivations
      n_{H_{2}O} = n - n_{dry\_air}
 
 
+   .. _derivation_number_density_of_total_air_from_column_number_density:
+
 #. number density of total air from column number density
 
    ================ =========================================== ========================= ===========================
@@ -191,6 +211,8 @@ number density derivations
 
      n = \frac{c}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
+
+   .. _derivation_number_density_of_air_component_from_partial_pressure_and_temperature:
 
 #. number density of air component from partial pressure and temperature
 
@@ -212,6 +234,8 @@ number density derivations
 
       n_{x} = \frac{p_{x}}{kT}
 
+
+   .. _derivation_surface_number_density_of_total_air_from_surface_pressure_and_surface_temperature:
 
 #. surface number density of total air from surface pressure and surface temperature
 

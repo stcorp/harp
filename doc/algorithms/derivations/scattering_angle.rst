@@ -1,6 +1,8 @@
 scattering angle derivations
 ============================
 
+   .. _scattering_angle_from_sensor_and_solar_angles:
+
 #. scattering angle from sensor and solar angles
 
    =================== ====================== =========== ==========================

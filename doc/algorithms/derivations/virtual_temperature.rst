@@ -1,6 +1,8 @@
 virtual temperature derivations
 ===============================
 
+   .. _derivation_virtual_temperature_from_temperature:
+
 #. virtual temperature from temperature
 
    ==================== ======================= ===================== =========================

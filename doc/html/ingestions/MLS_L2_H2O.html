@@ -1,48 +1,55 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>MLS_L2_H2O &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-    <link rel="index" title="Index" href="../genindex.html" /> 
 
   
-  <script src="../_static/js/modernizr.min.js"></script>
+  
 
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -66,6 +73,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -90,6 +98,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -124,18 +133,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>MLS_L2_H2O</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -152,70 +163,70 @@
 <div class="section" id="variables">
 <h2>Variables</h2>
 <p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">MLS_L2_H2O</span></code> data.</p>
-<table border="1" class="colwidths-given docutils">
+<table class="colwidths-given docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="5%" />
-<col width="15%" />
-<col width="15%" />
-<col width="40%" />
+<col style="width: 25%" />
+<col style="width: 5%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">field name</th>
-<th class="head">type</th>
-<th class="head">dimensions</th>
-<th class="head">unit</th>
-<th class="head">description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><strong>datetime</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[seconds since 2000-01-01]</td>
-<td>time of the measurement</td>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
+<td><p>time of the measurement</p></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree_east]</td>
-<td>tangent longitude</td>
+<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>tangent longitude</p></td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree_north]</td>
-<td>tangent latitude</td>
+<tr class="row-even"><td><p><strong>latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>tangent latitude</p></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
-<td>double</td>
-<td>{<em>vertical</em>}</td>
-<td>[hPa]</td>
-<td>pressure per profile level</td>
+<tr class="row-odd"><td><p><strong>pressure</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[hPa]</p></td>
+<td><p>pressure per profile level</p></td>
 </tr>
-<tr class="row-even"><td><strong>H2O_volume_mixing_ratio</strong></td>
-<td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>[ppv]</td>
-<td>H2O volume mixing ratio</td>
+<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[ppv]</p></td>
+<td><p>H2O volume mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_volume_mixing_ratio_uncertainty</strong></td>
-<td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>[ppv]</td>
-<td>uncertainty of the H2O volume mixing ratio</td>
+<tr class="row-odd"><td><p><strong>H2O_volume_mixing_ratio_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[ppv]</p></td>
+<td><p>uncertainty of the H2O volume mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>H2O_volume_mixing_ratio_validity</strong></td>
-<td>int32</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>&#160;</td>
-<td>quality flag for the H2O volume mixing ratio</td>
+<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio_validity</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td></td>
+<td><p>quality flag for the H2O volume mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>zero-based index of the sample within the source product</td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
 </tr>
 </tbody>
 </table>
@@ -226,51 +237,51 @@
 <p>Bits 4 to 9 denote the MLS status (bit 4 HICLOUD, bit 5 LOWCLOUD, bit 6 NO_APRIORI_T, bit 7 NUM_ERROR, bit 8 TOO_FEW_RAD, bit 9 GLOB_FAILURE).</p>
 <p>Bits 11 to 14 denote specific checks as specified in the EOS MLS data quality document (the pressure range, quality and convergence thresholds come from table 1.1.1 in issue 4.x-4.0 of that document): Bit 11 denotes pressure out of range, bit 12 denotes quality below threshold, bit 13 denotes convergence above threshold and bit 14 denotes a negative precision. Also, if any of the bits 11 to 14 is set, bit 0 is automatically set.</p>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="14%" />
-<col width="5%" />
-<col width="80%" />
+<col style="width: 14%" />
+<col style="width: 5%" />
+<col style="width: 80%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">field name</th>
-<th class="head" colspan="2">mapping description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Time[]</strong></td>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p><strong>datetime</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Time[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>the time converted from TAI93 to seconds since 2000-01-01T00:00:00</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the time converted from TAI93 to seconds since 2000-01-01T00:00:00</p></td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Longitude[]</strong></td>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Longitude[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Latitude[]</strong></td>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Latitude[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Pressure[]</strong></td>
+<tr class="row-even"><td><p><strong>pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/H2O/Geolocation_Fields/Pressure[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_volume_mixing_ratio</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Data_Fields/L2gpValue[]</strong></td>
+<tr class="row-odd"><td><p><strong>H2O_volume_mixing_ratio</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/H2O/Data_Fields/L2gpValue[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><strong>H2O_volume_mixing_ratio_uncertainty</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[]</strong></td>
+<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><strong>H2O_volume_mixing_ratio_validity</strong></td>
-<td><em>path</em></td>
-<td><strong>/HDFEOS/SWATHS/H2O/Data_Fields/Status[], /HDFEOS/SWATHS/H2O/Data_Fields/Quality[], /HDFEOS/SWATHS/H2O/Data_Fields/Convergence[], /HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[], /HDFEOS/SWATHS/H2O/Geolocation_Fields/Pressure[]</strong></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>H2O_volume_mixing_ratio_validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/H2O/Data_Fields/Status[], /HDFEOS/SWATHS/H2O/Data_Fields/Quality[], /HDFEOS/SWATHS/H2O/Data_Fields/Convergence[], /HDFEOS/SWATHS/H2O/Data_Fields/L2gpPrecision[], /HDFEOS/SWATHS/H2O/Geolocation_Fields/Pressure[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>see generic mapping description</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>see generic mapping description</p></td>
 </tr>
 </tbody>
 </table>
@@ -282,19 +293,17 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -303,27 +312,16 @@
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

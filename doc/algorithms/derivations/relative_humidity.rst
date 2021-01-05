@@ -1,6 +1,8 @@
 relative humidity derivations
 =============================
 
+   .. _derivation_relative_humidity_from_H2O_partial_pressure:
+
 #. relative humidity from H2O partial pressure
 
    ================== ============================== ===================== ==========================

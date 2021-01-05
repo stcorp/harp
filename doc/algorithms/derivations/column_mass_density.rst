@@ -1,6 +1,8 @@
 column mass density derivations
 ===============================
 
+   .. _derivation_column_mass_density_of_total_air_from_dry_air_column_mass_density_and_H2O_column_mass_density:
+
 #. column mass density of total air from dry air column mass density and H2O column mass density
 
    ========================= ============================== ====================== ============================
@@ -18,6 +20,8 @@ column mass density derivations
 
      \sigma = \sigma_{dry\_air} + \sigma_{H_{2}O}
 
+
+   .. _derivation_column_mass_density_of_dry_air_from_total_air_column_mass_density_and_H2O_column_mass_density:
 
 #. column mass density of dry air from total air column mass density and H2O column mass density
 
@@ -37,6 +41,8 @@ column mass density derivations
      \sigma_{dry\_air} = \sigma - \sigma_{H_{2}O}
 
 
+   .. _derivation_column_mass_density_of_H2O_from_total_air_column_mass_density_and_dry_air_column_mass_density:
+
 #. column mass density of H2O from total air column mass density and dry air column mass density
 
    ========================= ============================== ====================== ============================
@@ -55,7 +61,9 @@ column mass density derivations
      \sigma_{H_{2}O} = \sigma - \sigma_{dry\_air}
 
 
-#. column mass density of air component from mass density:
+   .. _derivation_column_mass_density_of_air_component_from_mass_density:
+
+#. column mass density of air component from mass density
 
    ================== =========================================== ====================== ==============================
    symbol             description                                 unit                   variable name
@@ -75,7 +83,9 @@ column mass density derivations
      \sigma_{x} = \rho_{x} \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column mass density of total air from mass density:
+   .. _derivation_column_mass_density_of_total_air_from_mass_density:
+
+#. column mass density of total air from mass density
 
    ================ =========================================== ====================== =======================
    symbol           description                                 unit                   variable name
@@ -93,7 +103,9 @@ column mass density derivations
      \sigma = \rho \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column mass density of air component from column number density:
+   .. _derivation_column_mass_density_of_air_component_from_column_number_density:
+
+#. column mass density of air component from column number density
 
    This conversion applies to both total columns as well as partial column profiles.
 
@@ -116,7 +128,9 @@ column mass density derivations
       \sigma_{x} = \frac{10^{-3}c_{x}M_{x}}{N_{A}}
 
 
-#. column mass density of total air from column number density:
+   .. _derivation_column_mass_density_of_total_air_from_column_number_density:
+
+#. column mass density of total air from column number density
 
    This conversion applies to both total columns as well as partial column profiles.
 
@@ -137,7 +151,9 @@ column mass density derivations
       \sigma = \frac{10^{-3}c M_{air}}{N_{A}}
 
 
-#. column mass density of total air from pressure profile and surface pressure:
+   .. _derivation_column_mass_density_of_total_air_from_pressure_profile_and_surface_pressure:
+
+#. column mass density of total air from pressure profile and surface pressure
 
    ================== ================================ ====================== ================================
    symbol             description                      unit                   variable name

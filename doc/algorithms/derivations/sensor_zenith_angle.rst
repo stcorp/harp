@@ -1,6 +1,8 @@
 sensor zenith angle derivations
 ===============================
 
+   .. _derivation_sensor_zenith_angle_from_sensor_elevation_angle:
+
 #. sensor zenith angle from sensor elevation angle
 
    ================== ====================== =========== ============================
@@ -16,6 +18,8 @@ sensor zenith angle derivations
 
       \theta_{S} = 90 - \alpha_{S}
 
+
+   .. _derivation_sensor_zenith_angle_from_viewing_zenith_angle:
 
 #. sensor zenith angle from viewing zenith angle
 

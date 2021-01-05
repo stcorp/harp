@@ -1,7 +1,9 @@
 mass density derivations
 ========================
 
-#. mass density of air component from number density:
+   .. _derivation_mass_density_of_air_component_from_number_density:
+
+#. mass density of air component from number density
 
    ================ ================================= ========================= ==============================
    symbol           description                       unit                      variable name
@@ -22,7 +24,9 @@ mass density derivations
       \rho_{x} = \frac{10^{-3}n_{x}M_{x}}{N_{A}}
 
 
-#. mass density of total air from number density:
+   .. _derivation_mass_density_of_total_air_from_number_density:
+
+#. mass density of total air from number density
 
    ================ =========================== ========================= ====================
    symbol           description                 unit                      variable name
@@ -41,7 +45,9 @@ mass density derivations
       \rho = \frac{10^{-3}n M_{air}}{N_{A}}
 
 
-#. mass density of air component from column mass density:
+   .. _derivation_mass_density_of_air_component_from_column_mass_density:
+
+#. mass density of air component from column mass density
 
    ================== =========================================== ====================== =====================================
    symbol             description                                 unit                   variable name
@@ -61,6 +67,8 @@ mass density derivations
      \rho_{x} = \frac{\sigma_{x}}{\lvert z^{B}(2) - z^{B}(1) \rvert}
 
 
+   .. _derivation_mass_density_of_total_air_from_dry_air_mass_density_and_H2O_mass_density:
+
 #. mass density of total air from dry air mass density and H2O mass density
 
    ======================= ======================= ====================== =====================
@@ -78,6 +86,8 @@ mass density derivations
 
      \rho = \rho_{dry\_air} + \rho_{H_{2}O}
 
+
+   .. _derivation_mass_density_of_dry_air_from_total_air_mass_density_and_H2O_mass_density:
 
 #. mass density of dry air from total air mass density and H2O mass density
 
@@ -97,6 +107,8 @@ mass density derivations
      \rho_{dry\_air} = \rho - \rho_{H_{2}O}
 
 
+   .. _derivation_mass_density_of_H2O_from_total_air_mass_density_and_dry_air_mass_density:
+
 #. mass density of H2O from total air mass density and dry air mass density
 
    ======================= ======================= ====================== =====================
@@ -115,7 +127,9 @@ mass density derivations
      \rho_{H_{2}O} = \rho - \rho_{dry\_air}
 
 
-#. mass density of total air from column mass density:
+   .. _derivation_mass_density_of_total_air_from_column_mass_density:
+
+#. mass density of total air from column mass density
 
    ================ =========================================== ====================== =======================
    symbol           description                                 unit                   variable name

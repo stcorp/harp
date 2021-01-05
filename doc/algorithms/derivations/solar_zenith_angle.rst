@@ -1,6 +1,8 @@
 solar zenith angle derivations
 ==============================
 
+   .. _derivation_solar_zenith_angle_from_solar_elevation_angle:
+
 #. solar zenith angle from solar elevation angle
 
    ================== ===================== =========== =========================
@@ -15,6 +17,9 @@ solar zenith angle derivations
    .. math::
 
       \theta_{0} = 90 - \alpha_{0}
+
+
+   .. _derivation_solar_zenith_angle_from_latitude_and_solar_declination_hour_angles:
 
 #. solar zenith angle from latitude and solar declination/hour angles
 

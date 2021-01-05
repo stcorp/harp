@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Definitions &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="next" title="Common formula" href="formula.html" />
     <link rel="prev" title="Algorithms" href="index.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -102,6 +110,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -136,11 +145,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Algorithms</a> &raquo;</li>
         
@@ -149,7 +160,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -178,91 +189,91 @@ algorithm will contain a description of which combination of dimensions are supp
 </div>
 <div class="section" id="constants">
 <h2>Constants</h2>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="17%" />
-<col width="25%" />
-<col width="29%" />
-<col width="28%" />
+<col style="width: 17%" />
+<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 28%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">symbol</th>
-<th class="head">name</th>
-<th class="head">unit</th>
-<th class="head">value</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>name</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>value</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(a\)</span></td>
-<td>WGS84 semi-major axis</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><span class="math notranslate nohighlight">\(6378137.0\)</span></td>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(a\)</span></p></td>
+<td><p>WGS84 semi-major axis</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(6378137.0\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(b\)</span></td>
-<td>WGS84 semi-minor axis</td>
-<td><span class="math notranslate nohighlight">\(m\)</span></td>
-<td><span class="math notranslate nohighlight">\(6356752.314245\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(b\)</span></p></td>
+<td><p>WGS84 semi-minor axis</p></td>
+<td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(6356752.314245\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(c\)</span></td>
-<td>speed of light</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s}\)</span></td>
-<td><span class="math notranslate nohighlight">\(2.99792458\cdot10^{8}\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(c\)</span></p></td>
+<td><p>speed of light</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2.99792458\cdot10^{8}\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\frac{1}{f}\)</span></td>
-<td>WGS84 inverse flatting</td>
-<td>&#160;</td>
-<td><span class="math notranslate nohighlight">\(298.257223563\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\frac{1}{f}\)</span></p></td>
+<td><p>WGS84 inverse flatting</p></td>
+<td></td>
+<td><p><span class="math notranslate nohighlight">\(298.257223563\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{0}\)</span></td>
-<td>mean earth gravity</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td><span class="math notranslate nohighlight">\(9.80665\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(g_{0}\)</span></p></td>
+<td><p>mean earth gravity</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(9.80665\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(g_{e}\)</span></td>
-<td>earth gravity at equator</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td><span class="math notranslate nohighlight">\(9.7803253359\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(g_{e}\)</span></p></td>
+<td><p>earth gravity at equator</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(9.7803253359\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(g_{p}\)</span></td>
-<td>earth gravity at poles</td>
-<td><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></td>
-<td><span class="math notranslate nohighlight">\(9.8321849378\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(g_{p}\)</span></p></td>
+<td><p>earth gravity at poles</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m}{s^2}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(9.8321849378\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(GM\)</span></td>
-<td>WGS84 earth’s gravitational
-constant</td>
-<td><span class="math notranslate nohighlight">\(\frac{m^3}{s^2}\)</span></td>
-<td><span class="math notranslate nohighlight">\(3986004.418\cdot10^{8}\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(GM\)</span></p></td>
+<td><p>WGS84 earth’s gravitational
+constant</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{m^3}{s^2}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(3986004.418\cdot10^{8}\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(k\)</span></td>
-<td>Boltzmann constant</td>
-<td><span class="math notranslate nohighlight">\(\frac{kg m^2}{K s^2}\)</span></td>
-<td><span class="math notranslate nohighlight">\(1.38064852\cdot10^{-23}\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(k\)</span></p></td>
+<td><p>Boltzmann constant</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{kg m^2}{K s^2}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.38064852\cdot10^{-23}\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(N_A\)</span></td>
-<td>Avogadro constant</td>
-<td><span class="math notranslate nohighlight">\(\frac{1}{mol}\)</span></td>
-<td><span class="math notranslate nohighlight">\(6.022140857\cdot10^{23}\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(N_A\)</span></p></td>
+<td><p>Avogadro constant</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{1}{mol}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(6.022140857\cdot10^{23}\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(p_{0}\)</span></td>
-<td>standard pressure</td>
-<td><span class="math notranslate nohighlight">\(Pa\)</span></td>
-<td><span class="math notranslate nohighlight">\(101325\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(p_{0}\)</span></p></td>
+<td><p>standard pressure</p></td>
+<td><p><span class="math notranslate nohighlight">\(Pa\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(101325\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(R\)</span></td>
-<td>universal gas constant</td>
-<td><span class="math notranslate nohighlight">\(\frac{kg m^2}{K mol s^2}\)</span></td>
-<td><span class="math notranslate nohighlight">\(8.3144598\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(R\)</span></p></td>
+<td><p>universal gas constant</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{kg m^2}{K mol s^2}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(8.3144598\)</span></p></td>
 </tr>
-<tr class="row-even"><td><span class="math notranslate nohighlight">\(T_{0}\)</span></td>
-<td>standard temperature</td>
-<td><span class="math notranslate nohighlight">\(K\)</span></td>
-<td><span class="math notranslate nohighlight">\(273.15\)</span></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(T_{0}\)</span></p></td>
+<td><p>standard temperature</p></td>
+<td><p><span class="math notranslate nohighlight">\(K\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(273.15\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><span class="math notranslate nohighlight">\(\omega\)</span></td>
-<td>WGS84 earth angular velocity</td>
-<td><span class="math notranslate nohighlight">\(rad/s\)</span></td>
-<td><span class="math notranslate nohighlight">\(7292115.0\cdot10^{-11}\)</span></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\omega\)</span></p></td>
+<td><p>WGS84 earth angular velocity</p></td>
+<td><p><span class="math notranslate nohighlight">\(rad/s\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(7292115.0\cdot10^{-11}\)</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -271,196 +282,196 @@ constant</td>
 <h2>Molar mass</h2>
 <p>The following table provides for each species the molar mass <span class="math notranslate nohighlight">\(M_{x}\)</span> in <span class="math notranslate nohighlight">\(\frac{g}{mol}\)</span>.</p>
 <p>See the documentation on the HARP data format for a description of all species.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="13%" />
-<col width="88%" />
+<col style="width: 13%" />
+<col style="width: 88%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">name</th>
-<th class="head">molar mass</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>molar mass</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>dry air</td>
-<td>28.9644</td>
+<tbody>
+<tr class="row-even"><td><p>dry air</p></td>
+<td><p>28.9644</p></td>
 </tr>
-<tr class="row-odd"><td>BrO</td>
-<td>95.9034</td>
+<tr class="row-odd"><td><p>BrO</p></td>
+<td><p>95.9034</p></td>
 </tr>
-<tr class="row-even"><td>BrO2</td>
-<td>111.9028</td>
+<tr class="row-even"><td><p>BrO2</p></td>
+<td><p>111.9028</p></td>
 </tr>
-<tr class="row-odd"><td>CCl2F2</td>
-<td>120.9135</td>
+<tr class="row-odd"><td><p>CCl2F2</p></td>
+<td><p>120.9135</p></td>
 </tr>
-<tr class="row-even"><td>CCl3F</td>
-<td>137.3681</td>
+<tr class="row-even"><td><p>CCl3F</p></td>
+<td><p>137.3681</p></td>
 </tr>
-<tr class="row-odd"><td>CCl4</td>
-<td>153.822</td>
+<tr class="row-odd"><td><p>CCl4</p></td>
+<td><p>153.822</p></td>
 </tr>
-<tr class="row-even"><td>CF4</td>
-<td>88.00431</td>
+<tr class="row-even"><td><p>CF4</p></td>
+<td><p>88.00431</p></td>
 </tr>
-<tr class="row-odd"><td>CHClF2</td>
-<td>86.4684</td>
+<tr class="row-odd"><td><p>CHClF2</p></td>
+<td><p>86.4684</p></td>
 </tr>
-<tr class="row-even"><td>CH3Cl</td>
-<td>50.48752</td>
+<tr class="row-even"><td><p>CH3Cl</p></td>
+<td><p>50.48752</p></td>
 </tr>
-<tr class="row-odd"><td>CH3CN</td>
-<td>41.05192</td>
+<tr class="row-odd"><td><p>CH3CN</p></td>
+<td><p>41.05192</p></td>
 </tr>
-<tr class="row-even"><td>CH3OH</td>
-<td>32.04186</td>
+<tr class="row-even"><td><p>CH3OH</p></td>
+<td><p>32.04186</p></td>
 </tr>
-<tr class="row-odd"><td>CH4</td>
-<td>16.0425</td>
+<tr class="row-odd"><td><p>CH4</p></td>
+<td><p>16.0425</p></td>
 </tr>
-<tr class="row-even"><td>CO</td>
-<td>28.0101</td>
+<tr class="row-even"><td><p>CO</p></td>
+<td><p>28.0101</p></td>
 </tr>
-<tr class="row-odd"><td>COF2</td>
-<td>66.0069</td>
+<tr class="row-odd"><td><p>COF2</p></td>
+<td><p>66.0069</p></td>
 </tr>
-<tr class="row-even"><td>COS</td>
-<td>60.0751</td>
+<tr class="row-even"><td><p>COS</p></td>
+<td><p>60.0751</p></td>
 </tr>
-<tr class="row-odd"><td>CO2</td>
-<td>44.0095</td>
+<tr class="row-odd"><td><p>CO2</p></td>
+<td><p>44.0095</p></td>
 </tr>
-<tr class="row-even"><td>C2H2</td>
-<td>26.0373</td>
+<tr class="row-even"><td><p>C2H2</p></td>
+<td><p>26.0373</p></td>
 </tr>
-<tr class="row-odd"><td>C2H2O2</td>
-<td>58.036163</td>
+<tr class="row-odd"><td><p>C2H2O2</p></td>
+<td><p>58.036163</p></td>
 </tr>
-<tr class="row-even"><td>C2H6</td>
-<td>30.0690</td>
+<tr class="row-even"><td><p>C2H6</p></td>
+<td><p>30.0690</p></td>
 </tr>
-<tr class="row-odd"><td>C2H3NO5</td>
-<td>121.04892</td>
+<tr class="row-odd"><td><p>C2H3NO5</p></td>
+<td><p>121.04892</p></td>
 </tr>
-<tr class="row-even"><td>C3H8</td>
-<td>44.09562</td>
+<tr class="row-even"><td><p>C3H8</p></td>
+<td><p>44.09562</p></td>
 </tr>
-<tr class="row-odd"><td>C5H8</td>
-<td>68.11702</td>
+<tr class="row-odd"><td><p>C5H8</p></td>
+<td><p>68.11702</p></td>
 </tr>
-<tr class="row-even"><td>ClNO3</td>
-<td>97.4579</td>
+<tr class="row-even"><td><p>ClNO3</p></td>
+<td><p>97.4579</p></td>
 </tr>
-<tr class="row-odd"><td>ClO</td>
-<td>51.4524</td>
+<tr class="row-odd"><td><p>ClO</p></td>
+<td><p>51.4524</p></td>
 </tr>
-<tr class="row-even"><td>HCHO</td>
-<td>30.026</td>
+<tr class="row-even"><td><p>HCHO</p></td>
+<td><p>30.026</p></td>
 </tr>
-<tr class="row-odd"><td>HCOOH</td>
-<td>46.0254</td>
+<tr class="row-odd"><td><p>HCOOH</p></td>
+<td><p>46.0254</p></td>
 </tr>
-<tr class="row-even"><td>HCN</td>
-<td>27.0253</td>
+<tr class="row-even"><td><p>HCN</p></td>
+<td><p>27.0253</p></td>
 </tr>
-<tr class="row-odd"><td>HCl</td>
-<td>36.4609</td>
+<tr class="row-odd"><td><p>HCl</p></td>
+<td><p>36.4609</p></td>
 </tr>
-<tr class="row-even"><td>HF</td>
-<td>20.006343</td>
+<tr class="row-even"><td><p>HF</p></td>
+<td><p>20.006343</p></td>
 </tr>
-<tr class="row-odd"><td>HNO2</td>
-<td>47.013494</td>
+<tr class="row-odd"><td><p>HNO2</p></td>
+<td><p>47.013494</p></td>
 </tr>
-<tr class="row-even"><td>HNO3</td>
-<td>63.0129</td>
+<tr class="row-even"><td><p>HNO3</p></td>
+<td><p>63.0129</p></td>
 </tr>
-<tr class="row-odd"><td>HNO4</td>
-<td>79.0122</td>
+<tr class="row-odd"><td><p>HNO4</p></td>
+<td><p>79.0122</p></td>
 </tr>
-<tr class="row-even"><td>HOCl</td>
-<td>52.4603</td>
+<tr class="row-even"><td><p>HOCl</p></td>
+<td><p>52.4603</p></td>
 </tr>
-<tr class="row-odd"><td>HO2</td>
-<td>33.00674</td>
+<tr class="row-odd"><td><p>HO2</p></td>
+<td><p>33.00674</p></td>
 </tr>
-<tr class="row-even"><td>H2O</td>
-<td>18.0153</td>
+<tr class="row-even"><td><p>H2O</p></td>
+<td><p>18.0153</p></td>
 </tr>
-<tr class="row-odd"><td>H2O_161</td>
-<td>1.00782503207 + 15.99491461956 + 1.00782503207</td>
+<tr class="row-odd"><td><p>H2O_161</p></td>
+<td><p>1.00782503207 + 15.99491461956 + 1.00782503207</p></td>
 </tr>
-<tr class="row-even"><td>H2O_162</td>
-<td>1.00782503207 + 15.99491461956 + 2.0141017778</td>
+<tr class="row-even"><td><p>H2O_162</p></td>
+<td><p>1.00782503207 + 15.99491461956 + 2.0141017778</p></td>
 </tr>
-<tr class="row-odd"><td>H2O_171</td>
-<td>1.00782503207 + 16.99913170 + 1.00782503207</td>
+<tr class="row-odd"><td><p>H2O_171</p></td>
+<td><p>1.00782503207 + 16.99913170 + 1.00782503207</p></td>
 </tr>
-<tr class="row-even"><td>H2O_181</td>
-<td>1.00782503207 + 17.9991610 + 1.00782503207</td>
+<tr class="row-even"><td><p>H2O_181</p></td>
+<td><p>1.00782503207 + 17.9991610 + 1.00782503207</p></td>
 </tr>
-<tr class="row-odd"><td>H2O2</td>
-<td>34.01468</td>
+<tr class="row-odd"><td><p>H2O2</p></td>
+<td><p>34.01468</p></td>
 </tr>
-<tr class="row-even"><td>IO</td>
-<td>142.903873</td>
+<tr class="row-even"><td><p>IO</p></td>
+<td><p>142.903873</p></td>
 </tr>
-<tr class="row-odd"><td>NH3</td>
-<td>17.03056</td>
+<tr class="row-odd"><td><p>NH3</p></td>
+<td><p>17.03056</p></td>
 </tr>
-<tr class="row-even"><td>NO</td>
-<td>30.00610</td>
+<tr class="row-even"><td><p>NO</p></td>
+<td><p>30.00610</p></td>
 </tr>
-<tr class="row-odd"><td>NOCl</td>
-<td>65.4591</td>
+<tr class="row-odd"><td><p>NOCl</p></td>
+<td><p>65.4591</p></td>
 </tr>
-<tr class="row-even"><td>NO2</td>
-<td>46.00550</td>
+<tr class="row-even"><td><p>NO2</p></td>
+<td><p>46.00550</p></td>
 </tr>
-<tr class="row-odd"><td>NO3</td>
-<td>62.0049</td>
+<tr class="row-odd"><td><p>NO3</p></td>
+<td><p>62.0049</p></td>
 </tr>
-<tr class="row-even"><td>N2</td>
-<td>28.01340</td>
+<tr class="row-even"><td><p>N2</p></td>
+<td><p>28.01340</p></td>
 </tr>
-<tr class="row-odd"><td>N2O</td>
-<td>44.0129</td>
+<tr class="row-odd"><td><p>N2O</p></td>
+<td><p>44.0129</p></td>
 </tr>
-<tr class="row-even"><td>N2O5</td>
-<td>108.0104</td>
+<tr class="row-even"><td><p>N2O5</p></td>
+<td><p>108.0104</p></td>
 </tr>
-<tr class="row-odd"><td>OClO</td>
-<td>67.4518</td>
+<tr class="row-odd"><td><p>OClO</p></td>
+<td><p>67.4518</p></td>
 </tr>
-<tr class="row-even"><td>OH</td>
-<td>17.00734</td>
+<tr class="row-even"><td><p>OH</p></td>
+<td><p>17.00734</p></td>
 </tr>
-<tr class="row-odd"><td>O2</td>
-<td>32.000</td>
+<tr class="row-odd"><td><p>O2</p></td>
+<td><p>32.000</p></td>
 </tr>
-<tr class="row-even"><td>O3</td>
-<td>47.99820</td>
+<tr class="row-even"><td><p>O3</p></td>
+<td><p>47.99820</p></td>
 </tr>
-<tr class="row-odd"><td>O3_666</td>
-<td>15.99491461956 + 15.99491461956 + 15.99491461956</td>
+<tr class="row-odd"><td><p>O3_666</p></td>
+<td><p>15.99491461956 + 15.99491461956 + 15.99491461956</p></td>
 </tr>
-<tr class="row-even"><td>O3_667</td>
-<td>15.99491461956 + 15.99491461956 + 16.99913170</td>
+<tr class="row-even"><td><p>O3_667</p></td>
+<td><p>15.99491461956 + 15.99491461956 + 16.99913170</p></td>
 </tr>
-<tr class="row-odd"><td>O3_668</td>
-<td>15.99491461956 + 15.99491461956 + 17.9991610</td>
+<tr class="row-odd"><td><p>O3_668</p></td>
+<td><p>15.99491461956 + 15.99491461956 + 17.9991610</p></td>
 </tr>
-<tr class="row-even"><td>O3_686</td>
-<td>15.99491461956 + 17.9991610 + 15.99491461956</td>
+<tr class="row-even"><td><p>O3_686</p></td>
+<td><p>15.99491461956 + 17.9991610 + 15.99491461956</p></td>
 </tr>
-<tr class="row-odd"><td>O4</td>
-<td>63.9976</td>
+<tr class="row-odd"><td><p>O4</p></td>
+<td><p>63.9976</p></td>
 </tr>
-<tr class="row-even"><td>SF6</td>
-<td>146.0554</td>
+<tr class="row-even"><td><p>SF6</p></td>
+<td><p>146.0554</p></td>
 </tr>
-<tr class="row-odd"><td>SO2</td>
-<td>64.0638</td>
+<tr class="row-odd"><td><p>SO2</p></td>
+<td><p>64.0638</p></td>
 </tr>
 </tbody>
 </table>
@@ -472,28 +483,21 @@ constant</td>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="formula.html" class="btn btn-neutral float-right" title="Common formula" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="Algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="formula.html" class="btn btn-neutral float-right" title="Common formula" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -502,27 +506,16 @@ constant</td>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

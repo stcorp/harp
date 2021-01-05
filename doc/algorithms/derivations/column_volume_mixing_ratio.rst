@@ -1,6 +1,8 @@
 column volume mixing ratio derivations
 ======================================
 
+   .. _derivation_column_volume_mixing_ratio_from_column_number_density:
+
 #. column volume mixing ratio from column number density
 
    =============== ======================================== ========================= ==========================================
@@ -21,6 +23,8 @@ column volume mixing ratio derivations
       \nu_{x} = \frac{c_{x}}{c}
 
 
+   .. _derivation_column_volume_mixing_ratio_dry_air_from_column_number_density:
+
 #. column volume mixing ratio dry air from column number density
 
    ===================== ====================================== ========================= ==================================================
@@ -40,6 +44,8 @@ column volume mixing ratio derivations
 
       \bar{\nu}_{x} = \frac{c_{x}}{c_{dry\_air}}
 
+
+   .. _derivation_column_volume_mixing_ratio_from_column_mass_mixing_ratio:
 
 #. column volume mixing ratio from column mass mixing ratio
 
@@ -62,6 +68,8 @@ column volume mixing ratio derivations
       \nu_{x} = q_{x}\frac{M_{air}}{M_{x}}
 
 
+   .. _derivation_column_volume_mixing_ratio_dry_air_from_column_mass_mixing_ratio_dry_air:
+
 #. column volume mixing ratio dry air from column mass mixing ratio dry air
 
    ===================== ======================================== ===================== ==================================================
@@ -83,6 +91,8 @@ column volume mixing ratio derivations
       \bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}
 
 
+   .. _derivation_stratospheric_column_volume_mixing_ratio_dry_air_from_stratospheric_column_mass_mixing_ratio_dry_air:
+
 #. stratospheric column volume mixing ratio dry air from stratospheric column mass mixing ratio dry air
 
    ===================== ======================================== ===================== ================================================================
@@ -103,6 +113,8 @@ column volume mixing ratio derivations
 
       \bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}
 
+
+   .. _derivation_tropospheric_column_volume_mixing_ratio_dry_air_from_tropospheric_column_mass_mixing_ratio_dry_air:
 
 #. tropospheric column volume mixing ratio dry air from tropospheric column mass mixing ratio dry air
 

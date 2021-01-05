@@ -1,6 +1,8 @@
 volume mixing ratio derivations
 ===============================
 
+   .. _derivation_volume_mixing_ratio_from_number_density:
+
 #. volume mixing ratio from number density
 
    =============== ====================================== ========================= ===================================
@@ -20,6 +22,8 @@ volume mixing ratio derivations
 
       \nu_{x} = \frac{n_{x}}{n}
 
+
+   .. _derivation_volume_mixing_ratio_from_mass_mixing_ratio:
 
 #. volume mixing ratio from mass mixing ratio
 
@@ -42,6 +46,8 @@ volume mixing ratio derivations
       \nu_{x} = q_{x}\frac{M_{air}}{M_{x}}
 
 
+   .. _derivation_volume_mixing_ratio_from_partial_pressure:
+
 #. volume mixing ratio from partial pressure
 
    =============== ====================================== =========== ===================================
@@ -61,6 +67,8 @@ volume mixing ratio derivations
 
       \nu_{x} = \frac{p_{x}}{p}
 
+
+   .. _derivation_volume_mixing_ratio_from_volume_mixing_ratio_dry_air:
 
 #. volume mixing ratio from volume mixing ratio dry air
 
@@ -83,6 +91,8 @@ volume mixing ratio derivations
       \nu_{x} = \bar{\nu}_{x}\nu_{dry\_air}
 
 
+   .. _derivation_volume_mixing_ratio_dry_air_from_number_density:
+
 #. volume mixing ratio dry air from number density
 
    ===================== ====================================== ========================= ===========================================
@@ -102,6 +112,8 @@ volume mixing ratio derivations
 
       \bar{\nu}_{x} = \frac{n_{x}}{n_{dry\_air}}
 
+
+   .. _derivation_volume_mixing_ratio_dry_air_from_mass_mixing_ratio_dry_air:
 
 #. volume mixing ratio dry air from mass mixing ratio dry air
 
@@ -124,6 +136,8 @@ volume mixing ratio derivations
       \bar{\nu}_{x} = \bar{q}_{x}\frac{M_{dry\_air}}{M_{x}}
 
 
+   .. _derivation_volume_mixing_ratio_dry_air_from_partial_pressure:
+
 #. volume mixing ratio dry air from partial pressure
 
    ===================== ====================================== =========== ===========================================
@@ -143,6 +157,8 @@ volume mixing ratio derivations
 
       \bar{\nu}_{x} = \frac{p_{x}}{p_{dry\_air}}
 
+
+   .. _derivation_volume_mixing_ratio_dry_air_from_volume_mixing_ratio:
 
 #. volume mixing ratio dry air from volume mixing ratio
 
@@ -165,6 +181,8 @@ volume mixing ratio derivations
       \bar{\nu}_{x} = \frac{\nu_{x}}{\nu_{dry\_air}}
 
 
+   .. _derivation_dry_air_volume_mixing_ratio_from_H2O_volume_mixing_ratio:
+
 #. dry air volume mixing ratio from H2O volume mixing ratio
 
    ====================== ============================== =========== =================================
@@ -183,6 +201,8 @@ volume mixing ratio derivations
 
       \nu_{dry\_air} = 1 - \nu_{H_{2}O}
 
+
+   .. _derivation_H2O_volume_mixing_ratio_from_dry_air_volume_mixing_ratio:
 
 #. H2O volume mixing ratio from dry air volume mixing ratio
 

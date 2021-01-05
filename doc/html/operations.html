@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Operations &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Ingestion definitions" href="ingestions/index.html" />
     <link rel="prev" title="wind velocity derivations" href="algorithms/derivations/wind_velocity.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -101,6 +109,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -135,18 +144,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Operations</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -167,7 +178,8 @@ Strings used in operations should be quoted with double quotes.</p>
 <div class="section" id="comparison-filter">
 <h2>Comparison filter</h2>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">variable</span> <span class="pre">operator</span> <span class="pre">value</span> <span class="pre">[unit]</span></code></div></blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">variable</span> <span class="pre">operator</span> <span class="pre">value</span> <span class="pre">[unit]</span></code></p>
+</div></blockquote>
 <p>Filter a dimension for all variables in the product such that items for which
 the value of the provided variable does not match the expression get excluded.
 The variable should be one dimensional or two dimensional (with the first
@@ -188,7 +200,8 @@ Otherwise, it will be performed in the unit that the variable currently has.
 Units can only be specified for numerical values.</p>
 <p>Comparison operations can also be performed on the index of a dimension.</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">index(dimension)</span> <span class="pre">operator</span> <span class="pre">value</span></code></div></blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">index(dimension)</span> <span class="pre">operator</span> <span class="pre">value</span></code></p>
+</div></blockquote>
 <p>For instance, <code class="docutils literal notranslate"><span class="pre">index(vertical)</span> <span class="pre">==</span> <span class="pre">0</span></code> will keep only the lowest vertical level of a vertical profile.</p>
 </div>
 <div class="section" id="membership-test-filter">
@@ -207,96 +220,90 @@ Units can only be specified for numerical variables.</p>
 <div class="section" id="function-call">
 <h2>Function call</h2>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">function(argument,</span> <span class="pre">...)</span></code></div></blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">function(argument,</span> <span class="pre">...)</span></code></p>
+</div></blockquote>
 <p>Supported functions:</p>
 <blockquote>
-<div><dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">area_covers_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements whose area does not fully cover the given polygon.
+<div><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">area_covers_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt><dd><p>Exclude measurements whose area does not fully cover the given polygon.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">area_covers_area((51.98,51.98,52.02,52.02),(4.33,4.39,4.39,4.33))</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_covers_area(area-mask-file)</span></code></dt>
-<dd><p class="first">Exclude measurements whose area does not fully cover one of the
+<dt><code class="docutils literal notranslate"><span class="pre">area_covers_area(area-mask-file)</span></code></dt><dd><p>Exclude measurements whose area does not fully cover one of the
 areas of the area mask file.</p>
 <p>Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">area_covers_area(&quot;areas.csv&quot;)</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_covers_point(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements whose area does not cover the given point.
+<dt><code class="docutils literal notranslate"><span class="pre">area_covers_point(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit])</span></code></dt><dd><p>Exclude measurements whose area does not cover the given point.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">area_covers_point(52.012,</span> <span class="pre">4.357)</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_inside_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements whose area is not inside the given polygon.
+<dt><code class="docutils literal notranslate"><span class="pre">area_inside_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt><dd><p>Exclude measurements whose area is not inside the given polygon.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">area_inside_area((50,50,54,54),(3,8,8,3))</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_inside_area(area-mask-file)</span></code></dt>
-<dd>Exclude measurements whose area is not inside one of the areas of
-the area mask file.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">minimum-overlap-fraction)</span></code></dt>
-<dd>Exclude measurements whose area does not overlap at least the
+<dt><code class="docutils literal notranslate"><span class="pre">area_inside_area(area-mask-file)</span></code></dt><dd><p>Exclude measurements whose area is not inside one of the areas of
+the area mask file.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">minimum-overlap-fraction)</span></code></dt><dd><p>Exclude measurements whose area does not overlap at least the
 specified fraction with the given polygon.
-The fraction is calculated as area(intersection)/min(area(x),area(y))</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area(area-mask-file,</span> <span class="pre">minimum-overlap-fraction)</span></code></dt>
-<dd>Exclude measurements whose area does not overlap at least the
-specified fraction with one the areas of the area mask file.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
-<dd>Exclude measurements whose area does not overlap with the given
-polygon.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area(area-mask-file)</span></code></dt>
-<dd>Exclude measurements whose area does not overlap with one of the
-areas of the area mask file.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bin()</span></code></dt>
-<dd>For all variables in a product perform an averaging in the time
-dimension such that all samples end up in a single bin.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bin(variable)</span></code></dt>
-<dd><p class="first">For all variables in a product perform an averaging in the time
+The fraction is calculated as area(intersection)/min(area(x),area(y))</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area(area-mask-file,</span> <span class="pre">minimum-overlap-fraction)</span></code></dt><dd><p>Exclude measurements whose area does not overlap at least the
+specified fraction with one the areas of the area mask file.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt><dd><p>Exclude measurements whose area does not overlap with the given
+polygon.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">area_intersects_area(area-mask-file)</span></code></dt><dd><p>Exclude measurements whose area does not overlap with one of the
+areas of the area mask file.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bin()</span></code></dt><dd><p>For all variables in a product perform an averaging in the time
+dimension such that all samples end up in a single bin.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bin(variable)</span></code></dt><dd><p>For all variables in a product perform an averaging in the time
 dimension such that all samples in the same bin get averaged.
 A bin is defined by all samples of the given variable that have
 the same value.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">bin(index)</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">bin(validity)</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bin((variable,</span> <span class="pre">...))</span></code></dt>
-<dd><p class="first">Same as above, but each bin is defined by the unique combinations
+<dt><code class="docutils literal notranslate"><span class="pre">bin((variable,</span> <span class="pre">...))</span></code></dt><dd><p>Same as above, but each bin is defined by the unique combinations
 of values from the variables in the list.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">bin((year,</span> <span class="pre">month))</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bin(collocation-result-file,</span> <span class="pre">a|b)</span></code></dt>
-<dd><p class="first">For all variables in a product perform an averaging in the time
+<dt><code class="docutils literal notranslate"><span class="pre">bin(collocation-result-file,</span> <span class="pre">a|b)</span></code></dt><dd><p>For all variables in a product perform an averaging in the time
 dimension such that all samples in the same bin get averaged.
 A bin is defined by all samples having the same collocated sample
 from the dataset that is indicated by the second parameter.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">bin(&quot;collocation-result.csv&quot;,</span> <span class="pre">b)</span></code></div>
 <div class="line">(the product is part of dataset A and the collocated
@@ -304,12 +311,11 @@ sample that defines the bin is part of dataset B)</div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bin_spatial((lat_edge,</span> <span class="pre">lat_edge,</span> <span class="pre">...),</span> <span class="pre">(lon_edge,</span> <span class="pre">lon_edge,</span> <span class="pre">...))</span></code></dt>
-<dd><p class="first">For all variables in a product map all time samples onto a
+<dt><code class="docutils literal notranslate"><span class="pre">bin_spatial((lat_edge,</span> <span class="pre">lat_edge,</span> <span class="pre">...),</span> <span class="pre">(lon_edge,</span> <span class="pre">lon_edge,</span> <span class="pre">...))</span></code></dt><dd><p>For all variables in a product map all time samples onto a
 spatial latitude/longitude grid. The latitude/longitude grid is
 defined by the list of edge values.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))</span></code></div>
 <div class="line">(bin data onto latitude bands, separated into an</div>
@@ -319,20 +325,18 @@ Example:</p>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bin_spatial(lat_edge_length,</span> <span class="pre">lat_edge_offset,</span> <span class="pre">lat_edge_step,</span> <span class="pre">lon_edge_length,</span> <span class="pre">lon_edge_offset,</span> <span class="pre">lon_edge_step)</span></code></dt>
-<dd><p class="first">For all variables in a product map all time samples onto a
+<dt><code class="docutils literal notranslate"><span class="pre">bin_spatial(lat_edge_length,</span> <span class="pre">lat_edge_offset,</span> <span class="pre">lat_edge_step,</span> <span class="pre">lon_edge_length,</span> <span class="pre">lon_edge_offset,</span> <span class="pre">lon_edge_step)</span></code></dt><dd><p>For all variables in a product map all time samples onto a
 spatial latitude/longitude grid. The latitude/longitude grid is
 defined by the list of edge values.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">bin_spatial(7,</span> <span class="pre">-90,</span> <span class="pre">30,</span> <span class="pre">3,</span> <span class="pre">-180,</span> <span class="pre">180)</span></code></div>
 <div class="line">(this is the same as <code class="docutils literal notranslate"><span class="pre">bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))</span></code>)</div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">clamp(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(lower_bound,</span> <span class="pre">upper_bound))</span></code></dt>
-<dd><p class="first">Reduce the given dimension such that values of the given axis-variable
+<dt><code class="docutils literal notranslate"><span class="pre">clamp(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(lower_bound,</span> <span class="pre">upper_bound))</span></code></dt><dd><p>Reduce the given dimension such that values of the given axis-variable
 and associated &lt;axis-variable&gt;_bounds fall within the given lower and
 upper bounds.
 The operation will use a
@@ -344,48 +348,46 @@ The updated grid+boundaries are then used to regrid the product
 in the given dimension. The values <code class="docutils literal notranslate"><span class="pre">+inf</span></code> and <code class="docutils literal notranslate"><span class="pre">-inf</span></code> can be
 used to indicate an unbound edge.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">clamp(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(-inf,</span> <span class="pre">60)</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">clamp(vertical,</span> <span class="pre">pressure</span> <span class="pre">[hPa],</span> <span class="pre">(+inf,</span> <span class="pre">200)</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collocate_left(collocation-result-file)</span></code></dt>
-<dd>Apply the specified collocation result file as an index
-filter assuming the product is part of dataset A.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collocate_left(collocation-result-file,</span> <span class="pre">min_collocation_index)</span></code></dt>
-<dd>Same as regular <code class="docutils literal notranslate"><span class="pre">collocation_left</span></code> operation but only include
-collocations where collocation_index &gt;= min_collocation_index</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collocate_left(collocation-result-file,</span> <span class="pre">min_collocation_index,</span> <span class="pre">max_collocation_index)</span></code></dt>
-<dd>Same as regular <code class="docutils literal notranslate"><span class="pre">collocation_left</span></code> operation but only include
-collocations where min_collocation_index &lt;= collocation_index &lt;= max_collocation_index</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collocate_right(collocation-result-file)</span></code></dt>
-<dd>Apply the specified collocation result file as an index
-filter assuming the product is part of dataset B.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collocate_right(collocation-result-file,</span> <span class="pre">min_collocation_index)</span></code></dt>
-<dd>Same as regular <code class="docutils literal notranslate"><span class="pre">collocate_right</span></code> operation but only include
-collocations where collocation_index &gt;= min_collocation_index</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collocate_right(collocation-result-file,</span> <span class="pre">min_collocation_index,</span> <span class="pre">max_collocation_index)</span></code></dt>
-<dd>Same as regular <code class="docutils literal notranslate"><span class="pre">collocate_right</span></code> operation but only include
-collocations where min_collocation_index &lt;= collocation_index &lt;= max_collocation_index</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">The derive operation <em>without</em> a dimension specification can be
+<dt><code class="docutils literal notranslate"><span class="pre">collocate_left(collocation-result-file)</span></code></dt><dd><p>Apply the specified collocation result file as an index
+filter assuming the product is part of dataset A.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">collocate_left(collocation-result-file,</span> <span class="pre">min_collocation_index)</span></code></dt><dd><p>Same as regular <code class="docutils literal notranslate"><span class="pre">collocation_left</span></code> operation but only include
+collocations where collocation_index &gt;= min_collocation_index</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">collocate_left(collocation-result-file,</span> <span class="pre">min_collocation_index,</span> <span class="pre">max_collocation_index)</span></code></dt><dd><p>Same as regular <code class="docutils literal notranslate"><span class="pre">collocation_left</span></code> operation but only include
+collocations where min_collocation_index &lt;= collocation_index &lt;= max_collocation_index</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">collocate_right(collocation-result-file)</span></code></dt><dd><p>Apply the specified collocation result file as an index
+filter assuming the product is part of dataset B.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">collocate_right(collocation-result-file,</span> <span class="pre">min_collocation_index)</span></code></dt><dd><p>Same as regular <code class="docutils literal notranslate"><span class="pre">collocate_right</span></code> operation but only include
+collocations where collocation_index &gt;= min_collocation_index</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">collocate_right(collocation-result-file,</span> <span class="pre">min_collocation_index,</span> <span class="pre">max_collocation_index)</span></code></dt><dd><p>Same as regular <code class="docutils literal notranslate"><span class="pre">collocate_right</span></code> operation but only include
+collocations where min_collocation_index &lt;= collocation_index &lt;= max_collocation_index</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">[unit])</span></code></dt><dd><p>The derive operation <em>without</em> a dimension specification can be
 used to change the data type or unit of an already existing
 variable. A variable with the given name should therefore already
 be in the product (with any kind of dimensions).
 If a unit conversion is performed and no data type is specified
 the variable will be converted to <code class="docutils literal notranslate"><span class="pre">double</span></code> values.</p>
 <p>Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">derive(altitude</span> <span class="pre">[km])</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">derive(latitude</span> <span class="pre">float)</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">The derive operation <em>with</em> a dimension specification is used
+<dt><code class="docutils literal notranslate"><span class="pre">derive(variable</span> <span class="pre">[datatype]</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit])</span></code></dt><dd><p>The derive operation <em>with</em> a dimension specification is used
 to derive the specified variable from other variables found in
 the product (i.e. a variable with that name and dimension does
 not have to exist yet). The <code class="docutils literal notranslate"><span class="pre">--list-derivations</span></code> option of
@@ -399,15 +401,14 @@ If a variable with the given name and dimension specification
 already exists then this operation will just perform a data
 type and/or unit conversion on that variable.</p>
 <p>Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">derive(number_density</span> <span class="pre">{time,vertical}</span> <span class="pre">[molec/m3])</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">derive(latitude</span> <span class="pre">float</span> <span class="pre">{time})</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit],</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
-<dd><p class="first">Derive the given integrated column value by first deriving
+<dt><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit],</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt><dd><p>Derive the given integrated column value by first deriving
 a partial column profile variant of the variable and then
 smoothing/integrating this partial column profile using the
 column avaraging kernel (and a-priori, if available) from a
@@ -417,11 +418,11 @@ Before smoothing the partial column profile is regridded to
 the grid of the column averaging kernel using the given
 axis-variable (see also <code class="docutils literal notranslate"><span class="pre">regrid()</span></code>).</p>
 <p>Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(O3_column_number_density</span> <span class="pre">{time}</span> <span class="pre">[molec/cm2],</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(O3_column_number_density</span> <span class="pre">{time}</span> <span class="pre">[molec/cm2],</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit],</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt>
-<dd><p class="first">Derive the given integrated column value by first deriving
+<dt><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(variable</span> <span class="pre">{dimension-type,</span> <span class="pre">...}</span> <span class="pre">[unit],</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt><dd><p>Derive the given integrated column value by first deriving
 a partial column profile variant of the variable and then
 smoothing/integrating this partial column profile using the
 column avaraging kernel (and a-priori, if available) from a
@@ -433,21 +434,21 @@ Before smoothing the partial column profile is regridded to
 the grid of the column averaging kernel using the given
 axis-variable (see also <code class="docutils literal notranslate"><span class="pre">regrid()</span></code>).</p>
 <p>Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(O3_column_number_density</span> <span class="pre">{time}</span> <span class="pre">[molec/cm2],</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;./collocated_file.nc&quot;)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">derive_smoothed_column(O3_column_number_density</span> <span class="pre">{time}</span> <span class="pre">[molec/cm2],</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;./collocated_file.nc&quot;)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">exclude(variable,</span> <span class="pre">...)</span></code></dt>
-<dd><p class="first">Mark the specified variable(s) for exclusion from the ingested product.
+<dt><code class="docutils literal notranslate"><span class="pre">exclude(variable,</span> <span class="pre">...)</span></code></dt><dd><p>Mark the specified variable(s) for exclusion from the ingested product.
 All variables marked for exclusion will be excluded from the ingested
 product, all other variables will be kept.
 Variables that do not exist will be ignored.
 Instead of a variable name, a pattern using ‘*’ and ‘?’ can be provided.</p>
 <p>Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">exclude(datetime,</span> <span class="pre">*uncertainty*)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">exclude(datetime,</span> <span class="pre">*uncertainty*)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">flatten(dimension)</span></code></dt>
-<dd><p class="first">Flatten a product for a certain dimension by collapsing the
+<dt><code class="docutils literal notranslate"><span class="pre">flatten(dimension)</span></code></dt><dd><p>Flatten a product for a certain dimension by collapsing the
 given dimension into the time dimension. The time dimension
 will thus grow by a factor equal to the length of the given
 dimension and none of the variables in the product will
@@ -458,7 +459,7 @@ the index and collocation_index variables will be removed,
 and time independent variables are made time dependent.
 Independent dimensions and the time dimension cannot be flattened.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">flatten(latitude);flatten(longitude)</span></code></div>
 <div class="line">(turn a 2D lat/lon grid into a a series of individual points)</div>
@@ -467,24 +468,23 @@ Example:</p>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt>
-<dd><p class="first">Mark the specified variable(s) for inclusion in the ingested product.
+<dt><code class="docutils literal notranslate"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt><dd><p>Mark the specified variable(s) for inclusion in the ingested product.
 All variables marked for inclusion will be kept in the ingested
 product, all other variables will be excluded.
 Trying to keep a variable that does not exist will result in an error.
 Instead of a variable name, a pattern using ‘*’ and ‘?’ can be
 provided (unmatched patterns will not result in an error).</p>
 <p>Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">keep(datetime*,</span> <span class="pre">latitude,</span> <span class="pre">longitude)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">keep(datetime*,</span> <span class="pre">latitude,</span> <span class="pre">longitude)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">longitude_range(minimum</span> <span class="pre">[unit],</span> <span class="pre">maximum</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements of which the longitude of the
+<dt><code class="docutils literal notranslate"><span class="pre">longitude_range(minimum</span> <span class="pre">[unit],</span> <span class="pre">maximum</span> <span class="pre">[unit])</span></code></dt><dd><p>Exclude measurements of which the longitude of the
 measurement location falls outside the specified range.
 This function correctly handles longitude ranges that
 cross the international date line. It checks whether
 <code class="docutils literal notranslate"><span class="pre">wrap(longitude,</span> <span class="pre">minimum,</span> <span class="pre">minimum</span> <span class="pre">+</span> <span class="pre">360)</span> <span class="pre">&lt;=</span> <span class="pre">maximum</span></code>.</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">longitude_range(179.0,</span> <span class="pre">181.0)</span></code></div>
 <div class="line">(select a 2 degree range around the international dateline)</div>
@@ -493,25 +493,24 @@ cross the international date line. It checks whether
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">point_distance(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements whose point location is situated further than
+<dt><code class="docutils literal notranslate"><span class="pre">point_distance(latitude</span> <span class="pre">[unit],</span> <span class="pre">longitude</span> <span class="pre">[unit],</span> <span class="pre">distance</span> <span class="pre">[unit])</span></code></dt><dd><p>Exclude measurements whose point location is situated further than
 the specified distance from the given location.
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">point_distance(52.012,</span> <span class="pre">4.357,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">point_distance(52.012,</span> <span class="pre">4.357,</span> <span class="pre">3</span> <span class="pre">[km])</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">point_in_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt>
-<dd><p class="first">Exclude measurements whose point location does not fall inside the
+<dt><code class="docutils literal notranslate"><span class="pre">point_in_area((lat,</span> <span class="pre">...)</span> <span class="pre">[unit],</span> <span class="pre">(lon,</span> <span class="pre">...)</span> <span class="pre">[unit])</span></code></dt><dd><p>Exclude measurements whose point location does not fall inside the
 measurement area.
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">point_in_area((50,50,54,54)</span> <span class="pre">[degN],(3,8,8,3)</span> <span class="pre">[degE])</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">point_in_area((50,50,54,54)</span> <span class="pre">[degN],(3,8,8,3)</span> <span class="pre">[degE])</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">point_in_area(area-mask-file)</span></code></dt>
-<dd>Exclude measurements whose point location does not fall inside one of
-the areas from the area mask file.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rebin(dimension,</span> <span class="pre">axis-bounds-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
-<dd><p class="first">Regrid all variables in the product for the given dimension using
+<dt><code class="docutils literal notranslate"><span class="pre">point_in_area(area-mask-file)</span></code></dt><dd><p>Exclude measurements whose point location does not fall inside one of
+the areas from the area mask file.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rebin(dimension,</span> <span class="pre">axis-bounds-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt><dd><p>Regrid all variables in the product for the given dimension using
 the given axis boundaries variable as target grid. The operation will
 use a <code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension,2}</span> <span class="pre">unit)</span></code> to determine
 the current grid. The target grid is specified as a list of N+1 boundary
@@ -519,15 +518,14 @@ edge values (for N adjacent intervals).
 Rebinning uses a weighted average of the overlapping intervals of the
 current grid with the interval of the target grid.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(longitude,</span> <span class="pre">longitude_bounds</span> <span class="pre">[degree_east],</span> <span class="pre">(-180,</span> <span class="pre">-90,</span> <span class="pre">0,</span> <span class="pre">90,</span> <span class="pre">180))</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(0.0,</span> <span class="pre">1.5,</span> <span class="pre">3.0,</span> <span class="pre">7.0))</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rebin(dimension,</span> <span class="pre">axis-bounds-variable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt>
-<dd><p class="first">Regrid all variables in the product for the given dimension using
+<dt><code class="docutils literal notranslate"><span class="pre">rebin(dimension,</span> <span class="pre">axis-bounds-variable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt><dd><p>Regrid all variables in the product for the given dimension using
 the given axis boundaries variable as target grid. The operation will
 use a <code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension,2}</span> <span class="pre">unit)</span></code> to determine
 the current grid. The N+1 edges of the target grid are specified as
@@ -535,24 +533,23 @@ length, offset, and step parameters.
 Rebinning uses a weighted average of the overlapping intervals of the
 current grid with the interval of the target grid.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(longitude,</span> <span class="pre">longitude_bounds</span> <span class="pre">[degree_east],</span> <span class="pre">5,</span> <span class="pre">-180,</span> <span class="pre">90)</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">rebin(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">11,</span> <span class="pre">0,</span> <span class="pre">1.0)</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
-<dd><p class="first">Regrid all variables in the product for the given dimension using
+<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt><dd><p>Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a
 <code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
 the current grid. The target grid is specified as a list of values.
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(1.0,</span> <span class="pre">2.0,</span> <span class="pre">5.0,</span> <span class="pre">10.0,</span> <span class="pre">15.0,</span> <span class="pre">20.0,</span> <span class="pre">30.0))</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(1.0,</span> <span class="pre">2.0,</span> <span class="pre">5.0,</span> <span class="pre">10.0,</span> <span class="pre">15.0,</span> <span class="pre">20.0,</span> <span class="pre">30.0))</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...),</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt>
-<dd><p class="first">Regrid all variables in the product for the given dimension using
+<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">(value,</span> <span class="pre">...),</span> <span class="pre">(value,</span> <span class="pre">...))</span></code></dt><dd><p>Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a
 <code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> and
 <code class="docutils literal notranslate"><span class="pre">derive(&lt;axis-variable&gt;_bounds</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to
@@ -563,21 +560,20 @@ then the list of boundary values can either contain N+1 points if the
 boundaries are adjacent or 2N points to define each boundary pair
 separately.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(1.0,</span> <span class="pre">2.0,</span> <span class="pre">5.0),</span> <span class="pre">(0.0,</span> <span class="pre">1.5,</span> <span class="pre">3.0,</span> <span class="pre">7.0))</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">(1.0,</span> <span class="pre">2.0,</span> <span class="pre">5.0),</span> <span class="pre">(0.5,</span> <span class="pre">1.5,</span> <span class="pre">1.5,</span> <span class="pre">2.5,</span> <span class="pre">4.0,</span> <span class="pre">6.0))</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt>
-<dd><p class="first">Regrid all variables in the product for the given dimension using
+<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">length,</span> <span class="pre">offset,</span> <span class="pre">step)</span></code></dt><dd><p>Regrid all variables in the product for the given dimension using
 the given axis variable as target grid. The operation will use a
 <code class="docutils literal notranslate"><span class="pre">derive(axis-variable</span> <span class="pre">{[time,]dimension}</span> <span class="pre">unit)</span></code> to determine
 the current grid. The target grid is specified as using a length,
 offset, and step parameters.
 Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">10,</span> <span class="pre">0.5,</span> <span class="pre">1.0)</span></code></div>
 <div class="line">(indicating a grid of altitudes 0.5, 1.5, …, 9.5)</div>
@@ -585,26 +581,25 @@ Example:</p>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
-<dd><p class="first">Regrid all variables in the product for the given dimension using the
+<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt><dd><p>Regrid all variables in the product for the given dimension using the
 target grid taken from a collocated dataset. The fourth parameter
 indicates which dataset contains the target grid.
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt>
-<dd><p class="first">Regrid all variables in the product for the given dimension using the
+<dt><code class="docutils literal notranslate"><span class="pre">regrid(dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt><dd><p>Regrid all variables in the product for the given dimension using the
 target grid taken from a single merged collocated product. Both the
 product and the collocated product need to have a <code class="docutils literal notranslate"><span class="pre">collocation_index</span></code>
 variable that will be used to associate the right collocated grid to
 each sample.
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;./collocated_file.nc&quot;)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">regrid(vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;./collocated_file.nc&quot;)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rename(variable,</span> <span class="pre">new_name)</span></code></dt>
-<dd><p class="first">Rename the variable to the new name.
+<dt><code class="docutils literal notranslate"><span class="pre">rename(variable,</span> <span class="pre">new_name)</span></code></dt><dd><p>Rename the variable to the new name.
 Note that this operation should be used with care since it will
 change the meaning of the data (potentially interpreting it
 incorrectly in further operations). It is primarilly meant to
@@ -616,11 +611,11 @@ already has a variable with the target name then the rename
 operation will do nothing (assuming that the target state is
 already satisfied).
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">rename(surface_temperature,</span> <span class="pre">temperature)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">rename(surface_temperature,</span> <span class="pre">temperature)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">set(option,</span> <span class="pre">value)</span></code></dt>
-<dd><p class="first">Set a specific option in HARP.
+<dt><code class="docutils literal notranslate"><span class="pre">set(option,</span> <span class="pre">value)</span></code></dt><dd><p>Set a specific option in HARP.
 Both the option and value parameters need to be provided as string
 values (using double quotes).
 Options will be set ‘globally’ in HARP and will persists for all
@@ -628,74 +623,69 @@ further operations in the list. After termination of the list of
 operations, all HARP options will be reverted back to their initial
 values.
 Available options are:</p>
-<dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">afgl86</span></code></dt>
-<dd><p class="first">Possible values are:</p>
-<ul class="last simple">
-<li><code class="docutils literal notranslate"><span class="pre">disabled</span></code> (default) disable the use of AFGL86 climatology
-in variable conversions</li>
-<li><code class="docutils literal notranslate"><span class="pre">enabled</span></code> enable the use of AFGL86 climatology in variable
-conversions (using seasonal and latitude band dependence)</li>
-<li><code class="docutils literal notranslate"><span class="pre">usstd76</span></code> enable AFGL86 using US Standard profiles</li>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">afgl86</span></code></dt><dd><p>Possible values are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">disabled</span></code> (default) disable the use of AFGL86 climatology
+in variable conversions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> enable the use of AFGL86 climatology in variable
+conversions (using seasonal and latitude band dependence)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usstd76</span></code> enable AFGL86 using US Standard profiles</p></li>
 </ul>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collocation_datetime</span></code></dt>
-<dd><p class="first">Determine whether to create a collocation_datetime variable when
+<dt><code class="docutils literal notranslate"><span class="pre">collocation_datetime</span></code></dt><dd><p>Determine whether to create a collocation_datetime variable when
 a collocate_left or collocation_right operation is performed.
 The collocation_datetime variable will contain the datetime of
 the sample from the other dataset for the collocated pair.
 Possible values are:</p>
-<ul class="last simple">
-<li><code class="docutils literal notranslate"><span class="pre">disabled</span></code> (default) variable will not be created</li>
-<li><code class="docutils literal notranslate"><span class="pre">enabled</span></code> variable will not be created</li>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">disabled</span></code> (default) variable will not be created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> variable will not be created</p></li>
 </ul>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">propagate_uncertainty</span></code></dt>
-<dd><p class="first">Determine how to propagate uncertainties for operations that
+<dt><code class="docutils literal notranslate"><span class="pre">propagate_uncertainty</span></code></dt><dd><p>Determine how to propagate uncertainties for operations that
 support this (and where there is a choice).
 Possible values are:</p>
-<ul class="last simple">
-<li><code class="docutils literal notranslate"><span class="pre">uncorrelated</span></code> (default) to assume fully uncorrelated uncertainties</li>
-<li><code class="docutils literal notranslate"><span class="pre">correlated</span></code> to assume fully correlated uncertainties</li>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">uncorrelated</span></code> (default) to assume fully uncorrelated uncertainties</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">correlated</span></code> to assume fully correlated uncertainties</p></li>
 </ul>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">regrid_out_of_bounds</span></code></dt>
-<dd><p class="first">Determine how to deal with interpolation of target grid values
+<dt><code class="docutils literal notranslate"><span class="pre">regrid_out_of_bounds</span></code></dt><dd><p>Determine how to deal with interpolation of target grid values
 that fall outside the source grid range.
 Possible values are:</p>
-<ul class="last simple">
-<li><code class="docutils literal notranslate"><span class="pre">nan</span></code> (default) to set values outside the range to NaN</li>
-<li><code class="docutils literal notranslate"><span class="pre">edge</span></code> to use the nearest edge value</li>
-<li><code class="docutils literal notranslate"><span class="pre">extrapolate</span></code> to perform extrapolation</li>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nan</span></code> (default) to set values outside the range to NaN</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">edge</span></code> to use the nearest edge value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extrapolate</span></code> to perform extrapolation</p></li>
 </ul>
 </dd>
 </dl>
 <p>Example:</p>
-<blockquote class="last">
+<blockquote>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">set(&quot;afgl86&quot;,</span> <span class="pre">&quot;enabled&quot;)</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">set(&quot;regrid_out_of_bounds&quot;,</span> <span class="pre">&quot;extrapolate&quot;)</span></code></div>
 </div>
 </div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">smooth(variable,</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
-<dd><p class="first">Smooth the given variable in the product for the given dimension
+<dt><code class="docutils literal notranslate"><span class="pre">smooth(variable,</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt><dd><p>Smooth the given variable in the product for the given dimension
 using the avaraging kernel (and a-priori profile, if available)
 from a collocated dataset. The fifth parameter indicates which
 dataset contains the avaraging kernel. Before smoothing the
 product is regridded to the grid of the averaging kernel using
 the given axis-variable (see also <code class="docutils literal notranslate"><span class="pre">regrid()</span></code>).
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">smooth(O3_number_density,</span> <span class="pre">vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">smooth(O3_number_density,</span> <span class="pre">vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;collocation-result.csv&quot;,</span> <span class="pre">b,</span> <span class="pre">&quot;./correlative_data/&quot;)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">smooth((variable,</span> <span class="pre">variable,</span> <span class="pre">...),</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt>
-<dd>Same as above, but then providing a list of variables that need
+<dt><code class="docutils literal notranslate"><span class="pre">smooth((variable,</span> <span class="pre">variable,</span> <span class="pre">...),</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocation-result-file,</span> <span class="pre">a|b,</span> <span class="pre">dataset-dir)</span></code></dt><dd><p>Same as above, but then providing a list of variables that need
 to be smoothed. For each variable an associated averaging kernel
 (and associated a-priori, if applicable) needs to be present in
-the collocated dataset.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">smooth(variable,</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt>
-<dd><p class="first">Smooth the given variable in the product for the given dimension
+the collocated dataset.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">smooth(variable,</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt><dd><p>Smooth the given variable in the product for the given dimension
 using the avaraging kernel (and a-priori profile, if available)
 from a single merged collocated product. Both the product and the
 collocated product need to have a <code class="docutils literal notranslate"><span class="pre">collocation_index</span></code> variable
@@ -704,39 +694,40 @@ to each sample.
 Before smoothing the product is regridded to the grid of the
 averaging kernel using the given axis-variable (see also <code class="docutils literal notranslate"><span class="pre">regrid()</span></code>).
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">smooth(O3_number_density,</span> <span class="pre">vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;./collocated_file.nc&quot;)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">smooth(O3_number_density,</span> <span class="pre">vertical,</span> <span class="pre">altitude</span> <span class="pre">[km],</span> <span class="pre">&quot;./collocated_file.nc&quot;)</span></code></p>
+</div></blockquote>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">smooth((variable,</span> <span class="pre">variable,</span> <span class="pre">...),</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt>
-<dd>Same as above, but then providing a list of variables that need
+<dt><code class="docutils literal notranslate"><span class="pre">smooth((variable,</span> <span class="pre">variable,</span> <span class="pre">...),</span> <span class="pre">dimension,</span> <span class="pre">axis-variable</span> <span class="pre">unit,</span> <span class="pre">collocated-file)</span></code></dt><dd><p>Same as above, but then providing a list of variables that need
 to be smoothed. For each variable an associated averaging kernel
 (and associated a-priori, if applicable) needs to be present in
-the merged collocated file.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">sort(variable)</span></code></dt>
-<dd>Reorder a dimension for all variables in the product such that the
+the merged collocated file.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">sort(variable)</span></code></dt><dd><p>Reorder a dimension for all variables in the product such that the
 variable provided as parameter ends up being sorted. The variable
 should be one dimensional and the dimension that gets reordered is
-this dimension of the referenced variable.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">sort((variable,</span> <span class="pre">...))</span></code></dt>
-<dd>Same as above, but use a list of variables for sorting.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">squash(dimension,</span> <span class="pre">variable)</span></code></dt>
-<dd>Remove the given dimension for the variable, assuming that the
+this dimension of the referenced variable.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">sort((variable,</span> <span class="pre">...))</span></code></dt><dd><p>Same as above, but use a list of variables for sorting.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">squash(dimension,</span> <span class="pre">variable)</span></code></dt><dd><p>Remove the given dimension for the variable, assuming that the
 content for all items in the given dimension is the same.
-If the content is not the same an error will be raised.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">squash(dimension,</span> <span class="pre">(variable,</span> <span class="pre">...))</span></code></dt>
-<dd>Same as above, but then providing a list of variables that need
-to be squashed.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">valid(variable)</span></code></dt>
-<dd>Filter a dimension for all variables in the product such that
+If the content is not the same an error will be raised.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">squash(dimension,</span> <span class="pre">(variable,</span> <span class="pre">...))</span></code></dt><dd><p>Same as above, but then providing a list of variables that need
+to be squashed.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">valid(variable)</span></code></dt><dd><p>Filter a dimension for all variables in the product such that
 invalid values for the variable provided as parameter get excluded
 (values outside the valid range of the variable, or NaN).
-This operation is executed similar to a comparison filter.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">wrap(variable</span> <span class="pre">[unit],</span> <span class="pre">minimum,</span> <span class="pre">maximum)</span></code></dt>
-<dd><p class="first">Wrap the values of the variable to the range given by minimum
+This operation is executed similar to a comparison filter.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">wrap(variable</span> <span class="pre">[unit],</span> <span class="pre">minimum,</span> <span class="pre">maximum)</span></code></dt><dd><p>Wrap the values of the variable to the range given by minimum
 and maximum. The result is: min + (value - min) % (max - min)
 Example:</p>
-<blockquote class="last">
-<div><code class="docutils literal notranslate"><span class="pre">wrap(longitude</span> <span class="pre">[degree_east],</span> <span class="pre">-180,</span> <span class="pre">180)</span></code></div></blockquote>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">wrap(longitude</span> <span class="pre">[degree_east],</span> <span class="pre">-180,</span> <span class="pre">180)</span></code></p>
+</div></blockquote>
 </dd>
 </dl>
 </div></blockquote>
@@ -907,28 +898,21 @@ Each polygon consists of the vertices as defined on that line.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ingestions/index.html" class="btn btn-neutral float-right" title="Ingestion definitions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="algorithms/derivations/wind_velocity.html" class="btn btn-neutral" title="wind velocity derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="ingestions/index.html" class="btn btn-neutral float-right" title="Ingestion definitions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="algorithms/derivations/wind_velocity.html" class="btn btn-neutral float-left" title="wind velocity derivations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -937,27 +921,16 @@ Each polygon consists of the vertices as defined on that line.</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

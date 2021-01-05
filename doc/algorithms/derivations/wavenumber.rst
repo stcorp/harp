@@ -1,6 +1,8 @@
 wavenumber derivations
 ======================
 
+   .. _derivation_wavenumber_from_frequency:
+
 #. wavenumber from frequency
 
    =================== ============== =================== ================
@@ -17,6 +19,8 @@ wavenumber derivations
 
       \tilde{\nu} = \frac{\nu}{c}
 
+
+   .. _derivation_wavenumber_from_wavelength:
 
 #. wavenumber from wavelength
 

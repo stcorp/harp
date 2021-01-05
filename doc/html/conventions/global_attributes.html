@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Global attributes &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="next" title="Variable attributes" href="variable_attributes.html" />
     <link rel="prev" title="Dimensions" href="dimensions.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -109,6 +117,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -143,11 +152,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Conventions</a> &raquo;</li>
         
@@ -156,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -171,34 +182,34 @@
   <div class="section" id="global-attributes">
 <h1>Global attributes</h1>
 <p>The HARP format defines the following global attributes:</p>
-<dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">Conventions</span></code> string</dt>
-<dd>This attribute should follow the netCDF convention and should contain <code class="docutils literal notranslate"><span class="pre">HARP-1.0</span></code> in its value to indicate that the
-file conforms to the HARP data format conventions.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">history</span></code> string (optional)</dt>
-<dd>This attribute is used by all HARP tools to keep a trace of the operations performed on a product. Each time a command
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Conventions</span></code> string</dt><dd><p>This attribute should follow the netCDF convention and should contain <code class="docutils literal notranslate"><span class="pre">HARP-1.0</span></code> in its value to indicate that the
+file conforms to the HARP data format conventions.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">history</span></code> string (optional)</dt><dd><p>This attribute is used by all HARP tools to keep a trace of the operations performed on a product. Each time a command
 is performed on a HARP file the full command line is appended to this attribute (using a newline separator between
-commands). The command line is prepended by the current UTC time and the version of HARP (using the format <code class="docutils literal notranslate"><span class="pre">YYY-MM-DDThh:mm:ssZ</span> <span class="pre">[harp-x.y]</span> <span class="pre">&lt;command</span> <span class="pre">line&gt;</span></code>). This usage is in line with the general netCDF conventions for this attribute.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">source_product</span></code> string (optional)</dt>
-<dd>This attribute will hold the name of the original product in case the HARP file was converted using <code class="docutils literal notranslate"><span class="pre">harpconvert</span></code>.
+commands). The command line is prepended by the current UTC time and the version of HARP (using the format <code class="docutils literal notranslate"><span class="pre">YYY-MM-DDThh:mm:ssZ</span> <span class="pre">[harp-x.y]</span> <span class="pre">&lt;command</span> <span class="pre">line&gt;</span></code>). This usage is in line with the general netCDF conventions for this attribute.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">source_product</span></code> string (optional)</dt><dd><p>This attribute will hold the name of the original product in case the HARP file was converted using <code class="docutils literal notranslate"><span class="pre">harpconvert</span></code>.
 This approach makes it possible to use your own file naming approach for HARP files without losing trace of which
 original product files the data came from.
 Note that this attribute value is used as the main source to uniquely identify a product within a dataset.
 Only if the attribute is absent then the current filename of the product will be used as product id within a dataset.
 It is therefore important that the value of <code class="docutils literal notranslate"><span class="pre">source_product</span></code> (or, if absent, the current filename) is unique within
-a dataset to allow the product to be uniquely identified. Tools such as <code class="docutils literal notranslate"><span class="pre">harpcollocate</span></code> rely on this.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> double (optional)</dt>
-<dd>This attribute is mandatory if the file is to be used with <code class="docutils literal notranslate"><span class="pre">harpcollocate</span></code>. It allows for quick extraction of the
+a dataset to allow the product to be uniquely identified. Tools such as <code class="docutils literal notranslate"><span class="pre">harpcollocate</span></code> rely on this.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> double (optional)</dt><dd><p>This attribute is mandatory if the file is to be used with <code class="docutils literal notranslate"><span class="pre">harpcollocate</span></code>. It allows for quick extraction of the
 time range of the product. The attribute should be a scalar double precision floating point value giving the
 <code class="docutils literal notranslate"><span class="pre">datetime</span></code> of the first measurement as <code class="docutils literal notranslate"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">2000-01-01</span></code> (using the fractional part to represent time-of-
 day). When exporting data, HARP will itself generate the value by looking at the minimum value of the available
-<code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> (or, if absent, <code class="docutils literal notranslate"><span class="pre">datetime</span></code>) variable.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> double (optional)</dt>
-<dd>This attribute is mandatory if the file is to be used with <code class="docutils literal notranslate"><span class="pre">harpcollocate</span></code>. It allows for quick extraction of the
+<code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> (or, if absent, <code class="docutils literal notranslate"><span class="pre">datetime</span></code>) variable.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> double (optional)</dt><dd><p>This attribute is mandatory if the file is to be used with <code class="docutils literal notranslate"><span class="pre">harpcollocate</span></code>. It allows for quick extraction of the
 time range of the product. The attribute should be a scalar double precision floating point value giving the
 <code class="docutils literal notranslate"><span class="pre">datetime</span></code> of the last measurement as <code class="docutils literal notranslate"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">2000-01-01</span></code> (using the fractional part to represent time-of-
 day). When exporting data, HARP will itself generate the value by looking at the maximum value of the available
-<code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> (or, if absent, <code class="docutils literal notranslate"><span class="pre">datetime</span></code>) variable.</dd>
+<code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> (or, if absent, <code class="docutils literal notranslate"><span class="pre">datetime</span></code>) variable.</p>
+</dd>
 </dl>
 <p>Note that the <code class="docutils literal notranslate"><span class="pre">Conventions</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code>, and <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> attributes are only used inside files.
 For the in-memory representation (in C, Python, etc.) only the <code class="docutils literal notranslate"><span class="pre">history</span></code> and <code class="docutils literal notranslate"><span class="pre">source_product</span></code> attributes are present.</p>
@@ -211,28 +222,21 @@ However, such attributes will be ignored when the product is imported.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="variable_attributes.html" class="btn btn-neutral float-right" title="Variable attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="dimensions.html" class="btn btn-neutral" title="Dimensions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="variable_attributes.html" class="btn btn-neutral float-right" title="Variable attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dimensions.html" class="btn btn-neutral float-left" title="Dimensions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -241,27 +245,16 @@ However, such attributes will be ignored when the product is imported.</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

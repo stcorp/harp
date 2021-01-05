@@ -1,6 +1,8 @@
 frequency derivations
 =====================
 
+   .. _derivation_frequency_from_wavelength:
+
 #. frequency from wavelength
 
    =============== ============== =================== ================
@@ -17,6 +19,8 @@ frequency derivations
 
       \nu = \frac{c}{\lambda}
 
+
+   .. _derivation_frequency_from_wavenumber:
 
 #. frequency from wavenumber
 

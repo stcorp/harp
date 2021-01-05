@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Data types &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="next" title="Dimensions" href="dimensions.html" />
     <link rel="prev" title="Conventions" href="index.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -109,6 +117,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -143,11 +152,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Conventions</a> &raquo;</li>
         
@@ -156,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -172,66 +183,66 @@
 <h1>Data types</h1>
 <p>HARP defines the following data types. See sections <a class="reference internal" href="netcdf3.html"><span class="doc">netCDF-3</span></a>, <a class="reference internal" href="hdf4.html"><span class="doc">HDF4</span></a>, and <a class="reference internal" href="hdf5.html"><span class="doc">HDF5</span></a>
 for a detailed description of how these data types are mapped to and from the data types supported by each file format.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="8%" />
-<col width="3%" />
-<col width="4%" />
-<col width="18%" />
-<col width="57%" />
+<col style="width: 10%" />
+<col style="width: 8%" />
+<col style="width: 3%" />
+<col style="width: 4%" />
+<col style="width: 18%" />
+<col style="width: 57%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP data type</th>
-<th class="head">C data type</th>
-<th class="head">bits</th>
-<th class="head">sign</th>
-<th class="head">range</th>
-<th class="head">description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>HARP data type</p></th>
+<th class="head"><p>C data type</p></th>
+<th class="head"><p>bits</p></th>
+<th class="head"><p>sign</p></th>
+<th class="head"><p>range</p></th>
+<th class="head"><p>description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>int8</td>
-<td>int8_t</td>
-<td>8</td>
-<td>signed</td>
-<td>[-128, 127]</td>
-<td>signed 8-bit integer type (two’s complement representation)</td>
+<tbody>
+<tr class="row-even"><td><p>int8</p></td>
+<td><p>int8_t</p></td>
+<td><p>8</p></td>
+<td><p>signed</p></td>
+<td><p>[-128, 127]</p></td>
+<td><p>signed 8-bit integer type (two’s complement representation)</p></td>
 </tr>
-<tr class="row-odd"><td>int16</td>
-<td>int16_t</td>
-<td>16</td>
-<td>signed</td>
-<td>[-32768, 32767]</td>
-<td>signed 16-bit integer type (two’s complement representation)</td>
+<tr class="row-odd"><td><p>int16</p></td>
+<td><p>int16_t</p></td>
+<td><p>16</p></td>
+<td><p>signed</p></td>
+<td><p>[-32768, 32767]</p></td>
+<td><p>signed 16-bit integer type (two’s complement representation)</p></td>
 </tr>
-<tr class="row-even"><td>int32</td>
-<td>int32_t</td>
-<td>32</td>
-<td>signed</td>
-<td>[-2147483648, 2147483647]</td>
-<td>signed 32-bit integer type (two’s complement representation)</td>
+<tr class="row-even"><td><p>int32</p></td>
+<td><p>int32_t</p></td>
+<td><p>32</p></td>
+<td><p>signed</p></td>
+<td><p>[-2147483648, 2147483647]</p></td>
+<td><p>signed 32-bit integer type (two’s complement representation)</p></td>
 </tr>
-<tr class="row-odd"><td>float</td>
-<td>float</td>
-<td>32</td>
-<td>signed</td>
-<td>[-3.4E38, 3.4E38]</td>
-<td>IEEE754 single-precision binary floating-point format (on supported platforms)</td>
+<tr class="row-odd"><td><p>float</p></td>
+<td><p>float</p></td>
+<td><p>32</p></td>
+<td><p>signed</p></td>
+<td><p>[-3.4E38, 3.4E38]</p></td>
+<td><p>IEEE754 single-precision binary floating-point format (on supported platforms)</p></td>
 </tr>
-<tr class="row-even"><td>double</td>
-<td>double</td>
-<td>64</td>
-<td>signed</td>
-<td>[-1.7E308, 1.7E308]</td>
-<td>IEEE754 double-precision binary floating-point format (on supported platforms)</td>
+<tr class="row-even"><td><p>double</p></td>
+<td><p>double</p></td>
+<td><p>64</p></td>
+<td><p>signed</p></td>
+<td><p>[-1.7E308, 1.7E308]</p></td>
+<td><p>IEEE754 double-precision binary floating-point format (on supported platforms)</p></td>
 </tr>
-<tr class="row-odd"><td>string</td>
-<td>char*</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>&#160;</td>
-<td>null-terminated ASCII string</td>
+<tr class="row-odd"><td><p>string</p></td>
+<td><p>char*</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>null-terminated ASCII string</p></td>
 </tr>
 </tbody>
 </table>
@@ -242,28 +253,21 @@ for a detailed description of how these data types are mapped to and from the da
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="dimensions.html" class="btn btn-neutral float-right" title="Dimensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="Conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="dimensions.html" class="btn btn-neutral float-right" title="Dimensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -272,27 +276,16 @@ for a detailed description of how these data types are mapped to and from the da
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

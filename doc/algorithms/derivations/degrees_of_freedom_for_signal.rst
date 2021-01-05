@@ -1,7 +1,9 @@
 degrees of freedom for signal
 =============================
 
-#. degrees of freedom for signal profile from avk:
+   .. _derivation_degrees_of_freedom_for_signal_profile_from_avk:
+
+#. degrees of freedom for signal profile from avk
 
    ==================== ======================================= ==== ===============================
    symbol               description                             unit variable name
@@ -18,7 +20,9 @@ degrees of freedom for signal
       d^{x}_{s}(i) = A^{x}(i,i)
 
 
-#. degrees of freedom for signal from degrees of freedom for signal profile:
+   .. _derivation_degrees_of_freedom_for_signal_from_degrees_of_freedom_for_signal_profile:
+
+#. degrees of freedom for signal from degrees of freedom for signal profile
 
    ==================== ======================================= ==== ======================
    symbol               description                             unit variable name

@@ -1,6 +1,8 @@
 cloud height derivations
 ========================
 
+   .. _derivation_cloud_height_from_cloud_base_top_height:
+
 #. cloud height from cloud base/top height
 
    ============== ======================== ========= ==========================

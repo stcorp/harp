@@ -1,11 +1,16 @@
 longitude derivations
 =====================
 
+   .. _derivation_longitude_from_polygon:
+
 #. longitude from polygon
 
-   See :ref:`latitude from polygon <latitude from polygon derivation>`
+   See :ref:`latitude from polygon <derivation_latitude_from_polygon>`
 
-|
+   |
+
+
+   .. _derivation_longitude_from_range:
 
 #. longitude from range
 
@@ -23,7 +28,9 @@ longitude derivations
       \lambda = \frac{\lambda^{B}(2) + \lambda^{B}(1)}{2}
 
 
-#. longitude from vertical profile latitudes
+   .. _derivation_longitude_from_vertical_profile_longitudes:
+
+#. longitude from vertical profile longitudes
 
    ================== ===================================== ============ ========================
    symbol             description                           unit         variable name
@@ -43,6 +50,8 @@ longitude derivations
         \lambda & = & \lambda(N/2)
       \end{eqnarray}
 
+
+   .. _derivation_longitude_from_sensor_longitude:
 
 #. longitude from sensor longitude
 

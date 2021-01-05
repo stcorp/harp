@@ -1,6 +1,8 @@
 temperature derivations
 =======================
 
+   .. _derivation_temperature_from_pressure_and_number_density:
+
 #. temperature from pressure and number density
 
    ========= ================== ============================ ====================
@@ -20,6 +22,8 @@ temperature derivations
       T = \frac{p}{kn}
 
 
+   .. _derivation_temperature_from_virtual_temperature:
+
 #. temperature from virtual temperature
 
    ==================== ======================= ===================== =========================
@@ -38,6 +42,8 @@ temperature derivations
 
       T = \frac{M_{air}}{M_{dry\_air}}T_{v}
 
+
+   .. _derivation_surface_temperature_from_surface_pressure_and_surface_number_density:
 
 #. surface temperature from surface pressure and surface number density
 

@@ -1,6 +1,8 @@
 partial pressure derivations
 ============================
 
+   .. _derivation_partial_pressure_from_number_density_and_temperature:
+
 #. partial pressure from number density and temperature
 
    ============= =================================== ============================ ================================
@@ -22,6 +24,8 @@ partial pressure derivations
       p_{x} = n_{x}kT
 
 
+   .. _derivation_partial_pressure_from_volume_mixing_ratio:
+
 #. partial pressure from volume mixing ratio
 
    =============== ====================================== =========== ===================================
@@ -41,6 +45,8 @@ partial pressure derivations
 
       p_{x} = \nu_{x}p
 
+
+   .. _derivation_partial_pressure_from_volume_mixing_ratio_dry_air:
 
 #. partial pressure from volume mixing ratio dry air
 

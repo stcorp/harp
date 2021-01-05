@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Collocation &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Dataset" href="libharp_dataset.html" />
     <link rel="prev" title="C library" href="libharp.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -107,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -141,11 +150,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="libharp.html">C library</a> &raquo;</li>
         
@@ -154,7 +165,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -170,278 +181,265 @@
 <h1>Collocation</h1>
 <dl class="group">
 <dt>
-<span class="target" id="group__harp__collocation"></span><em>group</em> <code class="descname">harp_collocation</code></dt>
+<span class="target" id="group__harp__collocation"></span><em>group</em> <code class="sig-name descname">harp_collocation</code></dt>
 <dd><p>The HARP Collocation module contains the functionality that deals with collocation two datasets of products. The two datasets are referred to as dataset A (primary) and dataset B (secondary). The result of a collocation is a list of pairs. Each pair references a measurement from dataset A (using the source product name and measurement index within that product) and a measurement from dataset B. Each collocation pair also gets a unique collocation_index sequence number. For each collocation criteria used in the matchup the actual difference is stored as part of the pair as well. Collocation results can be written to and read from a csv file. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
-<dl class="type">
-<dt id="_CPPv321harp_collocation_pair">
-<span id="_CPPv221harp_collocation_pair"></span><span id="harp_collocation_pair"></span><span class="target" id="group__harp__collocation_1ga0d5cd2a5de254da66941cc813a16d81e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv328harp_collocation_pair_struct" title="harp_collocation_pair_struct">harp_collocation_pair_struct</a> <code class="descname">harp_collocation_pair</code><br /></dt>
+<dl class="cpp type">
+<dt id="_CPPv421harp_collocation_pair">
+<span id="_CPPv321harp_collocation_pair"></span><span id="_CPPv221harp_collocation_pair"></span><span id="harp_collocation_pair"></span><span class="target" id="group__harp__collocation_1ga0d5cd2a5de254da66941cc813a16d81e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv428harp_collocation_pair_struct" title="harp_collocation_pair_struct">harp_collocation_pair_struct</a> <code class="sig-name descname">harp_collocation_pair</code><br /></dt>
 <dd></dd></dl>
 
-<dl class="type">
-<dt id="_CPPv323harp_collocation_result">
-<span id="_CPPv223harp_collocation_result"></span><span id="harp_collocation_result"></span><span class="target" id="group__harp__collocation_1gadce42cfa00c3c02cfdb339c3e825147e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv330harp_collocation_result_struct" title="harp_collocation_result_struct">harp_collocation_result_struct</a> <code class="descname">harp_collocation_result</code><br /></dt>
+<dl class="cpp type">
+<dt id="_CPPv423harp_collocation_result">
+<span id="_CPPv323harp_collocation_result"></span><span id="_CPPv223harp_collocation_result"></span><span id="harp_collocation_result"></span><span class="target" id="group__harp__collocation_1gadce42cfa00c3c02cfdb339c3e825147e"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv430harp_collocation_result_struct" title="harp_collocation_result_struct">harp_collocation_result_struct</a> <code class="sig-name descname">harp_collocation_result</code><br /></dt>
 <dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
-<dt id="_CPPv327harp_collocation_result_newPP23harp_collocation_resultiPPKcPPKc">
-<span id="_CPPv227harp_collocation_result_newPP23harp_collocation_resultiPPKcPPKc"></span><span id="harp_collocation_result_new__harp_collocation_resultPP.i.cCPP.cCPP"></span><span class="target" id="group__harp__collocation_1ga6031ad343e7d81272882937baa3c6053"></span>int <code class="descname">harp_collocation_result_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> **<em>new_collocation_result</em>, int <em>num_differences</em>, <em class="property">const</em> char **<em>difference_variable_name</em>, <em class="property">const</em> char **<em>difference_unit</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Create a new collocation result set <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv427harp_collocation_result_newPP23harp_collocation_resultiPPKcPPKc">
+<span id="_CPPv327harp_collocation_result_newPP23harp_collocation_resultiPPKcPPKc"></span><span id="_CPPv227harp_collocation_result_newPP23harp_collocation_resultiPPKcPPKc"></span><span id="harp_collocation_result_new__harp_collocation_resultPP.i.cCPP.cCPP"></span><span class="target" id="group__harp__collocation_1ga6031ad343e7d81272882937baa3c6053"></span>int <code class="sig-name descname">harp_collocation_result_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> **<em>new_collocation_result</em>, int <em>num_differences</em>, <em class="property">const</em> char **<em>difference_variable_name</em>, <em class="property">const</em> char **<em>difference_unit</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Create a new collocation result set <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">new_collocation_result</span></code>: Pointer to the C variable where the new result set will be stored. </li>
-<li><code class="docutils literal notranslate"><span class="pre">num_differences</span></code>: The number of differences that have been calculated per pair for the collocation result </li>
-<li><code class="docutils literal notranslate"><span class="pre">difference_variable_name</span></code>: An array of variable names describing the type of difference for each calculated difference </li>
-<li><code class="docutils literal notranslate"><span class="pre">difference_unit</span></code>: An array of units for each calculated difference </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">new_collocation_result</span></code>: Pointer to the C variable where the new result set will be stored. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_differences</span></code>: The number of differences that have been calculated per pair for the collocation result </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">difference_variable_name</span></code>: An array of variable names describing the type of difference for each calculated difference </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">difference_unit</span></code>: An array of units for each calculated difference </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv330harp_collocation_result_deleteP23harp_collocation_result">
-<span id="_CPPv230harp_collocation_result_deleteP23harp_collocation_result"></span><span id="harp_collocation_result_delete__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga47424f40bc53ed860f2134390239a984"></span>void <code class="descname">harp_collocation_result_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Remove a collocation result set <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv430harp_collocation_result_deleteP23harp_collocation_result">
+<span id="_CPPv330harp_collocation_result_deleteP23harp_collocation_result"></span><span id="_CPPv230harp_collocation_result_deleteP23harp_collocation_result"></span><span id="harp_collocation_result_delete__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga47424f40bc53ed860f2134390239a984"></span>void <code class="sig-name descname">harp_collocation_result_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Remove a collocation result set <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be removed. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be removed. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv333harp_collocation_result_sort_by_aP23harp_collocation_result">
-<span id="_CPPv233harp_collocation_result_sort_by_aP23harp_collocation_result"></span><span id="harp_collocation_result_sort_by_a__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1gaf908294e4c686bb1a24670e29b500a2b"></span>int <code class="descname">harp_collocation_result_sort_by_a</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Sort the collocation result pairs by dataset A Results will be sorted first by product index of A and then by sample index of A <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv433harp_collocation_result_sort_by_aP23harp_collocation_result">
+<span id="_CPPv333harp_collocation_result_sort_by_aP23harp_collocation_result"></span><span id="_CPPv233harp_collocation_result_sort_by_aP23harp_collocation_result"></span><span id="harp_collocation_result_sort_by_a__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1gaf908294e4c686bb1a24670e29b500a2b"></span>int <code class="sig-name descname">harp_collocation_result_sort_by_a</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Sort the collocation result pairs by dataset A Results will be sorted first by product index of A and then by sample index of A <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be sorted in place. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be sorted in place. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv333harp_collocation_result_sort_by_bP23harp_collocation_result">
-<span id="_CPPv233harp_collocation_result_sort_by_bP23harp_collocation_result"></span><span id="harp_collocation_result_sort_by_b__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga7349b1f733e1b0d1042608a832af30dd"></span>int <code class="descname">harp_collocation_result_sort_by_b</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Sort the collocation result pairs by dataset B Results will be sorted first by product index of B and then by sample index of B <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv433harp_collocation_result_sort_by_bP23harp_collocation_result">
+<span id="_CPPv333harp_collocation_result_sort_by_bP23harp_collocation_result"></span><span id="_CPPv233harp_collocation_result_sort_by_bP23harp_collocation_result"></span><span id="harp_collocation_result_sort_by_b__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga7349b1f733e1b0d1042608a832af30dd"></span>int <code class="sig-name descname">harp_collocation_result_sort_by_b</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Sort the collocation result pairs by dataset B Results will be sorted first by product index of B and then by sample index of B <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be sorted in place. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be sorted in place. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv349harp_collocation_result_sort_by_collocation_indexP23harp_collocation_result">
-<span id="_CPPv249harp_collocation_result_sort_by_collocation_indexP23harp_collocation_result"></span><span id="harp_collocation_result_sort_by_collocation_index__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga5dbfa18bb076beb44e27ffbe2be8a1c3"></span>int <code class="descname">harp_collocation_result_sort_by_collocation_index</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Sort the collocation result pairs by collocation index <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv449harp_collocation_result_sort_by_collocation_indexP23harp_collocation_result">
+<span id="_CPPv349harp_collocation_result_sort_by_collocation_indexP23harp_collocation_result"></span><span id="_CPPv249harp_collocation_result_sort_by_collocation_indexP23harp_collocation_result"></span><span id="harp_collocation_result_sort_by_collocation_index__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga5dbfa18bb076beb44e27ffbe2be8a1c3"></span>int <code class="sig-name descname">harp_collocation_result_sort_by_collocation_index</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Sort the collocation result pairs by collocation index <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be sorted in place. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be sorted in place. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv351harp_collocation_result_filter_for_source_product_aP23harp_collocation_resultPKc">
-<span id="_CPPv251harp_collocation_result_filter_for_source_product_aP23harp_collocation_resultPKc"></span><span id="harp_collocation_result_filter_for_source_product_a__harp_collocation_resultP.cCP"></span><span class="target" id="group__harp__collocation_1gacbab6bf6d38980dec0a07f27d47dd874"></span>int <code class="descname">harp_collocation_result_filter_for_source_product_a</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Filter collocation result set for a specific product from dataset A Only results that contain the referenced source product will be retained. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv451harp_collocation_result_filter_for_source_product_aP23harp_collocation_resultPKc">
+<span id="_CPPv351harp_collocation_result_filter_for_source_product_aP23harp_collocation_resultPKc"></span><span id="_CPPv251harp_collocation_result_filter_for_source_product_aP23harp_collocation_resultPKc"></span><span id="harp_collocation_result_filter_for_source_product_a__harp_collocation_resultP.cCP"></span><span class="target" id="group__harp__collocation_1gacbab6bf6d38980dec0a07f27d47dd874"></span>int <code class="sig-name descname">harp_collocation_result_filter_for_source_product_a</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Filter collocation result set for a specific product from dataset A Only results that contain the referenced source product will be retained. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be filtered in place. </li>
-<li><code class="docutils literal notranslate"><span class="pre">source_product</span></code>: source product reference from dataset A that should be filtered on. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be filtered in place. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_product</span></code>: source product reference from dataset A that should be filtered on. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv351harp_collocation_result_filter_for_source_product_bP23harp_collocation_resultPKc">
-<span id="_CPPv251harp_collocation_result_filter_for_source_product_bP23harp_collocation_resultPKc"></span><span id="harp_collocation_result_filter_for_source_product_b__harp_collocation_resultP.cCP"></span><span class="target" id="group__harp__collocation_1gacc8a807955504326fb20f8d31b5fcf6f"></span>int <code class="descname">harp_collocation_result_filter_for_source_product_b</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Filter collocation result set for a specific product from dataset B Only results that contain the referenced source product will be retained. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv451harp_collocation_result_filter_for_source_product_bP23harp_collocation_resultPKc">
+<span id="_CPPv351harp_collocation_result_filter_for_source_product_bP23harp_collocation_resultPKc"></span><span id="_CPPv251harp_collocation_result_filter_for_source_product_bP23harp_collocation_resultPKc"></span><span id="harp_collocation_result_filter_for_source_product_b__harp_collocation_resultP.cCP"></span><span class="target" id="group__harp__collocation_1gacc8a807955504326fb20f8d31b5fcf6f"></span>int <code class="sig-name descname">harp_collocation_result_filter_for_source_product_b</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, <em class="property">const</em> char *<em>source_product</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Filter collocation result set for a specific product from dataset B Only results that contain the referenced source product will be retained. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be filtered in place. </li>
-<li><code class="docutils literal notranslate"><span class="pre">source_product</span></code>: source product reference from dataset B that should be filtered on. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be filtered in place. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_product</span></code>: source product reference from dataset B that should be filtered on. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv354harp_collocation_result_filter_for_collocation_indicesP23harp_collocation_resultlP7int32_t">
-<span id="_CPPv254harp_collocation_result_filter_for_collocation_indicesP23harp_collocation_resultlP7int32_t"></span><span id="harp_collocation_result_filter_for_collocation_indices__harp_collocation_resultP.l.int32_tP"></span><span class="target" id="group__harp__collocation_1ga7008e5754fbf0124d36b5e78a769e884"></span>int <code class="descname">harp_collocation_result_filter_for_collocation_indices</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>num_indices</em>, int32_t *<em>collocation_index</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Filter collocation result set for the specified list of collocation indices. The collocation result pairs will be sorted according to the order in the provided <em>collocation_index</em> parameter. If a collocation index cannot be found in the collocation_result set then an error will be thrown. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv454harp_collocation_result_filter_for_collocation_indicesP23harp_collocation_resultlP7int32_t">
+<span id="_CPPv354harp_collocation_result_filter_for_collocation_indicesP23harp_collocation_resultlP7int32_t"></span><span id="_CPPv254harp_collocation_result_filter_for_collocation_indicesP23harp_collocation_resultlP7int32_t"></span><span id="harp_collocation_result_filter_for_collocation_indices__harp_collocation_resultP.l.int32_tP"></span><span class="target" id="group__harp__collocation_1ga7008e5754fbf0124d36b5e78a769e884"></span>int <code class="sig-name descname">harp_collocation_result_filter_for_collocation_indices</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>num_indices</em>, int32_t *<em>collocation_index</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Filter collocation result set for the specified list of collocation indices. The collocation result pairs will be sorted according to the order in the provided <em>collocation_index</em> parameter. If a collocation index cannot be found in the collocation_result set then an error will be thrown. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be filtered in place. </li>
-<li><code class="docutils literal notranslate"><span class="pre">num_indices</span></code>: Number of items in the collocation_index parameter. </li>
-<li><code class="docutils literal notranslate"><span class="pre">collocation_index</span></code>: Array of collocation index values to match against the collocation_result set. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be filtered in place. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_indices</span></code>: Number of items in the collocation_index parameter. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_index</span></code>: Array of collocation index values to match against the collocation_result set. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv332harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKcliPKd">
-<span id="_CPPv232harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKcliPKd"></span><span id="harp_collocation_result_add_pair__harp_collocation_resultP.l.cCP.l.cCP.l.i.doubleCP"></span><span class="target" id="group__harp__collocation_1ga44134180c3a56546a89c8c28eecee0c7"></span>int <code class="descname">harp_collocation_result_add_pair</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, int <em>num_differences</em>, <em class="property">const</em> double *<em>difference</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Add collocation result entry to a result set <dl class="docutils">
-<dt><strong>Note</strong></dt>
-<dd>this function will not check for uniqueness of the collocation_index values in the resulting set </dd>
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
-</ul>
+<dl class="cpp function">
+<dt id="_CPPv432harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKcliPKd">
+<span id="_CPPv332harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKcliPKd"></span><span id="_CPPv232harp_collocation_result_add_pairP23harp_collocation_resultlPKclPKcliPKd"></span><span id="harp_collocation_result_add_pair__harp_collocation_resultP.l.cCP.l.cCP.l.i.doubleCP"></span><span class="target" id="group__harp__collocation_1ga44134180c3a56546a89c8c28eecee0c7"></span>int <code class="sig-name descname">harp_collocation_result_add_pair</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>collocation_index</em>, <em class="property">const</em> char *<em>source_product_a</em>, long <em>index_a</em>, <em class="property">const</em> char *<em>source_product_b</em>, long <em>index_b</em>, int <em>num_differences</em>, <em class="property">const</em> double *<em>difference</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Add collocation result entry to a result set <dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>this function will not check for uniqueness of the collocation_index values in the resulting set </p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be extended </li>
-<li><code class="docutils literal notranslate"><span class="pre">collocation_index</span></code>: Unique index of the pair in the overall collocation result </li>
-<li><code class="docutils literal notranslate"><span class="pre">source_product_a</span></code>: Name of the source_product attribute of the product from dataset A </li>
-<li><code class="docutils literal notranslate"><span class="pre">index_a</span></code>: Value of the index variable for the matching sample in the product from dataset A </li>
-<li><code class="docutils literal notranslate"><span class="pre">source_product_b</span></code>: Name of the source_product attribute of the product from dataset B </li>
-<li><code class="docutils literal notranslate"><span class="pre">index_b</span></code>: Value of the index variable for the matching sample in the product from dataset B </li>
-<li><code class="docutils literal notranslate"><span class="pre">num_differences</span></code>: Number of calculated differences (should equal the number of differences with which the collocation result was initialized) </li>
-<li><code class="docutils literal notranslate"><span class="pre">difference</span></code>: Array of difference values </li>
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
+</ul>
+</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set that will be extended </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_index</span></code>: Unique index of the pair in the overall collocation result </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_product_a</span></code>: Name of the source_product attribute of the product from dataset A </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">index_a</span></code>: Value of the index variable for the matching sample in the product from dataset A </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_product_b</span></code>: Name of the source_product attribute of the product from dataset B </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">index_b</span></code>: Value of the index variable for the matching sample in the product from dataset B </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_differences</span></code>: Number of calculated differences (should equal the number of differences with which the collocation result was initialized) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">difference</span></code>: Array of difference values </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv344harp_collocation_result_remove_pair_at_indexP23harp_collocation_resultl">
-<span id="_CPPv244harp_collocation_result_remove_pair_at_indexP23harp_collocation_resultl"></span><span id="harp_collocation_result_remove_pair_at_index__harp_collocation_resultP.l"></span><span class="target" id="group__harp__collocation_1ga0ff0f268cbe8d1eda814a31bcc148a68"></span>int <code class="descname">harp_collocation_result_remove_pair_at_index</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>index</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Remove collocation result entry from a result set <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv444harp_collocation_result_remove_pair_at_indexP23harp_collocation_resultl">
+<span id="_CPPv344harp_collocation_result_remove_pair_at_indexP23harp_collocation_resultl"></span><span id="_CPPv244harp_collocation_result_remove_pair_at_indexP23harp_collocation_resultl"></span><span id="harp_collocation_result_remove_pair_at_index__harp_collocation_resultP.l"></span><span class="target" id="group__harp__collocation_1ga0ff0f268cbe8d1eda814a31bcc148a68"></span>int <code class="sig-name descname">harp_collocation_result_remove_pair_at_index</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em>, long <em>index</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Remove collocation result entry from a result set <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set from which to remove the entry </li>
-<li><code class="docutils literal notranslate"><span class="pre">index</span></code>: Zero-based index in the collocation result set of the entry that should be removed </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Result set from which to remove the entry </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">index</span></code>: Zero-based index in the collocation result set of the entry that should be removed </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv328harp_collocation_result_readPKcPP23harp_collocation_result">
-<span id="_CPPv228harp_collocation_result_readPKcPP23harp_collocation_result"></span><span id="harp_collocation_result_read__cCP.harp_collocation_resultPP"></span><span class="target" id="group__harp__collocation_1gafd767a5195c3337b83229443f74f7837"></span>int <code class="descname">harp_collocation_result_read</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>collocation_result_filename</em>, <a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> **<em>new_collocation_result</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Read collocation result set from a csv file The csv file should follow the HARP format for collocation result files. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv428harp_collocation_result_readPKcPP23harp_collocation_result">
+<span id="_CPPv328harp_collocation_result_readPKcPP23harp_collocation_result"></span><span id="_CPPv228harp_collocation_result_readPKcPP23harp_collocation_result"></span><span id="harp_collocation_result_read__cCP.harp_collocation_resultPP"></span><span class="target" id="group__harp__collocation_1gafd767a5195c3337b83229443f74f7837"></span>int <code class="sig-name descname">harp_collocation_result_read</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>collocation_result_filename</em>, <a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> **<em>new_collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Read collocation result set from a csv file The csv file should follow the HARP format for collocation result files. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result_filename</span></code>: Full file path to the csv file. </li>
-<li><code class="docutils literal notranslate"><span class="pre">new_collocation_result</span></code>: Pointer to the C variable where the new result set will be stored. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result_filename</span></code>: Full file path to the csv file. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">new_collocation_result</span></code>: Pointer to the C variable where the new result set will be stored. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv329harp_collocation_result_writePKcP23harp_collocation_result">
-<span id="_CPPv229harp_collocation_result_writePKcP23harp_collocation_result"></span><span id="harp_collocation_result_write__cCP.harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga11c71ee15582b868a80ce5f997d1f70a"></span>int <code class="descname">harp_collocation_result_write</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>collocation_result_filename</em>, <a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Read collocation result set to a csv file The csv file will follow the HARP format for collocation result files. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv429harp_collocation_result_writePKcP23harp_collocation_result">
+<span id="_CPPv329harp_collocation_result_writePKcP23harp_collocation_result"></span><span id="_CPPv229harp_collocation_result_writePKcP23harp_collocation_result"></span><span id="harp_collocation_result_write__cCP.harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga11c71ee15582b868a80ce5f997d1f70a"></span>int <code class="sig-name descname">harp_collocation_result_write</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>collocation_result_filename</em>, <a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Read collocation result set to a csv file The csv file will follow the HARP format for collocation result files. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result_filename</span></code>: Full file path to the csv file. </li>
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Collocation result set that will be written to file. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result_filename</span></code>: Full file path to the csv file. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Collocation result set that will be written to file. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv337harp_collocation_result_swap_datasetsP23harp_collocation_result">
-<span id="_CPPv237harp_collocation_result_swap_datasetsP23harp_collocation_result"></span><span id="harp_collocation_result_swap_datasets__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga1ee6e2e544c4db6668948108351d1ef2"></span>void <code class="descname">harp_collocation_result_swap_datasets</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv323harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
+<dl class="cpp function">
+<dt id="_CPPv437harp_collocation_result_swap_datasetsP23harp_collocation_result">
+<span id="_CPPv337harp_collocation_result_swap_datasetsP23harp_collocation_result"></span><span id="_CPPv237harp_collocation_result_swap_datasetsP23harp_collocation_result"></span><span id="harp_collocation_result_swap_datasets__harp_collocation_resultP"></span><span class="target" id="group__harp__collocation_1ga1ee6e2e544c4db6668948108351d1ef2"></span>void <code class="sig-name descname">harp_collocation_result_swap_datasets</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv423harp_collocation_result" title="harp_collocation_result">harp_collocation_result</a> *<em>collocation_result</em><span class="sig-paren">)</span><br /></dt>
 <dd><p>Swap the columns of this collocation result inplace.</p>
-<p>This swaps datasets A and B (such that A becomes B and B becomes A). <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Collocation result whose datasets should be swapped. </li>
+<p>This swaps datasets A and B (such that A becomes B and B becomes A). <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collocation_result</span></code>: Collocation result whose datasets should be swapped. </p></li>
 </ul>
 </dd>
 </dl>
@@ -449,15 +447,15 @@
 </dd></dl>
 
 </div>
-<dl class="class">
-<dt id="_CPPv328harp_collocation_pair_struct">
-<span id="_CPPv228harp_collocation_pair_struct"></span><span id="harp_collocation_pair_struct"></span><span class="target" id="structharp__collocation__pair__struct"></span><em class="property">struct </em><code class="descname">harp_collocation_pair_struct</code><br /></dt>
+<dl class="cpp struct">
+<dt id="_CPPv428harp_collocation_pair_struct">
+<span id="_CPPv328harp_collocation_pair_struct"></span><span id="_CPPv228harp_collocation_pair_struct"></span><span id="harp_collocation_pair_struct"></span><span class="target" id="structharp__collocation__pair__struct"></span><em class="property">struct </em><code class="sig-name descname">harp_collocation_pair_struct</code><br /></dt>
 <dd><em>#include &lt;harp.h&gt;</em><p>Entry for a single matched pair for a collocation between a dataset A and dataset B </p>
 </dd></dl>
 
-<dl class="class">
-<dt id="_CPPv330harp_collocation_result_struct">
-<span id="_CPPv230harp_collocation_result_struct"></span><span id="harp_collocation_result_struct"></span><span class="target" id="structharp__collocation__result__struct"></span><em class="property">struct </em><code class="descname">harp_collocation_result_struct</code><br /></dt>
+<dl class="cpp struct">
+<dt id="_CPPv430harp_collocation_result_struct">
+<span id="_CPPv330harp_collocation_result_struct"></span><span id="_CPPv230harp_collocation_result_struct"></span><span id="harp_collocation_result_struct"></span><span class="target" id="structharp__collocation__result__struct"></span><em class="property">struct </em><code class="sig-name descname">harp_collocation_result_struct</code><br /></dt>
 <dd><em>#include &lt;harp.h&gt;</em><p>HARP Collocation result </p>
 </dd></dl>
 
@@ -470,28 +468,21 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="libharp_dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="libharp.html" class="btn btn-neutral" title="C library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="libharp_dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="libharp.html" class="btn btn-neutral float-left" title="C library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -500,27 +491,16 @@
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -1,6 +1,8 @@
 relative azimuth angle derivations
 ==================================
 
+   .. _relative_azimuth_angle_from_sensor_and_solar_azimuth_angle:
+
 #. relative azimuth angle from sensor and solar azimuth angle
 
    =================== ====================== =========== ============================

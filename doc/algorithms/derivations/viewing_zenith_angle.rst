@@ -1,6 +1,8 @@
 viewing zenith angle derivations
 ================================
 
+   .. _derivation_viewing_zenith_angle_from_sensor_zenith_angle:
+
 #. viewing zenith angle from sensor zenith angle
 
    ================== ==================== =========== ==========================
@@ -16,6 +18,8 @@ viewing zenith angle derivations
 
       \theta_{V} = 180 - \theta_{S}
 
+
+   .. _derivation_viewing_zenith_angle_from_viewing_elevation_angle:
 
 #. viewing zenith angle from viewing elevation angle
 

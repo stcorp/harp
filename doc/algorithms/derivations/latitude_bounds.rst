@@ -1,6 +1,8 @@
 latitude bounds derivations
 ===========================
 
+   .. _derivation_latitude_ranges_from_midpoints:
+
 #. latitude ranges from midpoints
 
    ===================== =========================================== ============ ================================

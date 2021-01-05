@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Product Metadata &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Variable" href="libharp_variable.html" />
     <link rel="prev" title="Product" href="libharp_product.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -107,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -141,11 +150,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="libharp.html">C library</a> &raquo;</li>
         
@@ -154,7 +165,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -170,80 +181,77 @@
 <h1>Product Metadata</h1>
 <dl class="group">
 <dt>
-<span class="target" id="group__harp__product__metadata"></span><em>group</em> <code class="descname">harp_product_metadata</code></dt>
+<span class="target" id="group__harp__product__metadata"></span><em>group</em> <code class="sig-name descname">harp_product_metadata</code></dt>
 <dd><p>The HARP Product Metadata module contains everything related to HARP product metadata. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
-<dl class="type">
-<dt id="_CPPv321harp_product_metadata">
-<span id="_CPPv221harp_product_metadata"></span><span id="harp_product_metadata"></span><span class="target" id="group__harp__product__metadata_1gab5b5c315ba7b68e2b3b0febe56862516"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv328harp_product_metadata_struct" title="harp_product_metadata_struct">harp_product_metadata_struct</a> <code class="descname">harp_product_metadata</code><br /></dt>
+<dl class="cpp type">
+<dt id="_CPPv421harp_product_metadata">
+<span id="_CPPv321harp_product_metadata"></span><span id="_CPPv221harp_product_metadata"></span><span id="harp_product_metadata"></span><span class="target" id="group__harp__product__metadata_1gab5b5c315ba7b68e2b3b0febe56862516"></span><em class="property">typedef </em><em class="property">struct</em> <a class="reference internal" href="#_CPPv428harp_product_metadata_struct" title="harp_product_metadata_struct">harp_product_metadata_struct</a> <code class="sig-name descname">harp_product_metadata</code><br /></dt>
 <dd><p>HARP Product Metadata typedef </p>
 </dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
-<dt id="_CPPv328harp_product_metadata_deleteP21harp_product_metadata">
-<span id="_CPPv228harp_product_metadata_deleteP21harp_product_metadata"></span><span id="harp_product_metadata_delete__harp_product_metadataP"></span><span class="target" id="group__harp__product__metadata_1ga0441223827f4d70bc6ded0cb8a727628"></span>void <code class="descname">harp_product_metadata_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv321harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Delete product metadata. Remove metadata and all attached variables and attributes. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: HARP metadata. </li>
+<dl class="cpp function">
+<dt id="_CPPv428harp_product_metadata_deleteP21harp_product_metadata">
+<span id="_CPPv328harp_product_metadata_deleteP21harp_product_metadata"></span><span id="_CPPv228harp_product_metadata_deleteP21harp_product_metadata"></span><span id="harp_product_metadata_delete__harp_product_metadataP"></span><span class="target" id="group__harp__product__metadata_1ga0441223827f4d70bc6ded0cb8a727628"></span>void <code class="sig-name descname">harp_product_metadata_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv421harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Delete product metadata. Remove metadata and all attached variables and attributes. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: HARP metadata. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv325harp_product_metadata_newPP21harp_product_metadata">
-<span id="_CPPv225harp_product_metadata_newPP21harp_product_metadata"></span><span id="harp_product_metadata_new__harp_product_metadataPP"></span><span class="target" id="group__harp__product__metadata_1gad7c2c009e17399ad72476548a498f7b0"></span>int <code class="descname">harp_product_metadata_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv321harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Create new product metadata. The metadata will be initialized with 0.0 datetime_start/end. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </li>
-<li><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </li>
+<dl class="cpp function">
+<dt id="_CPPv425harp_product_metadata_newPP21harp_product_metadata">
+<span id="_CPPv325harp_product_metadata_newPP21harp_product_metadata"></span><span id="_CPPv225harp_product_metadata_newPP21harp_product_metadata"></span><span id="harp_product_metadata_new__harp_product_metadataPP"></span><span class="target" id="group__harp__product__metadata_1gad7c2c009e17399ad72476548a498f7b0"></span>int <code class="sig-name descname">harp_product_metadata_new</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv421harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> **<em>new_metadata</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Create new product metadata. The metadata will be initialized with 0.0 datetime_start/end. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
+</p>
 </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">new_metadata</span></code>: Pointer to the C variable where the new HARP product metadata will be stored. </li>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">new_metadata</span></code>: Pointer to the C variable where the new HARP product metadata will be stored. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv327harp_product_metadata_printP21harp_product_metadataPFiPKczE">
-<span id="_CPPv227harp_product_metadata_printP21harp_product_metadataPFiPKczE"></span><span class="target" id="group__harp__product__metadata_1gac0b6ff404a5d629b07dd65d6fa44fb76"></span>void <code class="descname">harp_product_metadata_print</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv321harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char *, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
+<dl class="cpp function">
+<dt id="_CPPv427harp_product_metadata_printP21harp_product_metadataPFiPKczE">
+<span id="_CPPv327harp_product_metadata_printP21harp_product_metadataPFiPKczE"></span><span id="_CPPv227harp_product_metadata_printP21harp_product_metadataPFiPKczE"></span><span class="target" id="group__harp__product__metadata_1gac0b6ff404a5d629b07dd65d6fa44fb76"></span>void <code class="sig-name descname">harp_product_metadata_print</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv421harp_product_metadata" title="harp_product_metadata">harp_product_metadata</a> *<em>metadata</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char*, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print product metadata. This will print a comma-separated list of:<ul class="simple">
-<li>filename</li>
-<li>datetime_start</li>
-<li>datetime_stop</li>
-<li>time (dimension length)</li>
-<li>latitude (dimension length)</li>
-<li>longitude (dimension length)</li>
-<li>vertical (dimension length)</li>
-<li>spectral (dimension length)</li>
-<li>source_product <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: Pointer to the metadata to print. </li>
-<li><code class="docutils literal notranslate"><span class="pre">print</span></code>: Pointer to the function that should be used for printing. </li>
+<li><p>filename</p></li>
+<li><p>datetime_start</p></li>
+<li><p>datetime_stop</p></li>
+<li><p>time (dimension length)</p></li>
+<li><p>latitude (dimension length)</p></li>
+<li><p>longitude (dimension length)</p></li>
+<li><p>vertical (dimension length)</p></li>
+<li><p>spectral (dimension length)</p></li>
+<li><p>source_product <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist">
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: Pointer to the metadata to print. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">print</span></code>: Pointer to the function that should be used for printing. </p></li>
 </ul>
 </dd>
 </dl>
-</li>
+</p></li>
 </ul>
 </p>
 </dd></dl>
 
 </div>
-<dl class="class">
-<dt id="_CPPv328harp_product_metadata_struct">
-<span id="_CPPv228harp_product_metadata_struct"></span><span id="harp_product_metadata_struct"></span><span class="target" id="structharp__product__metadata__struct"></span><em class="property">struct </em><code class="descname">harp_product_metadata_struct</code><br /></dt>
+<dl class="cpp struct">
+<dt id="_CPPv428harp_product_metadata_struct">
+<span id="_CPPv328harp_product_metadata_struct"></span><span id="_CPPv228harp_product_metadata_struct"></span><span id="harp_product_metadata_struct"></span><span class="target" id="structharp__product__metadata__struct"></span><em class="property">struct </em><code class="sig-name descname">harp_product_metadata_struct</code><br /></dt>
 <dd><em>#include &lt;harp.h&gt;</em><p>HARP Product Metadata struct </p>
 </dd></dl>
 
@@ -256,28 +264,21 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="libharp_variable.html" class="btn btn-neutral float-right" title="Variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="libharp_product.html" class="btn btn-neutral" title="Product" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="libharp_variable.html" class="btn btn-neutral float-right" title="Variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="libharp_product.html" class="btn btn-neutral float-left" title="Product" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -286,27 +287,16 @@
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

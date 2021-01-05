@@ -1,48 +1,55 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-    <link rel="index" title="Index" href="../genindex.html" /> 
 
   
-  <script src="../_static/js/modernizr.min.js"></script>
+  
 
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -66,6 +73,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -90,6 +98,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -124,18 +133,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -152,82 +163,82 @@
 <div class="section" id="variables">
 <h2>Variables</h2>
 <p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">NPP_SUOMI_L2_CRIMSS_EDR_PRESSURE</span></code> data.</p>
-<table border="1" class="colwidths-given docutils">
+<table class="colwidths-given docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="5%" />
-<col width="15%" />
-<col width="15%" />
-<col width="40%" />
+<col style="width: 25%" />
+<col style="width: 5%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">field name</th>
-<th class="head">type</th>
-<th class="head">dimensions</th>
-<th class="head">unit</th>
-<th class="head">description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><strong>datetime</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[seconds since 2000-01-01]</td>
-<td>time of the measurement</td>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
+<td><p>time of the measurement</p></td>
 </tr>
-<tr class="row-odd"><td><strong>latitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree_north]</td>
-<td>tangent latitude</td>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>tangent latitude</p></td>
 </tr>
-<tr class="row-even"><td><strong>longitude</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree_east]</td>
-<td>tangent longitude</td>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>tangent longitude</p></td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_azimuth_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree]</td>
-<td>azimuth angle (measured clockwise positive from North) to Satellite at each retrieval position</td>
+<tr class="row-odd"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>azimuth angle (measured clockwise positive from North) to Satellite at each retrieval position</p></td>
 </tr>
-<tr class="row-even"><td><strong>sensor_zenith_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree]</td>
-<td>zenith angle to Satellite at each retrieval position</td>
+<tr class="row-even"><td><p><strong>sensor_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>zenith angle to Satellite at each retrieval position</p></td>
 </tr>
-<tr class="row-odd"><td><strong>solar_azimuth_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree]</td>
-<td>azimuth angle of sun (measured clockwise positive from North) at each retrieval position</td>
+<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>azimuth angle of sun (measured clockwise positive from North) at each retrieval position</p></td>
 </tr>
-<tr class="row-even"><td><strong>solar_zenith_angle</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[degree]</td>
-<td>zenith angle of sun at each retrieval position</td>
+<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>zenith angle of sun at each retrieval position</p></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure</strong></td>
-<td>double</td>
-<td>{<em>time</em>, <em>vertical</em>}</td>
-<td>[hPa]</td>
-<td>pressure profile</td>
+<tr class="row-odd"><td><p><strong>pressure</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[hPa]</p></td>
+<td><p>pressure profile</p></td>
 </tr>
-<tr class="row-even"><td><strong>altitude</strong></td>
-<td>double</td>
-<td>{<em>vertical</em>}</td>
-<td>[km]</td>
-<td>altitudes corresponding to pressure</td>
+<tr class="row-even"><td><p><strong>altitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[km]</p></td>
+<td><p>altitudes corresponding to pressure</p></td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>zero-based index of the sample within the source product</td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
 </tr>
 </tbody>
 </table>
@@ -235,22 +246,22 @@
 <div class="section" id="ingestion-options">
 <h2>Ingestion options</h2>
 <p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">NPP_SUOMI_L2_CRIMSS_EDR_REDR</span></code> products.</p>
-<table border="1" class="colwidths-given docutils">
+<table class="colwidths-given docutils align-default">
 <colgroup>
-<col width="15%" />
-<col width="25%" />
-<col width="60%" />
+<col style="width: 15%" />
+<col style="width: 25%" />
+<col style="width: 60%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">option name</th>
-<th class="head">legal values</th>
-<th class="head">description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>option name</p></th>
+<th class="head"><p>legal values</p></th>
+<th class="head"><p>description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>dataset</td>
-<td>temp, press</td>
-<td>whether to ingest h2o mass mixing ratio vs pressure (default), temperature vs pressure (dataset=temp) or pressure vs altitude (dataset=pres)</td>
+<tbody>
+<tr class="row-even"><td><p>dataset</p></td>
+<td><p>temp, press</p></td>
+<td><p>whether to ingest h2o mass mixing ratio vs pressure (default), temperature vs pressure (dataset=temp) or pressure vs altitude (dataset=pres)</p></td>
 </tr>
 </tbody>
 </table>
@@ -259,56 +270,56 @@
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="20%" />
-<col width="12%" />
-<col width="68%" />
+<col style="width: 20%" />
+<col style="width: 12%" />
+<col style="width: 68%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">field name</th>
-<th class="head" colspan="2">mapping description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="2"><strong>datetime</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/StartTime, /All_Data/CrIMSS-EDR-GEO-TC_All/MidTime</strong></td>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p><strong>datetime</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/StartTime, /All_Data/CrIMSS-EDR-GEO-TC_All/MidTime</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>the time converted from seconds since 1958-01-01 to seconds since 2000-01-01T00:00:00</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the time converted from seconds since 1958-01-01 to seconds since 2000-01-01T00:00:00</p></td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/Latitude</strong></td>
+<tr class="row-even"><td><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/Latitude</strong></p></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/Longitude</strong></td>
+<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/Longitude</strong></p></td>
 </tr>
-<tr class="row-even"><td><strong>sensor_azimuth_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteAzimuthAngle</strong></td>
+<tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteAzimuthAngle</strong></p></td>
 </tr>
-<tr class="row-odd"><td><strong>sensor_zenith_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteZenithAngle</strong></td>
+<tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteZenithAngle</strong></p></td>
 </tr>
-<tr class="row-even"><td><strong>solar_azimuth_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteAzimuthAngle</strong></td>
+<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteAzimuthAngle</strong></p></td>
 </tr>
-<tr class="row-odd"><td><strong>solar_zenith_angle</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteAzimuthAngle</strong></td>
+<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR-GEO-TC_All/SatelliteAzimuthAngle</strong></p></td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR_All/Pressure</strong></td>
+<tr class="row-even"><td><p><strong>pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR_All/Pressure</strong></p></td>
 </tr>
-<tr class="row-odd"><td><strong>altitude</strong></td>
-<td><em>path</em></td>
-<td><strong>/All_Data/CrIMSS-EDR_All/AltitudeLevels_Pressure</strong></td>
+<tr class="row-odd"><td><p><strong>altitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/All_Data/CrIMSS-EDR_All/AltitudeLevels_Pressure</strong></p></td>
 </tr>
 </tbody>
 </table>
@@ -320,19 +331,17 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -341,27 +350,16 @@
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

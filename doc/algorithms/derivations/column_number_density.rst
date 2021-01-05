@@ -1,7 +1,9 @@
 column number density derivations
 =================================
 
-#. total column number density of air component from partial column number density profile:
+   .. _derivation_total_column_number_density_of_air_component_from_partial_column_number_density_profile:
+
+#. total column number density of air component from partial column number density profile
 
    ================ ======================================= ========================= ==============================================
    symbol           description                             unit                      variable name
@@ -20,7 +22,9 @@ column number density derivations
       c_{x} = \sum_{i}{c_{x}(i)}
 
 
-#. total column number density of total air from partial column number density profile:
+   .. _derivation_total_column_number_density_of_total_air_from_partial_column_number_density_profile:
+
+#. total column number density of total air from partial column number density profile
 
    ============ ========================================== ========================= ====================================
    symbol       description                                unit                      variable name
@@ -37,7 +41,9 @@ column number density derivations
       c_{x} = \sum_{i}{c_{x}(i)}
 
 
-#. tropospheric column number density of air component from partial column number density profile and altitude:
+   .. _derivation_tropospheric_column_number_density_of_air_component_from_partial_column_number_density_profile_and_altitude:
+
+#. tropospheric column number density of air component from partial column number density profile and altitude
 
    ================ =========================================== ========================= ==================================================
    symbol           description                                 unit                      variable name
@@ -62,7 +68,9 @@ column number density derivations
       \end{cases}}
 
 
-#. stratospheric column number density of air component from partial column number density profile and altitude:
+   .. _derivation_stratospheric_column_number_density_of_air_component_from_partial_column_number_density_profile_and_altitude:
+
+#. stratospheric column number density of air component from partial column number density profile and altitude
 
    ================ =========================================== ========================= ===================================================
    symbol           description                                 unit                      variable name
@@ -87,7 +95,9 @@ column number density derivations
       \end{cases}}
 
 
-#. tropospheric column number density of air component from partial column number density profile and pressure:
+   .. _derivation_tropospheric_column_number_density_of_air_component_from_partial_column_number_density_profile_and_pressure:
+
+#. tropospheric column number density of air component from partial column number density profile and pressure
 
    ================ =========================================== ========================= ==================================================
    symbol           description                                 unit                      variable name
@@ -112,7 +122,9 @@ column number density derivations
       \end{cases}}
 
 
-#. stratospheric column number density of air component from partial column number density profile and pressure:
+   .. _derivation_stratospheric_column_number_density_of_air_component_from_partial_column_number_density_profile_and_pressure:
+
+#. stratospheric column number density of air component from partial column number density profile and pressure
 
    ================ =========================================== ========================= ===================================================
    symbol           description                                 unit                      variable name
@@ -137,6 +149,8 @@ column number density derivations
       \end{cases}}
 
 
+   .. _derivation_column_number_density_of_total_air_from_dry_air_column_number_density_and_H2O_column_number_density:
+
 #. column number density of total air from dry air column number density and H2O column number density
 
    ==================== ================================ ========================= ===================================
@@ -154,6 +168,8 @@ column number density derivations
 
      c = c_{dry\_air} + c_{H_{2}O}
 
+
+   .. _derivation_column_number_density_of_dry_air_from_total_air_column_number_density_and_H2O_column_number_density:
 
 #. column number density of dry air from total air column number density and H2O column number density
 
@@ -173,6 +189,8 @@ column number density derivations
      c_{dry\_air} = c - c_{H_{2}O}
 
 
+   .. _derivation_column_number_density_of_H2O_from_total_air_column_number_density_and_dry_air_column_number_density:
+
 #. column number density of H2O from total air column number density and dry air column number density
 
    ==================== ================================ ========================= ===================================
@@ -191,7 +209,9 @@ column number density derivations
      c_{H_{2}O} = c - c_{dry\_air}
 
 
-#. column number density of air component from number density:
+   .. _derivation_column_number_density_of_air_component_from_number_density:
+
+#. column number density of air component from number density
 
    ================ =========================================== ========================= =====================================
    symbol           description                                 unit                      variable name
@@ -211,7 +231,9 @@ column number density derivations
       c_{x} = n_{x} \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column number density of total air from number density:
+   .. _derivation_column_number_density_of_total_air_from_number_density:
+
+#. column number density of total air from number density
 
    ================ =========================================== ========================= ===========================
    symbol           description                                 unit                      variable name
@@ -229,7 +251,9 @@ column number density derivations
       c = n \lvert z^{B}(2) - z^{B}(1) \rvert
 
 
-#. column number density of air component from column mass density:
+   .. _derivation_column_number_density_of_air_component_from_column_mass_density:
+
+#. column number density of air component from column mass density
 
    This conversion applies to both total columns as well as partial column profiles.
 
@@ -252,7 +276,9 @@ column number density derivations
       c_{x} = \frac{\sigma_{x}N_{A}}{10^{-3}M_{x}}
 
 
-#. column number density of total air from column mass density:
+   .. _derivation_column_number_density_of_total_air_from_column_mass_density:
+
+#. column number density of total air from column mass density
 
    This conversion applies to both total columns as well as partial column profiles.
 
@@ -272,6 +298,8 @@ column number density derivations
 
       c = \frac{\sigma N_{A}}{10^{-3}M_{air}}
 
+
+   .. _derivation_column_number_density_from_column_volume_mixing_ratio:
 
 #. column number density from column volume mixing ratio
 
@@ -293,6 +321,8 @@ column number density derivations
       c_{x} = \nu_{x}c
 
 
+   .. _derivation_column_number_density_from_column_volume_mixing_ratio_dry_air:
+
 #. column number density from column volume mixing ratio dry air
 
    ===================== ====================================== ========================= ==================================================
@@ -313,7 +343,9 @@ column number density derivations
       c_{x} = \bar{\nu}_{x}c_{dry\_air}
 
 
-#. column number density of air component from volume mixing ratio:
+   .. _derivation_column_number_density_of_air_component_from_volume_mixing_ratio:
+
+#. column number density of air component from volume mixing ratio
 
    ================== =========================================== ================================ =====================================
    symbol             description                                 unit                             variable name

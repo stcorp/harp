@@ -1,6 +1,8 @@
 wavelength derivations
 ======================
 
+   .. _derivation_wavelength_from_frequency:
+
 #. wavelength from frequency
 
    =============== ============== =================== ================
@@ -17,6 +19,8 @@ wavelength derivations
 
       \lambda = \frac{c}{\nu}
 
+
+   .. _derivation_wavelength_from_wavenumber:
 
 #. wavelength from wavenumber
 

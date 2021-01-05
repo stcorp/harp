@@ -1,6 +1,8 @@
 datetime bounds derivations
 ===========================
 
+   .. _derivation_datetime_ranges_from_start_and_stop:
+
 #. datetime ranges from start and stop
 
    ================ =========================================== ========================== =======================

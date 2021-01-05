@@ -1,6 +1,8 @@
 gravity derivations
 ===================
 
+   .. _derivation_normal_gravity_at_sea_level_from_latitude:
+
 #. normal gravity at sea level from latitude
 
    ============= =========================== ===================== =====================
@@ -19,6 +21,9 @@ gravity derivations
          g & = & 9.7803253359 \frac{1 + 0.00193185265241{\sin}^2(\frac{\pi}{180}\phi)}
             {\sqrt{1 - 0.00669437999013{\sin}^2(\frac{\pi}{180}\phi)}}
       \end{eqnarray}
+
+
+   .. _derivation_gravity_at_specific_altitude:
 
 #. gravity at specific altitude
 
@@ -46,6 +51,9 @@ gravity derivations
          m & = & \frac{\omega^2a^2b}{GM} \\
          g_{h} & = & g \left[ 1 - \frac{2}{a}\left(1+f+m-2f{\sin}^2(\frac{\pi}{180}\phi)\right)z + \frac{3}{a^2}z^2 \right] \\
       \end{eqnarray}
+
+
+   .. _derivation_gravity_at_earth_surface:
 
 #. gravity at earth surface
 

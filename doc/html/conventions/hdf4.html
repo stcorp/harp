@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>HDF4 &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="next" title="HDF5/netCDF-4" href="hdf5.html" />
     <link rel="prev" title="netCDF-3" href="netcdf3.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -109,6 +117,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -143,11 +152,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Conventions</a> &raquo;</li>
         
@@ -156,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -173,34 +184,34 @@
 <p>This section details a set of additional conventions that are specific to the HDF4 file format.</p>
 <p>The following table shows the mapping between HARP data types and HDF4 data types. HDF4 data types not covered in this
 table are not supported by HARP.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP data type</th>
-<th class="head">HDF4 data type</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>HARP data type</p></th>
+<th class="head"><p>HDF4 data type</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>int8</td>
-<td>DFNT_INT8</td>
+<tbody>
+<tr class="row-even"><td><p>int8</p></td>
+<td><p>DFNT_INT8</p></td>
 </tr>
-<tr class="row-odd"><td>int16</td>
-<td>DFNT_INT16</td>
+<tr class="row-odd"><td><p>int16</p></td>
+<td><p>DFNT_INT16</p></td>
 </tr>
-<tr class="row-even"><td>int32</td>
-<td>DFNT_INT32</td>
+<tr class="row-even"><td><p>int32</p></td>
+<td><p>DFNT_INT32</p></td>
 </tr>
-<tr class="row-odd"><td>float</td>
-<td>DFNT_FLOAT32</td>
+<tr class="row-odd"><td><p>float</p></td>
+<td><p>DFNT_FLOAT32</p></td>
 </tr>
-<tr class="row-even"><td>double</td>
-<td>DFNT_FLOAT64</td>
+<tr class="row-even"><td><p>double</p></td>
+<td><p>DFNT_FLOAT64</p></td>
 </tr>
-<tr class="row-odd"><td>string</td>
-<td>DFNT_CHAR</td>
+<tr class="row-odd"><td><p>string</p></td>
+<td><p>DFNT_CHAR</p></td>
 </tr>
 </tbody>
 </table>
@@ -224,40 +235,40 @@ DFNT_CHAR. The length of the outer dimension would be 1, the length of the inner
 string stored in the HARP variable. The ‘dims’ attribute associated with this HDF4 dataset would contain the string
 ‘scalar,string’.</p>
 <p>To summarize, HARP dimension types are mapped to dimension type names as follows:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">HARP dimension type</th>
-<th class="head">dimension type name</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>HARP dimension type</p></th>
+<th class="head"><p>dimension type name</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>time</td>
-<td>time</td>
+<tbody>
+<tr class="row-even"><td><p>time</p></td>
+<td><p>time</p></td>
 </tr>
-<tr class="row-odd"><td>latitude</td>
-<td>latitude</td>
+<tr class="row-odd"><td><p>latitude</p></td>
+<td><p>latitude</p></td>
 </tr>
-<tr class="row-even"><td>longitude</td>
-<td>longitude</td>
+<tr class="row-even"><td><p>longitude</p></td>
+<td><p>longitude</p></td>
 </tr>
-<tr class="row-odd"><td>vertical</td>
-<td>vertical</td>
+<tr class="row-odd"><td><p>vertical</p></td>
+<td><p>vertical</p></td>
 </tr>
-<tr class="row-even"><td>spectral</td>
-<td>spectral</td>
+<tr class="row-even"><td><p>spectral</p></td>
+<td><p>spectral</p></td>
 </tr>
-<tr class="row-odd"><td>independent</td>
-<td>independent</td>
+<tr class="row-odd"><td><p>independent</p></td>
+<td><p>independent</p></td>
 </tr>
-<tr class="row-even"><td>N/A</td>
-<td>scalar</td>
+<tr class="row-even"><td><p>N/A</p></td>
+<td><p>scalar</p></td>
 </tr>
-<tr class="row-odd"><td>N/A</td>
-<td>string</td>
+<tr class="row-odd"><td><p>N/A</p></td>
+<td><p>string</p></td>
 </tr>
 </tbody>
 </table>
@@ -277,28 +288,21 @@ to be concatenated).</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hdf5.html" class="btn btn-neutral float-right" title="HDF5/netCDF-4" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="netcdf3.html" class="btn btn-neutral" title="netCDF-3" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="hdf5.html" class="btn btn-neutral float-right" title="HDF5/netCDF-4" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="netcdf3.html" class="btn btn-neutral float-left" title="netCDF-3" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -307,27 +311,16 @@ to be concatenated).</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

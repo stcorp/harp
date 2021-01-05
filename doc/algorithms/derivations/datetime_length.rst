@@ -1,6 +1,8 @@
 datetime length derivations
 ===========================
 
+   .. _derivation_datetime_length_from_start_stop:
+
 #. datetime length from start/stop
 
    ================ ============== ========================== =====================

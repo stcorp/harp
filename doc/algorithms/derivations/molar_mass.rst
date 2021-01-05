@@ -1,6 +1,8 @@
 molar mass derivations
 ======================
 
+   .. _derivation_molar_mass_of_total_air_from_density_and_number_density:
+
 #. molar mass of total air from density and number density
 
    =============== ======================= ========================= ====================
@@ -20,6 +22,8 @@ molar mass derivations
       M_{air} = 10^{3}\frac{\rho N_{A}}{n}
 
 
+   .. _derivation_molar_mass_of_total_air_from_H2O_mass_mixing_ratio:
+
 #. molar mass of total air from H2O mass mixing ratio
 
    ==================== ======================== ===================== ===========================
@@ -38,6 +42,8 @@ molar mass derivations
 
       M_{air} = \frac{M_{H_{2}O}M_{dry\_air}}{\left(1-q_{H_{2}O}\right)M_{H_{2}O} + q_{H_{2}O}M_{dry\_air}}
 
+
+   .. _derivation_molar_mass_of_total_air_from_H2O_volume_mixing_ratio:
 
 #. molar mass of total air from H2O volume mixing ratio
 

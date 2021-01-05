@@ -1,6 +1,8 @@
 datetime derivations
 ====================
 
+   .. _derivation_datetime_from_start_stop:
+
 #. datetime from start/stop
 
    ============= ==================== ========================== ====================
@@ -17,6 +19,8 @@ datetime derivations
 
       t = \frac{t_{s} + t_{e}}{2}
 
+
+   .. _derivation_datetime_from_range:
 
 #. datetime from range
 

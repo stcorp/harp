@@ -1,6 +1,8 @@
 viewing elevation angle derivations
 ===================================
 
+   .. _derivation_viewing_elevation_angle_from_viewing_zenith_angle:
+
 #. viewing elevation angle from viewing zenith angle
 
    ================== ======================= =========== =============================

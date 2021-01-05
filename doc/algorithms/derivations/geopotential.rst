@@ -1,6 +1,8 @@
 geopotential derivations
 ========================
 
+   .. _derivation_geopotential_from_geopotential_height:
+
 #. geopotential from geopotential height
 
    ============= =================== ======================= =========================
@@ -17,6 +19,9 @@ geopotential derivations
    .. math::
 
       \Phi = g_{0}z_{g}
+
+
+   .. _derivation_surface_geopotential_from_surface_geopotential_height:
 
 #. surface geopotential from surface geopotential height
 

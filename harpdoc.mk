@@ -1,68 +1,43 @@
 HARP_DOCFILES = \
 	doc/html/.buildinfo \
 	doc/html/R.html \
-	doc/html/_static/ajax-loader.gif \
 	doc/html/_static/basic.css \
-	doc/html/_static/comment-bright.png \
-	doc/html/_static/comment-close.png \
-	doc/html/_static/comment.png \
 	doc/html/_static/css/badge_only.css \
+	doc/html/_static/css/fonts/Roboto-Slab-Bold.woff \
+	doc/html/_static/css/fonts/Roboto-Slab-Bold.woff2 \
+	doc/html/_static/css/fonts/Roboto-Slab-Regular.woff \
+	doc/html/_static/css/fonts/Roboto-Slab-Regular.woff2 \
+	doc/html/_static/css/fonts/fontawesome-webfont.eot \
+	doc/html/_static/css/fonts/fontawesome-webfont.svg \
+	doc/html/_static/css/fonts/fontawesome-webfont.ttf \
+	doc/html/_static/css/fonts/fontawesome-webfont.woff \
+	doc/html/_static/css/fonts/fontawesome-webfont.woff2 \
+	doc/html/_static/css/fonts/lato-bold-italic.woff \
+	doc/html/_static/css/fonts/lato-bold-italic.woff2 \
+	doc/html/_static/css/fonts/lato-bold.woff \
+	doc/html/_static/css/fonts/lato-bold.woff2 \
+	doc/html/_static/css/fonts/lato-normal-italic.woff \
+	doc/html/_static/css/fonts/lato-normal-italic.woff2 \
+	doc/html/_static/css/fonts/lato-normal.woff \
+	doc/html/_static/css/fonts/lato-normal.woff2 \
 	doc/html/_static/css/theme.css \
 	doc/html/_static/custom.css \
 	doc/html/_static/doctools.js \
 	doc/html/_static/documentation_options.js \
-	doc/html/_static/down-pressed.png \
-	doc/html/_static/down.png \
 	doc/html/_static/file.png \
-	doc/html/_static/fonts/Inconsolata-Bold.ttf \
-	doc/html/_static/fonts/Inconsolata-Regular.ttf \
-	doc/html/_static/fonts/Inconsolata.ttf \
-	doc/html/_static/fonts/Lato-Bold.ttf \
-	doc/html/_static/fonts/Lato-Regular.ttf \
-	doc/html/_static/fonts/Lato/lato-bold.eot \
-	doc/html/_static/fonts/Lato/lato-bold.ttf \
-	doc/html/_static/fonts/Lato/lato-bold.woff \
-	doc/html/_static/fonts/Lato/lato-bold.woff2 \
-	doc/html/_static/fonts/Lato/lato-bolditalic.eot \
-	doc/html/_static/fonts/Lato/lato-bolditalic.ttf \
-	doc/html/_static/fonts/Lato/lato-bolditalic.woff \
-	doc/html/_static/fonts/Lato/lato-bolditalic.woff2 \
-	doc/html/_static/fonts/Lato/lato-italic.eot \
-	doc/html/_static/fonts/Lato/lato-italic.ttf \
-	doc/html/_static/fonts/Lato/lato-italic.woff \
-	doc/html/_static/fonts/Lato/lato-italic.woff2 \
-	doc/html/_static/fonts/Lato/lato-regular.eot \
-	doc/html/_static/fonts/Lato/lato-regular.ttf \
-	doc/html/_static/fonts/Lato/lato-regular.woff \
-	doc/html/_static/fonts/Lato/lato-regular.woff2 \
-	doc/html/_static/fonts/RobotoSlab-Bold.ttf \
-	doc/html/_static/fonts/RobotoSlab-Regular.ttf \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.eot \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.ttf \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff2 \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.eot \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.ttf \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff \
-	doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff2 \
-	doc/html/_static/fonts/fontawesome-webfont.eot \
-	doc/html/_static/fonts/fontawesome-webfont.svg \
-	doc/html/_static/fonts/fontawesome-webfont.ttf \
-	doc/html/_static/fonts/fontawesome-webfont.woff \
-	doc/html/_static/fonts/fontawesome-webfont.woff2 \
-	doc/html/_static/jquery-3.2.1.js \
+	doc/html/_static/jquery-3.5.1.js \
 	doc/html/_static/jquery.js \
-	doc/html/_static/js/modernizr.min.js \
+	doc/html/_static/js/badge_only.js \
+	doc/html/_static/js/html5shiv-printshiv.min.js \
+	doc/html/_static/js/html5shiv.min.js \
 	doc/html/_static/js/theme.js \
+	doc/html/_static/language_data.js \
 	doc/html/_static/minus.png \
 	doc/html/_static/plus.png \
 	doc/html/_static/pygments.css \
 	doc/html/_static/searchtools.js \
 	doc/html/_static/underscore-1.3.1.js \
 	doc/html/_static/underscore.js \
-	doc/html/_static/up-pressed.png \
-	doc/html/_static/up.png \
-	doc/html/_static/websupport.js \
 	doc/html/algorithms/common.html \
 	doc/html/algorithms/definitions.html \
 	doc/html/algorithms/derivations/aerosol_extinction_coefficient.html \
@@ -553,17 +528,43 @@ doc/html/.buildinfo:
 	$(MAKE) harp_doc
 doc/html/R.html:
 	$(MAKE) harp_doc
-doc/html/_static/ajax-loader.gif:
-	$(MAKE) harp_doc
 doc/html/_static/basic.css:
 	$(MAKE) harp_doc
-doc/html/_static/comment-bright.png:
-	$(MAKE) harp_doc
-doc/html/_static/comment-close.png:
-	$(MAKE) harp_doc
-doc/html/_static/comment.png:
-	$(MAKE) harp_doc
 doc/html/_static/css/badge_only.css:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/Roboto-Slab-Bold.woff:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/Roboto-Slab-Bold.woff2:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/Roboto-Slab-Regular.woff:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/Roboto-Slab-Regular.woff2:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/fontawesome-webfont.eot:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/fontawesome-webfont.svg:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/fontawesome-webfont.ttf:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/fontawesome-webfont.woff:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/fontawesome-webfont.woff2:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-bold-italic.woff:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-bold-italic.woff2:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-bold.woff:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-bold.woff2:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-normal-italic.woff:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-normal-italic.woff2:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-normal.woff:
+	$(MAKE) harp_doc
+doc/html/_static/css/fonts/lato-normal.woff2:
 	$(MAKE) harp_doc
 doc/html/_static/css/theme.css:
 	$(MAKE) harp_doc
@@ -573,91 +574,21 @@ doc/html/_static/doctools.js:
 	$(MAKE) harp_doc
 doc/html/_static/documentation_options.js:
 	$(MAKE) harp_doc
-doc/html/_static/down-pressed.png:
-	$(MAKE) harp_doc
-doc/html/_static/down.png:
-	$(MAKE) harp_doc
 doc/html/_static/file.png:
 	$(MAKE) harp_doc
-doc/html/_static/fonts/Inconsolata-Bold.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Inconsolata-Regular.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Inconsolata.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato-Bold.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato-Regular.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bold.eot:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bold.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bold.woff:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bold.woff2:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bolditalic.eot:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bolditalic.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bolditalic.woff:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-bolditalic.woff2:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-italic.eot:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-italic.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-italic.woff:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-italic.woff2:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-regular.eot:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-regular.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-regular.woff:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/Lato/lato-regular.woff2:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab-Bold.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab-Regular.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.eot:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff2:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.eot:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff2:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/fontawesome-webfont.eot:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/fontawesome-webfont.svg:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/fontawesome-webfont.ttf:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/fontawesome-webfont.woff:
-	$(MAKE) harp_doc
-doc/html/_static/fonts/fontawesome-webfont.woff2:
-	$(MAKE) harp_doc
-doc/html/_static/jquery-3.2.1.js:
+doc/html/_static/jquery-3.5.1.js:
 	$(MAKE) harp_doc
 doc/html/_static/jquery.js:
 	$(MAKE) harp_doc
-doc/html/_static/js/modernizr.min.js:
+doc/html/_static/js/badge_only.js:
+	$(MAKE) harp_doc
+doc/html/_static/js/html5shiv-printshiv.min.js:
+	$(MAKE) harp_doc
+doc/html/_static/js/html5shiv.min.js:
 	$(MAKE) harp_doc
 doc/html/_static/js/theme.js:
+	$(MAKE) harp_doc
+doc/html/_static/language_data.js:
 	$(MAKE) harp_doc
 doc/html/_static/minus.png:
 	$(MAKE) harp_doc
@@ -670,12 +601,6 @@ doc/html/_static/searchtools.js:
 doc/html/_static/underscore-1.3.1.js:
 	$(MAKE) harp_doc
 doc/html/_static/underscore.js:
-	$(MAKE) harp_doc
-doc/html/_static/up-pressed.png:
-	$(MAKE) harp_doc
-doc/html/_static/up.png:
-	$(MAKE) harp_doc
-doc/html/_static/websupport.js:
 	$(MAKE) harp_doc
 doc/html/algorithms/common.html:
 	$(MAKE) harp_doc

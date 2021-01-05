@@ -1,6 +1,8 @@
 wind velocity derivations
 =========================
 
+   .. _derivation_meridional_wind_velocity_from_wind_speed_and_direction:
+
 #. meridional wind velocity from wind speed and direction
 
    ============== ======================== =========== ================================
@@ -18,6 +20,8 @@ wind velocity derivations
    
       u = s \cos((180 - \theta)\frac{\pi}{180})
 
+
+   .. _derivation_zonal_wind_velocity_from_wind_speed_and_direction:
 
 #. zonal wind velocity from wind speed and direction
 
@@ -37,6 +41,8 @@ wind velocity derivations
       v = s \sin((180 - \theta)\frac{\pi}{180})
 
 
+   .. _derivation_wind_direction_from_zonal_and_meridional_wind_velocity:
+
 #. wind direction from zonal and meridional wind velocity
 
    ============== ======================== =========== ================================
@@ -54,6 +60,8 @@ wind velocity derivations
    
       \theta = 180 - \arctan2(u,v)\frac{180}{\pi}
 
+
+   .. _derivation_wind_speed_from_zonal_and_meridional_wind_velocity:
 
 #. wind speed from zonal and meridional wind velocity
 

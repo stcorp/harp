@@ -1,6 +1,8 @@
 solar declination angle derivations
 ===================================
 
+   .. _derivation_solar_declination_angle_from_datetime:
+
 #. solar declination angle from datetime
 
    =================== ======================= ========================== ================================

@@ -1,6 +1,8 @@
 angstrom exponent derivations
 =============================
 
+   .. _derivation_angstrom_exponent_from_aerosol_optical_depth:
+
 #. angstrom exponent from aerosol optical depth
 
    ================== ===================== ========== ====================================

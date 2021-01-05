@@ -1,6 +1,8 @@
 longitude bounds derivations
 ============================
 
+   .. _derivation_longitude_ranges_from_midpoints:
+
 #. longitude ranges from midpoints
 
    ======================== ============================================ ============ ==================================

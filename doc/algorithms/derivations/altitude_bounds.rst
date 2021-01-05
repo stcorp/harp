@@ -1,6 +1,8 @@
 altitude bounds derivations
 ===========================
 
+   .. _derivation_altitude_ranges_from_midpoints:
+
 #. altitude ranges from midpoints
 
    ================== =========================================== ========= ================================

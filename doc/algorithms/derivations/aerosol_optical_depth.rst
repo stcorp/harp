@@ -1,6 +1,8 @@
 aerosol optical depth derivations
 =================================
 
+   .. _derivation_total_aerosol_optical_depth_from_partial_aerosol_optical_depth_profile:
+
 #. total aerosol optical depth from partial aerosol optical depth profile
 
    =============== =========================== ========= ====================================
@@ -17,6 +19,8 @@ aerosol optical depth derivations
 
       \tau = \sum_{i}{\tau(i)}
 
+
+   .. _derivation_aerosol_optical_depth_from_aerosol_extinction_coefficient:
 
 #. aerosol optical depth from aerosol extinction coefficient
 

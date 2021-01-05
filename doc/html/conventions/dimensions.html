@@ -1,50 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Dimensions &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="next" title="Global attributes" href="global_attributes.html" />
     <link rel="prev" title="Data types" href="datatypes.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -68,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -109,6 +117,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -143,11 +152,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="index.html">Conventions</a> &raquo;</li>
         
@@ -156,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -173,19 +184,19 @@
 <p>HARP has strict rules regarding the dimensions of variables. Each dimension of a variable may be used to represent a
 physical dimension (such as time, latitude, longitude, height, etcetera), or it may be used as an independent dimension.</p>
 <p>Only dimension types supported by HARP can be used. These types are:</p>
-<dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">time</span></code></dt>
-<dd>Temporal dimension; this is also the only appendable dimension.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">vertical</span></code></dt>
-<dd>Vertical dimension, indicating height or depth.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">spectral</span></code></dt>
-<dd>Spectral dimension, associated with wavelength, wavenumber, or frequency.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">latitude</span></code></dt>
-<dd>Latitude dimension, only to be used for the latitude axis of a regular latitude x longitude grid.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">longitude</span></code></dt>
-<dd>Longitude dimension, only to be used for the longitude axis of a regular latitude x longitude grid.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">independent</span></code></dt>
-<dd>Independent dimension, used to index other quantities, such as the corner coordinates of ground pixel polygons.</dd>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">time</span></code></dt><dd><p>Temporal dimension; this is also the only appendable dimension.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vertical</span></code></dt><dd><p>Vertical dimension, indicating height or depth.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">spectral</span></code></dt><dd><p>Spectral dimension, associated with wavelength, wavenumber, or frequency.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">latitude</span></code></dt><dd><p>Latitude dimension, only to be used for the latitude axis of a regular latitude x longitude grid.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">longitude</span></code></dt><dd><p>Longitude dimension, only to be used for the longitude axis of a regular latitude x longitude grid.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">independent</span></code></dt><dd><p>Independent dimension, used to index other quantities, such as the corner coordinates of ground pixel polygons.</p>
+</dd>
 </dl>
 <p>Within a HARP product, all dimensions of the same type should have the same length, <em>except</em> independent dimensions. For
 example, it is an error to have two variables within the same product that both have a time dimension, yet of a
@@ -198,22 +209,24 @@ libraries may have different conventions with regard to how they deal with array
 <p>The order in which dimensions need to be provided for a variable is defined by the following rules:</p>
 <blockquote>
 <div><ul class="simple">
-<li>If present, the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension is always the first (i.e. slowest running) dimension.</li>
-<li>Next are categorical dimensions used for grouping. For instance, this can be the <code class="docutils literal notranslate"><span class="pre">spectral</span></code> dimension when it is
+<li><p>If present, the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension is always the first (i.e. slowest running) dimension.</p></li>
+<li><p>Next are categorical dimensions used for grouping. For instance, this can be the <code class="docutils literal notranslate"><span class="pre">spectral</span></code> dimension when it is
 used to distinguish between retrievals performed using different choices of wavelength, or to distinguish data from
-different spectral bands.</li>
-<li>Next are the spatial dimensions, ordered as <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical</span></code>.</li>
-<li>Next is the <code class="docutils literal notranslate"><span class="pre">spectral</span></code> dimension when it is used as an actual axis (e.g. for L1 spectral data for instruments that
-measure along a spectral axis).</li>
-<li>Any independent dimensions come last (i.e. they will always be the fastest running dimensions).</li>
+different spectral bands.</p></li>
+<li><p>Next are the spatial dimensions, ordered as <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical</span></code>.</p></li>
+<li><p>Next is the <code class="docutils literal notranslate"><span class="pre">spectral</span></code> dimension when it is used as an actual axis (e.g. for L1 spectral data for instruments that
+measure along a spectral axis).</p></li>
+<li><p>Any independent dimensions come last (i.e. they will always be the fastest running dimensions).</p></li>
 </ul>
 </div></blockquote>
 <p>So, for a spectral axis used for grouping, the ordering should be:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">spectral</span></code>, <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">independent</span></code></div></blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">spectral</span></code>, <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">independent</span></code></p>
+</div></blockquote>
 <p>And, for a spectral axis used for L1 data from spectral instruments, the ordering should be:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">spectral</span></code>, <code class="docutils literal notranslate"><span class="pre">independent</span></code></div></blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">spectral</span></code>, <code class="docutils literal notranslate"><span class="pre">independent</span></code></p>
+</div></blockquote>
 <p>A variable should only use dimensions on which it is dependent. This means that the radiance variable for L1 data of a
 nadir looking spectral instrument on a satellite will generally only have the dimensions <code class="docutils literal notranslate"><span class="pre">time</span></code> and <code class="docutils literal notranslate"><span class="pre">spectral</span></code> (and
 not <code class="docutils literal notranslate"><span class="pre">latitude</span></code>, <code class="docutils literal notranslate"><span class="pre">longitude</span></code>, <code class="docutils literal notranslate"><span class="pre">vertical</span></code>, or <code class="docutils literal notranslate"><span class="pre">independent</span></code>).</p>
@@ -240,28 +253,21 @@ vertical dimension or the <code class="docutils literal notranslate"><span class
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="global_attributes.html" class="btn btn-neutral float-right" title="Global attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="datatypes.html" class="btn btn-neutral" title="Data types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="global_attributes.html" class="btn btn-neutral float-right" title="Global attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="datatypes.html" class="btn btn-neutral float-left" title="Data types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -270,27 +276,16 @@ vertical dimension or the <code class="docutils literal notranslate"><span class
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

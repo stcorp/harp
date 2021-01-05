@@ -1,48 +1,55 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ECMWF_GRIB &mdash; HARP 1.12 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-    <link rel="index" title="Index" href="../genindex.html" /> 
 
   
-  <script src="../_static/js/modernizr.min.js"></script>
+  
 
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -66,6 +73,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -90,6 +98,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -124,18 +133,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>ECMWF_GRIB</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -152,406 +163,406 @@
 <div class="section" id="variables">
 <h2>Variables</h2>
 <p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">ECMWF_GRIB</span></code> data.</p>
-<table border="1" class="colwidths-given docutils">
+<table class="colwidths-given docutils align-default">
 <colgroup>
-<col width="25%" />
-<col width="5%" />
-<col width="15%" />
-<col width="15%" />
-<col width="40%" />
+<col style="width: 25%" />
+<col style="width: 5%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">field name</th>
-<th class="head">type</th>
-<th class="head">dimensions</th>
-<th class="head">unit</th>
-<th class="head">description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><strong>datetime</strong></td>
-<td>double</td>
-<td>{<em>time</em>}</td>
-<td>[seconds since 2000-01-01]</td>
-<td>time of the model state</td>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
+<td><p>time of the model state</p></td>
 </tr>
-<tr class="row-odd"><td><strong>longitude</strong></td>
-<td>double</td>
-<td>{<em>longitude</em>}</td>
-<td>[degree_east]</td>
-<td>longitude of the grid cell mid-point (WGS84)</td>
+<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>longitude</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>longitude of the grid cell mid-point (WGS84)</p></td>
 </tr>
-<tr class="row-even"><td><strong>latitude</strong></td>
-<td>double</td>
-<td>{<em>latitude</em>}</td>
-<td>[degree_north]</td>
-<td>latitude of the grid cell mid-point (WGS84)</td>
+<tr class="row-even"><td><p><strong>latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>latitude</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>latitude of the grid cell mid-point (WGS84)</p></td>
 </tr>
-<tr class="row-odd"><td><strong>wavelength</strong></td>
-<td>double</td>
-<td>{<em>spectral</em>}</td>
-<td>[nm]</td>
-<td>wavelengths of the aerosol properties</td>
+<tr class="row-odd"><td><p><strong>wavelength</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>spectral</em>}</p></td>
+<td><p>[nm]</p></td>
+<td><p>wavelengths of the aerosol properties</p></td>
 </tr>
-<tr class="row-even"><td><strong>RWC_mass_mixing_ratio</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>specific rain water content</td>
+<tr class="row-even"><td><p><strong>RWC_mass_mixing_ratio</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>specific rain water content</p></td>
 </tr>
-<tr class="row-odd"><td><strong>SWC_mass_mixing_ratio</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>specific snow water content</td>
+<tr class="row-odd"><td><p><strong>SWC_mass_mixing_ratio</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>specific snow water content</p></td>
 </tr>
-<tr class="row-even"><td><strong>LWC_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column cloud liquid water</td>
+<tr class="row-even"><td><p><strong>LWC_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column cloud liquid water</p></td>
 </tr>
-<tr class="row-odd"><td><strong>IWC_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column cloud ice water</td>
+<tr class="row-odd"><td><p><strong>IWC_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column cloud ice water</p></td>
 </tr>
-<tr class="row-even"><td><strong>surface_geopotential</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[m2/s2]</td>
-<td>geopotential at the surface</td>
+<tr class="row-even"><td><p><strong>surface_geopotential</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[m2/s2]</p></td>
+<td><p>geopotential at the surface</p></td>
 </tr>
-<tr class="row-odd"><td><strong>temperature</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[K]</td>
-<td>temperature</td>
+<tr class="row-odd"><td><p><strong>temperature</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>temperature</p></td>
 </tr>
-<tr class="row-even"><td><strong>H2O_mass_mixing_ratio</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>specific humidity</td>
+<tr class="row-even"><td><p><strong>H2O_mass_mixing_ratio</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>specific humidity</p></td>
 </tr>
-<tr class="row-odd"><td><strong>H2O_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column water vapour</td>
+<tr class="row-odd"><td><p><strong>H2O_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column water vapour</p></td>
 </tr>
-<tr class="row-even"><td><strong>relative_vorticity</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[1/s]</td>
-<td>relative vorticity</td>
+<tr class="row-even"><td><p><strong>relative_vorticity</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[1/s]</p></td>
+<td><p>relative vorticity</p></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_pressure</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[Pa]</td>
-<td>pressure at the surface</td>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>pressure at the surface</p></td>
 </tr>
-<tr class="row-even"><td><strong>pressure</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[Pa]</td>
-<td>pressure</td>
+<tr class="row-even"><td><p><strong>pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>pressure</p></td>
 </tr>
-<tr class="row-odd"><td><strong>pressure_bounds</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>, 2}</td>
-<td>[Pa]</td>
-<td>pressure_bounds</td>
+<tr class="row-odd"><td><p><strong>pressure_bounds</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>, 2}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>pressure_bounds</p></td>
 </tr>
-<tr class="row-even"><td><strong>planetary_boundary_layer_height</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[m]</td>
-<td>planetary boundary layer height</td>
+<tr class="row-even"><td><p><strong>planetary_boundary_layer_height</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>planetary boundary layer height</p></td>
 </tr>
-<tr class="row-odd"><td><strong>cloud_fraction</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[]</td>
-<td>cloud fraction</td>
+<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>cloud fraction</p></td>
 </tr>
-<tr class="row-even"><td><strong>surface_zonal_wind_velocity</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[m/s]</td>
-<td>10 meter U wind component</td>
+<tr class="row-even"><td><p><strong>surface_zonal_wind_velocity</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[m/s]</p></td>
+<td><p>10 meter U wind component</p></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_meridional_wind_velocity</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[m/s]</td>
-<td>10 meter V wind component</td>
+<tr class="row-odd"><td><p><strong>surface_meridional_wind_velocity</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[m/s]</p></td>
+<td><p>10 meter V wind component</p></td>
 </tr>
-<tr class="row-even"><td><strong>surface_temperature</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[K]</td>
-<td>2 metre temperature</td>
+<tr class="row-even"><td><p><strong>surface_temperature</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>2 metre temperature</p></td>
 </tr>
-<tr class="row-odd"><td><strong>land_flag</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>&#160;</td>
-<td>land-sea mask</td>
+<tr class="row-odd"><td><p><strong>land_flag</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td></td>
+<td><p>land-sea mask</p></td>
 </tr>
-<tr class="row-even"><td><strong>LWC_mass_mixing_ratio</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>specific cloud liquid water content</td>
+<tr class="row-even"><td><p><strong>LWC_mass_mixing_ratio</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>specific cloud liquid water content</p></td>
 </tr>
-<tr class="row-odd"><td><strong>IWC_mass_mixing_ratio</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>specific cloud ice water content</td>
+<tr class="row-odd"><td><p><strong>IWC_mass_mixing_ratio</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>specific cloud ice water content</p></td>
 </tr>
-<tr class="row-even"><td><strong>CO2_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>carbon dioxide mass mixing ratio</td>
+<tr class="row-even"><td><p><strong>CO2_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>carbon dioxide mass mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>methane mass mixing ratio</td>
+<tr class="row-odd"><td><p><strong>CH4_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>methane mass mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>surface_PM1_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m3]</td>
-<td>surface density of particulate matter with d &lt; 1 um</td>
+<tr class="row-even"><td><p><strong>surface_PM1_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m3]</p></td>
+<td><p>surface density of particulate matter with d &lt; 1 um</p></td>
 </tr>
-<tr class="row-odd"><td><strong>surface_PM2p5_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m3]</td>
-<td>surface density of particulate matter with d &lt; 2.5 um</td>
+<tr class="row-odd"><td><p><strong>surface_PM2p5_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m3]</p></td>
+<td><p>surface density of particulate matter with d &lt; 2.5 um</p></td>
 </tr>
-<tr class="row-even"><td><strong>surface_PM10_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m3]</td>
-<td>surface density of particulate matter with d &lt; 10 um</td>
+<tr class="row-even"><td><p><strong>surface_PM10_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m3]</p></td>
+<td><p>surface density of particulate matter with d &lt; 10 um</p></td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>nitrogen dioxide mass mixing ratio</td>
+<tr class="row-odd"><td><p><strong>NO2_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>nitrogen dioxide mass mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>SO2_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>sulphur dioxide mass mixing ratio</td>
+<tr class="row-even"><td><p><strong>SO2_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>sulphur dioxide mass mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>CO_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>carbon monoxide mass mixing ratio</td>
+<tr class="row-odd"><td><p><strong>CO_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>carbon monoxide mass mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>formaldehyde mass mixing ratio</td>
+<tr class="row-even"><td><p><strong>HCHO_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>formaldehyde mass mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>NO2_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column nitrogen dioxide</td>
+<tr class="row-odd"><td><p><strong>NO2_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column nitrogen dioxide</p></td>
 </tr>
-<tr class="row-even"><td><strong>SO2_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column sulphur dioxide</td>
+<tr class="row-even"><td><p><strong>SO2_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column sulphur dioxide</p></td>
 </tr>
-<tr class="row-odd"><td><strong>CO_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column carbon monoxide</td>
+<tr class="row-odd"><td><p><strong>CO_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column carbon monoxide</p></td>
 </tr>
-<tr class="row-even"><td><strong>HCHO_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column formaldehyde</td>
+<tr class="row-even"><td><p><strong>HCHO_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column formaldehyde</p></td>
 </tr>
-<tr class="row-odd"><td><strong>O3_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>ozone mass mixing ratio</td>
+<tr class="row-odd"><td><p><strong>O3_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>ozone mass mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>O3_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column ozone</td>
+<tr class="row-even"><td><p><strong>O3_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column ozone</p></td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>spectral</em>}</td>
-<td>[]</td>
-<td>total aerosol optical depth</td>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>spectral</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>total aerosol optical depth</p></td>
 </tr>
-<tr class="row-even"><td><strong>sea_salt_aerosol_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[]</td>
-<td>sea salt aerosol optical depth (at 550nm)</td>
+<tr class="row-even"><td><p><strong>sea_salt_aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>sea salt aerosol optical depth (at 550nm)</p></td>
 </tr>
-<tr class="row-odd"><td><strong>dust_aerosol_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[]</td>
-<td>dust aerosol optical depth (at 550nm)</td>
+<tr class="row-odd"><td><p><strong>dust_aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>dust aerosol optical depth (at 550nm)</p></td>
 </tr>
-<tr class="row-even"><td><strong>organic_matter_aerosol_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[]</td>
-<td>organic matter aerosol optical depth (at 550nm)</td>
+<tr class="row-even"><td><p><strong>organic_matter_aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>organic matter aerosol optical depth (at 550nm)</p></td>
 </tr>
-<tr class="row-odd"><td><strong>black_carbon_aerosol_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[]</td>
-<td>black carbon aerosol optical depth (at 550nm)</td>
+<tr class="row-odd"><td><p><strong>black_carbon_aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>black carbon aerosol optical depth (at 550nm)</p></td>
 </tr>
-<tr class="row-even"><td><strong>sulphate_aerosol_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[]</td>
-<td>sulphate aerosol optical depth (at 550nm)</td>
+<tr class="row-even"><td><p><strong>sulphate_aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>sulphate aerosol optical depth (at 550nm)</p></td>
 </tr>
-<tr class="row-odd"><td><strong>fine_aerosol_optical_depth</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[]</td>
-<td>fine mode aerosol optical depth (at 550nm)</td>
+<tr class="row-odd"><td><p><strong>fine_aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>fine mode aerosol optical depth (at 550nm)</p></td>
 </tr>
-<tr class="row-even"><td><strong>aerosol_extinction_coefficient</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[1/m]</td>
-<td>aerosol extinction coefficient (at 1064nm)</td>
+<tr class="row-even"><td><p><strong>aerosol_extinction_coefficient</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[1/m]</p></td>
+<td><p>aerosol extinction coefficient (at 1064nm)</p></td>
 </tr>
-<tr class="row-odd"><td><strong>aerosol_backscatter_coefficient</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[1/msr]</td>
-<td>aerosol backscatter coefficient (at 1064nm from ground)</td>
+<tr class="row-odd"><td><p><strong>aerosol_backscatter_coefficient</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[1/msr]</p></td>
+<td><p>aerosol backscatter coefficient (at 1064nm from ground)</p></td>
 </tr>
-<tr class="row-even"><td><strong>HNO3_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>nitric acid mass mixing ratio</td>
+<tr class="row-even"><td><p><strong>HNO3_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>nitric acid mass mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>C2H3NO5_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>peroxyacetyl nitrate (PAN) mass mixing ratio</td>
+<tr class="row-odd"><td><p><strong>C2H3NO5_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>peroxyacetyl nitrate (PAN) mass mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>C5H8_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>isoprene mass mixing ratio</td>
+<tr class="row-even"><td><p><strong>C5H8_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>isoprene mass mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>NO_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>nitrogen monoxide mass mixing ratio</td>
+<tr class="row-odd"><td><p><strong>NO_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>nitrogen monoxide mass mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>OH_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>hydroxyl radical mass mixing ratio</td>
+<tr class="row-even"><td><p><strong>OH_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>hydroxyl radical mass mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>C2H6_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>ethane mass mixing ratio</td>
+<tr class="row-odd"><td><p><strong>C2H6_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>ethane mass mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><strong>C3H8_mass_mixing_ratio_dry_air</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</td>
-<td>[kg/kg]</td>
-<td>propane mass mixing ratio</td>
+<tr class="row-even"><td><p><strong>C3H8_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/kg]</p></td>
+<td><p>propane mass mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><strong>CH4_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column methane</td>
+<tr class="row-odd"><td><p><strong>CH4_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column methane</p></td>
 </tr>
-<tr class="row-even"><td><strong>HNO3_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column nitric acid</td>
+<tr class="row-even"><td><p><strong>HNO3_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column nitric acid</p></td>
 </tr>
-<tr class="row-odd"><td><strong>C2H3NO5_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column peroxyacetyl nitrate</td>
+<tr class="row-odd"><td><p><strong>C2H3NO5_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column peroxyacetyl nitrate</p></td>
 </tr>
-<tr class="row-even"><td><strong>C5H8_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column isoprene</td>
+<tr class="row-even"><td><p><strong>C5H8_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column isoprene</p></td>
 </tr>
-<tr class="row-odd"><td><strong>NO_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column nitrogen oxide</td>
+<tr class="row-odd"><td><p><strong>NO_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column nitrogen oxide</p></td>
 </tr>
-<tr class="row-even"><td><strong>OH_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column hydroxyl radical</td>
+<tr class="row-even"><td><p><strong>OH_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column hydroxyl radical</p></td>
 </tr>
-<tr class="row-odd"><td><strong>C2H6_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column ethane</td>
+<tr class="row-odd"><td><p><strong>C2H6_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column ethane</p></td>
 </tr>
-<tr class="row-even"><td><strong>C3H8_column_density</strong></td>
-<td>float</td>
-<td>{<em>latitude</em>, <em>longitude</em>}</td>
-<td>[kg/m^2]</td>
-<td>total column propane</td>
+<tr class="row-even"><td><p><strong>C3H8_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[kg/m^2]</p></td>
+<td><p>total column propane</p></td>
 </tr>
-<tr class="row-odd"><td><strong>index</strong></td>
-<td>int32</td>
-<td>{<em>time</em>}</td>
-<td>&#160;</td>
-<td>zero-based index of the sample within the source product</td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
 </tr>
 </tbody>
 </table>
@@ -559,1355 +570,1355 @@
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="17%" />
-<col width="6%" />
-<col width="78%" />
+<col style="width: 17%" />
+<col style="width: 6%" />
+<col style="width: 78%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">field name</th>
-<th class="head" colspan="2">mapping description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="6"><strong>datetime</strong></td>
-<td><em>condition</em></td>
-<td>GRIB1</td>
+<tbody>
+<tr class="row-even"><td rowspan="6"><p><strong>datetime</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/grib1/yearOfCentury, /[]/grib1/month, /[]/grib1/day, /[]/grib1/hour, /[]/grib1/minute, /[]/grib1/centuryOfReferenceTimeOfData</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/grib1/yearOfCentury, /[]/grib1/month, /[]/grib1/day, /[]/grib1/hour, /[]/grib1/minute, /[]/grib1/centuryOfReferenceTimeOfData</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/grib2/year, /[]/grib2/month, /[]/grib2/day, /[]/grib2/hour, /[]/grib2/minute, /[]/grib2/second</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/grib2/year, /[]/grib2/month, /[]/grib2/day, /[]/grib2/hour, /[]/grib2/minute, /[]/grib2/second</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00</p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>longitude</strong></td>
-<td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td rowspan="6"><p><strong>longitude</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/grib1/grid/Ni, /[]/grib1/grid/longitudeOfFirstGridPoint, /[]/grib1/grid/longitudeOfLastGridPoint</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/grib1/grid/Ni, /[]/grib1/grid/longitudeOfFirstGridPoint, /[]/grib1/grid/longitudeOfLastGridPoint</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>based on linear interpolation using Ni points from first to last grid point</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>based on linear interpolation using Ni points from first to last grid point</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/grib2/grid[]/Ni, /[]/grib2/grid[]/longitudeOfFirstGridPoint, /[]/grib2/grid[]/longitudeOfLastGridPoint</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/grib2/grid[]/Ni, /[]/grib2/grid[]/longitudeOfFirstGridPoint, /[]/grib2/grid[]/longitudeOfLastGridPoint</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>based on linear interpolation using Ni points from first to last grid point</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>based on linear interpolation using Ni points from first to last grid point</p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><strong>latitude</strong></td>
-<td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td rowspan="6"><p><strong>latitude</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/grib1/grid/Nj, /[]/grib1/grid/latitudeOfFirstGridPoint, /[]/grib1/grid/latitudeOfLastGridPoint</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/grib1/grid/Nj, /[]/grib1/grid/latitudeOfFirstGridPoint, /[]/grib1/grid/latitudeOfLastGridPoint</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>based on linear interpolation using Nj points from first to last grid point</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>based on linear interpolation using Nj points from first to last grid point</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/grib2/grid[]/Nj, /[]/grib2/grid[]/latitudeOfFirstGridPoint, /[]/grib2/grid[]/latitudeOfLastGridPoint</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/grib2/grid[]/Nj, /[]/grib2/grid[]/latitudeOfFirstGridPoint, /[]/grib2/grid[]/latitudeOfLastGridPoint</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>based on linear interpolation using Nj points from first to last grid point</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>based on linear interpolation using Nj points from first to last grid point</p></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><strong>wavelength</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="3"><p><strong>wavelength</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>one or more AOD quantities are present</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>one or more AOD quantities are present</p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>the values are based on the available AODs; possible values are: 469, 550, 670, 865, 1240</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the values are based on the available AODs; possible values are: 469, 550, 670, 865, 1240</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>RWC_mass_mixing_ratio</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>RWC_mass_mixing_ratio</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,75)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,75)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,1,85)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,1,85)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>SWC_mass_mixing_ratio</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>SWC_mass_mixing_ratio</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,76)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,76)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,1,86)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,1,86)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>LWC_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>LWC_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,78)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,78)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,128,78)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,128,78)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>IWC_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>IWC_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,79)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,79)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,128,79)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,128,79)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>surface_geopotential</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>surface_geopotential</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,129), (160,129), (170,129), (180,129), or (190,129)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,129), (160,129), (170,129), (180,129), or (190,129)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,3,4)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,3,4)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>temperature</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>temperature</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,130), (160,130), (170,130), (180,130), or (190,130)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,130), (160,130), (170,130), (180,130), or (190,130)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,0,0)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,0,0)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>H2O_mass_mixing_ratio</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>H2O_mass_mixing_ratio</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,133), (160,133), (170,133), (180,133), or (190,133)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,133), (160,133), (170,133), (180,133), or (190,133)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,1,0)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,1,0)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>H2O_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>H2O_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,137) or (180,137)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,137) or (180,137)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,128,137)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,128,137)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>relative_vorticity</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>relative_vorticity</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (160,138), (128,138), (170,138), (180, 138) or (190,138)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (160,138), (128,138), (170,138), (180, 138) or (190,138)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,2,12)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,2,12)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>surface_pressure</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>surface_pressure</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,152) or (190,152); returned value = exp(lnsp)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,152) or (190,152); returned value = exp(lnsp)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,3,25); returned value = exp(lnsp)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,3,25); returned value = exp(lnsp)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>pressure</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="4"><p><strong>pressure</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>surface_pressure is available and at least one parameter has vertical coordinate values</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>surface_pressure is available and at least one parameter has vertical coordinate values</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>…./coordinateValues[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>…./coordinateValues[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>the coordinateValues contain [a(1), …, a(N+1), b(1), …, b(N+1)] coefficients for the N+1 vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))exp(lnsp))/2</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the coordinateValues contain [a(1), …, a(N+1), b(1), …, b(N+1)] coefficients for the N+1 vertical layer boundaries; p(N-i) = (a(i) + a(i+1) + (b(i) + b(i+1))exp(lnsp))/2</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>pressure_bounds</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="4"><p><strong>pressure_bounds</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>surface_pressure is available and at least one parameter has vertical coordinate values</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>surface_pressure is available and at least one parameter has vertical coordinate values</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>…./coordinateValues[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>…./coordinateValues[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>the coordinateValues contain [a(1), …, a(N+1), b(1), …, b(N+1)] coefficients for the N+1 vertical layer boundaries; p(N-i,1) = a(i) + b(i)exp(lnsp); p(N-i,2) = a(i+1) + b(i+1)exp(lnsp)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the coordinateValues contain [a(1), …, a(N+1), b(1), …, b(N+1)] coefficients for the N+1 vertical layer boundaries; p(N-i,1) = a(i) + b(i)exp(lnsp); p(N-i,2) = a(i+1) + b(i+1)exp(lnsp)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>planetary_boundary_layer_height</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>planetary_boundary_layer_height</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,159)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,159)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,128,159)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,128,159)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>cloud_fraction</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>cloud_fraction</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,164), (160,164), (170,164), (180,164), or (190,164)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,164), (160,164), (170,164), (180,164), or (190,164)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,128,164)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,128,164)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>surface_zonal_wind_velocity</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>surface_zonal_wind_velocity</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,165), (160,165), (180,165), or (190,165)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,165), (160,165), (180,165), or (190,165)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,2,2)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,2,2)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>surface_meridional_wind_velocity</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>surface_meridional_wind_velocity</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,166), (160,166), (180,166), or (190,166)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,166), (160,166), (180,166), or (190,166)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,2,3)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,2,3)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><strong>surface_temperature</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="4"><p><strong>surface_temperature</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,167), (160,167), (180,167), or (190,167)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,167), (160,167), (180,167), or (190,167)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>land_flag</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>land_flag</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,172), (160,172), (171,172), (174,172), (175,172), (180,172), or (190,172)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,172), (160,172), (171,172), (174,172), (175,172), (180,172), or (190,172)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (2,0,0)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (2,0,0)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>LWC_mass_mixing_ratio</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>LWC_mass_mixing_ratio</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (128,246)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,246)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,1,83)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,1,83)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>IWC_mass_mixing_ratio</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>IWC_mass_mixing_ratio</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (128,247)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (128,247)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (0,1,84)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (0,1,84)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>CO2_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>CO2_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,61)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,61)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,61)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,61)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>CH4_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>CH4_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,62) or (217,4)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,62) or (217,4)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,62) or (192,217,4)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,62) or (192,217,4)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>surface_PM1_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>surface_PM1_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,72)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,72)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,72)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,72)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>surface_PM2p5_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>surface_PM2p5_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,73)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,73)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,73)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,73)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>surface_PM10_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>surface_PM10_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,74)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,74)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,74)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,74)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>NO2_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>NO2_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,121)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,121)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,121)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,121)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>SO2_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>SO2_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,122)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,122)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,122)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,122)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>CO_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>CO_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,123)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,123)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,123)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,123)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>HCHO_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>HCHO_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,124)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,124)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,124)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,124)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>NO2_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>NO2_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,125)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,125)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,125)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,125)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>SO2_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>SO2_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,126)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,126)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,126)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,126)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>CO_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>CO_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,127)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,127)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,127)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,127)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>HCHO_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>HCHO_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,128)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,128)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,128)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,128)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>O3_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>O3_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,203)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,203)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,203)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,203)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>O3_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>O3_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,206)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,206)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,206)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,206)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>aerosol_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>aerosol_optical_depth</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>AODs are combined using a spectal axis; (table,indicator) = (210,218) [335nm], (210,221) [440nm], (210,213) [469nm], (210,207) [550nm], (210,214) [670nm], (210,215) [865nm], or (210,216) [1240nm]</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>AODs are combined using a spectal axis; (table,indicator) = (210,218) [335nm], (210,221) [440nm], (210,213) [469nm], (210,207) [550nm], (210,214) [670nm], (210,215) [865nm], or (210,216) [1240nm]</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,218) [335nm], (192,210,221) [440nm], (192,210,213) [469nm], (192,210,207) [550nm], (192,210,214) [670nm], (192,210,215) [865nm], or (192,210,216) [1240nm]</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,218) [335nm], (192,210,221) [440nm], (192,210,213) [469nm], (192,210,207) [550nm], (192,210,214) [670nm], (192,210,215) [865nm], or (192,210,216) [1240nm]</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>sea_salt_aerosol_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>sea_salt_aerosol_optical_depth</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,208)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,208)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,208)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,208)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>dust_aerosol_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>dust_aerosol_optical_depth</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,209)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,209)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,209)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,209)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>organic_matter_aerosol_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>organic_matter_aerosol_optical_depth</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,210)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,210)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,210)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,210)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>black_carbon_aerosol_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>black_carbon_aerosol_optical_depth</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (210,211)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,211)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,211)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,211)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>sulphate_aerosol_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>sulphate_aerosol_optical_depth</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (210,212)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (210,212)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,210,212)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,210,212)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>fine_aerosol_optical_depth</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>fine_aerosol_optical_depth</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (215,122)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (215,122)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,215,122)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,215,122)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>aerosol_extinction_coefficient</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>aerosol_extinction_coefficient</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (215,182)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (215,182)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,215,182)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,215,182)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>aerosol_backscatter_coefficient</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>aerosol_backscatter_coefficient</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (215,188)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (215,188)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,215,188)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,215,188)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>HNO3_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>HNO3_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (217,6)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (217,6)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,217,6)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,217,6)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>C2H3NO5_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>C2H3NO5_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (217,13)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (217,13)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,217,13)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,217,13)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>C5H8_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>C5H8_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (217,16)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (217,16)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,217,16)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,217,16)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>NO_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>NO_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (217,27)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (217,27)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,217,27)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,217,27)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>OH_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>OH_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (217,30)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (217,30)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,217,30)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,217,30)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>C2H6_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>C2H6_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (217,45)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (217,45)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,217,45)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,217,45)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>C3H8_mass_mixing_ratio_dry_air</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>C3H8_mass_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (217,47)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (217,47)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,217,47)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,217,47)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>CH4_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>CH4_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (218,4)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,4)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,4)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,4)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>HNO3_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>HNO3_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (218,6)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,6)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,6)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,6)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>C2H3NO5_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>C2H3NO5_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (218,13)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,13)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,13)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,13)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>C5H8_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>C5H8_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (218,16)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,16)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,16)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,16)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>NO_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>NO_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (218,27)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,27)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,27)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,27)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>OH_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>OH_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (218,30)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,30)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,30)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,30)</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><strong>C2H6_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-odd"><td rowspan="7"><p><strong>C2H6_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(table,indicator) = (218,45)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,45)</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,45)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,45)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><strong>C3H8_column_density</strong></td>
-<td><em>available</em></td>
-<td>optional</td>
+<tr class="row-even"><td rowspan="7"><p><strong>C3H8_column_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><em>condition</em></td>
-<td>GRIB1</td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>GRIB1</p></td>
 </tr>
-<tr class="row-even"><td><em>path</em></td>
-<td><strong>/[]/data/values[]</strong></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data/values[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><em>description</em></td>
-<td>(table,indicator) = (218,47)</td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>(table,indicator) = (218,47)</p></td>
 </tr>
-<tr class="row-even"><td><em>condition</em></td>
-<td>GRIB2</td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>GRIB2</p></td>
 </tr>
-<tr class="row-odd"><td><em>path</em></td>
-<td><strong>/[]/data[]/values[]</strong></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/[]/data[]/values[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><em>description</em></td>
-<td>(discipline,category,number) = (192,218,47)</td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>(discipline,category,number) = (192,218,47)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1919,19 +1930,17 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015-2020 S[&amp;]T, The Netherlands
+        &#169; Copyright 2015-2020 S[&amp;]T, The Netherlands.
 
     </p>
   </div> 
 
 </footer>
-
         </div>
       </div>
 
@@ -1940,27 +1949,16 @@
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

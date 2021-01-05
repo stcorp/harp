@@ -1,6 +1,8 @@
 solar elevation angle derivations
 =================================
 
+   .. _derivation_solar_elevation_angle_from_solar_zenith_angle:
+
 #. solar elevation angle from solar zenith angle
 
    ================== ===================== =========== ===========================
