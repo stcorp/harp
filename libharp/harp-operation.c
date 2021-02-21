@@ -173,7 +173,7 @@ static int eval_bitmask(harp_operation_bit_mask_filter *operation, harp_data_typ
     switch (operation->operator_type)
     {
         case operator_bit_mask_any:
-            return (bitmap_value & operation->bit_mask) != 0;
+            return (bitmap_value & operation->bit_mask) == operation->bit_mask;
         case operator_bit_mask_none:
             return (bitmap_value & operation->bit_mask) == 0;
     }
