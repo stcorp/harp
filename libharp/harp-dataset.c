@@ -514,7 +514,7 @@ LIBHARP_API void harp_dataset_delete(harp_dataset *dataset)
  * \param dataset Pointer to the dataset to print.
  * \param print Pointer to the function that should be used for printing.
  */
-LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const char *, ...))
+LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print)(const char *, ...))
 {
     long i;
 

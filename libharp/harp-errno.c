@@ -38,7 +38,7 @@
 
 #define MAX_ERROR_INFO_LENGTH	4096
 
-static int (*harp_warning_handler) (const char *, va_list ap) = NULL;
+static int (*harp_warning_handler)(const char *, va_list ap) = NULL;
 static char harp_error_message_buffer[MAX_ERROR_INFO_LENGTH + 1];
 
 /** \defgroup harp_error HARP Error
@@ -417,7 +417,7 @@ LIBHARP_API int harp_report_warning(const char *message, ...)
  *   \arg \c  0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_get_warning_handler(int (**print) (const char *, va_list ap))
+LIBHARP_API int harp_get_warning_handler(int (**print)(const char *, va_list ap))
 {
     *print = harp_warning_handler;
     return 0;
@@ -446,7 +446,7 @@ LIBHARP_API int harp_get_warning_handler(int (**print) (const char *, va_list ap
  *   \arg \c  0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_set_warning_handler(int (*print) (const char *, va_list ap))
+LIBHARP_API int harp_set_warning_handler(int (*print)(const char *, va_list ap))
 {
     harp_warning_handler = print;
     return 0;

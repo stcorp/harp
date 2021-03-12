@@ -392,7 +392,7 @@ static int perform_conversion(conversion_info *info)
 }
 
 static void print_source_variable(const harp_source_variable_definition *source_definition,
-                                  int (*print) (const char *, ...), int indent);
+                                  int (*print)(const char *, ...), int indent);
 
 /* return: 0: possible, 1: not possible (no cycle), 2: not possible (cycle or out of budget) */
 static int find_source_variables(conversion_info *info, harp_source_variable_definition *source_definition,
@@ -599,9 +599,9 @@ static int find_and_execute_conversion(conversion_info *info)
     return -1;
 }
 
-static void print_conversion(conversion_info *info, int (*print) (const char *, ...));
+static void print_conversion(conversion_info *info, int (*print)(const char *, ...));
 
-static int find_and_print_conversion(conversion_info *info, int (*print) (const char *, ...))
+static int find_and_print_conversion(conversion_info *info, int (*print)(const char *, ...))
 {
     int index;
 
@@ -674,7 +674,7 @@ static int find_and_print_conversion(conversion_info *info, int (*print) (const 
     return -1;
 }
 
-static int print_source_variable_conversion(conversion_info *info, int (*print) (const char *, ...))
+static int print_source_variable_conversion(conversion_info *info, int (*print)(const char *, ...))
 {
     harp_variable *variable;
 
@@ -689,7 +689,7 @@ static int print_source_variable_conversion(conversion_info *info, int (*print) 
     return find_and_print_conversion(info, print);
 }
 
-static void print_conversion_variable(const harp_variable_conversion *conversion, int (*print) (const char *, ...))
+static void print_conversion_variable(const harp_variable_conversion *conversion, int (*print)(const char *, ...))
 {
     int i;
 
@@ -719,7 +719,7 @@ static void print_conversion_variable(const harp_variable_conversion *conversion
 }
 
 static void print_source_variable(const harp_source_variable_definition *source_definition,
-                                  int (*print) (const char *, ...), int indent)
+                                  int (*print)(const char *, ...), int indent)
 {
     int k;
 
@@ -753,7 +753,7 @@ static void print_source_variable(const harp_source_variable_definition *source_
     print(" (%s)", harp_get_data_type_name(source_definition->data_type));
 }
 
-static void print_conversion(conversion_info *info, int (*print) (const char *, ...))
+static void print_conversion(conversion_info *info, int (*print)(const char *, ...))
 {
     int i, k;
 
@@ -806,7 +806,7 @@ static void print_conversion(conversion_info *info, int (*print) (const char *, 
     }
 }
 
-void harp_variable_conversion_print(const harp_variable_conversion *conversion, int (*print) (const char *, ...))
+void harp_variable_conversion_print(const harp_variable_conversion *conversion, int (*print)(const char *, ...))
 {
     int i;
 
@@ -1034,7 +1034,7 @@ int harp_variable_conversion_set_source_description(harp_variable_conversion *co
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const char *variable_name,
-                                          int (*print) (const char *, ...))
+                                          int (*print)(const char *, ...))
 {
     conversion_info info;
     int i, j;

@@ -1830,7 +1830,7 @@ LIBHARP_API int harp_product_verify(const harp_product *product)
  * \param print Print function to use
  */
 LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int show_data,
-                                    int (*print) (const char *, ...))
+                                    int (*print)(const char *, ...))
 {
     int i;
 

@@ -79,11 +79,11 @@ typedef struct harp_variable_definition_struct
     int num_enum_values;
     char **enum_name;
 
-    int (*include) (void *user_data);
-    int (*read_all) (void *user_data, harp_array data);
-    int (*read_range) (void *user_data, long index_offset, long index_length, harp_array data);
-    long (*get_optimal_range_length) (void *user_data);
-    int (*read_block) (void *user_data, long index, harp_array data);
+    int (*include)(void *user_data);
+    int (*read_all)(void *user_data, harp_array data);
+    int (*read_range)(void *user_data, long index_offset, long index_length, harp_array data);
+    long (*get_optimal_range_length)(void *user_data);
+    int (*read_block)(void *user_data, long index, harp_array data);
 
     int num_mappings;
     harp_mapping_description **mapping;
@@ -98,8 +98,8 @@ typedef struct harp_product_definition_struct
     harp_variable_definition **variable_definition;
     struct hashtable_struct *variable_definition_hash_data;
 
-    int (*read_dimensions) (void *user_data, long dimension[HARP_NUM_DIM_TYPES]);
-    int (*read_datetime_range) (void *user_data, double *datetime_start, double *datetime_stop);
+    int (*read_dimensions)(void *user_data, long dimension[HARP_NUM_DIM_TYPES]);
+    int (*read_datetime_range)(void *user_data, double *datetime_start, double *datetime_stop);
 
     char *ingestion_option;
     char *mapping_description;
@@ -124,10 +124,10 @@ struct harp_ingestion_module_struct
     int num_option_definitions;
     harp_ingestion_option_definition **option_definition;
 
-    int (*ingestion_init) (const harp_ingestion_module *module, coda_product *product,
-                           const harp_ingestion_options *options, harp_product_definition **definition,
-                           void **user_data);
-    void (*ingestion_done) (void *user_data);
+    int (*ingestion_init)(const harp_ingestion_module *module, coda_product *product,
+                          const harp_ingestion_options *options, harp_product_definition **definition,
+                          void **user_data);
+    void (*ingestion_done)(void *user_data);
 };
 
 typedef struct harp_ingestion_module_register_struct
@@ -192,50 +192,49 @@ harp_ingestion_module_register *harp_ingestion_get_module_register(void);
 harp_ingestion_module *harp_ingestion_register_module
     (const char *name, const char *product_group, const char *product_class, const char *product_type,
      const char *description,
-     int (*ingestion_init) (const harp_ingestion_module *module, coda_product *product,
-                            const harp_ingestion_options *options, harp_product_definition **definition,
-                            void **user_data), void (*ingestion_done) (void *user_data));
+     int (*ingestion_init)(const harp_ingestion_module *module, coda_product *product,
+                           const harp_ingestion_options *options, harp_product_definition **definition,
+                           void **user_data), void(*ingestion_done)(void *user_data));
 harp_ingestion_option_definition *harp_ingestion_register_option(harp_ingestion_module *module, const char *name,
                                                                  const char *description, int num_allowed_values,
                                                                  const char *allowed_value[]);
 harp_product_definition *harp_ingestion_register_product(harp_ingestion_module *module, const char *name,
                                                          const char *description,
-                                                         int (*read_dimensions) (void *user_data,
-                                                                                 long dimension[HARP_NUM_DIM_TYPES]));
+                                                         int (*read_dimensions)(void *user_data,
+                                                                                long dimension[HARP_NUM_DIM_TYPES]));
 /* read_datetime_range() should return the same values as harp_product_get_datetime_range() would */
 void harp_ingestion_register_datetime_range_read(harp_product_definition *product_definition,
-                                                 int (*read_datetime_range) (void *user_data, double *datetime_start,
-                                                                             double *datetime_stop));
+                                                 int (*read_datetime_range)(void *user_data, double *datetime_start,
+                                                                            double *datetime_stop));
 harp_variable_definition *harp_ingestion_register_variable_full_read(harp_product_definition *product_definition,
                                                                      const char *name, harp_data_type data_type,
                                                                      int num_dimensions,
                                                                      const harp_dimension_type *dimension_type,
                                                                      const long *dimension, const char *description,
-                                                                     const char *unit, int (*include) (void *user_data),
-                                                                     int (*read_all) (void *user_data,
-                                                                                      harp_array data));
+                                                                     const char *unit, int (*include)(void *user_data),
+                                                                     int(*read_all)(void *user_data, harp_array data));
 harp_variable_definition *harp_ingestion_register_variable_range_read(harp_product_definition *product_definition,
                                                                       const char *name, harp_data_type data_type,
                                                                       int num_dimensions,
                                                                       const harp_dimension_type *dimension_type,
                                                                       const long *dimension, const char *description,
                                                                       const char *unit,
-                                                                      int (*include) (void *user_data),
-                                                                      long (*get_optimal_range_length) (void
-                                                                                                        *user_data),
-                                                                      int (*read_range) (void *user_data,
-                                                                                         long index_offset,
-                                                                                         long index_length,
-                                                                                         harp_array data));
+                                                                      int (*include)(void *user_data),
+                                                                      long(*get_optimal_range_length)(void
+                                                                                                      *user_data),
+                                                                      int(*read_range)(void *user_data,
+                                                                                       long index_offset,
+                                                                                       long index_length,
+                                                                                       harp_array data));
 harp_variable_definition *harp_ingestion_register_variable_block_read(harp_product_definition *product_definition,
                                                                       const char *name, harp_data_type data_type,
                                                                       int num_dimensions,
                                                                       const harp_dimension_type *dimension_type,
                                                                       const long *dimension, const char *description,
                                                                       const char *unit,
-                                                                      int (*include) (void *user_data),
-                                                                      int (*read_block) (void *user_data, long index,
-                                                                                         harp_array data));
+                                                                      int (*include)(void *user_data),
+                                                                      int(*read_block)(void *user_data, long index,
+                                                                                       harp_array data));
 
 /* Initialization and clean-up. */
 int harp_ingestion_init(void);

@@ -129,7 +129,7 @@ LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata)
  * \param metadata Pointer to the metadata to print.
  * \param print Pointer to the function that should be used for printing.
  */
-LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...))
+LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print)(const char *, ...))
 {
     char datetime_string[16];
     int i;

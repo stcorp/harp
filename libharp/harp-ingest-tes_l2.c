@@ -573,10 +573,10 @@ static void register_pressure_variable(harp_product_definition *product_definiti
 }
 
 static void register_nadir_product(const char *gas_code, const char *gas_name, const char *product_type,
-                                   int (*ingestion_init) (const harp_ingestion_module *module,
-                                                          coda_product *product,
-                                                          const harp_ingestion_options *options,
-                                                          harp_product_definition **definition, void **user_data))
+                                   int (*ingestion_init)(const harp_ingestion_module *module,
+                                                         coda_product *product,
+                                                         const harp_ingestion_options *options,
+                                                         harp_product_definition **definition, void **user_data))
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -630,10 +630,10 @@ static void register_nadir_product(const char *gas_code, const char *gas_name, c
 }
 
 static void register_limb_product(const char *gas_code, const char *gas_name, const char *product_type,
-                                  int (*ingestion_init) (const harp_ingestion_module *module,
-                                                         coda_product *product,
-                                                         const harp_ingestion_options *options,
-                                                         harp_product_definition **definition, void **user_data))
+                                  int (*ingestion_init)(const harp_ingestion_module *module,
+                                                        coda_product *product,
+                                                        const harp_ingestion_options *options,
+                                                        harp_product_definition **definition, void **user_data))
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;

@@ -53,7 +53,7 @@ typedef enum omi_dim_type_enum
 typedef struct variable_descriptor_struct
 {
     coda_cursor cursor;
-    long (*get_offset) (const long *dimension, long index);
+    long (*get_offset)(const long *dimension, long index);
     long length;
     double missing_value;
     double scale_factor;
@@ -409,7 +409,7 @@ static int get_variable_attributes(coda_cursor *cursor, double *missing_value, d
 }
 
 static int variable_descriptor_init(coda_cursor *cursor, const char *name, int num_dimensions, const long *dimension,
-                                    long (*get_offset) (const long *dimension, long index), long length,
+                                    long (*get_offset)(const long *dimension, long index), long length,
                                     variable_descriptor *descriptor)
 {
     descriptor->cursor = *cursor;

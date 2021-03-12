@@ -41,12 +41,12 @@
  * The HARP Variables module contains everything related to HARP variables.
  */
 
-static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print) (const char *, ...))
+static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print)(const char *, ...))
 {
-    switch (data_type)
+    switch(data_type)
     {
         case harp_type_int8:
-            print("%d", (int)data.int8_data);
+            print("%d",(int)data.int8_data);
             break;
         case harp_type_int16:
             print("%d", (int)data.int16_data);
@@ -67,7 +67,7 @@ static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print
 }
 
 static void write_array(harp_array data, harp_data_type data_type, long num_elements, long block_size,
-                        int (*print) (const char *, ...))
+                        int (*print)(const char *, ...))
 {
     long i, j, index;
 
@@ -2603,7 +2603,7 @@ LIBHARP_API int harp_variable_verify(const harp_variable *variable)
  * \param show_attributes Whether or not to print the attributes.
  * \param print Print function to use
  */
-LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attributes, int (*print) (const char *, ...))
+LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attributes, int (*print)(const char *, ...))
 {
     int i;
 
@@ -2721,7 +2721,7 @@ LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attribute
  * \param variable Variable whose data to print.
  * \param print Print function to use
  */
-LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) (const char *, ...))
+LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print)(const char *, ...))
 {
     print("%s", variable->name);
     print(" = ");

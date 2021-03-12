@@ -70,9 +70,9 @@ typedef struct ingest_info_struct
     harp_product *product;      /* resulting HARP product */
 
     read_buffer *block_buffer;  /* buffer used for storing results from 'read_all' and 'read_range' */
-    int (*block_buffer_read_all) (void *user_data, harp_array data);    /* 'read_all' that was used to fill buffer */
+    int (*block_buffer_read_all)(void *user_data, harp_array data);     /* 'read_all' that was used to fill buffer */
     /* 'read_range' that was used to fill buffer */
-    int (*block_buffer_read_range) (void *user_data, long index_offset, long index_length, harp_array data);
+    int (*block_buffer_read_range)(void *user_data, long index_offset, long index_length, harp_array data);
     long block_buffer_block_size;       /* byte size of each block */
     long block_buffer_index_offset;     /* index of first block in the buffer */
     long block_buffer_max_blocks;       /* total number of blocks for the variable */
@@ -2221,7 +2221,7 @@ int harp_ingest_metadata(const char *filename, const char *options, harp_product
  * 1 = product ingestion results in errors for at least one set of options
  *     error is already printed, harp_errno should be ignored
  */
-int harp_ingest_test(const char *filename, int (*print) (const char *, ...))
+int harp_ingest_test(const char *filename, int (*print)(const char *, ...))
 {
     coda_product *product = NULL;
     ingest_info *info;

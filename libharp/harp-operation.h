@@ -157,39 +157,39 @@ typedef struct harp_operation_struct
 typedef struct harp_operation_numeric_value_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_numeric_value_filter_struct *, harp_data_type, void *);
+    int (*eval)(struct harp_operation_numeric_value_filter_struct *, harp_data_type, void *);
 } harp_operation_numeric_value_filter;
 
 typedef struct harp_operation_string_value_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_string_value_filter_struct *, int num_enum_values, char **enum_name,
-                 harp_data_type, void *);
+    int (*eval)(struct harp_operation_string_value_filter_struct *, int num_enum_values, char **enum_name,
+                harp_data_type, void *);
 } harp_operation_string_value_filter;
 
 typedef struct harp_operation_index_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_index_filter_struct *, int32_t);
+    int (*eval)(struct harp_operation_index_filter_struct *, int32_t);
     harp_dimension_type dimension_type;
 } harp_operation_index_filter;
 
 typedef struct harp_operation_point_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_point_filter_struct *, harp_spherical_point *);
+    int (*eval)(struct harp_operation_point_filter_struct *, harp_spherical_point *);
 } harp_operation_point_filter;
 
 typedef struct harp_operation_polygon_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_polygon_filter_struct *, harp_spherical_polygon *);
+    int (*eval)(struct harp_operation_polygon_filter_struct *, harp_spherical_polygon *);
 } harp_operation_polygon_filter;
 
 typedef struct harp_operation_area_covers_area_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_area_covers_area_filter_struct *, harp_spherical_polygon *);
+    int (*eval)(struct harp_operation_area_covers_area_filter_struct *, harp_spherical_polygon *);
     /* parameters */
     char *filename;     /* can be NULL */
     /* extra */
@@ -199,7 +199,7 @@ typedef struct harp_operation_area_covers_area_filter_struct
 typedef struct harp_operation_area_covers_point_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_area_covers_point_filter_struct *, harp_spherical_polygon *);
+    int (*eval)(struct harp_operation_area_covers_point_filter_struct *, harp_spherical_polygon *);
     /* parameters */
     harp_spherical_point point;
 } harp_operation_area_covers_point_filter;
@@ -207,7 +207,7 @@ typedef struct harp_operation_area_covers_point_filter_struct
 typedef struct harp_operation_area_inside_area_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_area_inside_area_filter_struct *, harp_spherical_polygon *);
+    int (*eval)(struct harp_operation_area_inside_area_filter_struct *, harp_spherical_polygon *);
     /* parameters */
     char *filename;     /* can be NULL */
     /* extra */
@@ -217,7 +217,7 @@ typedef struct harp_operation_area_inside_area_filter_struct
 typedef struct harp_operation_area_intersects_area_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_area_intersects_area_filter_struct *, harp_spherical_polygon *);
+    int (*eval)(struct harp_operation_area_intersects_area_filter_struct *, harp_spherical_polygon *);
     /* parameters */
     char *filename;     /* can be NULL */
     int has_fraction;
@@ -255,7 +255,7 @@ typedef struct harp_operation_bin_with_variables_struct
 typedef struct harp_operation_bit_mask_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_bit_mask_filter_struct *, harp_data_type, void *);
+    int (*eval)(struct harp_operation_bit_mask_filter_struct *, harp_data_type, void *);
     /* parameters */
     char *variable_name;
     harp_bit_mask_operator_type operator_type;
@@ -275,7 +275,7 @@ typedef struct harp_operation_clamp_struct
 typedef struct harp_operation_collocation_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_collocation_filter_struct *, harp_data_type, void *);
+    int (*eval)(struct harp_operation_collocation_filter_struct *, harp_data_type, void *);
     /* parameters */
     char *filename;
     harp_collocation_filter_type filter_type;
@@ -291,7 +291,7 @@ typedef struct harp_operation_collocation_filter_struct
 typedef struct harp_operation_comparison_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_comparison_filter_struct *, harp_data_type, void *);
+    int (*eval)(struct harp_operation_comparison_filter_struct *, harp_data_type, void *);
     /* parameters */
     char *variable_name;
     harp_comparison_operator_type operator_type;
@@ -360,7 +360,7 @@ typedef struct harp_operation_flatten_struct
 typedef struct harp_operation_index_comparison_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_index_comparison_filter_struct *, int32_t);
+    int (*eval)(struct harp_operation_index_comparison_filter_struct *, int32_t);
     harp_dimension_type dimension_type;
     /* parameters */
     harp_comparison_operator_type operator_type;
@@ -370,7 +370,7 @@ typedef struct harp_operation_index_comparison_filter_struct
 typedef struct harp_operation_index_membership_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_index_membership_filter_struct *, int32_t);
+    int (*eval)(struct harp_operation_index_membership_filter_struct *, int32_t);
     harp_dimension_type dimension_type;
     /* parameters */
     harp_membership_operator_type operator_type;
@@ -389,7 +389,7 @@ typedef struct harp_operation_keep_variable_struct
 typedef struct harp_operation_longitude_range_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_longitude_range_filter_struct *, harp_data_type, void *);
+    int (*eval)(struct harp_operation_longitude_range_filter_struct *, harp_data_type, void *);
     /* parameters */
     double min;
     double max;
@@ -400,7 +400,7 @@ typedef struct harp_operation_longitude_range_filter_struct
 typedef struct harp_operation_membership_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_membership_filter_struct *, harp_data_type, void *);
+    int (*eval)(struct harp_operation_membership_filter_struct *, harp_data_type, void *);
     /* parameters */
     char *variable_name;
     harp_membership_operator_type operator_type;
@@ -414,7 +414,7 @@ typedef struct harp_operation_membership_filter_struct
 typedef struct harp_operation_point_distance_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_point_distance_filter_struct *, harp_spherical_point *);
+    int (*eval)(struct harp_operation_point_distance_filter_struct *, harp_spherical_point *);
     /* parameters */
     harp_spherical_point point;
     double distance;
@@ -423,7 +423,7 @@ typedef struct harp_operation_point_distance_filter_struct
 typedef struct harp_operation_point_in_area_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_point_in_area_filter_struct *, harp_spherical_point *);
+    int (*eval)(struct harp_operation_point_in_area_filter_struct *, harp_spherical_point *);
     /* parameters */
     char *filename;     /* can be NULL */
     /* extra */
@@ -529,8 +529,8 @@ typedef struct harp_operation_squash_struct
 typedef struct harp_operation_string_comparison_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_string_comparison_filter_struct *, int num_enum_values, char **enum_name,
-                 harp_data_type, void *);
+    int (*eval)(struct harp_operation_string_comparison_filter_struct *, int num_enum_values, char **enum_name,
+                harp_data_type, void *);
     /* parameters */
     char *variable_name;
     harp_comparison_operator_type operator_type;
@@ -540,8 +540,8 @@ typedef struct harp_operation_string_comparison_filter_struct
 typedef struct harp_operation_string_membership_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_string_membership_filter_struct *, int num_enum_values, char **enum_name,
-                 harp_data_type, void *);
+    int (*eval)(struct harp_operation_string_membership_filter_struct *, int num_enum_values, char **enum_name,
+                harp_data_type, void *);
     /* parameters */
     char *variable_name;
     harp_membership_operator_type operator_type;
@@ -552,7 +552,7 @@ typedef struct harp_operation_string_membership_filter_struct
 typedef struct harp_operation_valid_range_filter_struct
 {
     harp_operation_type type;
-    int (*eval) (struct harp_operation_valid_range_filter_struct *, harp_data_type, void *);
+    int (*eval)(struct harp_operation_valid_range_filter_struct *, harp_data_type, void *);
     /* parameters */
     char *variable_name;
     /* extra */

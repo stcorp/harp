@@ -712,7 +712,7 @@ LIBHARP_API int harp_import(const char *filename, const char *operations, const 
  *   \arg \c 1, Import failed (error is already printed, #harp_errno should be ignored).
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char *, ...))
+LIBHARP_API int harp_import_test(const char *filename, int (*print)(const char *, ...))
 {
     harp_product *product;
     file_format format;

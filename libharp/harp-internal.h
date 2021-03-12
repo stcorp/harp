@@ -68,8 +68,8 @@
 extern int harp_option_enable_aux_afgl86;
 extern int harp_option_enable_aux_usstd76;
 
-typedef int (*harp_conversion_function) (harp_variable *variable, const harp_variable **source_variable);
-typedef int (*harp_conversion_enabled_function) (void);
+typedef int (*harp_conversion_function)(harp_variable *variable, const harp_variable **source_variable);
+typedef int (*harp_conversion_enabled_function)(void);
 
 typedef enum harp_collocation_filter_type_enum
 {
@@ -217,7 +217,7 @@ int harp_parse_file_convention(const char *str, int *major, int *minor);
 
 /* Ingest */
 int harp_ingest(const char *filename, const char *operations, const char *options, harp_product **product);
-int harp_ingest_test(const char *filename, int (*print) (const char *, ...));
+int harp_ingest_test(const char *filename, int (*print)(const char *, ...));
 int harp_ingest_metadata(const char *filename, const char *options, harp_product_metadata *metadata);
 void harp_ingestion_done(void);
 

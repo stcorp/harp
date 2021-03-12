@@ -4776,7 +4776,7 @@ static void register_surface_variables(harp_product_definition *product_definiti
     if (include_surface_winds)
     {
         const char *processor_description;
-        int (*include_func) (void *);
+        int (*include_func)(void *);
 
         if (include_surface_winds == 1)
         {
@@ -4814,8 +4814,8 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
     const char *description;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    int (*read_snow_ice_type_function) (void *, harp_array);
-    int (*read_sea_ice_fraction_function) (void *, harp_array);
+    int (*read_snow_ice_type_function)(void *, harp_array);
+    int (*read_sea_ice_fraction_function)(void *, harp_array);
 
     if (nise_extension)
     {
@@ -5030,6 +5030,7 @@ static void register_ch4_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
+
     harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_vertical,
         harp_dimension_independent
     };
