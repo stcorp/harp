@@ -524,31 +524,34 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>When the integration time is higher than 1s we are dealing with a mixed (2) pixel, otherwise the scan direction is based on the corner coordinates of the first ground pixel of the measurement. The first geolocation pixel is a backscan (1) pixel if the inproduct of the unit vector of the third corner with the outproduct of the unit vector of the first corner and the unit vector of the second corner is negative (otherwise it is part of a forward (0) scan)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/clouds_aerosol[]/cl_frac</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><p><strong>cloud_top_pressure</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>in case of co-adding, the average of all values within the integration time is taken</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>applicable format specification &lt;= PO-RS-MDA-GS2009_15_3J</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/clouds_aerosol[]/cl_top_pres</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><p><strong>cloud_top_height</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>cloud_top_pressure</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>applicable format specification &gt;= PO-RS-MDA-GS2009_15_3K</p></td>
+<td><p>applicable format specification &lt;= PO-RS-MDA-GS2009_15_3J</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/clouds_aerosol[]/cl_top_pres</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>cloud_top_height</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>applicable format specification &gt;= PO-RS-MDA-GS2009_15_3K</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/clouds_aerosol[]/cl_top_height</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/clouds_aerosol[]/aero_abso_ind</strong></p></td>
 </tr>

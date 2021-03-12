@@ -1601,18 +1601,28 @@ static int read_cloud_fraction(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
+    int coadding_factor = info->coadding_factor[index];
+    int i;
 
-    cursor = info->clouds_aerosol_cursor[info->geo_dsr_id[index]];
-    if (coda_cursor_goto_record_field_by_name(&cursor, "cl_frac") != 0)
+    *data.double_data = 0;
+    for (i = info->geo_dsr_id[index]; i < info->geo_dsr_id[index] + coadding_factor; i++)
     {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
+        double value;
+
+        cursor = info->clouds_aerosol_cursor[i];
+        if (coda_cursor_goto_record_field_by_name(&cursor, "cl_frac") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_read_double(&cursor, &value) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        *data.double_data += value;
     }
-    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
+    *data.double_data /= coadding_factor;
 
     return 0;
 }
@@ -2385,7 +2395,8 @@ static void register_common_nadir_cloud_variables(harp_product_definition *produ
                                                                       description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                       read_cloud_fraction);
     path = "/clouds_aerosol[]/cl_frac";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "in case of co-adding, the average of all values within the integration time is taken";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_common_limb_variables(harp_product_definition *product_definition, const char *dataset)

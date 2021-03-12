@@ -15,6 +15,7 @@
   - GEOMS FTIR H2CO: fixed issue in determining unit for H2O data (that would
     fail the ingestion)
   - S5P L2 CO: added co=corrected ingestion option
+  - SCIAMACHY L2: fixed averaging of cloud fraction for co-added pixels
 
 1.12 2020-10-29
 ~~~~~~~~~~~~~~~
