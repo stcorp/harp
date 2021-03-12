@@ -397,7 +397,11 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>co_avk</p></td>
+<tr class="row-even"><td><p>co</p></td>
+<td><p>corrected</p></td>
+<td><p>whether to ingest the ‘normal’ CO column (default) or the destriping corrected CO column (co=corrected); providing this option will only work with processor version &gt;= 02.01.00 (otherwise an empty product is returned)</p></td>
+</tr>
+<tr class="row-odd"><td><p>co_avk</p></td>
 <td><p>number_density</p></td>
 <td><p>whether to ingest the partial column number density column avk (default) for CO or the number density column avk (avk=number_density)</p></td>
 </tr>
@@ -550,9 +554,15 @@
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>the surface pressure is the pressure at the lowest pressure level</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>CO_column_number_density</strong></p></td>
+<tr class="row-even"><td rowspan="3"><p><strong>CO_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/carbonmonoxide_total_column[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>co=corrected and processor version &gt;= 02.01.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/carbonmonoxide_total_column_corrected[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>CO_column_number_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>

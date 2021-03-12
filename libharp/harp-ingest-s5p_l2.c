@@ -96,6 +96,7 @@ typedef struct ingest_info_struct
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
     int use_ch4_bias_corrected;
+    int use_co_corrected;
     int use_co_nd_avk;
     int use_o3_tcl_csa;
     int use_o3_tcl_strat_reference;
@@ -563,6 +564,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
     info->use_ch4_bias_corrected = 0;
+    info->use_co_corrected = 0;
     info->use_co_nd_avk = 0;
     info->use_o3_tcl_csa = 0;
     info->use_o3_tcl_strat_reference = 0;
@@ -621,6 +623,19 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "ch4"))
     {
         info->use_ch4_bias_corrected = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "co"))
+    {
+        if (info->processor_version < 20100)
+        {
+            /* alternative CO column is only available with processor version >= 02.01.00 */
+            /* return an empty product if the columns are not available */
+            /* (i.e. just pick the first definition and leave num_times set to 0) */
+            *definition = *module->product_definition;
+            *user_data = info;
+            return 0;
+        }
+        info->use_co_corrected = 1;
     }
     if (harp_ingestion_options_has_option(options, "co_avk"))
     {
@@ -1885,6 +1900,11 @@ static int read_product_carbonmonoxide_total_column(void *user_data, harp_array 
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->use_co_corrected)
+    {
+        return read_dataset(info->product_cursor, "carbonmonoxide_total_column_corrected", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
     return read_dataset(info->product_cursor, "carbonmonoxide_total_column", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -5010,7 +5030,6 @@ static void register_ch4_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-
     harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_vertical,
         harp_dimension_independent
     };
@@ -5184,6 +5203,7 @@ static void register_ch4_product(void)
 
 static void register_co_product(void)
 {
+    const char *co_options[] = { "corrected" };
     const char *avk_options[] = { "number_density" };
     const char *path;
     const char *description;
@@ -5198,6 +5218,10 @@ static void register_co_product(void)
     module = harp_ingestion_register_module("S5P_L2_CO", "Sentinel-5P", "Sentinel5P", "L2__CO____",
                                             "Sentinel-5P L2 CO total column", ingestion_init, ingestion_done);
 
+    harp_ingestion_register_option(module, "co", "whether to ingest the 'normal' CO column (default) or the "
+                                   "destriping corrected CO column (co=corrected); providing this option will only "
+                                   "work with processor version >= 02.01.00 (otherwise an empty product is returned)",
+                                   1, co_options);
     harp_ingestion_register_option(module, "co_avk", "whether to ingest the partial column number density column avk "
                                    "(default) for CO or the number density column avk (avk=number_density)", 1,
                                    avk_options);
@@ -5251,6 +5275,9 @@ static void register_co_product(void)
                                                    read_product_carbonmonoxide_total_column);
     path = "/PRODUCT/carbonmonoxide_total_column[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    path = "/PRODUCT/carbonmonoxide_total_column_corrected[]";
+    harp_variable_definition_add_mapping(variable_definition, "co=corrected", "processor version >= 02.01.00", path,
+                                         NULL);
 
     /* CO_column_number_density_uncertainty */
     description = "uncertainty of the vertically integrated CO column density (standard error)";
