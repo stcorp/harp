@@ -1,11 +1,14 @@
+1.13 2021-03-12
+~~~~~~~~~~~~~~~
+
 * Added rebin() operation.
 
 * Added harp_product_rebin_with_axis_bounds_variable() function.
 
 * Added support for datetime_bounds variable.
 
-* Fixed issue in =& operation (it returned true if any of the bits were
-  1 instead of all bits).
+* Fixed issue in =& operation (it returned true if any of the bits were 1
+  instead of all bits).
 
 * Updates to product ingestions:
   - GEOMS: renamed all site_name variables to location_name
