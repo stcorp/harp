@@ -3587,7 +3587,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     variable_definition = harp_ingestion_register_variable_block_read(product_definition,
                                                                       "aerosol_backscatter_coefficient",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "1/msr", include_aerbackscat,
+                                                                      description, "1/(m sr)", include_aerbackscat,
                                                                       read_aerbackscat);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (215,188)",
                                "(discipline,category,number) = (192,215,188)");
