@@ -1,5 +1,6 @@
 * Updates to product ingestions:
   - ECMWF GRIB: fixed unit of backscatter coefficient 1/(milli sr) -> 1/(m sr)
+  - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
 
 1.13 2021-03-12
 ~~~~~~~~~~~~~~~

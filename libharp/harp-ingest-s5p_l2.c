@@ -4697,19 +4697,19 @@ static void register_cloud_variables(harp_product_definition *product_definition
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_intensity_weighted_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "cloud_fraction=radiance", NULL, path, NULL);
 
-    /* cloud_altitude */
-    description = "cloud altitude";
+    /* cloud_height */
+    description = "cloud height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_altitude", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "km", NULL,
                                                    read_input_cloud_height_crb);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_altitude_uncertainty */
-    description = "uncertainty of the cloud altitude";
+    /* cloud_height_uncertainty */
+    description = "uncertainty of the cloud height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_altitude_uncertainty", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, "km", NULL,
                                                    read_input_cloud_height_crb_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb_precision";
