@@ -366,8 +366,14 @@ def _get_c_library_filename():
     if os.path.exists(library_path):
         return library_path
 
-    # otherwise assume the library to be in the parent library directory
-    return os.path.normpath(os.path.join(os.path.dirname(__file__), "../../..", library_name))
+    # assume the library to be in the parent library directory
+    library_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "../../..", library_name))
+    if not os.path.exists(library_path):
+        # on RHEL the python path uses lib64, but the library might have gotten installed into lib
+        alt_library_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "../../../../lib", library_name))
+        if os.path.exists(alt_library_path):
+            return alt_library_path
+    return library_path
 
 
 def _get_filesystem_encoding():
