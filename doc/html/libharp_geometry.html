@@ -237,7 +237,7 @@
 <dl class="cpp function">
 <dt id="_CPPv430harp_geometry_has_area_overlapiPdPdiPdPdPiPd">
 <span id="_CPPv330harp_geometry_has_area_overlapiPdPdiPdPdPiPd"></span><span id="_CPPv230harp_geometry_has_area_overlapiPdPdiPdPdPiPd"></span><span id="harp_geometry_has_area_overlap__i.doubleP.doubleP.i.doubleP.doubleP.iP.doubleP"></span><span class="target" id="group__harp__geometry_1gab800d2e7bbc465b2b1ce0028187e3601"></span>int <code class="sig-name descname">harp_geometry_has_area_overlap</code><span class="sig-paren">(</span>int <em>num_vertices_a</em>, double *<em>latitude_bounds_a</em>, double *<em>longitude_bounds_a</em>, int <em>num_vertices_b</em>, double *<em>latitude_bounds_b</em>, double *<em>longitude_bounds_b</em>, int *<em>has_overlap</em>, double *<em>fraction</em><span class="sig-paren">)</span><br /></dt>
-<dd><p>Determine whether a point is in an area on the surface of the Earth</p>
+<dd><p>Determine the amount of overlap of two areas on the surface of the Earth</p>
 <p>This function assumes a spherical earth. The overlap fraction is calculated as area(intersection)/min(area(A),area(B)).</p>
 <p>The latitude/longitude bounds for A and B can be either vertices of a polygon (num_vertices&gt;=3), or represent corner points that define a bounding rect (num_vertices==2).</p>
 <p><dl class="simple">

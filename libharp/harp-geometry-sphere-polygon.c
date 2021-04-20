@@ -1203,7 +1203,7 @@ LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double lo
     return 0;
 }
 
-/** Determine whether a point is in an area on the surface of the Earth
+/** Determine the amount of overlap of two areas on the surface of the Earth
  * \ingroup harp_geometry
  * This function assumes a spherical earth.
  * The overlap fraction is calculated as area(intersection)/min(area(A),area(B)).
