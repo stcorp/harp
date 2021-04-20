@@ -242,11 +242,11 @@ static void mapping_description_delete(harp_mapping_description *mapping)
 static int variable_definition_new(const char *name, harp_data_type data_type, int num_dimensions,
                                    const harp_dimension_type *dimension_type, const long *dimension,
                                    const char *description, const char *unit, int (*include)(void *user_data),
-                                   int(*read_all)(void *user_data, harp_array data),
-                                   int(*read_range)(void *user_data, long index_offset, long index_length,
-                                                    harp_array data),
-                                   long(*get_optimal_range_length)(void *user_data),
-                                   int(*read_block)(void *user_data, long index, harp_array data),
+                                   int (*read_all)(void *user_data, harp_array data),
+                                   int (*read_range)(void *user_data, long index_offset, long index_length,
+                                                     harp_array data),
+                                   long (*get_optimal_range_length)(void *user_data),
+                                   int (*read_block)(void *user_data, long index, harp_array data),
                                    harp_variable_definition **new_variable_definition)
 {
     harp_variable_definition *variable_definition;
@@ -559,7 +559,7 @@ static int ingestion_module_new(const char *name, const char *product_group, con
                                 int (*ingestion_init)(const harp_ingestion_module *module, coda_product *product,
                                                       const harp_ingestion_options *options,
                                                       harp_product_definition **definition, void **user_data),
-                                void(*ingestion_done)(void *user_data), harp_ingestion_module **new_module)
+                                void (*ingestion_done)(void *user_data), harp_ingestion_module **new_module)
 {
     harp_ingestion_module *module;
 
@@ -784,7 +784,7 @@ harp_ingestion_module *harp_ingestion_register_module(const char *name, const ch
                                                                             const harp_ingestion_options *options,
                                                                             harp_product_definition **definition,
                                                                             void **user_data),
-                                                      void(*ingestion_done)(void *user_data))
+                                                      void (*ingestion_done)(void *user_data))
 {
     harp_ingestion_module *module;
 
@@ -854,7 +854,7 @@ void harp_ingestion_register_datetime_range_read(harp_product_definition *produc
 harp_variable_definition *harp_ingestion_register_variable_full_read
     (harp_product_definition *product_definition, const char *name, harp_data_type data_type, int num_dimensions,
      const harp_dimension_type *dimension_type, const long *dimension, const char *description, const char *unit,
-     int (*include)(void *user_data), int(*read_all)(void *user_data, harp_array data))
+     int (*include)(void *user_data), int (*read_all)(void *user_data, harp_array data))
 {
     harp_variable_definition *variable_definition;
 
@@ -876,8 +876,8 @@ harp_variable_definition *harp_ingestion_register_variable_full_read
 harp_variable_definition *harp_ingestion_register_variable_range_read
     (harp_product_definition *product_definition, const char *name, harp_data_type data_type, int num_dimensions,
      const harp_dimension_type *dimension_type, const long *dimension, const char *description, const char *unit,
-     int (*include)(void *user_data), long(*get_max_range)(void *user_data),
-     int(*read_range)(void *user_data, long index_offset, long index_length, harp_array data))
+     int (*include)(void *user_data), long (*get_max_range)(void *user_data),
+     int (*read_range)(void *user_data, long index_offset, long index_length, harp_array data))
 {
     harp_variable_definition *variable_definition;
 
@@ -899,7 +899,7 @@ harp_variable_definition *harp_ingestion_register_variable_range_read
 harp_variable_definition *harp_ingestion_register_variable_block_read
     (harp_product_definition *product_definition, const char *name, harp_data_type data_type, int num_dimensions,
      const harp_dimension_type *dimension_type, const long *dimension, const char *description, const char *unit,
-     int (*include)(void *user_data), int(*read_block)(void *user_data, long index, harp_array data))
+     int (*include)(void *user_data), int (*read_block)(void *user_data, long index, harp_array data))
 {
     harp_variable_definition *variable_definition;
 

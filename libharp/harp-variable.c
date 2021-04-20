@@ -43,10 +43,10 @@
 
 static void write_scalar(harp_scalar data, harp_data_type data_type, int (*print)(const char *, ...))
 {
-    switch(data_type)
+    switch (data_type)
     {
         case harp_type_int8:
-            print("%d",(int)data.int8_data);
+            print("%d", (int)data.int8_data);
             break;
         case harp_type_int16:
             print("%d", (int)data.int16_data);

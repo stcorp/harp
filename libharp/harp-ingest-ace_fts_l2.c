@@ -886,7 +886,7 @@ static void register_general_fields(harp_product_definition *product_definition)
 
 static void register_species_fields(harp_product_definition *product_definition, const char *species_name,
                                     int (*read_species_vmr)(void *user_data, harp_array data),
-                                    int(*read_species_vmr_uncertainty)(void *user_data, harp_array data))
+                                    int (*read_species_vmr_uncertainty)(void *user_data, harp_array data))
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_vertical };

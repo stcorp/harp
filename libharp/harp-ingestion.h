@@ -194,7 +194,7 @@ harp_ingestion_module *harp_ingestion_register_module
      const char *description,
      int (*ingestion_init)(const harp_ingestion_module *module, coda_product *product,
                            const harp_ingestion_options *options, harp_product_definition **definition,
-                           void **user_data), void(*ingestion_done)(void *user_data));
+                           void **user_data), void (*ingestion_done)(void *user_data));
 harp_ingestion_option_definition *harp_ingestion_register_option(harp_ingestion_module *module, const char *name,
                                                                  const char *description, int num_allowed_values,
                                                                  const char *allowed_value[]);
@@ -212,7 +212,7 @@ harp_variable_definition *harp_ingestion_register_variable_full_read(harp_produc
                                                                      const harp_dimension_type *dimension_type,
                                                                      const long *dimension, const char *description,
                                                                      const char *unit, int (*include)(void *user_data),
-                                                                     int(*read_all)(void *user_data, harp_array data));
+                                                                     int (*read_all)(void *user_data, harp_array data));
 harp_variable_definition *harp_ingestion_register_variable_range_read(harp_product_definition *product_definition,
                                                                       const char *name, harp_data_type data_type,
                                                                       int num_dimensions,
@@ -220,12 +220,12 @@ harp_variable_definition *harp_ingestion_register_variable_range_read(harp_produ
                                                                       const long *dimension, const char *description,
                                                                       const char *unit,
                                                                       int (*include)(void *user_data),
-                                                                      long(*get_optimal_range_length)(void
-                                                                                                      *user_data),
-                                                                      int(*read_range)(void *user_data,
-                                                                                       long index_offset,
-                                                                                       long index_length,
-                                                                                       harp_array data));
+                                                                      long (*get_optimal_range_length)(void
+                                                                                                       *user_data),
+                                                                      int (*read_range)(void *user_data,
+                                                                                        long index_offset,
+                                                                                        long index_length,
+                                                                                        harp_array data));
 harp_variable_definition *harp_ingestion_register_variable_block_read(harp_product_definition *product_definition,
                                                                       const char *name, harp_data_type data_type,
                                                                       int num_dimensions,
@@ -233,8 +233,8 @@ harp_variable_definition *harp_ingestion_register_variable_block_read(harp_produ
                                                                       const long *dimension, const char *description,
                                                                       const char *unit,
                                                                       int (*include)(void *user_data),
-                                                                      int(*read_block)(void *user_data, long index,
-                                                                                       harp_array data));
+                                                                      int (*read_block)(void *user_data, long index,
+                                                                                        harp_array data));
 
 /* Initialization and clean-up. */
 int harp_ingestion_init(void);
