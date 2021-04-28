@@ -607,6 +607,53 @@ static int read_altitude_bounds(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_surface_altitude(void *user_data, long index, harp_array data)
+{
+    double geoid_separation;
+    harp_array geoid_data;
+    coda_cursor cursor;
+
+    geoid_data.double_data = &geoid_separation;
+    if (read_geoid_separation(user_data, index, geoid_data) != 0)
+    {
+        return -1;
+    }
+
+    cursor = ((ingest_info *)user_data)->geo_bin_cursor[index];
+    coda_cursor_goto_parent(&cursor);
+    if (coda_cursor_goto_record_field_by_name(&cursor, "geolocation_of_dem_intersection") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, "altitude_of_dem_intersection") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    *data.double_data -= geoid_separation;
+
+    return 0;
+}
+
+static int read_sensor_azimuth_angle(void *user_data, long index, harp_array data)
+{
+    return get_double_average_array(((ingest_info *)user_data)->geo_bin_cursor[index],
+                                    "topocentric_azimuth_of_height_bin", data);
+}
+
+static int read_sensor_elevation_angle(void *user_data, long index, harp_array data)
+{
+    return get_double_average_array(((ingest_info *)user_data)->geo_bin_cursor[index],
+                                    "topocentric_elevation_of_height_bin", data);
+}
+
 static int read_wind_velocity(void *user_data, long index, harp_array data)
 {
     return get_double_array_data(((ingest_info *)user_data)->wv_bin_cursor[index], "wind_velocity", data);
@@ -656,6 +703,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->time = NULL;
     info->geo_bin_cursor = NULL;
     info->wv_bin_cursor = NULL;
+    *definition = module->product_definition[2];        /* rayleight observation */
 
     if (harp_ingestion_options_has_option(options, "data"))
     {
@@ -667,15 +715,18 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         if (strcmp(option_value, "rayleigh_measurement") == 0)
         {
             info->observation = 0;
+            *definition = module->product_definition[0];
         }
         else if (strcmp(option_value, "mie_measurement") == 0)
         {
             info->rayleigh = 0;
             info->observation = 0;
+            *definition = module->product_definition[1];
         }
         else if (strcmp(option_value, "mie_observation") == 0)
         {
             info->rayleigh = 0;
+            *definition = module->product_definition[3];
         }
         /* nothing to do for rayleigh_observation, since it is the default */
     }
@@ -695,7 +746,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         }
     }
 
-    *definition = *module->product_definition;
     *user_data = info;
 
     return 0;
@@ -769,7 +819,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/mph/abs_orbit", NULL);
 
     /* latitude */
-    description = "average of the latitudes of the edges of the height bin along the line-of-sight";
+    description = "average of the latitudes of the edges of the height bin";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude", harp_type_double,
                                                                       2, dimension_type, NULL, description,
                                                                       "degree_north", NULL, read_latitude);
@@ -779,25 +829,24 @@ static void register_common_variables(harp_product_definition *product_definitio
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* longitude */
-    description = "average of the longitude of the edges of the height bin along the line-of-sight";
+    description = "average of the longitude of the edges of the height bin";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude", harp_type_double,
                                                                       2, dimension_type, NULL, description,
                                                                       "degree_east", NULL, read_longitude);
-    snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/latitude_of_height_bin",
+    snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/longitude_of_height_bin",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
     description = "average of the value at the upper and lower edge of the height bin";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* altitude_bounds */
-    description = "altitude boundaries of the height bin along the line-of-sight; "
-        "value is negative if below DEM surface";
+    description = "altitude boundaries of the height bin";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "altitude_bounds",
                                                                       harp_type_double, 3, dimension_type, dimension,
                                                                       description, "m", NULL, read_altitude_bounds);
     snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/%s_geolocation[]/%s%s_geolocation[]/altitude_of_height_bin, "
              "/geolocation[]/observation_geolocation/geoid_separation",
              obs ? "observation" : "measurement", obs ? "observation_" : "", rayleigh ? "rayleigh" : "mie");
-    description = "actual altitude is the stored height vs. WGS84 - geoid_separation ";
+    description = "altitude_of_height_bin minus geoid_separation (because altitude_of_height_bin is wrt WGS84)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* geoid_height */
@@ -807,6 +856,45 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                                       description, "m", NULL, read_geoid_separation);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/geolocation[]/observation_geolocation/geoid_separation", NULL);
+
+    /* surface_altitude */
+    description = "altitude of the intersection of DEM and the line-of-sight";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_altitude",
+                                                                      harp_type_double, 1, dimension_type, dimension,
+                                                                      description, "m", NULL, read_surface_altitude);
+    snprintf(path, MAX_PATH_LENGTH,
+             "/geolocation[]/%s_geolocation[]/geolocation_of_dem_intersection[]/altitude_of_dem_intersection, "
+             "/geolocation[]/observation_geolocation/geoid_separation", obs ? "observation" : "measurement");
+    description =
+        "altitude_of_dem_intersection minus geoid_separation (because altitude_of_dem_intersection is wrt WGS84)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    if (obs)
+    {
+        /* sensor_azimuth_angle */
+        description = "average of the edges of the height bin of the azimuth of target-to-satellite topocentric "
+            "pointing vector";
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "sensor_azimuth_angle",
+                                                                          harp_type_double, 2, dimension_type, NULL,
+                                                                          description, "degree", NULL,
+                                                                          read_sensor_azimuth_angle);
+        snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/observation_geolocation[]/observation_%s_geolocation[]/"
+                 "topocentric_azimuth_of_height_bin", rayleigh ? "rayleigh" : "mie");
+        description = "average of the value at the upper and lower edge of the height bin";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+        /* sensor_elevation_angle */
+        description = "average of the edges of the height bin of the elevation of target-to-satellite topocentric "
+            "pointing vector";
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "sensor_elevation_angle",
+                                                                          harp_type_double, 2, dimension_type, NULL,
+                                                                          description, "degree", NULL,
+                                                                          read_sensor_elevation_angle);
+        snprintf(path, MAX_PATH_LENGTH, "/geolocation[]/observation_geolocation[]/observation_%s_geolocation[]/"
+                 "topocentric_elevation_of_height_bin", rayleigh ? "rayleigh" : "mie");
+        description = "average of the value at the upper and lower edge of the height bin";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    }
 
     /* hlos_wind_velocity */
     description = "HLOS wind velocity at the altitude bin";
