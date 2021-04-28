@@ -166,7 +166,9 @@ static int get_double_profile(coda_cursor profile_cursor, coda_cursor *result_cu
 static int init_cursors(ingest_info *info)
 {
     coda_cursor cursor;
+    long dataset_index;
     long num_elements;
+    int available;
     int i;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
@@ -174,7 +176,23 @@ static int init_cursors(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_goto(&cursor, info->rayleigh ? "/rayleigh_profile" : "/mie_profile") != 0)
+    if (coda_cursor_get_record_field_index_from_name(&cursor, info->rayleigh ? "rayleigh_profile" : "mie_profile",
+                                                     &dataset_index) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_record_field_available_status(&cursor, dataset_index, &available) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (!available)
+    {
+        info->num_profiles = 0;
+        return 0;
+    }
+    if (coda_cursor_goto_record_field_by_index(&cursor, dataset_index) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -368,6 +386,20 @@ static int read_altitude_bounds(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_sensor_azimuth_angle(void *user_data, long index, harp_array data)
+{
+    return get_double_profile(((ingest_info *)user_data)->profile_cursor[index],
+                              ((ingest_info *)user_data)->geolocation_cursor, "windresult_geolocation/los_azimuth",
+                              data);
+}
+
+static int read_sensor_elevation_angle(void *user_data, long index, harp_array data)
+{
+    return get_double_profile(((ingest_info *)user_data)->profile_cursor[index],
+                              ((ingest_info *)user_data)->geolocation_cursor,
+                              "windresult_geolocation/los_elevation_vcog", data);
+}
+
 static int read_wind_velocity(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -424,6 +456,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->geolocation_cursor = NULL;
     info->hloswind_cursor = NULL;
     info->profile_cursor = NULL;
+    *definition = module->product_definition[0];        /* rayleigh */
 
     if (harp_ingestion_options_has_option(options, "data"))
     {
@@ -435,6 +468,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         if (strcmp(option_value, "mie") == 0)
         {
             info->rayleigh = 0;
+            *definition = module->product_definition[1];
         }
         /* nothing to do for rayleigh, since it is the default */
     }
@@ -445,7 +479,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
 
-    *definition = *module->product_definition;
     *user_data = info;
 
     return 0;
@@ -518,6 +551,26 @@ static void register_common_variables(harp_product_definition *product_definitio
              "/windresult_geolocation/altitude_bottom, /%s_geolocation[/%s_profile/l2b_wind_profies/"
              "wind_result_id_number - 1]/windresult_geolocation/altitude_top", rayleigh ? "rayleigh" : "mie",
              rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* sensor_azimuth_angle */
+    description = "Topocentric Azimuth of the target-to-satellite pointing vector measured clockwise from north";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "sensor_azimuth_angle",
+                                                                      harp_type_double, 2, dimension_type, dimension,
+                                                                      description, "degree", NULL,
+                                                                      read_sensor_azimuth_angle);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_geolocation[/%s_profile/l2b_wind_profies/wind_result_id_number - 1]/"
+             "windresult_geolocation/los_azimuth", rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* sensor_elevation_angle */
+    description = "Elevation of the target-to-satellite pointing vector to the VCOG of the range bin";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "sensor_elevation_angle",
+                                                                      harp_type_double, 2, dimension_type, dimension,
+                                                                      description, "degree", NULL,
+                                                                      read_sensor_elevation_angle);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_geolocation[/%s_profile/l2b_wind_profies/wind_result_id_number - 1]/"
+             "windresult_geolocation/los_elevation_vcog", rayleigh ? "rayleigh" : "mie", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* hlos_wind_velocity */

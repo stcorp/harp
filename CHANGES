@@ -1,8 +1,8 @@
 * Updates to product ingestions:
   - ECMWF GRIB: fixed unit of backscatter coefficient 1/(milli sr) -> 1/(m sr)
   - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
-  - AEOLUS L1B: fixed ingestion of Mie and measurement data; added sensor
-    angles and surface altitude
+  - AEOLUS L1B: fixed ingestion of Mie/measurement data; added sensor angles
+  - AEOLUS L2B: fixed ingestion of Mie data; added sensor angles
 
 1.13 2021-03-12
 ~~~~~~~~~~~~~~~

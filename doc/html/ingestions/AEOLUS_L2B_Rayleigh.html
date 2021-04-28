@@ -216,6 +216,18 @@
 <td><p>[m]</p></td>
 <td><p>altitude relative to geoid of layer boundaries for each accumulation</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>Topocentric Azimuth of the target-to-satellite pointing vector measured clockwise from north</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_elevation_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>Elevation of the target-to-satellite pointing vector to the VCOG of the range bin</p></td>
+</tr>
 <tr class="row-even"><td><p><strong>hlos_wind_velocity</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
@@ -299,6 +311,14 @@
 <tr class="row-odd"><td><p><strong>altitude_bounds</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/rayleigh_geolocation[/rayleigh_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult_geolocation/altitude_bottom, /rayleigh_geolocation[/rayleigh_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult_geolocation/altitude_top</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/rayleigh_geolocation[/rayleigh_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult_geolocation/los_azimuth</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_elevation_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/rayleigh_geolocation[/rayleigh_profile/l2b_wind_profies/wind_result_id_number - 1]/windresult_geolocation/los_elevation_vcog</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>hlos_wind_velocity</strong></p></td>
 <td><p><em>path</em></p></td>

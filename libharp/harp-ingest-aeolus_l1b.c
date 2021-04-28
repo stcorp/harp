@@ -607,41 +607,6 @@ static int read_altitude_bounds(void *user_data, long index, harp_array data)
     return 0;
 }
 
-static int read_surface_altitude(void *user_data, long index, harp_array data)
-{
-    double geoid_separation;
-    harp_array geoid_data;
-    coda_cursor cursor;
-
-    geoid_data.double_data = &geoid_separation;
-    if (read_geoid_separation(user_data, index, geoid_data) != 0)
-    {
-        return -1;
-    }
-
-    cursor = ((ingest_info *)user_data)->geo_bin_cursor[index];
-    coda_cursor_goto_parent(&cursor);
-    if (coda_cursor_goto_record_field_by_name(&cursor, "geolocation_of_dem_intersection") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, "altitude_of_dem_intersection") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    *data.double_data -= geoid_separation;
-
-    return 0;
-}
-
 static int read_sensor_azimuth_angle(void *user_data, long index, harp_array data)
 {
     return get_double_average_array(((ingest_info *)user_data)->geo_bin_cursor[index],
@@ -703,7 +668,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->time = NULL;
     info->geo_bin_cursor = NULL;
     info->wv_bin_cursor = NULL;
-    *definition = module->product_definition[2];        /* rayleight observation */
+    *definition = module->product_definition[2];        /* rayleigh observation */
 
     if (harp_ingestion_options_has_option(options, "data"))
     {
@@ -856,18 +821,6 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                                       description, "m", NULL, read_geoid_separation);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/geolocation[]/observation_geolocation/geoid_separation", NULL);
-
-    /* surface_altitude */
-    description = "altitude of the intersection of DEM and the line-of-sight";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "surface_altitude",
-                                                                      harp_type_double, 1, dimension_type, dimension,
-                                                                      description, "m", NULL, read_surface_altitude);
-    snprintf(path, MAX_PATH_LENGTH,
-             "/geolocation[]/%s_geolocation[]/geolocation_of_dem_intersection[]/altitude_of_dem_intersection, "
-             "/geolocation[]/observation_geolocation/geoid_separation", obs ? "observation" : "measurement");
-    description =
-        "altitude_of_dem_intersection minus geoid_separation (because altitude_of_dem_intersection is wrt WGS84)";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     if (obs)
     {
