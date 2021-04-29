@@ -54,7 +54,7 @@
 #
 # ``IDL_FOUND``
 #   ``TRUE`` if the IDL installation is found, ``FALSE``
-#   otherwise. All variable below are defined if IDL is found.
+#   otherwise. All variables below are defined if IDL is found.
 # ``IDL_ROOT_DIR``
 #   the final root of the IDL installation determined by the FindIDL
 #   module.
@@ -78,10 +78,6 @@
 # :command:`IDL_extract_all_installed_versions_from_registry`
 #   parses the registry for all IDL versions. Available on Windows only.
 #   The part of the registry parsed is dependent on the host processor
-# :command:`IDL_get_all_valid_IDL_roots_from_registry`
-#   returns all the possible IDL paths, according to a previously
-#   given list. Only the existing/accessible paths are kept. This is mainly
-#   useful for the searching all possible IDL installation.
 # :command:`IDL_get_version_from_root`
 #   returns the version of IDL, given the IDL root directory.
 #
@@ -115,13 +111,12 @@ include(CheckCCompilerFlag)
 #   installed. The found versions are returned in `IDL_versions`.
 #   Set `win64` to `TRUE` if the 64 bit version of IDL should be looked for
 #   The returned list contains all versions under
-#   ``HKLM\\SOFTWARE\\ITT\\IDL`` or an empty list in case an error
+#   ``HKLM\\SOFTWARE\\Harris\\IDL``, ``HKLM\\SOFTWARE\\Exelis\\IDL``, or
+#   ``HKLM\\SOFTWARE\\ITT\\IDL``, or an empty list in case an error
 #   occurred (or nothing found).
 #
-#   .. note::
-#
-#     Only the versions are provided. No check is made over the existence of the
-#     installation referenced in the registry,
+#   The returned IDL_versions is organized in pairs
+#   ``(version_number,IDL_root_path)``.
 #
 function(IDL_extract_all_installed_versions_from_registry win64 IDL_versions)
 
@@ -129,127 +124,102 @@ function(IDL_extract_all_installed_versions_from_registry win64 IDL_versions)
     message(FATAL_ERROR "This macro can only be called by a windows host (call to reg.exe")
   endif()
 
-
   if(${win64} AND ${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "64")
     set(APPEND_REG "/reg:64")
   else()
     set(APPEND_REG "/reg:32")
   endif()
 
-  # /reg:64 should be added on 64 bits capable OSs in order to enable the
-  # redirection of 64 bits applications
-  execute_process(
-    COMMAND reg query HKEY_LOCAL_MACHINE\\SOFTWARE\\ITT\\IDL /f * /k ${APPEND_REG}
-    RESULT_VARIABLE resultIDL
-    OUTPUT_VARIABLE varIDL
-    ERROR_VARIABLE errIDL
-    INPUT_FILE NUL
-    )
+  set(_IDL_versions_list)
+  foreach(_IDL_company Harris Exelis ITT)
 
-  set(IDLs_from_registry)
-  if(${resultIDL} EQUAL 0)
+    # /reg:64 should be added on 64 bits capable OSs in order to enable the
+    # redirection of 64 bits applications
+    execute_process(
+      COMMAND reg query HKEY_LOCAL_MACHINE\\SOFTWARE\\${_IDL_company}\\IDL /f * /k ${APPEND_REG}
+      RESULT_VARIABLE resultIDL
+      OUTPUT_VARIABLE varIDL
+      ERROR_VARIABLE errIDL
+      INPUT_FILE NUL
+      )
 
-    string(
-      REGEX MATCHALL "IDL\\\\([0-9]+(\\.[0-9]+)?)"
-      IDL_versions_regex ${varIDL})
+    if(${resultIDL} EQUAL 0)
 
-    foreach(match IN LISTS IDL_versions_regex)
       string(
-        REGEX MATCH "IDL\\\\(([0-9]+)(\\.([0-9]+))?)"
-        current_match ${match})
+        REGEX MATCHALL "IDL\\\\([0-9]+(\\.[0-9]+)?)"
+        IDL_versions_regex ${varIDL})
 
-      set(_IDL_current_version ${CMAKE_MATCH_1})
-      set(current_IDL_version_major ${CMAKE_MATCH_2})
-      set(current_IDL_version_minor ${CMAKE_MATCH_4})
-      if(NOT current_IDL_version_minor)
-        set(current_IDL_version_minor "0")
-      endif()
+      foreach(match IN LISTS IDL_versions_regex)
+        string(
+          REGEX MATCH "IDL\\\\(([0-9]+)(\\.([0-9]+))?)"
+          current_match ${match})
 
-      list(APPEND IDLs_from_registry ${_IDL_current_version})
-      unset(_IDL_current_version)
-    endforeach(match)
+        set(_IDL_current_version ${CMAKE_MATCH_1})
+        set(current_IDL_version_major ${CMAKE_MATCH_2})
+        set(current_IDL_version_minor ${CMAKE_MATCH_4})
+        if(NOT current_IDL_version_minor)
+          set(current_IDL_version_minor "0")
+        endif()
 
-  endif()
+        get_filename_component(
+          current_IDL_ROOT
+          "[HKEY_LOCAL_MACHINE\\SOFTWARE\\${_IDL_company}\\IDL\\${_IDL_current_version};Installdir]"
+          ABSOLUTE)
 
-  if(IDLs_from_registry)
-    list(REMOVE_DUPLICATES IDLs_from_registry)
-    list(SORT IDLs_from_registry)
-    list(REVERSE IDLs_from_registry)
-  endif()
+        # IDL root is "${Installdir}/IDLxy" with x.y the IDL version
+        string(REPLACE "." "" _IDL_current_version_short ${_IDL_current_version})
+        set(current_IDL_ROOT "${current_IDL_ROOT}/IDL${_IDL_current_version_short}")
+        unset(_IDL_current_version_short)
+        if(EXISTS ${current_IDL_ROOT})
+          list(APPEND _IDL_versions_list ${_IDL_current_version} ${current_IDL_ROOT})
+        endif()
 
-  set(${IDL_versions} ${IDLs_from_registry} PARENT_SCOPE)
+        unset(_IDL_current_version)
+      endforeach(match)
 
-endfunction()
-
-#.rst:
-# .. command:: IDL_get_all_valid_IDL_roots_from_registry
-#
-#   Populates the IDL root with valid versions of IDL.
-#   The returned IDL_roots is organized in pairs
-#   ``(version_number,IDL_root_path)``.
-#
-#   ::
-#
-#     IDL_get_all_valid_IDL_roots_from_registry(
-#         IDL_versions
-#         IDL_roots)
-#
-#   ``IDL_versions``
-#     the versions of each of the IDL installations
-#   ``IDL_roots``
-#     the location of each of the IDL installations
-function(IDL_get_all_valid_IDL_roots_from_registry IDL_versions IDL_roots)
-
-  set(_IDL_roots_list )
-  foreach(_IDL_current_version ${IDL_versions})
-    get_filename_component(
-      current_IDL_ROOT
-      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\ITT\\IDL\\${_IDL_current_version};Installdir]"
-      ABSOLUTE)
-
-    # IDL root is "${Installdir}/IDLxy" with x.y the IDL version
-    string(REPLACE "." "" _IDL_current_version_short ${_IDL_current_version})
-    set(current_IDL_ROOT "${current_IDL_ROOT}/IDL${_IDL_current_version_short}")
-    unset(_IDL_current_version_short)
-    if(EXISTS ${current_IDL_ROOT})
-      list(APPEND _IDL_roots_list ${_IDL_current_version} ${current_IDL_ROOT})
     endif()
 
-  endforeach(_IDL_current_version)
-  unset(_IDL_current_version)
-  set(${IDL_roots} ${_IDL_roots_list} PARENT_SCOPE)
-  unset(_IDL_roots_list)
+  endforeach(_IDL_company)
+
+  set(${IDL_versions} ${_IDL_versions_list} PARENT_SCOPE)
+
 endfunction()
 
-
-# get IDL version for a given root path from the list of `(version_number,IDL_root_path)`` pairs
-function(IDL_get_version_from_IDL_roots_from_registry IDL_roots IDL_root IDL_version)
-  list(LENGTH IDL_roots _numbers_of_IDL_roots)
-  foreach(i RANGE 0 (_numbers_of_IDL_roots-1) 2)
-    list(GET IDL_roots 0 _IDL_version)
-    list(GET IDL_roots 1 _IDL_root)
-    if(_IDL_root STREQUAL IDL_root)
-      set(IDL_version _IDL_version PARENT_SCOPE)
+# get IDL version for a given root path from the list of `(version_number,IDL_root_path)` pairs
+function(IDL_get_version_from_IDL_versions_from_registry IDL_versions IDL_root IDL_version)
+  file(TO_CMAKE_PATH "${IDL_root}" _given_root)
+  list(LENGTH IDL_versions _numbers_of_IDL_versions)
+  foreach(i RANGE 0 (_numbers_of_IDL_versions-1) 2)
+    list(GET IDL_versions ${i} _IDL_version)
+    math(EXPR j "${i} + 1")
+    list(GET IDL_versions ${j} _IDL_root)
+    if(${_IDL_root} STREQUAL ${_given_root})
+      set(${IDL_version} ${_IDL_version} PARENT_SCOPE)
     endif()
     unset(_IDL_version)
     unset(_IDL_root)
   endforeach()
-  set(_numbers_of_IDL_roots)
+  unset(_given_root)
+  unset(_numbers_of_IDL_versions)
 endfunction()
 
 
-# Get the version of IDL from the version.txt file (Mac/Linux only).
+# Get the version of IDL from the version.txt file
 function(IDL_get_version_from_root IDL_root IDL_final_version)
   if(WIN32)
     # determine based on entries in registry
     set(_IDL_versions_from_registry)
     IDL_extract_all_installed_versions_from_registry(CMAKE_CL_64 _IDL_versions_from_registry)
-    if(_IDL_versions_from_registry)
-      IDL_get_all_valid_IDL_roots_from_registry("${_IDL_versions_from_registry}" _IDL_available_roots)
-      unset(_IDL_versions_from_registry)
-      IDL_get_version_from_IDL_roots_from_registry(_IDL_available_roots IDL_root IDL_final_version)
-      unset(_IDL_available_roots)
+    if(IDL_FIND_DEBUG)
+      message(STATUS "[IDL] IDL versions from registry are ${_IDL_versions_from_registry}")
     endif()
+    if(_IDL_versions_from_registry)
+      set(_IDL_version)
+      IDL_get_version_from_IDL_versions_from_registry("${_IDL_versions_from_registry}" ${IDL_root} _IDL_version)
+      unset(_IDL_versions_from_registry)
+      set(${IDL_final_version} ${_IDL_version} PARENT_SCOPE)
+      unset(_IDL_version)
+    endif(_IDL_versions_from_registry)
   else()
     if(EXISTS ${IDL_root}/version.txt)
       file(READ ${IDL_root}/version.txt _IDL_version LIMIT 10)
@@ -306,21 +276,15 @@ else()
   if(WIN32)
 
     # On WIN32, we look for IDL installation in the registry
-    # if unsuccessful, we look for all known revision and filter the existing
-    # ones.
 
     # testing if we are able to extract the needed information from the registry
-    set(_IDL_versions_from_registry)
-    IDL_extract_all_installed_versions_from_registry(CMAKE_CL_64 _IDL_versions_from_registry)
+    set(_IDL_possible_roots)
+    IDL_extract_all_installed_versions_from_registry(CMAKE_CL_64 _IDL_possible_roots)
 
     # the returned list is empty, doing the search on all known versions
-    if(NOT _IDL_versions_from_registry)
+    if(NOT _IDL_possible_roots)
       message(STATUS "[IDL] Search for IDL from the registry unsuccessful")
     endif()
-
-    # filtering the results with the registry keys
-    IDL_get_all_valid_IDL_roots_from_registry("${_IDL_versions_from_registry}" _IDL_possible_roots)
-    unset(_IDL_versions_from_registry)
 
   else()
 
