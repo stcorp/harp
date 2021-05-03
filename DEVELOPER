@@ -34,6 +34,7 @@ of GNU indent.
 
 Release checklist
 -----------------
+- update embedded versions of expat, netcdf3 and udunits2 if needed
 - make sure all 'commit steps' (see above) have been performed
 - ensure automake and CMake builds are consistent
 - check compiler warnings
