@@ -3,6 +3,7 @@
   - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
   - AEOLUS L1B: fixed ingestion of Mie/measurement data; added sensor angles
   - AEOLUS L2B: fixed ingestion of Mie data; added sensor angles
+  - QA4ECV HCHO: add amf=clear_sky ingestion option
 
 1.13 2021-03-12
 ~~~~~~~~~~~~~~~

@@ -367,7 +367,11 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>cloud_fraction</p></td>
+<tr class="row-even"><td><p>amf</p></td>
+<td><p>clear_sky</p></td>
+<td><p>whether to ingest the default amf, tropospheric vertical column, and avk (default) or the clear sky amf, scaled vertical column, and clear sky avk (amf=clear_sky)</p></td>
+</tr>
+<tr class="row-odd"><td><p>cloud_fraction</p></td>
 <td><p>radiance</p></td>
 <td><p>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)</p></td>
 </tr>
@@ -492,9 +496,21 @@
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_HCHO_column_number_density</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-even"><td rowspan="5"><p><strong>tropospheric_HCHO_column_number_density</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>amf unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/tropospheric_hcho_vertical_column[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>amf=clear_sky</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/tropospheric_hcho_vertical_column[], /PRODUCT/amf_trop, /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/amf_clear</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>tropospheric_hcho_vertical_column x amf_clear / amf_trop</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>tropospheric_HCHO_column_number_density_uncertainty_random</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -504,13 +520,31 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/tropospheric_hcho_vertical_column_uncertainty_systematic[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_HCHO_column_number_density_amf</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>tropospheric_HCHO_column_number_density_amf</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>amf unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/amf_trop[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>HCHO_column_number_density_avk</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>amf=clear_sky</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/amf_clear[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>HCHO_column_number_density_avk</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>amf unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>amf=clear_sky</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel_clear[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>HCHO_volume_mixing_ratio_dry_air_apriori</strong></p></td>
 <td><p><em>path</em></p></td>

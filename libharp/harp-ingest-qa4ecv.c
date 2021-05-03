@@ -45,6 +45,7 @@ typedef struct ingest_info_struct
     coda_product *product;
     int use_stream_stratospheric_column;
     int use_summed_total_column;
+    int use_clear_sky_amf;
     int use_radiance_cloud_fraction;
 
     long num_times;
@@ -436,6 +437,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         {
             info->use_summed_total_column = 0;
         }
+    }
+    if (harp_ingestion_options_has_option(options, "amf"))
+    {
+        info->use_clear_sky_amf = 1;
     }
     if (harp_ingestion_options_has_option(options, "cloud_fraction"))
     {
@@ -859,8 +864,50 @@ static int read_hcho_column_tropospheric(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "tropospheric_hcho_vertical_column", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
+    if (read_dataset(info->product_cursor, "tropospheric_hcho_vertical_column", harp_type_float,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        return -1;
+    }
+    if (info->use_clear_sky_amf)
+    {
+        harp_array amf_data;
+        long i;
+
+        amf_data.float_data = malloc(info->num_scanlines * info->num_pixels * sizeof(float));
+        if (amf_data.float_data == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           info->num_scanlines * info->num_pixels * sizeof(float), __FILE__, __LINE__);
+            return -1;
+        }
+
+        if (read_dataset(info->product_cursor, "amf_trop", harp_type_float, info->num_scanlines * info->num_pixels,
+                         amf_data) != 0)
+        {
+            free(amf_data.float_data);
+            return -1;
+        }
+        for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+        {
+            data.float_data[i] *= amf_data.float_data[i];
+        }
+
+        if (read_dataset(info->detailed_results_cursor, "amf_clear", harp_type_float,
+                         info->num_scanlines * info->num_pixels, amf_data) != 0)
+        {
+            free(amf_data.float_data);
+            return -1;
+        }
+        for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+        {
+            data.float_data[i] /= amf_data.float_data[i];
+        }
+
+        free(amf_data.float_data);
+    }
+
+    return 0;
 }
 
 static int read_hcho_column_tropospheric_uncertainty_random(void *user_data, harp_array data)
@@ -883,6 +930,12 @@ static int read_hcho_column_tropospheric_amf(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->use_clear_sky_amf)
+    {
+        return read_dataset(info->detailed_results_cursor, "amf_clear", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
     return read_dataset(info->product_cursor, "amf_trop", harp_type_float, info->num_scanlines * info->num_pixels,
                         data);
 }
@@ -890,6 +943,12 @@ static int read_hcho_column_tropospheric_amf(void *user_data, harp_array data)
 static int read_hcho_column_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_clear_sky_amf)
+    {
+        return read_dataset(info->detailed_results_cursor, "averaging_kernel_clear", harp_type_float,
+                            info->num_scanlines * info->num_pixels * info->num_layers, data);
+    }
 
     return read_dataset(info->product_cursor, "averaging_kernel", harp_type_float,
                         info->num_scanlines * info->num_pixels * info->num_layers, data);
@@ -1382,6 +1441,7 @@ static void register_common_variables(harp_product_definition *product_definitio
 
 static void register_hcho_product(void)
 {
+    const char *amf_options[] = { "clear_sky" };
     const char *cloud_fraction_options[] = { "radiance" };
     const char *path;
     const char *description;
@@ -1392,6 +1452,10 @@ static void register_hcho_product(void)
 
     module = harp_ingestion_register_module("QA4ECV_L2_HCHO", "QA4ECV", "QA4ECV", "L2_HCHO",
                                             "QA4ECV L2 HCHO total column", ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "amf", "whether to ingest the default amf, tropospheric vertical column, "
+                                   "and avk (default) or the clear sky amf, scaled vertical column, and clear sky avk "
+                                   "(amf=clear_sky)", 1, amf_options);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
@@ -1406,7 +1470,11 @@ static void register_hcho_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    NULL, read_hcho_column_tropospheric);
     path = "/PRODUCT/tropospheric_hcho_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "/PRODUCT/tropospheric_hcho_vertical_column[], /PRODUCT/amf_trop, "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/amf_clear";
+    description = "tropospheric_hcho_vertical_column x amf_clear / amf_trop";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, description);
 
     /* tropospheric_HCHO_column_number_density_uncertainty_random */
     description = "uncertainty of the tropospheric vertical column of HCHO due to random effects";
@@ -1435,7 +1503,9 @@ static void register_hcho_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_hcho_column_tropospheric_amf);
     path = "/PRODUCT/amf_trop[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/amf_clear[]";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, NULL);
 
     /* HCHO_column_number_density_avk */
     description = "averaging kernel for the total column number density of tropospheric HCHO";
@@ -1444,7 +1514,9 @@ static void register_hcho_product(void)
                                                    harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_hcho_column_avk);
     path = "/PRODUCT/averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel_clear[]";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, NULL);
 
     /* HCHO_volume_mixing_ratio_dry_air_apriori */
     description = "apriori profile for the volume mixing ratio of tropospheric HCHO";
