@@ -15,7 +15,9 @@ Variable attributes
   This attribute is used for data that has a physical unit. It should provide the unit in a form compatible with the
   ``udunits2`` software. A ``units`` attribute is expected to be available for any variable defining a quantity.
   If a variable represents a dimensionless quantity the ``units`` string should be an empty string (or have the value
-  ``1`` in case empty strings are not supported).
+  ``1`` in case empty strings are not supported). The plural attribute name ``units`` is only used when storing HARP
+  data in a file (for compatibility reasons with other standards such as netCDF-CF); inside data structures of HARP
+  variables within C, Python, etc. the (more accurate) singular term ``unit`` is used.
 
 ``valid_min`` [int8, int16, int32, float, double] (optional)
   Provides the minimum value below which the data is to be considered invalid. The data type of this attribute should

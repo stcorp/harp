@@ -193,7 +193,9 @@ dimension type names. The number of dimension types should equal the number of d
 <dt><code class="docutils literal notranslate"><span class="pre">units</span></code> string (optional)</dt><dd><p>This attribute is used for data that has a physical unit. It should provide the unit in a form compatible with the
 <code class="docutils literal notranslate"><span class="pre">udunits2</span></code> software. A <code class="docutils literal notranslate"><span class="pre">units</span></code> attribute is expected to be available for any variable defining a quantity.
 If a variable represents a dimensionless quantity the <code class="docutils literal notranslate"><span class="pre">units</span></code> string should be an empty string (or have the value
-<code class="docutils literal notranslate"><span class="pre">1</span></code> in case empty strings are not supported).</p>
+<code class="docutils literal notranslate"><span class="pre">1</span></code> in case empty strings are not supported). The plural attribute name <code class="docutils literal notranslate"><span class="pre">units</span></code> is only used when storing HARP
+data in a file (for compatibility reasons with other standards such as netCDF-CF); inside data structures of HARP
+variables within C, Python, etc. the (more accurate) singular term <code class="docutils literal notranslate"><span class="pre">unit</span></code> is used.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">valid_min</span></code> [int8, int16, int32, float, double] (optional)</dt><dd><p>Provides the minimum value below which the data is to be considered invalid. The data type of this attribute should
 match the data type of the associated variable. This attribute is <em>not</em> allowed to be present for variables of type
