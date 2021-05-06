@@ -48,7 +48,7 @@ typedef enum binning_type_enum
     binning_average,
     binning_uncertainty,
     binning_sum,        /* only used for int32_t and float data */
-    binning_angle,      /* will use averaging using complex values */
+    binning_angle,      /* will use averaging using 2D vectors */
     binning_time_min,
     binning_time_max,
     binning_time_average
@@ -1544,7 +1544,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             }
         }
 
-        /* convert all angles to complex values [cos(x),sin(x)] and pre-multiply by existing weights */
+        /* convert all angles to 2D vectors [cos(x),sin(x)] and pre-multiply by existing weights */
         if (bintype[k] == binning_angle)
         {
             harp_variable *weight_variable = NULL;
@@ -1943,7 +1943,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         {
             harp_variable *weight_variable;
 
-            /* convert angle variables back from complex values to angles */
+            /* convert angle variables back from 2D vectors to angles */
             for (i = 0; i < variable->num_elements; i += 2)
             {
                 double x = variable->data.double_data[i];
@@ -2122,6 +2122,9 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
  * In addition, a 'weight' variable will be added that will contain the sum of weights for the contribution to each
  * cell. If a variable contained NaN values then a variable specific weight variable will be created with only the sum
  * of weights for the non-NaN entries.
+ *
+ * For angle variables a variable-specific weight variable will be created that contains the magnitude of the sum of the
+ * unit vectors that was used to calculate the angle average.
  *
  * Axis variables for the time dimension such as datetime, datetime_length, datetime_start, and datetime_stop will only
  * be binned in the time dimension (and will not gain a latitude or longitude dimension).
@@ -2378,7 +2381,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
 
         if (bintype[k] == binning_angle)
         {
-            /* convert all angles to complex values [cos(x),sin(x)] */
+            /* convert all angles to 2D vectors [cos(x),sin(x)] */
             if (harp_convert_unit(variable->unit, "rad", variable->num_elements, variable->data.double_data) != 0)
             {
                 goto error;
@@ -2568,7 +2571,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
 
                     if (bintype[k] == binning_angle)
                     {
-                        /* for angle variables we use one weight element per complex pair */
+                        /* for angle variables we use one weight element per vector pair */
                         for (j = 0; j < num_sub_elements; j += 2)
                         {
                             if (!harp_isnan(variable->data.double_data[i * num_sub_elements + j]))
@@ -2609,7 +2612,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             /* post-process variable */
             if (bintype[k] == binning_angle)
             {
-                /* convert angle variables back from complex values to angles */
+                /* convert angle variables back from 2D vectors to angles */
                 for (i = 0; i < variable->num_elements; i += 2)
                 {
                     if (weight[i / 2] == 0)
