@@ -754,11 +754,25 @@ static int get_longitude_bounds_from_midpoints(harp_variable *variable, const ha
     {
         while (variable->data.double_data[i] < -180)
         {
-            variable->data.double_data[i] += 360;
+            if (-180 - variable->data.double_data[i] < EPSILON)
+            {
+                variable->data.double_data[i] = -180;
+            }
+            else
+            {
+                variable->data.double_data[i] += 360;
+            }
         }
         while (variable->data.double_data[i] > 180)
         {
-            variable->data.double_data[i] -= 360;
+            if (variable->data.double_data[i] - 180 < EPSILON)
+            {
+                variable->data.double_data[i] = 180;
+            }
+            else
+            {
+                variable->data.double_data[i] -= 360;
+            }
         }
     }
 
