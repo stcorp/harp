@@ -432,7 +432,7 @@ LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, lo
 
 /* Generated documentation */
 LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const char *variable_name,
-                                          int (*print) (const char *, ...));
+                                          int (*print)(const char *, ...));
 LIBHARP_API int harp_doc_export_ingestion_definitions(const char *path);
 
 /* Geometry */
@@ -454,8 +454,8 @@ LIBHARP_API const char *harp_errno_to_string(int err);
 LIBHARP_API int harp_report_warning(const char *message, ...);
 
 /* *CFFI-OFF* */
-LIBHARP_API int harp_get_warning_handler(int (**print) (const char *, va_list ap));
-LIBHARP_API int harp_set_warning_handler(int (*print) (const char *, va_list ap));
+LIBHARP_API int harp_get_warning_handler(int (**print)(const char *, va_list ap));
+LIBHARP_API int harp_set_warning_handler(int (*print)(const char *, va_list ap));
 
 /* *CFFI-ON* */
 
@@ -480,8 +480,8 @@ LIBHARP_API int harp_variable_has_dimension_types(const harp_variable *variable,
                                                   const harp_dimension_type *dimension_type);
 LIBHARP_API int harp_variable_has_unit(const harp_variable *variable, const char *unit);
 LIBHARP_API int harp_variable_verify(const harp_variable *variable);
-LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attributes, int (*print) (const char *, ...));
-LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print) (const char *, ...));
+LIBHARP_API void harp_variable_print(harp_variable *variable, int show_attributes, int (*print)(const char *, ...));
+LIBHARP_API void harp_variable_print_data(harp_variable *variable, int (*print)(const char *, ...));
 
 LIBHARP_API int harp_variable_smooth_vertical(harp_variable *variable, harp_variable *vertical_axis,
                                               harp_variable *averaging_kernel, harp_variable *apriori);
@@ -513,7 +513,7 @@ LIBHARP_API int harp_product_update_history(harp_product *product, const char *e
 LIBHARP_API int harp_product_verify(const harp_product *product);
 LIBHARP_API int harp_product_execute_operations(harp_product *product, const char *operations);
 LIBHARP_API void harp_product_print(const harp_product *product, int show_attributes, int show_data,
-                                    int (*print) (const char *, ...));
+                                    int (*print)(const char *, ...));
 
 LIBHARP_API int harp_product_flatten_dimension(harp_product *product, harp_dimension_type dimension_name);
 LIBHARP_API int harp_product_sort(harp_product *product, int num_variables, const char **variable_name);
@@ -565,13 +565,13 @@ LIBHARP_API int harp_import_product_metadata(const char *filename, const char *o
                                              harp_product_metadata **metadata);
 LIBHARP_API int harp_product_metadata_new(harp_product_metadata **new_metadata);
 LIBHARP_API void harp_product_metadata_delete(harp_product_metadata *metadata);
-LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print) (const char *, ...));
+LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, int (*print)(const char *, ...));
 
 /* Dataset */
 LIBHARP_API int harp_dataset_import(harp_dataset *dataset, const char *path, const char *options);
 LIBHARP_API int harp_dataset_new(harp_dataset **dataset);
 LIBHARP_API void harp_dataset_delete(harp_dataset *dataset);
-LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print) (const char *, ...));
+LIBHARP_API void harp_dataset_print(harp_dataset *dataset, int (*print)(const char *, ...));
 LIBHARP_API int harp_dataset_get_index_from_source_product(harp_dataset *dataset, const char *source_product,
                                                            long *index);
 LIBHARP_API int harp_dataset_has_product(harp_dataset *dataset, const char *source_product);
@@ -581,7 +581,7 @@ LIBHARP_API int harp_dataset_prefilter(harp_dataset *dataset, const char *operat
 
 /* Import */
 LIBHARP_API int harp_import(const char *filename, const char *operations, const char *options, harp_product **product);
-LIBHARP_API int harp_import_test(const char *filename, int (*print) (const char *, ...));
+LIBHARP_API int harp_import_test(const char *filename, int (*print)(const char *, ...));
 
 /* Export */
 LIBHARP_API int harp_export(const char *filename, const char *format, const harp_product *product);
