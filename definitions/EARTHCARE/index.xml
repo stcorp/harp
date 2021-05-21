@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="EARTHCARE" last-modified="2021-05-21">
+  <cd:Description>EarthCARE products</cd:Description>
+  <cd:ProductType name="ATL_AER_2A">
+    <cd:Description>ATLID aerosol parameters</cd:Description>
+    <cd:ProductDefinition id="ATL_AER_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ATL_AER_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ATL_ALD_2A">
+    <cd:Description>ATLID aerosol layer descriptors</cd:Description>
+    <cd:ProductDefinition id="ATL_ALD_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ATL_ALD_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ATL_CTH_2A">
+    <cd:Description>ATLID cloud top height</cd:Description>
+    <cd:ProductDefinition id="ATL_CTH_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ATL_CTH_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ATL_EBD_2A">
+    <cd:Description>ATLID extinction, backscatter and depolarisation</cd:Description>
+    <cd:ProductDefinition id="ATL_EBD_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ATL_EBD_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ATL_FM__2A">
+    <cd:Description>ATLID feature mask</cd:Description>
+    <cd:ProductDefinition id="ATL_FM__2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ATL_FM__2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ATL_ICE_2A">
+    <cd:Description>ATLID ice parameters</cd:Description>
+    <cd:ProductDefinition id="ATL_ICE_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ATL_ICE_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ATL_TC__2A">
+    <cd:Description>ATLID target classification</cd:Description>
+    <cd:ProductDefinition id="ATL_TC__2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ATL_TC__2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="MSI_CM__2A">
+    <cd:Description>MSI cloud mask</cd:Description>
+    <cd:ProductDefinition id="MSI_CM__2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="MSI_CM__2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="MSI_COP_2A">
+    <cd:Description>MSI cloud optical properties</cd:Description>
+    <cd:ProductDefinition id="MSI_COP_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="MSI_COP_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="MSI_AOT_2A">
+    <cd:Description>MSI Aerosol optical thickness</cd:Description>
+    <cd:ProductDefinition id="MSI_AOT_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="MSI_AOT_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="CPR_FMR_2A">
+    <cd:Description>CPR feature mask and radar reflectivity</cd:Description>
+    <cd:ProductDefinition id="CPR_FMR_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="CPR_FMR_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="CPR_CD__2A">
+    <cd:Description>CPR Cloud Doppler parameters</cd:Description>
+    <cd:ProductDefinition id="CPR_CD__2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="CPR_CD__2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="CPR_TC__2A">
+    <cd:Description>CPR target classification</cd:Description>
+    <cd:ProductDefinition id="CPR_TC__2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="CPR_TC__2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="CPR_CLD_2A">
+    <cd:Description>CPR cloud parameters</cd:Description>
+    <cd:ProductDefinition id="CPR_CLD_2A" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="CPR_CLD_2A"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="AC__TC__2B">
+    <cd:Description>ATLID/CPR target classification</cd:Description>
+    <cd:ProductDefinition id="AC__TC__2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="AC__TC__2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ACM_CAP_2B">
+    <cd:Description>ATLID/CPR/MSI cloud and aerosol properties</cd:Description>
+    <cd:ProductDefinition id="ACM_CAP_2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ACM_CAP_2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ACM_COM_2B">
+    <cd:Description>ATLID/CPR/MSI composite product</cd:Description>
+    <cd:ProductDefinition id="ACM_COM_2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ACM_COM_2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ACM_3D__2B">
+    <cd:Description>3D scene construction</cd:Description>
+    <cd:ProductDefinition id="ACM_3D__2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ACM_3D__2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ACM_RT__2B">
+    <cd:Description>Broadband radiances and fluxes from radiative transfer models</cd:Description>
+    <cd:ProductDefinition id="ACM_RT__2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ACM_RT__2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="ALL_DF__2B">
+    <cd:Description>Radiative closure assessment</cd:Description>
+    <cd:ProductDefinition id="ALL_DF__2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="ALL_DF__2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="AM__MO__2B">
+    <cd:Description>ATLID/MSI merged observations</cd:Description>
+    <cd:ProductDefinition id="AM__MO__2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="AM__MO__2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="AM__CTH_2B">
+    <cd:Description>ATLID/MSI cloud top height</cd:Description>
+    <cd:ProductDefinition id="AM__CTH_2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="AM__CTH_2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="AM__ACD_2B">
+    <cd:Description>ATLID/MSI aerosol column descriptor</cd:Description>
+    <cd:ProductDefinition id="AM__ACD_2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="AM__ACD_2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="BM__RAD_2B">
+    <cd:Description>BBR radiances (using MSI for corrections)</cd:Description>
+    <cd:ProductDefinition id="BM__RAD_2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="BM__RAD_2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="BMA_FLX_2B">
+    <cd:Description>BBR fluxes (using MSI and ATLID for corrections)</cd:Description>
+    <cd:ProductDefinition id="BMA_FLX_2B" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,3,filename())=="ECA"</cd:MatchExpression>
+        <cd:MatchExpression>substr(9,10,filename())=="BMA_FLX_2B"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>
