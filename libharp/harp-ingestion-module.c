@@ -62,6 +62,7 @@ int harp_ingestion_module_cci_l3_o3_tc_init(void);
 int harp_ingestion_module_cci_l3_o3_ttoc_init(void);
 int harp_ingestion_module_cci_l4_o3_np_init(void);
 int harp_ingestion_module_earlinet_l2_aerosol_init(void);
+int harp_ingestion_module_earthcare_l2_init(void);
 int harp_ingestion_module_ecmwf_grib_init(void);
 int harp_ingestion_module_geoms_ftir_init(void);
 int harp_ingestion_module_geoms_mwr_init(void);
@@ -126,6 +127,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_cci_l3_o3_ttoc_init,
     harp_ingestion_module_cci_l4_o3_np_init,
     harp_ingestion_module_earlinet_l2_aerosol_init,
+    harp_ingestion_module_earthcare_l2_init,
     harp_ingestion_module_ecmwf_grib_init,
     harp_ingestion_module_geoms_ftir_init,
     harp_ingestion_module_geoms_mwr_init,

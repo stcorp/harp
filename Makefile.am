@@ -95,6 +95,7 @@ libharp_la_SOURCES = \
 	libharp/harp-geometry.h \
 	libharp/harp-ingest-ace_fts_l2.c \
 	libharp/harp-ingest-earlinet_l2.c \
+	libharp/harp-ingest-earthcare_l2.c \
 	libharp/harp-ingest-aeolus_l1b.c \
 	libharp/harp-ingest-aeolus_l2a.c \
 	libharp/harp-ingest-aeolus_l2b.c \
