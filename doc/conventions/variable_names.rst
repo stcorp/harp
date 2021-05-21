@@ -22,6 +22,7 @@ aerosol_base_height                                                           X 
 aerosol_base_pressure                                                         X            X             [Pa]
 aerosol_extinction_coefficient                surface                         X       X    X       X     [1/m]
 aerosol_height                                                                X            X             [m]
+aerosol_density                                                               X       X    X             [kg/m3]
 aerosol_number_density                                                        X       X    X             [1/m3]
 aerosol_column_number_density                                                 X       X    X             [1/m2]
 aerosol_optical_depth                         stratospheric,                  X       X    X       X     []                   this is equal to 'aerosol optical thickness'
@@ -29,6 +30,7 @@ aerosol_optical_depth                         stratospheric,                  X 
 aerosol_pressure                                                              X            X             [Pa]
 aerosol_top_height                                                            X            X             [m]
 aerosol_top_pressure                                                          X            X             [Pa]
+<aerosol_size>_aerosol_density                                                X       X    X             [kg/m3]
 <aerosol_size>_aerosol_number_density                                         X       X    X             [1/m3]
 <aerosol_size>_aerosol_column_number_density                                  X       X    X             [1/m2]
 <aerosol_size>_aerosol_extinction_coefficient surface                         X       X    X       X     [1/m]
