@@ -362,7 +362,7 @@ double harp_partial_column_from_density_and_altitude_bounds(double density, cons
 /** Convert volume mixing ration with pressure boundaries to a column number density
  * This routine calculates an estimate of the altitude to derive the gravity at the center of the pressure boundaries
  * \param volume_mixing_ratio Volume mixing ratio [ppv]
- * \param latitude Latitude [degrees_north]
+ * \param latitude Latitude [degree_north]
  * \param molar_mass_air Molar mass of air [g/mol]
  * \param pressure_bounds Lower and upper pressure [Pa] boundaries [2]
  * \return the partial column [molec/m2]
