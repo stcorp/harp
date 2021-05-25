@@ -20,27 +20,24 @@ absolute_vorticity                                                            X 
 absorbing_aerosol_index                                                       X            X             []
 aerosol_base_height                                                           X            X             [m]
 aerosol_base_pressure                                                         X            X             [Pa]
+aerosol_column_number_density                                                 X       X    X             [1/m2]
+aerosol_density                                                               X       X    X             [kg/m3]
 aerosol_extinction_coefficient                surface                         X       X    X       X     [1/m]
 aerosol_height                                                                X            X             [m]
-aerosol_density                                                               X       X    X             [kg/m3]
 aerosol_number_density                                                        X       X    X             [1/m3]
-aerosol_column_number_density                                                 X       X    X             [1/m2]
 aerosol_optical_depth                         stratospheric,                  X       X    X       X     []                   this is equal to 'aerosol optical thickness'
                                               tropospheric
 aerosol_pressure                                                              X            X             [Pa]
 aerosol_top_height                                                            X            X             [m]
 aerosol_top_pressure                                                          X            X             [Pa]
-<aerosol_size>_aerosol_density                                                X       X    X             [kg/m3]
-<aerosol_size>_aerosol_number_density                                         X       X    X             [1/m3]
-<aerosol_size>_aerosol_column_number_density                                  X       X    X             [1/m2]
-<aerosol_size>_aerosol_extinction_coefficient surface                         X       X    X       X     [1/m]
-<aerosol_size>_aerosol_optical_depth          stratospheric,                  X       X    X       X     []                   this is equal to 'aerosol optical thickness'
-                                              tropospheric
 <aerosol_type>_aerosol_base_height                                            X            X             [m]
 <aerosol_type>_aerosol_base_pressure                                          X            X             [Pa]
-<aerosol_type>_aerosol_extinction_coefficient surface                         X       X    X       X     [1/m]
+<aerosol_size>_aerosol_column_number_density                                  X       X    X             [1/m2]
+<aerosol_size>_aerosol_density                                                X       X    X             [kg/m3]
+<aerosol_size>_aerosol_extinction_coefficient surface                         X       X    X       X     [1/m]
 <aerosol_type>_aerosol_height                                                 X            X             [m]
-<aerosol_type>_aerosol_optical_depth          stratospheric,                  X       X    X       X     []                   this is equal to 'aerosol optical thickness'
+<aerosol_size>_aerosol_number_density                                         X       X    X             [1/m3]
+<aerosol_size>_aerosol_optical_depth          stratospheric,                  X       X    X       X     []                   this is equal to 'aerosol optical thickness'
                                               tropospheric
 <aerosol_type>_aerosol_pressure                                               X            X             [Pa]
 <aerosol_type>_aerosol_top_height                                             X            X             [m]
@@ -110,9 +107,13 @@ molar_mass                                                                    X 
                                                                                                                               relation between the variables 'density' and 'number_density')
 month                                                                                                                         category variable for month of year ('January', ..., 'December')
 number_density                                surface                         X       X    X             [molec/m3]
+O3_effective_temperature                                                      X            X             [K]
 optical_depth                                                                 X       X    X       X     []                   this is equal to 'optical thickness'
 orbit_index                                                                                                                   the absolute orbit number for data from polar orbiting satellites
 planetary_boundary_layer_height                                               X            X             [m]
+<pm>_column_density                           stratospheric,                  X       X    X             [kg/m2]
+                                              tropospheric
+<pm>_density                                  surface                         X       X    X             [kg/m3]
 potential_temperature                         surface                         X       X    X             [K]
 pressure                                      surface                         X       X    X             [Pa]
 pressure_bounds                                                               X       X    X             [Pa]
@@ -131,6 +132,33 @@ sensor_azimuth_angle                                                          X 
 sensor_elevation_angle                                                        X                          [degree]
 sensor_name                                                                                                                   used mainly for ground based networks to provide a unique sensor id
 sensor_zenith_angle                                                           X                          [degree]
+<species>_column_density                      stratospheric,  amf, apriori,   X       X    X             [kg/m2]
+                                              tropospheric    avk, dfs, sic
+<species>_column_number_density               stratospheric,  amf, apriori,   X       X    X             [molec/m2]
+                                              tropospheric    avk, dfs, sic
+<species>_column_mass_mixing_ratio            stratospheric,                  X            X             [kg/kg]
+                                              tropospheric
+<species>_column_mass_mixing_ratio_dry_air    stratospheric,                  X            X             [kg/kg]
+                                              tropospheric
+<species>_column_volume_mixing_ratio          stratospheric,                  X            X             [ppv]
+                                              tropospheric
+<species>_column_volume_mixing_ratio_dry_air  stratospheric,                  X            X             [ppv]
+                                              tropospheric
+<species>_density                             surface                         X       X    X             [kg/m3]
+<species>_mass_mixing_ratio                   surface         apriori, avk,   X       X    X             [kg/kg]
+                                                              dfs, sic
+<species>_mass_mixing_ratio_dry_air           surface         apriori, avk,   X       X    X             [kg/kg]
+                                                              dfs, sic
+<species>_number_density                      surface         apriori, avk,   X       X    X             [molec/m3]
+                                                              dfs, sic
+<species>_partial_pressure                    surface                         X       X    X             [Pa]
+<species>_partial_pressure_dry_air            surface                         X       X    X             [Pa]
+<species>_slant_column_density                                                X            X             [kg/m2]
+<species>_slant_column_number_density                                         X            X             [molec/m2]
+<species>_volume_mixing_ratio                 surface         apriori, avk,   X       X    X             [ppv]                this is equal to 'number mixing ratio'
+                                                              dfs, sic
+<species>_volume_mixing_ratio_dry_air         surface         apriori, avk,   X       X    X             [ppv]
+                                                              dfs, sic
 solar_azimuth_angle                           sensor,                         X                          [degree]
                                               surface, toa
 solar_declination_angle                                                                                  [degree]
@@ -175,37 +203,6 @@ wind_speed                                    surface                         X 
 wind_direction                                surface                         X       X    X             [degree]
 year                                                                                                                          integer value representing a year
 zonal_wind_velocity                           surface                         X       X    X             [m/s]
-<species>_column_density                      stratospheric,  amf, apriori,   X       X    X             [kg/m2]
-                                              tropospheric    avk, dfs, sic
-<species>_slant_column_density                                                X            X             [kg/m2]
-<pm>_column_density                           stratospheric,                  X       X    X             [kg/m2]
-                                              tropospheric
-<species>_column_number_density               stratospheric,  amf, apriori,   X       X    X             [molec/m2]
-                                              tropospheric    avk, dfs, sic
-<species>_slant_column_number_density                                         X            X             [molec/m2]
-<species>_column_mass_mixing_ratio            stratospheric,                  X            X             [kg/kg]
-                                              tropospheric
-<species>_column_mass_mixing_ratio_dry_air    stratospheric,                  X            X             [kg/kg]
-                                              tropospheric
-<species>_column_volume_mixing_ratio          stratospheric,                  X            X             [ppv]
-                                              tropospheric
-<species>_column_volume_mixing_ratio_dry_air  stratospheric,                  X            X             [ppv]
-                                              tropospheric
-<species>_density                             surface                         X       X    X             [kg/m3]
-<pm>_density                                  surface                         X       X    X             [kg/m3]
-O3_effective_temperature                                                      X            X             [K]
-<species>_mass_mixing_ratio                   surface         apriori, avk,   X       X    X             [kg/kg]
-                                                              dfs, sic
-<species>_mass_mixing_ratio_dry_air           surface         apriori, avk,   X       X    X             [kg/kg]
-                                                              dfs, sic
-<species>_number_density                      surface         apriori, avk,   X       X    X             [molec/m3]
-                                                              dfs, sic
-<species>_partial_pressure                    surface                         X       X    X             [Pa]
-<species>_partial_pressure_dry_air            surface                         X       X    X             [Pa]
-<species>_volume_mixing_ratio                 surface         apriori, avk,   X       X    X             [ppv]                this is equal to 'number mixing ratio'
-                                                              dfs, sic
-<species>_volume_mixing_ratio_dry_air         surface         apriori, avk,   X       X    X             [ppv]
-                                                              dfs, sic
 ============================================= =============== =============== ======= ==== ======= ===== ==================== =======================================================================
 
 The supported aerosol sizes are:
@@ -223,10 +220,10 @@ The supported aerosol types are:
 ============== =================
 Aerosol type   Description
 ============== =================
-sea_salt       sea salt
+black_carbon   black carbon
 dust           dust
 organic_matter organic matter
-black_carbon   black carbon
+sea_salt       sea salt
 sulphate       sulphate
 ============== =================
 
