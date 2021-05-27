@@ -56,9 +56,10 @@ typedef struct ingest_info_struct
 
 typedef enum ghg_data_source
 {
-    SCIAMACHY,
+    EMMA,
     GOSAT,
-    EMMA
+    SCIAMACHY,
+    TROPOMI
 } ghg_data_source;
 
 /* -------------------- Code -------------------- */
@@ -161,16 +162,22 @@ static int read_longitude(void *user_data, harp_array data)
 
 static int read_latitude_bounds(void *user_data, harp_array data)
 {
-    ingest_info *info = (ingest_info *)user_data;
+    return read_dataset((ingest_info *)user_data, "latitude_corners", 4 * ((ingest_info *)user_data)->num_time, data);
+}
+
+static int read_latitude_bounds_bdca(void *user_data, harp_array data)
+{
     double *double_data = data.double_data;
     double a, b, c, d;
     long i;
-    int retval;
 
-    retval = read_dataset(info, "latitude_corners", 4 * info->num_time, data);
+    if (read_latitude_bounds(user_data, data) != 0)
+    {
+        return -1;
+    }
 
     /* Rearrange the corners ABCD as BDCA */
-    for (i = 0; i < info->num_time; i++)
+    for (i = 0; i < ((ingest_info *)user_data)->num_time; i++)
     {
         a = *double_data;
         b = *(double_data + 1);
@@ -183,21 +190,27 @@ static int read_latitude_bounds(void *user_data, harp_array data)
         double_data += 4;
     }
 
-    return retval;
+    return 0;
 }
 
 static int read_longitude_bounds(void *user_data, harp_array data)
 {
-    ingest_info *info = (ingest_info *)user_data;
+    return read_dataset((ingest_info *)user_data, "longitude_corners", 4 * ((ingest_info *)user_data)->num_time, data);
+}
+
+static int read_longitude_bounds_bdca(void *user_data, harp_array data)
+{
     double *double_data = data.double_data;
     double a, b, c, d;
     long i;
-    int retval;
 
-    retval = read_dataset(info, "longitude_corners", 4 * info->num_time, data);
+    if (read_longitude_bounds(user_data, data) != 0)
+    {
+        return -1;
+    }
 
     /* Rearrange the corners ABCD as BDCA */
-    for (i = 0; i < info->num_time; i++)
+    for (i = 0; i < ((ingest_info *)user_data)->num_time; i++)
     {
         a = *double_data;
         b = *(double_data + 1);
@@ -210,7 +223,7 @@ static int read_longitude_bounds(void *user_data, harp_array data)
         double_data += 4;
     }
 
-    return retval;
+    return 0;
 }
 
 static int read_sensor_zenith_angle(void *user_data, harp_array data)
@@ -243,6 +256,20 @@ static int read_CH4_column_volume_mixing_ratio_uncertainty(void *user_data, harp
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "xch4_uncertainty", info->num_time, data);
+}
+
+static int read_CO_column_volume_mixing_ratio(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "xco", info->num_time, data);
+}
+
+static int read_CO_column_volume_mixing_ratio_uncertainty(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "xco_uncertainty", info->num_time, data);
 }
 
 static int read_CO2_column_volume_mixing_ratio(void *user_data, harp_array data)
@@ -483,7 +510,8 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
                                                        bounds_dimension_type, bounds_dimension, description,
-                                                       "degree_north", include_latitude_bounds, read_latitude_bounds);
+                                                       "degree_north", include_latitude_bounds,
+                                                       read_latitude_bounds_bdca);
         harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
         description = "The corners ABCD are reordered as BDCA.";
         path = "latitude_corners[]";
@@ -494,11 +522,32 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
                                                        bounds_dimension_type, bounds_dimension, description,
-                                                       "degree_east", include_longitude_bounds, read_longitude_bounds);
+                                                       "degree_east", include_longitude_bounds,
+                                                       read_longitude_bounds_bdca);
         harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
         description = "The corners ABCD are reordered as BDCA.";
         path = "longitude_corners[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    }
+    if (source == TROPOMI)
+    {
+        /* latitude_bounds */
+        description = "corner latitudes for the ground pixel of the measurement";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
+                                                       bounds_dimension_type, bounds_dimension, description,
+                                                       "degree_north", NULL, read_latitude_bounds);
+        harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "latitude_corners[]", NULL);
+
+        /* longitude_bounds */
+        description = "corner longitudes for the ground pixel of the measurement";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
+                                                       bounds_dimension_type, bounds_dimension, description,
+                                                       "degree_east", NULL, read_longitude_bounds);
+        harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "longitude_corners[]", NULL);
     }
 
     /* sensor_zenith_angle */
@@ -539,23 +588,47 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     path = "xch4_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CO2_column_volume_mixing_ratio */
-    description = "CO2 column volume mixing ratio";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "ppmv",
-                                                   include_co2, read_CO2_column_volume_mixing_ratio);
-    path = "xco2[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    if (source == TROPOMI)
+    {
+        /* CO_column_volume_mixing_ratio */
+        description = "CO column volume mixing ratio";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "CO_column_volume_mixing_ratio",
+                                                       harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                       NULL, read_CO_column_volume_mixing_ratio);
+        path = "xco[]";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* CO2_column_volume_mixing_ratio_uncertainty */
-    description = "CO2 column volume mixing ratio uncertainty";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "ppmv",
-                                                   include_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
-    path = "xco2_uncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+        /* CO_column_volume_mixing_ratio_uncertainty */
+        description = "CO column volume mixing ratio uncertainty";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "CO_column_volume_mixing_ratio_uncertainty",
+                                                       harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                       NULL, read_CO_column_volume_mixing_ratio_uncertainty);
+        path = "xco_uncertainty[]";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    }
+
+    if (source == EMMA || source == GOSAT || source == SCIAMACHY)
+    {
+        /* CO2_column_volume_mixing_ratio */
+        description = "CO2 column volume mixing ratio";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio",
+                                                       harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                       include_co2, read_CO2_column_volume_mixing_ratio);
+        path = "xco2[]";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+        /* CO2_column_volume_mixing_ratio_uncertainty */
+        description = "CO2 column volume mixing ratio uncertainty";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio_uncertainty",
+                                                       harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                       include_co2, read_CO2_column_volume_mixing_ratio_uncertainty);
+        path = "xco2_uncertainty[]";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    }
 }
 
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
@@ -592,7 +665,7 @@ static void register_module_l2_EMMA(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("ESACCI_GHG_L2_EMMA", "Green House Gases CCI", "ESACCI_GHG",
-                                            "EMMA_L2", "CCI L2 Green House Gases profile calculated by EMMA",
+                                            "EMMA_L2", "CCI L2 Green House Gases calculated by EMMA",
                                             ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_EMMA", NULL, read_dimensions);
 
@@ -607,7 +680,7 @@ static void register_module_l2_GOSAT(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("ESACCI_GHG_L2_GOSAT", "Green House Gases CCI", "ESACCI_GHG",
-                                            "GOSAT_L2", "CCI L2 Green House Gases profile from GOSAT",
+                                            "GOSAT_L2", "CCI L2 Green House Gases from GOSAT",
                                             ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_GOSAT", NULL, read_dimensions);
 
@@ -622,11 +695,26 @@ static void register_module_l2_SCIAMACHY(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("ESACCI_GHG_L2_SCIAMACHY", "Green House Gases CCI", "ESACCI_GHG",
-                                            "SCIAMACHY_L2", "CCI L2 Green House Gases profile from SCIAMACHY",
+                                            "SCIAMACHY_L2", "CCI L2 Green House Gases from SCIAMACHY",
                                             ingestion_init, ingestion_done);
     product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_SCIAMACHY", NULL, read_dimensions);
 
     register_fields(product_definition, SCIAMACHY);
+}
+
+/* Start of code that is specific for the TROPOMI instrument */
+
+static void register_module_l2_TROPOMI(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+
+    module = harp_ingestion_register_module("ESACCI_GHG_L2_TROPOMI", "Green House Gases CCI", "ESACCI_GHG",
+                                            "TROPOMI_L2", "CCI L2 Green House Gases from TROPOMI",
+                                            ingestion_init, ingestion_done);
+    product_definition = harp_ingestion_register_product(module, "ESACCI_GHG_L2_TROPOMI", NULL, read_dimensions);
+
+    register_fields(product_definition, TROPOMI);
 }
 
 /* Main procedure for all instruments */
@@ -634,8 +722,9 @@ static void register_module_l2_SCIAMACHY(void)
 int harp_ingestion_module_cci_l2_ghg_init(void)
 {
     /* GHG-CCI core products generated with ECAs */
-    register_module_l2_SCIAMACHY();
-    register_module_l2_GOSAT();
     register_module_l2_EMMA();
+    register_module_l2_GOSAT();
+    register_module_l2_SCIAMACHY();
+    register_module_l2_TROPOMI();
     return 0;
 }

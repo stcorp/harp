@@ -151,6 +151,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ESACCI_GHG_L2_EMMA.html \
 	doc/html/ingestions/ESACCI_GHG_L2_GOSAT.html \
 	doc/html/ingestions/ESACCI_GHG_L2_SCIAMACHY.html \
+	doc/html/ingestions/ESACCI_GHG_L2_TROPOMI.html \
 	doc/html/ingestions/ESACCI_GHG_L3_Obs4MIPs.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_LP.html \
 	doc/html/ingestions/ESACCI_OZONE_L2_NP.html \
@@ -827,6 +828,8 @@ doc/html/ingestions/ESACCI_GHG_L2_EMMA.html:
 doc/html/ingestions/ESACCI_GHG_L2_GOSAT.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_GHG_L2_SCIAMACHY.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ESACCI_GHG_L2_TROPOMI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ESACCI_GHG_L3_Obs4MIPs.html:
 	$(MAKE) harp_doc
