@@ -76,6 +76,7 @@ static void ingestion_done(void *user_data)
 static int read_scalar_variable(ingest_info *info, const char *name, harp_array data)
 {
     coda_cursor cursor;
+    coda_type_class type_class;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -86,6 +87,32 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
+    }
+    if (coda_cursor_get_type_class(&cursor, &type_class) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (type_class == coda_array_class)
+    {
+        long actual_num_elements;
+
+        if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (actual_num_elements != 1)
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected scalar)", name,
+                           actual_num_elements);
+            return -1;
+        }
+        if (coda_cursor_goto_first_array_element(&cursor) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
     }
     if (coda_cursor_read_float(&cursor, data.float_data) != 0)
     {
@@ -149,11 +176,55 @@ static int read_array_variable(ingest_info *info, const char *name, long num_ele
     }
     else
     {
+        coda_native_type native_type;
+
         assert(data_type == harp_type_int8);
-        if (coda_cursor_read_int8_array(&cursor, data.int8_data, coda_array_ordering_c) != 0)
+
+        if (coda_cursor_goto_first_array_element(&cursor) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
+        }
+        if (coda_cursor_get_read_type(&cursor, &native_type) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        coda_cursor_goto_parent(&cursor);
+        if (native_type == coda_native_type_int32)
+        {
+            int32_t *int32_data;
+            long i;
+
+            /* this is data that should actually have been stored in an int8 array -> we cast it ourselves */
+
+            int32_data = malloc(num_elements * sizeof(int32_t));
+            if (int32_data == NULL)
+            {
+                harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                               num_elements * sizeof(int32_t), __FILE__, __LINE__);
+                return -1;
+
+            }
+            if (coda_cursor_read_int32_array(&cursor, int32_data, coda_array_ordering_c) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                free(int32_data);
+                return -1;
+            }
+            for (i = 0; i < num_elements; i++)
+            {
+                data.int8_data[i] = (int8_t)int32_data[i];
+            }
+            free(int32_data);
+        }
+        else
+        {
+            if (coda_cursor_read_int8_array(&cursor, data.int8_data, coda_array_ordering_c) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
         }
     }
 
@@ -237,14 +308,14 @@ static int read_cloud_base_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array_variable(info, "cloud_base_height", info->num_times, harp_type_float, data);
+    return read_array_variable(info, "cloud_base_height_amsl", info->num_times, harp_type_float, data);
 }
 
 static int read_cloud_top_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array_variable(info, "cloud_top_height", info->num_times, harp_type_float, data);
+    return read_array_variable(info, "cloud_top_height_amsl", info->num_times, harp_type_float, data);
 }
 
 static int read_altitude(void *user_data, harp_array data)
@@ -447,7 +518,7 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_base_height);
-    path = "/cloud_base_height";
+    path = "/cloud_base_height_amsl";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_top_height */
@@ -455,7 +526,7 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
-    path = "/cloud_top_height";
+    path = "/cloud_top_height_amsl";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     return 0;
