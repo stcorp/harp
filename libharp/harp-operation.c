@@ -1750,6 +1750,14 @@ int harp_operation_bin_spatial_new(long num_latitude_edges, double *latitude_edg
     for (i = 0; i < num_latitude_edges; i++)
     {
         operation->latitude_edges[i] = latitude_edges[i];
+        if (fabs(90 - operation->latitude_edges[i]) < EPSILON)
+        {
+            operation->latitude_edges[i] = 90;
+        }
+        if (fabs(-90 - operation->latitude_edges[i]) < EPSILON)
+        {
+            operation->latitude_edges[i] = -90;
+        }
     }
 
     operation->longitude_edges = malloc(num_longitude_edges * sizeof(double));
@@ -1763,6 +1771,10 @@ int harp_operation_bin_spatial_new(long num_latitude_edges, double *latitude_edg
     for (i = 0; i < num_longitude_edges; i++)
     {
         operation->longitude_edges[i] = longitude_edges[i];
+    }
+    if (fabs(operation->longitude_edges[0] + 360 - operation->longitude_edges[num_longitude_edges - 1]) < EPSILON)
+    {
+        operation->longitude_edges[num_longitude_edges - 1] = operation->longitude_edges[0] + 360;
     }
 
     *new_operation = (harp_operation *)operation;
