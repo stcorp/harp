@@ -53,6 +53,7 @@ typedef struct ingest_info_struct
     coda_product *product;
     long num_times;
     long num_altitudes;
+    int use_amsl_height;
 } ingest_info;
 
 /* -------------- Global variables --------------- */
@@ -307,15 +308,17 @@ static int read_sensor_altitude(void *user_data, harp_array data)
 static int read_cloud_base_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name = info->use_amsl_height ? "cloud_base_height_amsl" : "cloud_base_height";
 
-    return read_array_variable(info, "cloud_base_height_amsl", info->num_times, harp_type_float, data);
+    return read_array_variable(info, variable_name, info->num_times, harp_type_float, data);
 }
 
 static int read_cloud_top_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name = info->use_amsl_height ? "cloud_top_height_amsl" : "cloud_top_height";
 
-    return read_array_variable(info, "cloud_top_height_amsl", info->num_times, harp_type_float, data);
+    return read_array_variable(info, variable_name, info->num_times, harp_type_float, data);
 }
 
 static int read_altitude(void *user_data, harp_array data)
@@ -397,6 +400,37 @@ static int get_dimensions(ingest_info *info)
     return 0;
 }
 
+static int get_cloud_height_name(ingest_info *info)
+{
+    coda_cursor cursor;
+    coda_type *type;
+    long index;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_type(&cursor, &type) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_type_get_record_field_index_from_name(type, "cloud_base_height_amsl", &index) == 0)
+    {
+        info->use_amsl_height = 1;
+        return 0;
+    }
+    if (coda_type_get_record_field_index_from_name(type, "cloud_base_height", &index) == 0)
+    {
+        info->use_amsl_height = 0;
+        return 0;
+    }
+
+    harp_set_error(HARP_ERROR_INGESTION, "product does not contain a cloud base height variable");
+    return -1;
+}
+
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
@@ -416,6 +450,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product = product;
 
     if (get_dimensions(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+    if (get_cloud_height_name(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -518,16 +557,20 @@ int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_base_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL,
                                                    read_cloud_base_height);
+    path = "/cloud_base_height";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "legacy format");
     path = "/cloud_base_height_amsl";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "cloudnetpy format");
 
     /* cloud_top_height */
     description = "cloud_top_height";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "m", NULL, read_cloud_top_height);
+    path = "/cloud_top_height";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "legacy format");
     path = "/cloud_top_height_amsl";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "cloudnetpy format");
 
     return 0;
 }
