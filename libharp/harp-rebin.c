@@ -130,7 +130,7 @@ static binning_type get_binning_type(harp_variable *variable, harp_dimension_typ
             }
             break;
         case harp_dimension_vertical:
-            if (strcmp(variable->name, "altitude") == 0 || strcmp(variable->name, "altitude_bounds") == 0 |
+            if (strcmp(variable->name, "altitude") == 0 || strcmp(variable->name, "altitude_bounds") == 0 ||
                 strcmp(variable->name, "altitude_gph") == 0 || strcmp(variable->name, "altitude_gph_bounds") == 0 ||
                 strcmp(variable->name, "pressure") == 0 || strcmp(variable->name, "pressure_bounds") == 0)
             {
