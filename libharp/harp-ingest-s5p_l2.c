@@ -1270,6 +1270,14 @@ static int read_input_altitude_bounds(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_input_apparent_scene_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "apparent_scene_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_cloud_albedo_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1574,6 +1582,14 @@ static int read_input_pressure_bounds(void *user_data, harp_array data)
     free(delta_pressure.ptr);
 
     return 0;
+}
+
+static int read_input_scene_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "scene_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_input_surface_albedo(void *user_data, harp_array data)
@@ -1885,6 +1901,22 @@ static int read_product_aerosol_mid_pressure_precision(void *user_data, harp_arr
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->product_cursor, "aerosol_mid_pressure_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_apparent_scene_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "apparent_scene_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_apparent_scene_pressure_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "apparent_scene_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2351,6 +2383,22 @@ static int read_product_qa_value(void *user_data, harp_array data)
     }
 
     return result;
+}
+
+static int read_product_scene_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "scene_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_scene_albedo_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "scene_albedo_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_results_aerosol_mid_altitude(void *user_data, harp_array data)
@@ -6543,6 +6591,24 @@ static void register_no2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* scene_albedo */
+    description = "scene albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_scene_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/scene_albedo";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_pressure */
+    description = "apparent scene pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_apparent_scene_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/apparent_scene_pressure";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* surface_albedo */
     description = "surface albedo";
     variable_definition =
@@ -7257,7 +7323,7 @@ static void register_fresco_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo */
-    description = "cloud albedo; this is a fixed value for FRESCO";
+    description = "cloud albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
@@ -7266,12 +7332,48 @@ static void register_fresco_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo_uncertainty */
-    description = "cloud albedo error; since cloud albedo is fixed for FRESCO, this value is set to NaN";
+    description = "cloud albedo error";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_cloud_albedo_crb_precision);
     path = "/PRODUCT/cloud_albedo_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_albedo */
+    description = "cloud albedo assuming completely cloudy sky";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_scene_albedo);
+    path = "/PRODUCT/scene_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_albedo_uncertainty */
+    description = "uncertainty of the scene albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_scene_albedo_precision);
+    path = "/PRODUCT/scene_albedo_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_pressure */
+    description = "air pressure at cloud optical centroid assuming completely cloudy sky";
+    path = "/PRODUCT/apparent_scene_pressure[]";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_product_apparent_scene_pressure);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_pressure_uncertainty */
+    description = "uncertainty of the scene pressure";
+    path = "/PRODUCT/apparent_scene_pressure_precision[]";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_pressure_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_product_apparent_scene_pressure_precision);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo */
@@ -7283,8 +7385,6 @@ static void register_fresco_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_assumed[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 0, 1);
-
     /* surface_pressure */
     description = "surface pressure";
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
@@ -7294,6 +7394,7 @@ static void register_fresco_product(void)
                                                    include_from_010000, read_input_surface_pressure);
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
 
+    register_surface_variables(product_definition, 0, 1);
     register_snow_ice_flag_variables(product_definition, 0);
 }
 

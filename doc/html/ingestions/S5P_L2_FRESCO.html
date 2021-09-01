@@ -322,13 +322,37 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>cloud albedo; this is a fixed value for FRESCO</p></td>
+<td><p>cloud albedo</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>cloud albedo error; since cloud albedo is fixed for FRESCO, this value is set to NaN</p></td>
+<td><p>cloud albedo error</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>scene_albedo</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>cloud albedo assuming completely cloudy sky</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scene_albedo_uncertainty</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>uncertainty of the scene albedo</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>scene_pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>air pressure at cloud optical centroid assuming completely cloudy sky</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scene_pressure_uncertainty</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>uncertainty of the scene pressure</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
@@ -336,35 +360,35 @@
 <td><p>[]</p></td>
 <td><p>assumed surface albedo at 758nm</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>surface altitude</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>surface altitude precision</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_meridional_wind_velocity</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m/s]</p></td>
-<td><p>northward wind</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>surface_zonal_wind_velocity</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m/s]</p></td>
-<td><p>eastward wind</p></td>
-</tr>
 <tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>surface pressure</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>surface altitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>surface altitude precision</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_meridional_wind_velocity</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m/s]</p></td>
+<td><p>northward wind</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_zonal_wind_velocity</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m/s]</p></td>
+<td><p>eastward wind</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int8</p></td>
@@ -520,37 +544,25 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_albedo_crb_precision[]</strong></p></td>
 </tr>
+<tr class="row-odd"><td><p><strong>scene_albedo</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/scene_albedo[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scene_albedo_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/scene_albedo_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>scene_pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/apparent_scene_pressure[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scene_pressure_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/apparent_scene_pressure_precision[]</strong></p></td>
+</tr>
 <tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_assumed[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><p><strong>surface_meridional_wind_velocity</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>processor version &gt;= 01.03.00</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><p><strong>surface_zonal_wind_velocity</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>processor version &gt;= 01.03.00</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
 </tr>
 <tr class="row-even"><td rowspan="3"><p><strong>surface_pressure</strong></p></td>
 <td><p><em>available</em></p></td>
@@ -561,6 +573,34 @@
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p><strong>surface_meridional_wind_velocity</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 01.03.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>surface_zonal_wind_velocity</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 01.03.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><p><strong>snow_ice_type</strong></p></td>
 <td><p><em>path</em></p></td>
