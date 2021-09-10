@@ -69,8 +69,13 @@ int strncasecmp(const char *, const char *, size_t);
 int vsnprintf(const char *, size_t, const char *, va_list ap);
 #endif
 
-/* Make sure we use the 1.6 compatibility API for HDF 1.8 */
+/* Make sure we use the HDF 1.6 compatibility API */
 #define H5_USE_16_API
+
+/* H5Oget_info did not exist in HDF 1.6, so make sure to use 1.8 for this */
+#define H5Oget_info_vers 1
+#define H5Oget_info_by_name_vers 1
+#define H5O_info_t_vers 1
 
 #ifdef WIN32
 
