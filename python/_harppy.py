@@ -829,11 +829,11 @@ def _import_product_metadata(c_metadata):
     if numpy.isinf(c_metadata.datetime_start):
         metadata['datetime_start'] = datetime.datetime.min
     else:
-        metadata['datetime_start'] = datetime.datetime(2000,1,1) + datetime.timedelta(days=c_metadata.datetime_start)
+        metadata['datetime_start'] = datetime.datetime(2000, 1, 1) + datetime.timedelta(days=c_metadata.datetime_start)
     if numpy.isinf(c_metadata.datetime_stop):
         metadata['datetime_stop'] = datetime.datetime.max
     else:
-        metadata['datetime_stop'] = datetime.datetime(2000,1,1) + datetime.timedelta(days=c_metadata.datetime_stop)
+        metadata['datetime_stop'] = datetime.datetime(2000, 1, 1) + datetime.timedelta(days=c_metadata.datetime_stop)
 
     metadata['time'] = c_metadata.dimension[0]
     metadata['latitude'] = c_metadata.dimension[1]
