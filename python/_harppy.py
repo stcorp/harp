@@ -908,13 +908,13 @@ def _export_variable(name, variable, c_product):
             min_data_type = _get_c_data_type(variable.valid_min)
             if min_data_type != c_data_type:
                 c_data_type = min_data_type
-        except:
+        except Exception:
             pass
         try:
             max_data_type = _get_c_data_type(variable.valid_max)
             if max_data_type != c_data_type:
                 c_data_type = max_data_type
-        except:
+        except Exception:
             pass
 
     # Encode variable name.
@@ -1182,7 +1182,7 @@ def import_product(filename, operations="", options="", reduce_operations="", po
                         if _lib.harp_product_execute_operations(merged_product_ptr[0],
                                                                 _encode_string(reduce_operations)) != 0:
                             raise CLibraryError()
-        except:
+        except Exception:
             if merged_product_ptr is not None:
                 _lib.harp_product_delete(merged_product_ptr[0])
             raise
@@ -1440,7 +1440,7 @@ def execute_operations(products, operations="", post_operations=""):
                     _export_product(product, c_product_ptr[0])
                     if _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
                         raise CLibraryError()
-                except:
+                except Exception:
                     _lib.harp_product_delete(c_product_ptr[0])
                     raise
 
@@ -1457,7 +1457,7 @@ def execute_operations(products, operations="", post_operations=""):
                             raise CLibraryError()
                     finally:
                         _lib.harp_product_delete(c_product_ptr[0])
-        except:
+        except Exception:
             if merged_product_ptr is not None:
                 _lib.harp_product_delete(merged_product_ptr[0])
             raise
