@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ECMWF" last-modified="2016-12-20">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="ECMWF" last-modified="2021-10-04">
   <cd:Description>ECMWF GRIB product</cd:Description>
   <cd:ProductType name="GRIB">
     <cd:Description>ECMWF GRIB model outputs</cd:Description>
@@ -7,8 +7,8 @@
       <cd:Description>The format definition for this product is taken from the GRIB file itself.</cd:Description>
       <cd:DetectionRule>
         <!-- GRIB1/GRIB2: centre 98 -> ECMWF -->
-        <!-- GRIB2: curret master tables version is 5 -->
-        <cd:MatchExpression><![CDATA[all(/, (exists(./grib1) && int(./grib1/centre) == 98) || (exists(./grib2) && int(./grib2/centre) == 98 && int(./grib2/masterTablesVersion) == 5))]]></cd:MatchExpression>
+        <!-- GRIB2: curret master tables version is 5 or 27 -->
+        <cd:MatchExpression><![CDATA[all(/, (exists(./grib1) && int(./grib1/centre) == 98) || (exists(./grib2) && int(./grib2/centre) == 98 && (int(./grib2/masterTablesVersion) == 5 || int(./grib2/masterTablesVersion) == 27)))]]></cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
