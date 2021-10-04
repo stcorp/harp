@@ -2,7 +2,8 @@
   - AEOLUS L1B: fixed ingestion of Mie/measurement data; added sensor angles
   - AEOLUS L2B: fixed ingestion of Mie data; added sensor angles
   - CLOUDNET L2 classification: add support for new (netcdf4) format
-  - ECMWF GRIB: fixed unit of backscatter coefficient 1/(milli sr) -> 1/(m sr)
+  - ECMWF GRIB: fixed unit of backscatter coefficient 1/(milli sr) -> 1/(m sr),
+    add support for new masterTablesVersion=27 data
   - GEOMS UVVIS.DOAS: allow template V007 files to be stored in hdf5 format
   - GHG CCI: added support for TROPOMI WFMD L2
   - QA4ECV HCHO: add amf=clear_sky ingestion option
