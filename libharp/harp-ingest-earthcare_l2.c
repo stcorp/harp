@@ -316,7 +316,7 @@ static void register_common_variables(harp_product_definition *product_definitio
                                          "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber", NULL);
 }
 
-void register_acm_cap_2b_product()
+static void register_acm_cap_2b_product()
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
