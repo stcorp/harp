@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -11,9 +11,12 @@
 
 /*LINTLIBRARY*/
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
+#include "config.h"
+
+#include "udunits2.h"
+#include "unitAndId.h"
+#include "unitToIdMap.h"		/* this module's API */
+#include "systemMap.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -27,11 +30,6 @@
 #include <stdlib.h>
 
 #include <string.h>
-
-#include "udunits2.h"
-#include "unitAndId.h"
-#include "unitToIdMap.h"		/* this module's API */
-#include "systemMap.h"
 
 typedef struct {
     void*		ascii;
@@ -237,7 +235,7 @@ utimFree(
 	ut_encoding	encodings[] = {UT_ASCII, UT_LATIN1, UT_UTF8};
 	int		i;
 
-	for (i = 0; (unsigned)i < sizeof(encodings)/sizeof(encodings[0]); ++i) {
+	for (i = 0; i < sizeof(encodings)/sizeof(encodings[0]); ++i) {
 	    void**	rootp = selectTree(map, encodings[i]);
 
 	    while (*rootp != NULL) {
@@ -613,11 +611,11 @@ getId(
 	ut_handle_error_message("NULL unit argument");
     }
     else {
-	UnitToIdMap** const	unitToId = 
+	UnitToIdMap** const	unitToId =
 	    (UnitToIdMap**)smFind(systemMap, ut_get_system(unit));
 
 	if (unitToId != NULL) {
-	    UnitAndId*	mapEntry = 
+	    UnitAndId*	mapEntry =
 		encoding == UT_LATIN1
 		    ? utimFindLatin1ByUnit(*unitToId, unit)
 		    : encoding == UT_UTF8

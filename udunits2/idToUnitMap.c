@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -11,9 +11,11 @@
 
 /*LINTLIBRARY*/
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
+#include "config.h"
+
+#include "udunits2.h"
+#include "unitAndId.h"
+#include "systemMap.h"
 
 #include <assert.h>
 #ifdef _MSC_VER
@@ -29,10 +31,6 @@
 #include <strings.h>
 #endif
 
-#include "udunits2.h"
-#include "unitAndId.h"
-#include "systemMap.h"
-
 typedef struct {
     int			(*compare)(const void*, const void*);
     void*		tree;
@@ -47,7 +45,7 @@ sensitiveCompare(
     const void* const	node1,
     const void* const	node2)
 {
-    return strcmp(((const UnitAndId*)node1)->id, 
+    return strcmp(((const UnitAndId*)node1)->id,
 	((const UnitAndId*)node2)->id);
 }
 
@@ -57,7 +55,7 @@ insensitiveCompare(
     const void* const	node1,
     const void* const	node2)
 {
-    return strcasecmp(((const UnitAndId*)node1)->id, 
+    return strcasecmp(((const UnitAndId*)node1)->id,
 	((const UnitAndId*)node2)->id);
 }
 
@@ -178,7 +176,7 @@ itumRemove(
 
     assert(map != NULL);
     assert(id != NULL);
-    
+
     targetEntry.id = (char*)id;
     treeEntry = tfind(&targetEntry, &map->tree, map->compare);
 
@@ -316,7 +314,7 @@ unmapId(
 	IdToUnitMap** const	idToUnit =
 	    (IdToUnitMap**)smFind(systemMap, system);
 
-	status = 
+	status =
 	    (idToUnit == NULL || *idToUnit == NULL)
 		? UT_SUCCESS
 		: itumRemove(*idToUnit, id);
@@ -347,7 +345,6 @@ ut_map_name_to_unit(
     const ut_encoding		encoding,
     const ut_unit* const	unit)
 {
-    (void)encoding;
     ut_set_status(
 	mapIdToUnit(&systemToNameToUnit, name, unit, insensitiveCompare));
 
@@ -373,7 +370,6 @@ ut_unmap_name_to_unit(
     const char* const	name,
     const ut_encoding   encoding)
 {
-    (void)encoding;
     ut_set_status(unmapId(systemToNameToUnit, name, system));
 
     return ut_get_status();
@@ -401,7 +397,6 @@ ut_map_symbol_to_unit(
     const ut_encoding		encoding,
     const ut_unit* const	unit)
 {
-    (void)encoding;
     ut_set_status(
 	mapIdToUnit(&systemToSymbolToUnit, symbol, unit, sensitiveCompare));
 
@@ -427,7 +422,6 @@ ut_unmap_symbol_to_unit(
     const char* const	symbol,
     const ut_encoding   encoding)
 {
-    (void)encoding;
     ut_set_status(unmapId(systemToSymbolToUnit, symbol, system));
 
     return ut_get_status();
@@ -508,7 +502,7 @@ ut_get_unit_by_name(
 
 
 /*
- * Returns the unit with a given symbol from a unit-system.  Symbol 
+ * Returns the unit with a given symbol from a unit-system.  Symbol
  * comparisons are case-sensitive.
  *
  * Arguments:

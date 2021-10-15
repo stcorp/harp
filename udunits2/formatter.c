@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -10,9 +10,10 @@
  */
 /*LINTLIBRARY*/
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
+#include "config.h"
+
+#include "udunits2.h"
+#include "unitToIdMap.h"
 
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
@@ -27,9 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-#include "udunits2.h"
-#include "unitToIdMap.h"
 
 typedef const char*	(*IdGetter)(const ut_unit*, ut_encoding);
 typedef	int		(*ProductPrinter)(const ut_unit* const*, const int*,
@@ -60,7 +58,7 @@ asciiPrintProduct(
     const int* const		powers,
     const int			count,
     char* const			buf,
-    const size_t		max,
+    size_t		        max,
     IdGetter			getId);
 static int
 latin1PrintProduct(
@@ -68,7 +66,7 @@ latin1PrintProduct(
     const int* const		powers,
     const int			count,
     char* const			buf,
-    const size_t		max,
+    size_t		        max,
     IdGetter			getId);
 static int
 utf8PrintProduct(
@@ -76,7 +74,7 @@ utf8PrintProduct(
     const int* const		powers,
     const int			count,
     char* const			buf,
-    const size_t		max,
+    size_t		        max,
     IdGetter			getId);
 
 static ut_visitor	formatter;
@@ -299,7 +297,7 @@ asciiPrintProduct(
     if (nchar >= 0) {
         int	i;
 
-        size = SUBTRACT_SIZET(size, (unsigned)nchar);
+        size = SUBTRACT_SIZET(size, nchar);
 
         for (i = 0; i < count && nchar >= 0; i++) {
             int	n;
@@ -318,7 +316,7 @@ asciiPrintProduct(
                 }
 
                 nchar += n;
-                size = SUBTRACT_SIZET(size, (unsigned)n);
+                size = SUBTRACT_SIZET(size, n);
             }
 
             /*
@@ -332,7 +330,7 @@ asciiPrintProduct(
             }
 
             nchar += n;
-            size = SUBTRACT_SIZET(size, (unsigned)n);
+            size = SUBTRACT_SIZET(size, n);
 
             /*
              * Append exponent if appropriate.
@@ -348,7 +346,7 @@ asciiPrintProduct(
                 }
 
                 nchar += n;
-                size = SUBTRACT_SIZET(size, (unsigned)n);
+                size = SUBTRACT_SIZET(size, n);
             }
         }				/* loop over basic-units */
     }				/* "buf" initialized */
@@ -389,7 +387,7 @@ utf8PrintProduct(
     if (nchar >= 0) {
         int	iBasic;
 
-        size = SUBTRACT_SIZET(size, (unsigned)nchar);
+        size = SUBTRACT_SIZET(size, nchar);
 
         for (iBasic = 0; iBasic < count; iBasic++) {
             int	power = powers[iBasic];
@@ -412,7 +410,7 @@ utf8PrintProduct(
                     }
 
                     nchar += n;
-                    size = SUBTRACT_SIZET(size, (unsigned)n);
+                    size = SUBTRACT_SIZET(size, n);
                 }
 
                 /*
@@ -427,7 +425,7 @@ utf8PrintProduct(
                 }
 
                 nchar += n;
-                size = SUBTRACT_SIZET(size, (unsigned)n);
+                size = SUBTRACT_SIZET(size, n);
 
                 if (power != 1) {
                     /*
@@ -458,7 +456,7 @@ utf8PrintProduct(
                         }
 
                         nchar += n;
-                        size = SUBTRACT_SIZET(size, (unsigned)n);
+                        size = SUBTRACT_SIZET(size, n);
                         power = -power;
                     }
 
@@ -490,7 +488,7 @@ utf8PrintProduct(
                                 }
 
                                 nchar += n;
-                                size = SUBTRACT_SIZET(size, (unsigned)n);
+                                size = SUBTRACT_SIZET(size, n);
                             }
 
                             if (nchar < 0)
@@ -615,7 +613,7 @@ latin1PrintBasics(
 		}
 
 		nchar += n;
-                size = SUBTRACT_SIZET(size, (unsigned)n);
+                size = SUBTRACT_SIZET(size, n);
 	    }
 
             /*
@@ -629,7 +627,7 @@ latin1PrintBasics(
             }
 
             nchar += n;
-            size = SUBTRACT_SIZET(size, (unsigned)n);
+            size = SUBTRACT_SIZET(size, n);
             needSeparator = 1;
 
             /*
@@ -645,7 +643,7 @@ latin1PrintBasics(
                 }
 
                 nchar += n;
-                size = SUBTRACT_SIZET(size, (unsigned)n);
+                size = SUBTRACT_SIZET(size, n);
             }
 	}		/* exponent not zero */
     }			/* loop over positive exponents */
@@ -711,7 +709,7 @@ latin1PrintProduct(
             if (nchar >= 0 && (positiveCount + negativeCount > 0)) {
                 int		n;
 
-                size = SUBTRACT_SIZET(size, (unsigned)nchar);
+                size = SUBTRACT_SIZET(size, nchar);
 
                 if (positiveCount == 0) {
                     n = snprintf(buf+nchar, size, "%s", "1");
@@ -720,7 +718,7 @@ latin1PrintProduct(
                     }
                     else {
                         nchar += n;
-                        size = SUBTRACT_SIZET(size, (unsigned)n);
+                        size = SUBTRACT_SIZET(size, n);
                     }
                 }
                 else {
@@ -731,7 +729,7 @@ latin1PrintProduct(
                     }
                     else {
                         nchar += n;
-                        size = SUBTRACT_SIZET(size, (unsigned)n);
+                        size = SUBTRACT_SIZET(size, n);
                     }
                 }
 
@@ -743,7 +741,7 @@ latin1PrintProduct(
                     }
                     else {
                         nchar += n;
-                        size = SUBTRACT_SIZET(size, (unsigned)n);
+                        size = SUBTRACT_SIZET(size, n);
 
                         n = latin1PrintBasics(buf+nchar, size, basicUnits,
                                 powers, order+positiveCount, negativeCount,
@@ -753,7 +751,7 @@ latin1PrintProduct(
                         }
                         else {
                             nchar += n;
-                            size = SUBTRACT_SIZET(size, (unsigned)n);
+                            size = SUBTRACT_SIZET(size, n);
 
                             if (negativeCount > 1) {
                                 n = snprintf(buf+nchar, size, "%s", ")");
@@ -762,7 +760,7 @@ latin1PrintProduct(
                                 }
                                 else {
                                     nchar += n;
-                                    size = SUBTRACT_SIZET(size, (unsigned)n);
+                                    // size = SUBTRACT_SIZET(size, n); // not used
                                 }
                             }
                         }
@@ -783,7 +781,7 @@ latin1PrintProduct(
  *
  * Arguments:
  *	unit		Pointer to the product-unit to be formatted.
- *	count		The number of basic-units that constitute the 
+ *	count		The number of basic-units that constitute the
  *			product-unit.
  *	basicUnits	Pointer to pointers to the basic-units that constitute
  *			the product-unit.
@@ -823,7 +821,7 @@ formatProduct(
 	else {
             const char*	id = formatPar->getId(unit, formatPar->encoding);
 
-            nchar = 
+            nchar =
                 id == NULL
                     ? formatPar->printProduct(basicUnits, powers, count,
                         formatPar->buf, formatPar->size, formatPar->getId)
@@ -854,7 +852,7 @@ formatProduct(
  *	getDefinition	Returns the definition of "unit" in terms of basic
  *			units.
  *	encoding	The type of encoding to use.
- *	addParens	Whether or not to add bracketing parentheses if 
+ *	addParens	Whether or not to add bracketing parentheses if
  *			whitespace is printed.
  * Returns:
  *	-1		Failure.  See errno.
@@ -887,7 +885,7 @@ printGalilean(
         }
         else {
             nchar += n;
-            size = SUBTRACT_SIZET(size, (unsigned)n);
+            size = SUBTRACT_SIZET(size, n);
         }
     }
 
@@ -900,7 +898,7 @@ printGalilean(
         }
         else {
             nchar += n;
-            size = SUBTRACT_SIZET(size, (unsigned)n);
+            size = SUBTRACT_SIZET(size, n);
 
             if (offset != 0) {
                 needParens = addParens;
@@ -913,7 +911,7 @@ printGalilean(
                 }
                 else {
                     nchar += n;
-                    size = SUBTRACT_SIZET(size, (unsigned)n);
+                    size = SUBTRACT_SIZET(size, n);
                 }
             }			/* non-zero offset */
 
@@ -925,7 +923,7 @@ printGalilean(
                     }
                     else {
                         nchar += n;
-                        size = SUBTRACT_SIZET(size, (unsigned)n);
+                        // size = SUBTRACT_SIZET(size, n); // Not used
                     }
                 }
             }			        /* printed offset if appropriate */
@@ -970,7 +968,7 @@ formatGalilean(
     else {
 	const char*	id = formatPar->getId(unit, formatPar->encoding);
 
-	nchar = 
+	nchar =
 	    id == NULL
 		? printGalilean(scale, underlyingUnit, offset, formatPar->buf,
 		    formatPar->size, formatPar->getId, formatPar->getDefinition,
@@ -1007,7 +1005,7 @@ formatGalilean(
  *	getDefinition	Returns the definition of "unit" in terms of basic
  *			units.
  *	encoding	The type of encoding to use.
- *	addParens	Whether or not to add bracketing parentheses if 
+ *	addParens	Whether or not to add bracketing parentheses if
  *			whitespace is printed.
  * Returns:
  *	-1		Failure.  See errno.
@@ -1042,7 +1040,7 @@ printTimestamp(
         }
         else {
             nchar += n;
-            size = SUBTRACT_SIZET(size, (unsigned)n);
+            size = SUBTRACT_SIZET(size, n);
         }
     }
 
@@ -1054,7 +1052,9 @@ printTimestamp(
 	nchar = n < 0 ? n : nchar + n;
 
 	if (nchar >= 0) {
-	    int	useSeparators = useNames || year < 1000 || year > 9999;
+            size = SUBTRACT_SIZET(size, n);
+
+            int	useSeparators = useNames || year < 1000 || year > 9999;
 
 	    n =  snprintf(buf+nchar, size,
 		useSeparators
@@ -1067,11 +1067,13 @@ printTimestamp(
             }
             else {
                 nchar += n;
-                size = SUBTRACT_SIZET(size, (unsigned)n);
+                size = SUBTRACT_SIZET(size, n);
             }
 
 	    if (nchar >= 0) {
-		int	decimalCount = -(int)floor(log10(resolution));
+		int	decimalCount = resolution <= 0.0
+		        ? 9 // Nanosecond resolution
+		        : -(int)floor(log10(resolution));
 
 		if (decimalCount > -2) {
 		    n = snprintf(buf+nchar, size,
@@ -1082,19 +1084,19 @@ printTimestamp(
                     }
                     else {
                         nchar += n;
-                        size = SUBTRACT_SIZET(size, (unsigned)n);
+                        size = SUBTRACT_SIZET(size, n);
                     }
 		}			/* sufficient precision for seconds */
 
 		if (nchar >= 0) {
-                    n = snprintf(buf+nchar, size, "%s", 
+                    n = snprintf(buf+nchar, size, "%s",
                             addParens ? " UTC)" : " UTC");
                     if (0 > n) {
                         nchar = -1;
                     }
                     else {
                         nchar += n;
-                        size = SUBTRACT_SIZET(size, (unsigned)n);
+                        // size = SUBTRACT_SIZET(size, n); // Not used
                     }
 		}			/* printed seconds if appropriate */
 	    }				/* printed year through minute */
@@ -1148,7 +1150,7 @@ formatTimestamp(
     else {
 	const char*	id = formatPar->getId(unit, formatPar->encoding);
 
-	nchar = 
+	nchar =
 	    id == NULL
 		? printTimestamp(underlyingUnit, year, month, day, hour, minute,
 		    second, resolution, formatPar->buf, formatPar->size,
@@ -1180,7 +1182,7 @@ formatTimestamp(
  *	getDefinition	Returns the definition of "unit" in terms of basic
  *			units.
  *	encoding	The type of encoding to use.
- *	addParens	Whether or not to add bracketing parentheses if 
+ *	addParens	Whether or not to add bracketing parentheses if
  *			whitespace is printed.
  * Returns:
  *	-1		Failure.  See errno.
@@ -1259,7 +1261,7 @@ formatLogarithmic(
     else {
 	const char*	id = formatPar->getId(unit, formatPar->encoding);
 
-	nchar = 
+	nchar =
 	    id == NULL
 		? printLogarithmic(base, reference, formatPar->buf,
 		    formatPar->size, formatPar->getId, formatPar->getDefinition,

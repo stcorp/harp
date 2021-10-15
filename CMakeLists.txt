@@ -437,12 +437,13 @@ set(LIBUDUNITS2_SOURCES
   ${BISON_utparser_OUTPUTS}
   ${FLEX_utscanner_OUTPUTS})
 
-if(WIN32)
+if(MSVC)
   set(LIBUDUNITS2_SOURCES
     ${LIBUDUNITS2_SOURCES}
     udunits2/tsearch.c
-    udunits2/tsearch.h)
-endif(WIN32)
+    udunits2/tsearch.h
+    udunits2/udunits_snprintf.c)
+endif(MSVC)
 
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/udunits2)
 

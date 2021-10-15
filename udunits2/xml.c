@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -14,8 +14,12 @@
 
 #include <config.h>
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
+#include "udunits2.h"
+
+#if defined(__linux__)
+#   ifndef _GNU_SOURCE
+#       define _GNU_SOURCE
+#   endif
 #endif
 
 #include <assert.h>
@@ -34,15 +38,22 @@
 #endif
 #include <sys/stat.h>
 #include <sys/types.h>
+#if defined(__linux__)
+#include <dlfcn.h>
+#elif defined(__APPLE__)
+#define _DARWIN_C_SOURCE
+#include <dlfcn.h>
+#elif defined _WIN32
+#include <windows.h>
+#endif
+#include <expat.h>
 
 #ifndef DLL_UDUNITS2
-#define XML_STATIC
+#   define XML_STATIC
 #endif
-#include "expat.h"
-#include "udunits2.h"
 
-#ifndef _XOPEN_PATH_MAX
-#   define _XOPEN_PATH_MAX 1024
+#ifndef PATH_MAX
+#   define PATH_MAX 4096 // Includes terminating NUL
 #endif
 
 #define NAME_SIZE 128
@@ -97,7 +108,7 @@ static ut_status readXml(
 static File*            currFile = NULL;
 static ut_system*	unitSystem = NULL;
 static char*            text = NULL;
-static size_t           nbytes = 0;
+static size_t           nbytes = 0; /// Number of characters excluding NUL
 
 
 /*
@@ -117,9 +128,9 @@ ut_form_plural(
     const char*	plural = NULL;		/* failure */
 
     if (singular != NULL) {
-        int     length = strlen(singular);
+        size_t length = strlen(singular);
 
-	if (length + 3 >= (signed)sizeof(buf)) {
+	if (length + 3 >= sizeof(buf)) {
             ut_set_status(UT_SYNTAX);
 	    ut_handle_error_message("Singular form is too long");
 	    XML_StopParser(currFile->parser, 0);
@@ -687,7 +698,7 @@ mapIdToUnit(
 	    nchar =
                 ut_format(prev, buf, sizeof(buf), UT_ASCII | UT_DEFINITION);
 
-	if (nchar >= 0 && (unsigned)nchar < sizeof(buf)) {
+	if (nchar >= 0 && nchar < sizeof(buf)) {
 	    buf[nchar] = 0;
 
             ut_set_status(UT_PARSE);
@@ -722,7 +733,7 @@ mapIdToUnit(
 		    nchar = ut_format(prev, buf, sizeof(buf),
 			UT_ASCII | UT_DEFINITION);
 
-		if (nchar < 0 || (unsigned)nchar >= sizeof(buf)) {
+		if (nchar < 0 || nchar >= sizeof(buf)) {
                     ut_set_status(UT_PARSE);
 		    ut_handle_error_message("Definition of \"%s\" in \"%s\", "
                         "line %d, overrides prefixed-unit", id,
@@ -935,7 +946,6 @@ accumulateText(
 {
     char*	tmp = realloc(text, nbytes + len + 1);
 
-    (void)data;
     if (tmp == NULL) {
         ut_set_status(UT_OS);
 	ut_handle_error_message(strerror(errno));
@@ -1035,8 +1045,6 @@ startUnitSystem(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != START) {
 	ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <unit-system> element");
@@ -1053,9 +1061,7 @@ startUnitSystem(
 static void
 endUnitSystem(
     void*		data)
-{
-    (void)data;
-}
+{}
 
 
 /*
@@ -1066,8 +1072,6 @@ startPrefix(
     void*		data,
     const char* const*	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT_SYSTEM) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <prefix> element");
@@ -1088,7 +1092,6 @@ static void
 endPrefix(
     void*		data)
 {
-    (void)data;
     if (!currFile->haveValue || !currFile->prefixAdded) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Prefix incompletely specified");
@@ -1110,8 +1113,6 @@ startUnit(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT_SYSTEM) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <unit> element");
@@ -1140,7 +1141,6 @@ static void
 endUnit(
     void*		data)
 {
-    (void)data;
     if (currFile->isBase) {
         if (!currFile->nameSeen) {
             ut_set_status(UT_PARSE);
@@ -1168,8 +1168,6 @@ startBase(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <base> element");
@@ -1203,7 +1201,6 @@ static void
 endBase(
     void*		data)
 {
-    (void)data;
     currFile->unit = ut_new_base_unit(unitSystem);
 
     if (currFile->unit == NULL) {
@@ -1225,8 +1222,6 @@ startDimensionless(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <dimensionless> element");
@@ -1261,7 +1256,6 @@ static void
 endDimensionless(
     void*		data)
 {
-    (void)data;
     currFile->unit = ut_new_dimensionless_unit(unitSystem);
 
     if (currFile->unit == NULL) {
@@ -1283,8 +1277,6 @@ startDef(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <def> element");
@@ -1321,7 +1313,6 @@ static void
 endDef(
     void*		data)
 {
-    (void)data;
     if (nbytes == 0) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Empty unit definition");
@@ -1348,8 +1339,6 @@ startName(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context == PREFIX) {
         if (!currFile->haveValue) {
             ut_set_status(UT_PARSE);
@@ -1391,7 +1380,6 @@ static void
 endName(
     void*		data)
 {
-    (void)data;
     if (currFile->context == PREFIX) {
 	if (!currFile->haveValue) {
             ut_set_status(UT_PARSE);
@@ -1518,8 +1506,6 @@ startSingular(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT_NAME && currFile->context != ALIAS_NAME) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <singular> element");
@@ -1544,7 +1530,6 @@ static void
 endSingular(
     void*		data)
 {
-    (void)data;
     if (nbytes >= NAME_SIZE) {
         ut_set_status(UT_PARSE);
         ut_handle_error_message("Name \"%s\" is too long", text);
@@ -1564,8 +1549,6 @@ startPlural(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT_NAME && currFile->context != ALIAS_NAME ) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <plural> element");
@@ -1590,7 +1573,6 @@ static void
 endPlural(
     void*		data)
 {
-    (void)data;
     if (nbytes == 0) {
         ut_set_status(UT_PARSE);
         ut_handle_error_message("Empty <plural> element");
@@ -1607,6 +1589,37 @@ endPlural(
 }
 
 
+/*
+ * Handles the start of a <noplural> element.
+ */
+static void
+startNoPlural(
+    void*		data,
+    const char**	atts)
+{
+    if (currFile->context != UNIT_NAME && currFile->context != ALIAS_NAME) {
+        ut_set_status(UT_PARSE);
+	ut_handle_error_message("Wrong place for <noplural> element");
+	XML_StopParser(currFile->parser, 0);
+    }
+    else if (currFile->plural[0] != 0) {
+        ut_set_status(UT_PARSE);
+	ut_handle_error_message("<plural> element already seen");
+	XML_StopParser(currFile->parser, 0);
+    }
+}
+
+
+/*
+ * Handles the end of a <noplural> element.
+ */
+static void
+endNoPlural(
+    void*		data)
+{
+    currFile->noPLural = 1;
+}
+
 
 /*
  * Handles the start of a <symbol> element.
@@ -1616,8 +1629,6 @@ startSymbol(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context == PREFIX) {
         if (!currFile->haveValue) {
             ut_set_status(UT_PARSE);
@@ -1656,7 +1667,6 @@ static void
 endSymbol(
     void*		data)
 {
-    (void)data;
     if (currFile->context == PREFIX) {
         if (ut_add_symbol_prefix(unitSystem, text, currFile->value) !=
                 UT_SUCCESS) {
@@ -1691,8 +1701,6 @@ startValue(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != PREFIX) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <value> element");
@@ -1719,7 +1727,6 @@ endValue(
 {
     char*	endPtr;
 
-    (void)data;
     errno = 0;
     currFile->value = strtod(text, &endPtr);
 
@@ -1749,8 +1756,6 @@ startAliases(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <aliases> element");
@@ -1768,7 +1773,6 @@ static void
 endAliases(
     void*		data)
 {
-    (void)data;
     currFile->context = UNIT;
 }
 
@@ -1781,8 +1785,6 @@ startImport(
     void*		data,
     const char**	atts)
 {
-    (void)data;
-    (void)atts;
     if (currFile->context != UNIT_SYSTEM) {
         ut_set_status(UT_PARSE);
 	ut_handle_error_message("Wrong place for <import> element");
@@ -1802,10 +1804,9 @@ static void
 endImport(
     void*		data)
 {
-    char        buf[_XOPEN_PATH_MAX];
+    char        buf[PATH_MAX];
     const char* path;
 
-    (void)data;
     if (text[0] == '/') {
         path = text;
     }
@@ -1963,9 +1964,6 @@ declareXml(
     const char*	encoding,
     int		standalone)
 {
-    (void)data;
-    (void)version;
-    (void)standalone;
     if (strcasecmp(encoding, "US-ASCII") == 0) {
 	currFile->xmlEncoding = UT_ASCII;
     }
@@ -2089,7 +2087,7 @@ readXml(
         ut_handle_error_message("Couldn't create XML parser");
     }
     else {
-        char base[_XOPEN_PATH_MAX];
+        char base[PATH_MAX];
 #ifdef _MSC_VER
         {
             char drive[_MAX_DRIVE+1]; // Will have trailing colon
@@ -2100,11 +2098,11 @@ readXml(
         }
 #else
         {
-            // str*cpy() must not copy overlapping strings
-            char tmp[_XOPEN_PATH_MAX];
-            (void)strncpy(tmp, path, sizeof(tmp));
-            tmp[sizeof(tmp)-1] = 0;
-            (void)strcpy(base, dirname(tmp));
+            // Temporary buffer used because `dirname()` modifies its argument
+            char tmp[strlen(path)+1];
+            (void)strcpy(tmp, path);
+            (void)strncpy(base, dirname(tmp), sizeof(base));
+            base[sizeof(base)-1] = 0;
         }
 #endif
 
@@ -2129,6 +2127,70 @@ readXml(
 }
 
 
+/* A bit hacky but much better than modifying binaries. */
+static const char*
+default_udunits2_xml_path()
+{
+    // Returned absolute pathname of XML database
+    static char absXmlPathname[PATH_MAX];
+
+    if (absXmlPathname[0] == 0) {
+        const char* prefix = NULL; // Installation directory
+
+#       if defined(__APPLE__) || defined(__linux__)
+            Dl_info     info;
+            const char  sep = '/'; // Pathname component separator
+            char        buf[PATH_MAX];
+            const char  relXmlPathname[] = "share/udunits/udunits2.xml";
+
+            // The following should get pathname of shared-library
+            if (!dladdr(default_udunits2_xml_path, &info)) {
+                prefix = NULL;
+            }
+            else {
+                strncpy(buf, info.dli_fname, sizeof(buf))[sizeof(buf)-1] = 0;
+                memmove(buf, dirname(buf), sizeof(buf)); // "lib"
+                memmove(buf, dirname(buf), sizeof(buf)); // "lib/.."
+                prefix = buf;
+            }
+#       elif defined(_WIN32)
+            const char sep = '\\'; // Pathname component separator
+            char       buf[MAX_PATH * 4];
+            const char relXmlPathname[] = "share\\udunits\\udunits2.xml";
+            HMODULE    hModule = NULL;
+
+            GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+                    (LPCTSTR)default_udunits2_xml_path, &hModule);
+
+            GetModuleFileName(hModule, buf, sizeof(buf)); // Library pathname
+            *strrchr(buf, sep) = 0; // "lib"
+            *strrchr(buf, sep) = 0; // "lib/.."
+
+            prefix = buf;
+#       endif
+
+        if (prefix == NULL) {
+            strncpy(absXmlPathname, DEFAULT_UDUNITS2_XML_PATH,
+                    sizeof(absXmlPathname));
+        } // Use default pathname
+        else {
+            int prefixLen = strlen(prefix);
+            if (prefix[prefixLen-1] == sep) {
+                --prefixLen;
+                if (prefix[prefixLen-1] == sep)
+                    --prefixLen;
+            }
+
+            snprintf(absXmlPathname, sizeof(absXmlPathname), "%.*s%c%s",
+                    prefixLen, prefix, sep, relXmlPathname);
+        } // Use computed pathname
+
+        absXmlPathname[sizeof(absXmlPathname)-1] = 0; // Ensure NUL terminated
+    } // `absXmlPathname` not set
+
+    return absXmlPathname;
+}
+
 /**
  * Returns the pathname of the XML database.
  *
@@ -2138,11 +2200,11 @@ readXml(
  *                  pathname specified by the environment variable
  *                  UDUNITS2_XML_PATH is returned if set; otherwise, the
  *                  compile-time pathname of the installed, default, unit
- *                  database is returned.
+ *                  database is returned. Caller must not free.
  */
 const char*
 ut_get_path_xml(
-	const char*	path,
+	const char* path,
 	ut_status*  status)
 {
     if (path != NULL) {
@@ -2155,7 +2217,7 @@ ut_get_path_xml(
         	*status = UT_OPEN_ENV;
     	}
     	else {
-          	path = DEFAULT_UDUNITS2_XML_PATH;
+          	path = default_udunits2_xml_path();
         	*status = UT_OPEN_DEFAULT;
     	}
     }

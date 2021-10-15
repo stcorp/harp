@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -14,19 +14,19 @@
  *	ProductUnit	A unit that, when it is created, contains all the
  *			BasicUnit-s that exist at the time, each raised
  *			to an integral power (that can be zero).
- *	GalileanUnit	A unit whose value is related to another unit by a 
- *			Galilean transformation (y = ax + b).  Examples include
+ *	GalileanUnit	A unit whose value is related to another unit by a
+ *			Galilean transformation (y = ax + b). Examples include
  *			"yard" and "degrees Fahrenheit".
  *	LogUnit		A unit that is related to another unit by a logarithmic
  *			transformation (y = a*log(x)).  The "Bel" is an example.
  *	TimestampUnit	A wrong-headed unit that shouldn't exist but does for
- *			backward compatibility.  It was intended to provide 
+ *			backward compatibility.  It was intended to provide
  *			similar functionality as the GalileanUnit, but for time
  *			units (e.g., "seconds since the epoch").  Unfortunately,
  *			people try to use it for more than it is capable (e.g.,
  *			days since some time on an imaginary world with only 360
  *			days per year).
- *	ut_unit		A data-structure that encapsulates ProductUnit, 
+ *	ut_unit		A data-structure that encapsulates ProductUnit,
  *			GalileanUnit, LogUnit, and TimestampUnit.
  *
  * This module is thread-compatible but not thread-safe: multi-thread access to
@@ -35,9 +35,10 @@
 
 /*LINTLIBRARY*/
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
+#include "config.h"
+
+#include "udunits2.h"		/* this module's API */
+#include "converter.h"
 
 #include <assert.h>
 #include <ctype.h>
@@ -62,6 +63,7 @@
 #include <search.h>
 #endif
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,9 +72,6 @@
 
 #include <strings.h>
 #endif
-
-#include "udunits2.h"		/* this module's API */
-#include "converter.h"
 
 typedef enum {
     PRODUCT_EQUAL = 0,		/* The units are equal -- ignoring dimensionless
@@ -202,6 +201,15 @@ union ut_unit {
 #define IS_LOG(unit)		((unit)->common.type == LOG)
 #define IS_TIMESTAMP(unit)	((unit)->common.type == TIMESTAMP)
 
+static bool areAlmostEqual(
+        double x,
+        double y)
+{
+    return (x == 0 || y == 0)
+	? fabs(x - y) < 10*DBL_EPSILON
+	: fabs(1.0 - x / y) < 10*DBL_EPSILON;
+}
+
 /*
  * The following function are declared here because they are used in the
  * basic-unit section  before they are defined in the product-unit section.
@@ -308,7 +316,7 @@ gregorianDateToJulianDay(year, month, day)
     long	julday;	/* returned Julian day number */
 
     /*
-     * Because there is no 0 BC or 0 AD, assume the user wants the start of 
+     * Because there is no 0 BC or 0 AD, assume the user wants the start of
      * the common era if they specify year 0.
      */
     if (year == 0)
@@ -336,7 +344,7 @@ gregorianDateToJulianDay(year, month, day)
     if (jy >= 0)
     {
 	julday += 365 * jy;
-	julday += 0.25 * jy;
+	julday += (long)(0.25 * jy);
     }
     else
     {
@@ -394,51 +402,37 @@ ut_encode_clock(
     int		minutes,
     double	seconds)
 {
+    if (abs(hours) >= 24 || abs(minutes) >= 60 || fabs(seconds) > 62) {
+        ut_set_status(UT_BAD_ARG);
+        return 0;
+    }
+
     return (hours*60 + minutes)*60 + seconds;
 }
 
-
-/*
- * Decompose a value into a set of values accounting for uncertainty.
- */
-static void
-decompose(value, uncer, nbasis, basis, count)
-    double        value;
-    double        uncer;		/* >= 0 */
-    int           nbasis;
-    const double *basis;		/* all values > 0 */
-    double       *count;
+inline static int
+mydiv(  const double   numer,
+        const unsigned denom,
+        double* const  rem)
 {
-    int		i;
+    int n = abs((int)numer)/denom;
+    if (numer < 0)
+        n = -n;
+    *rem = numer - (long)n * (long)denom;
+    return n;
+}
 
-    for (i = 0; i < nbasis; i++)
-    {
-	double	r = fmod(value, basis[i]);	/* remainder */
-
-	/* Adjust remainder to minimum magnitude. */
-	if (ABS(2*r) > basis[i])
-	    r += r > 0
-		    ? -basis[i]
-		    :  basis[i];
-
-	if (ABS(r) <= uncer)
-	{
-	    /* The value equals a basis multiple within the uncertainty. */
-	    double	half = value < 0 ? -basis[i]/2 : basis[i]/2;
-	    modf((value+half)/basis[i], count+i);
-	    break;
-	}
-
-	value = basis[i] * modf(value/basis[i], count+i);
-    }
-
-    if (i >= nbasis) {
-	count[--i] += value;
-    }
-    else {
-	for (i++; i < nbasis; i++)
-	    count[i] = 0;
-    }
+static void
+decomp( double        value,
+        int* const    days,
+        int* const    hours,
+        int* const    minutes,
+        double* const seconds)
+{
+    double rem;
+    *days = mydiv(value, 86400, &rem);
+    *hours = mydiv(rem, 3600, &rem);
+    *minutes = mydiv(rem, 60, seconds);
 }
 
 
@@ -465,7 +459,7 @@ ut_encode_date(
 
 /*
  * Encodes a time as a double-precision value.  The convenience function is
- * equivalent to "ut_encode_date(year,month,day) + 
+ * equivalent to "ut_encode_date(year,month,day) +
  * ut_encode_clock(hour,minute,second)"
  *
  * Arguments:
@@ -516,40 +510,19 @@ ut_decode_time(
     double	*second,
     double	*resolution)
 {
-    int			days;
-    int			hours;
-    int			minutes;
-    double		seconds;
-    double		uncer;		/* uncertainty of input value */
-    typedef union
-    {
-	double	    vec[7];
-	struct
-	{
-	    double	days;
-	    double	hours12;
-	    double	hours;
-	    double	minutes10;
-	    double	minutes;
-	    double	seconds10;
-	    double	seconds;
-	}	    ind;
-    } Basis;
-    Basis		counts;
-    static const Basis	basis = { {86400, 43200, 3600, 600, 60, 10, 1} };
+    int     days;
+    int     hours;
+    int     minutes;
+    int     d;
+    double  seconds;
+    /* Uncertainty of input value */
+    double  uncer = ldexp(value < 0 ? -value : value, -DBL_MANT_DIG);
 
-    uncer = ldexp(value < 0 ? -value : value, -DBL_MANT_DIG);
-
-    days = (int)floor(value/basis.ind.days);
-    value -= days * basis.ind.days;		/* make positive excess */
-
-    decompose(value, uncer, (int)(sizeof(basis.vec)/sizeof(basis.vec[0])),
-	   basis.vec, counts.vec);
-
-    days += counts.ind.days;
-    hours = (int)counts.ind.hours12 * 12 + (int)counts.ind.hours;
-    minutes = (int)counts.ind.minutes10 * 10 + (int)counts.ind.minutes;
-    seconds = (int)counts.ind.seconds10 * 10 + counts.ind.seconds;
+    days = (int)floor(value/86400.0);
+    // `long long` is necessary for dates like `1-01-01`
+    value -= days * (long long)86400; /* make positive excess */
+    decomp(value, &d, &hours, &minutes, &seconds);
+    days += d;
 
     if (seconds >= 60) {
 	seconds -= 60;
@@ -621,7 +594,7 @@ static UnitOps	basicOps;
  *
  * Arguments:
  *	system		The unit-system to be associated with the new instance.
- *	isDimensionless	Whether or not the unit is dimensionless (e.g., 
+ *	isDimensionless	Whether or not the unit is dimensionless (e.g.,
  *			"radian").
  *	index		The index of the basic-unit in "system".
  * Returns:
@@ -665,7 +638,7 @@ basicNew(
 	    basicUnit->index = index;
 	    basicUnit->isDimensionless = isDimensionless;
 	    basicUnit->product = product;
-	    error = 0;
+	    error = 0;                  // Success
 	}				/* "basicUnit" allocated */
 
 	if (error)
@@ -1134,7 +1107,7 @@ productMultiply(
 	    }
 	    else {
 		static short*	powers = NULL;
-		
+
 		powers = realloc(powers, sizeof(short)*sumCount);
 
 		if (powers == NULL) {
@@ -1603,18 +1576,17 @@ productIsDimensionless(
 static UnitOps	galileanOps;
 
 
-/*
+/**
  * Returns a new unit instance.  The returned instance is not necessarily a
  * Galilean unit.
  *
- * Arguments:
- *	scale	The scale-factor for the new unit.
- *	unit	The underlying unit.  May be freed upon return.
- *	offset	The offset for the new unit.
- * Returns:
- *	NULL	Failure.  "ut_get_status()" will be:
- *		    UT_OS	Operating-system error.  See "errno".
- *	else	The newly-allocated, galilean-unit.
+ * @param[in] scale	The scale-factor for the new unit.
+ * @param[in] unit	The underlying unit.  May be freed upon return.
+ * @param[in] offset	The offset for the new unit.
+ * @retval    NULL	Failure.  `ut_get_status()` will be:
+ *		          UT_OS	Operating-system error.  See `errno`.
+ *		          UT_BAD_ARG  `scale == 0 || unit == NULL`
+ * @return              The newly-allocated, galilean-unit.
  */
 static ut_unit*
 galileanNew(
@@ -1622,48 +1594,51 @@ galileanNew(
     const ut_unit*	unit,
     double		offset)
 {
-    ut_unit*	newUnit = NULL;	/* failure */
+    ut_unit*	newUnit;
 
-    assert(scale != 0);
-    assert(unit != NULL);
-
-    if (IS_GALILEAN(unit)) {
-	scale *= unit->galilean.scale;
-	offset += (unit->galilean.scale * unit->galilean.offset) / scale;
-	unit = unit->galilean.unit;
-    }
-
-    if (scale == 1 && offset == 0) {
-	newUnit = CLONE(unit);
+    if (scale == 0 || unit == NULL) {
+        ut_set_status(UT_BAD_ARG);
+        newUnit = NULL;
     }
     else {
-	GalileanUnit*	galileanUnit = malloc(sizeof(GalileanUnit));
+        if (IS_GALILEAN(unit)) {
+            scale *= unit->galilean.scale;
+            offset += (unit->galilean.scale * unit->galilean.offset) / scale;
+            unit = unit->galilean.unit;
+        }
 
-	if (galileanUnit == NULL) {
-	    ut_set_status(UT_OS);
-	    ut_handle_error_message("galileanNew(): "
-		"Couldn't allocate %lu-byte Galilean unit",
-		sizeof(GalileanUnit));
-	}
-	else {
-	    int	error = 1;
+        if (areAlmostEqual(scale, 1) && areAlmostEqual(offset, 0)) {
+            newUnit = CLONE(unit);
+        }
+        else {
+            GalileanUnit*	galileanUnit = malloc(sizeof(GalileanUnit));
 
-	    if (commonInit(&galileanUnit->common, &galileanOps,
-		    unit->common.system, GALILEAN) == 0) {
-		galileanUnit->scale = scale;
-		galileanUnit->offset = offset;
-		galileanUnit->unit = CLONE(unit);
-		error = 0;
-	    }
+            if (galileanUnit == NULL) {
+                ut_set_status(UT_OS);
+                ut_handle_error_message("galileanNew(): "
+                    "Couldn't allocate %lu-byte Galilean unit",
+                    sizeof(GalileanUnit));
+            }
+            else {
+                int	error = 1;
 
-	    if (error) {
-		free(galileanUnit);
-		galileanUnit = NULL;
-	    }
-	}				/* "galileanUnit" allocated */
+                if (commonInit(&galileanUnit->common, &galileanOps,
+                        unit->common.system, GALILEAN) == 0) {
+                    galileanUnit->scale = scale;
+                    galileanUnit->offset = offset;
+                    galileanUnit->unit = CLONE(unit);
+                    error = 0;
+                }
 
-	newUnit = (ut_unit*)galileanUnit;
-    }					/* Galilean unit necessary */
+                if (error) {
+                    free(galileanUnit);
+                    galileanUnit = NULL;
+                }
+            }				/* "galileanUnit" allocated */
+
+            newUnit = (ut_unit*)galileanUnit;
+        }					/* Galilean unit necessary */
+    } // `scale != 0 && unit != NULL`
 
     return newUnit;
 }
@@ -1791,8 +1766,8 @@ galileanMultiply(
 	}
     }
     else if (IS_GALILEAN(unit2)) {
-	const GalileanUnit* const	galilean2 = &unit2->galilean;
-	ut_unit*				tmp =
+	const GalileanUnit* const galilean2 = &unit2->galilean;
+	ut_unit*	          tmp =
 	    MULTIPLY(galilean1->unit, galilean2->unit);
 
 	if (tmp != NULL) {
@@ -2098,6 +2073,45 @@ timestampNewOrigin(
 }
 
 
+#if 0
+/*
+ * Returns a new unit instance.
+ *
+ * Arguments:
+ *	unit	The underlying unit.  May be freed upon return.
+ *	year	The year of the origin.
+ *	month	The month of the origin.
+ *	day	The day of the origin.
+ *	hour	The hour of the origin.
+ *	minute	The minute of the origin.
+ *	second	The second of the origin.
+ * Returns:
+ *	NULL	Failure.  "ut_get_status()" will be:
+ *		    UT_OS		Operating-system error.  See "errno".
+ *		    UT_MEANINGLESS	Creation of a timestamp unit base on
+ *					"unit" is not meaningful.
+ *		    UT_NO_SECOND	The associated unit-system doesn't
+ *					contain a unit named "second".
+ *	else	The newly-allocated, timestamp-unit.
+ */
+static ut_unit*
+timestampNew(
+    ut_unit*	unit,
+    const int	year,
+    const int	month,
+    const int	day,
+    const int	hour,
+    const int	minute,
+    double	second)
+{
+    assert(unit != NULL);
+
+    return timestampNewOrigin(
+	unit, ut_encode_time(year, month, day, hour, minute, second));
+}
+#endif
+
+
 static ProductUnit*
 timestampGetProduct(
     const ut_unit* const	unit)
@@ -2263,7 +2277,6 @@ static int
 timestampInitConverterToProduct(
     ut_unit* const	unit)
 {
-    (void)unit;
     /*
      * This function is never called.
      */
@@ -2286,7 +2299,6 @@ static int
 timestampInitConverterFromProduct(
     ut_unit* const	unit)
 {
-    (void)unit;
     /*
      * This function is never called.
      */
@@ -3338,7 +3350,7 @@ ut_divide(
  *
  * Arguments:
  *	unit	Pointer to the unit.
- *	power	The power by which to raise "unit".  Must be greater than or 
+ *	power	The power by which to raise "unit".  Must be greater than or
  *		equal to -255 and less than or equal to 255.
  * Returns:
  *	NULL	Failure.  "ut_get_status()" will be:
@@ -3365,7 +3377,7 @@ ut_raise(
 	ut_handle_error_message("ut_raise(): Invalid power argument");
     }
     else {
-	result = 
+	result =
 	    power == 0
 		? unit->common.system->one
 		: power == 1
@@ -3382,7 +3394,7 @@ ut_raise(
  *
  * Arguments:
  *	unit	Pointer to the unit.
- *	root	The root to take of "unit".  Must be greater than or 
+ *	root	The root to take of "unit".  Must be greater than or
  *		equal to 1 and less than or equal to 255.
  * Returns:
  *	NULL	Failure.  "ut_get_status()" will be:
@@ -3412,7 +3424,7 @@ ut_root(
 	ut_handle_error_message("ut_root(): Invalid root argument");
     }
     else {
-	result = 
+	result =
 	    root == 1
 		? CLONE(unit)
                 : ROOT(unit, root);
@@ -3488,7 +3500,7 @@ ut_log(
 
 /*
  * Indicates if numeric values in one unit are convertible to numeric values in
- * another unit via "ut_get_converter()".  In making this determination, 
+ * another unit via "ut_get_converter()".  In making this determination,
  * dimensionless units are ignored.
  *
  * Arguments:
@@ -3661,7 +3673,7 @@ ut_get_converter(
 		    }
 		    else {
 			cv_converter*	fromSeconds = ut_get_converter(
-			    to->common.system->second, to->timestamp.unit); 
+			    to->common.system->second, to->timestamp.unit);
 
 			if (fromSeconds == NULL) {
 			    ut_set_status(UT_OS);

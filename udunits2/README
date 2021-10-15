@@ -1,5 +1,5 @@
 
-These files are taken from udunits, version 2.2.24.
+These files are taken from udunits, version 2.2.28.
 
 The source files have been slightly modified in order to fit them into this
 build system. The changes that were made are:
@@ -9,8 +9,8 @@ build system. The changes that were made are:
 
  - scanner.l and parser.y have been renamed to utscanner.l and utparser.y
 
- - added options '%option prefix="harp_ut"' and '%option nounput' to
-   utscanner.l
+ - added options '%option prefix="harp_ut"', '%option noinput', and
+   '%option nounput' to utscanner.l
 
  - scanner.c is no longer included by parser.y resulting in the following
    additional changes:
@@ -22,26 +22,5 @@ build system. The changes that were made are:
    - added ut_get_bufferpos function (returning yy_c_buf_p  - buf->yy_ch_buf)
    - added several function declarations to prevent compiler warnings
 
- - Added several casts to unsigned to eliminate 'comparison between signed
-   and unsigned' warnings.
-
- - Fixed vector initialisation in ut_decode_time() in unticore.c.
-
- - Added '(void)variable;' entries in many functions to eliminate
-  'unused parameter' warnings.
-
  - Made the following functions static: gregorianDateToJulianDay,
    julianDayToGregorianDate
-
- - Removed the following static functions since they were not used:
-   utparser.y:clock_to_time()
-   utparser.y:timezone_to_time()
-   utparser.y:to_clock()
-   unitcore.c:timestampNew()
-   xml.c:startNoPlural()
-   xml.c:endNoPlural()
-
- - use '_XOPEN_SOURCE 600' instead of '_XOPEN_SOURCE 500' to prevent
-   warnings on Mac OS X.
-
- - Fixed spelling errors conform https://github.com/Unidata/UDUNITS-2/commit/8ecf9f48281eb86ec324ba339dc7a5d4c42b52e7

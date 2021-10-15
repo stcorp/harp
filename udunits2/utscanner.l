@@ -21,7 +21,7 @@
 
 #include <ctype.h>
 #include <errno.h>
-#define _USE_MATH_DEFINES
+#include <limits.h>
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -50,7 +50,7 @@ int ut_get_bufferpos(YY_BUFFER_STATE buf)
  * @retval     DATE     Success
  * @retval     ERR      Error
  */
-static double decodeDate(
+static int decodeDate(
     const char* const   text,
     const char* const   format,
     double* const       date)
@@ -227,6 +227,11 @@ per                     [Pp][Ee][Rr]
 	    {"\xe2\x81\xb8", 3},        /* 8 */
 	    {"\xe2\x81\xb9", 3},        /* 9 */
 	};
+
+        if (exponent > INT_MAX/10) {
+            status = ERR;
+            break;
+        }
 
 	exponent *= 10;
 

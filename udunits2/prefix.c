@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -11,9 +11,11 @@
 
 /*LINTLIBRARY*/
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
+#include "config.h"
+
+#include "prefix.h"
+#include "udunits2.h"
+#include "systemMap.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -23,12 +25,7 @@
 #include <search.h>
 #endif
 #include <stdlib.h>
-
 #include <string.h>
-
-#include "prefix.h"
-#include "udunits2.h"
-#include "systemMap.h"
 
 typedef struct {
     void*	tree;
@@ -225,7 +222,7 @@ ptvmFind(
 	    for (i = 0; i < len; i++) {
 		PrefixSearchEntry		targetEntry;
 		PrefixSearchEntry* const*	treeEntry;
-		
+
 		targetEntry.character = string[i];
 		treeEntry = tfind(&targetEntry, tree, map->compare);
 
@@ -314,7 +311,7 @@ addPrefix(
 		    const PrefixSearchEntry*	entry =
 			ptvmSearch(*prefixToValue, prefix, value);
 
-		    status = 
+		    status =
 			entry == NULL
 			    ? UT_OS
 			    : (entry->value == value)
@@ -399,7 +396,7 @@ ut_add_symbol_prefix(
  *	len		NULL or pointer to the memory location to receive the
  *			number of characters in the name-prefix, if one is
  *			discovered.
- *	
+ *
  * Returns:
  *	UT_SUCCESS	Success.
  *	UT_BAD_ARG	"system" is NULL, "systemMap" is NULL, "compare" is

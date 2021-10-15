@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -11,21 +11,15 @@
 
 /*LINTLIBRARY*/
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
+#include "config.h"
 
-#ifdef _MSC_VER
-#define _USE_MATH_DEFINES
-#include "udunits2.h" /* For the MSVC-specific defines. */
-#endif
+#include "udunits2.h" // Accommodates Windows & includes "converter.h"
 
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "converter.h"		/* this module's API */
 
 typedef struct {
     cv_converter*	(*clone)(cv_converter*);
@@ -100,7 +94,6 @@ static void
 nonFree(
     cv_converter* const conv)
 {
-    (void)conv;
 }
 
 
@@ -129,7 +122,6 @@ static cv_converter*
 trivialClone(
     cv_converter* const	conv)
 {
-    (void)conv;
     return cv_get_trivial();
 }
 
@@ -139,7 +131,6 @@ trivialConvertDouble(
     const cv_converter* const	conv,
     const double		value)
 {
-    (void)conv;
     return value;
 }
 
@@ -151,7 +142,6 @@ trivialConvertFloats(
     const size_t		count,
     float* 			out)
 {
-    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -170,7 +160,6 @@ trivialConvertDoubles(
     const size_t		count,
     double* 			out)
 {
-    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -189,7 +178,6 @@ trivialGetExpression(
     const size_t		max,
     const char* const		variable)
 {
-    (void)conv;
     return snprintf(buf, max, "%s", variable);
 }
 
@@ -213,7 +201,6 @@ static cv_converter*
 reciprocalClone(
     cv_converter* const	conv)
 {
-    (void)conv;
     return cv_get_inverse();
 }
 
@@ -222,7 +209,6 @@ reciprocalConvertDouble(
     const cv_converter* const	conv,
     const double		value)
 {
-    (void)conv;
     return 1.0 / value;
 }
 
@@ -234,7 +220,6 @@ reciprocalConvertFloats(
     const size_t		count,
     float* 			out)
 {
-    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -262,7 +247,6 @@ reciprocalConvertDoubles(
     const size_t		count,
     double* 			out)
 {
-    (void)conv;
     if (in == NULL || out == NULL) {
 	out = NULL;
     }
@@ -290,7 +274,6 @@ reciprocalGetExpression(
     const size_t		max,
     const char* const		variable)
 {
-    (void)conv;
     return
 	cvNeedsParentheses(variable)
 	? snprintf(buf, max, "1/(%s)", variable)
@@ -493,9 +476,9 @@ offsetGetExpression(
 
     return
 	cvNeedsParentheses(variable)
-	    ? snprintf(buf, max, "(%s) %c %g", variable, oper, 
+	    ? snprintf(buf, max, "(%s) %c %g", variable, oper,
 		fabs(conv->offset.value))
-	    : snprintf(buf, max, "%s %c %g", variable, oper, 
+	    : snprintf(buf, max, "%s %c %g", variable, oper,
 		fabs(conv->offset.value));
 }
 
@@ -574,12 +557,12 @@ galileanConvertDoubles(
 
 	if (in < out) {
 	    for (i = count; i-- > 0;)
-		out[i] = conv->galilean.slope * in[i] + 
+		out[i] = conv->galilean.slope * in[i] +
 		    conv->galilean.intercept;
 	}
 	else {
 	    for (i = 0; i < count; i++)
-		out[i] = conv->galilean.slope * in[i] + 
+		out[i] = conv->galilean.slope * in[i] +
 		    conv->galilean.intercept;
 	}
     }
@@ -705,7 +688,7 @@ logGetExpression(
     const size_t		max,
     const char* const		variable)
 {
-    return 
+    return
         conv->log.logE == M_LOG2E
             ? snprintf(buf, max, "lb(%s)", variable)
             : conv->log.logE == 1
@@ -806,7 +789,7 @@ expGetExpression(
     const size_t		max,
     const char* const		variable)
 {
-    return 
+    return
 	cvNeedsParentheses(variable)
 	    ? snprintf(buf, max, "pow(%g, (%s))", conv->exp.base, variable)
 	    : snprintf(buf, max, "pow(%g, %s)", conv->exp.base, variable);
@@ -879,7 +862,7 @@ compositeConvertDoubles(
 	out = NULL;
     }
     else {
-	out = 
+	out =
 	    cv_convert_doubles(
 		conv->composite.second,
 		cv_convert_doubles(conv->composite.first, in, count, out),
@@ -995,7 +978,7 @@ cv_get_scale(
 	conv = &trivialConverter;
     }
     else {
-	conv = malloc(sizeof(ScaleConverter));
+	conv = malloc(sizeof(*conv));
 
 	if (conv != NULL) {
 	    conv->ops = &scaleOps;
@@ -1028,7 +1011,7 @@ cv_get_offset(
 	conv = &trivialConverter;
     }
     else {
-	conv = malloc(sizeof(OffsetConverter));
+	conv = malloc(sizeof(*conv));
 
 	if (conv != NULL) {
 	    conv->ops = &offsetOps;
@@ -1066,7 +1049,7 @@ cv_get_galilean(
 	conv = cv_get_scale(slope);
     }
     else {
-	conv = malloc(sizeof(GalileanConverter));
+	conv = malloc(sizeof(*conv));
 
 	if (conv != NULL) {
 	    conv->ops = &galileanOps;
@@ -1102,11 +1085,11 @@ cv_get_log(
 	conv = NULL;
     }
     else {
-	conv = malloc(sizeof(LogConverter));
+	conv = malloc(sizeof(*conv));
 
 	if (conv != NULL) {
 	    conv->ops = &logOps;
-	    conv->log.logE = 
+	    conv->log.logE =
                 base == 2
                     ? M_LOG2E
                     : base == M_E
@@ -1143,7 +1126,7 @@ cv_get_pow(
 	conv = NULL;
     }
     else {
-	conv = malloc(sizeof(ExpConverter));
+	conv = malloc(sizeof(*conv));
 
 	if (conv != NULL) {
 	    conv->ops = &expOps;
@@ -1206,20 +1189,20 @@ cv_combine(
 	    }
 	    else if (IS_GALILEAN(second)) {
 		conv = cv_get_galilean(
-		    first->scale.value * second->galilean.slope, 
+		    first->scale.value * second->galilean.slope,
 		    second->galilean.intercept);
 	    }
 	}
 	else if (IS_OFFSET(first)) {
 	    if (IS_SCALE(second)) {
-		conv = cv_get_galilean(second->scale.value, 
+		conv = cv_get_galilean(second->scale.value,
 		    first->offset.value * second->scale.value);
 	    }
 	    else if (IS_OFFSET(second)) {
 		conv = cv_get_offset(first->offset.value + second->offset.value);
 	    }
 	    else if (IS_GALILEAN(second)) {
-		conv = cv_get_galilean(second->galilean.slope, 
+		conv = cv_get_galilean(second->galilean.slope,
 		    first->offset.value * second->galilean.slope +
 			second->galilean.intercept);
 	    }
@@ -1253,7 +1236,7 @@ cv_combine(
                 cv_converter*	c2 = CV_CLONE(second);
 
                 if (c2 != NULL) {
-                    conv = malloc(sizeof(CompositeConverter));
+                    conv = malloc(sizeof(*conv));
 
                     if (conv != NULL) {
                         conv->composite.ops = &compositeOps;

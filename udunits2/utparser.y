@@ -1,6 +1,7 @@
 %{
 /*
- * Copyright 2013 University Corporation for Atmospheric Research
+ * Copyright 2020 University Corporation for Atmospheric Research. All rights
+ * reserved.
  *
  * This file is part of the UDUNITS-2 package.  See the file COPYRIGHT
  * in the top-level source-directory of the package for copying and
@@ -9,8 +10,8 @@
 /*
  * bison(1)-based parser for decoding formatted unit specifications.
  *
- * This module is thread-compatible but not thread-safe.  Multi-threaded
- * access must be externally synchronized.
+ * This module is thread-compatible but not thread-safe: multi-threaded access
+ * must be externally synchronized.
  */
 
 /*LINTLIBRARY*/
@@ -55,21 +56,21 @@
 #define yyname		utyyname
 #define yyrule		utyyrule
 
-#ifndef	_XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
-
 #include "config.h"
+
+#include "prefix.h"
+#include "udunits2.h"
+
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
-#include <stdlib.h>
+#include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #ifndef _MSC_VER
 #include <strings.h>
 #endif
-#include "udunits2.h"
 
 static ut_unit*		_finalUnit;	/* fully-parsed specification */
 static ut_system*	_unitSystem;	/* The unit-system to use */
@@ -153,6 +154,86 @@ uterror(
 }
 
 /**
+ * Parses an integer value into broken-down clock-time. The value is assumed to
+ * have the form H[H[MM[SS]]].
+ *
+ * @param[in]  value   The integer value.
+ * @param[out] hour    The hour field.
+ * @param[out] minute  The minute field. Set to zero if appropriate.
+ * @param[out] second  The second field. Set to zero if appropriate.
+ */
+static void to_clock(
+    unsigned long       value,
+    unsigned* const     hour,
+    unsigned* const     minute,
+    unsigned* const     second)
+{
+    if (value > 0)
+        while (value < 10000)
+            value *= 10;
+
+    *hour = value / 10000;
+    *minute = (value % 10000) / 100;
+    *second = value % 100;
+}
+
+/**
+ * Converts an integer value into a timezone offset as used by this package.
+ *
+ * @param[in]  value  The integer value. Must correspond to [+|-]H[H[MM]].
+ * @param[out] time   The corresponding time as used by this package.
+ * @retval     0      Success. "*time" is set.
+ * @retval     -1     The integer value is invalid.
+ */
+static int timezone_to_time(
+    const long    value,
+    double* const time)
+{
+    unsigned hour, minute, second;
+
+    if (value < -2400 || value > 2400)
+        return -1;
+
+    to_clock(value < 0 ? -value : value, &hour, &minute, &second);
+
+    if (hour > 24 || minute >= 60)
+        return -1;
+
+    *time = (value >= 0)
+            ? ut_encode_clock(hour, minute, second)
+            : -ut_encode_clock(hour, minute, second);
+
+    return 0;
+}
+
+/**
+ * Converts an integer value into a time as used by this package.
+ *
+ * @param[in]  value  The integer value. Must correspond to H[H[MM[SS]]].
+ * @param[out] time   The corresponding time as used by this package.
+ * @retval     0      Success. "*time" is set.
+ * @retval     -1     The integer value is invalid.
+ */
+static int clock_to_time(
+    const long    value,
+    double* const time)
+{
+    unsigned hour, minute, second;
+
+    if (value < 0)
+        return -1;
+
+    to_clock(value, &hour, &minute, &second);
+
+    if (hour > 24 || minute >= 60 || second > 60) /* allow leap second */
+        return -1;
+
+    *time = ut_encode_clock(hour, minute, second);
+
+    return 0;
+}
+
+/**
  * Indicates if a unit is a (non-offset) time unit.
  *
  * @param[in] unit      The unit to be checked.
@@ -164,7 +245,7 @@ static int isTime(
     ut_status   prev = ut_get_status();
     ut_unit*    second = ut_get_unit_by_name(_unitSystem, "second");
     int         isTime = ut_are_convertible(unit, second);
-    
+
     ut_free(second);
     ut_set_status(prev);
     return isTime;
@@ -584,7 +665,7 @@ ut_parse(
 
             if (utparse() == 0) {
                 int     status;
-                int	n = ut_get_bufferpos(buf);
+                int    n = ut_get_bufferpos(buf);
 
                 if (n >= (signed)strlen(utf8String)) {
                     unit = _finalUnit;	/* success */
