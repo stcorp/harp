@@ -2137,7 +2137,7 @@ default_udunits2_xml_path()
     if (absXmlPathname[0] == 0) {
         const char* prefix = NULL; // Installation directory
 
-#       if defined(__APPLE__) || defined(__linux__)
+#       if 0
             Dl_info     info;
             const char  sep = '/'; // Pathname component separator
             char        buf[PATH_MAX];
