@@ -1,5 +1,5 @@
---- udunits2.h	2020-12-07 19:37:03.000000000 +0100
-+++ udunits2.h	2021-10-15 13:05:08.000000000 +0200
+--- udunits2.h
++++ udunits2.h
 @@ -11,6 +11,8 @@
  #include <stdarg.h>
  #include <stddef.h>
@@ -9,8 +9,8 @@
  #ifdef _MSC_VER
  #include <stdlib.h>
  #include <stdio.h>
---- converter.h	2020-11-23 21:21:07.000000000 +0100
-+++ converter.h	2021-10-15 09:31:55.000000000 +0200
+--- converter.h
++++ converter.h
 @@ -14,6 +14,8 @@
  
  #include <stddef.h>
@@ -20,8 +20,8 @@
  #ifdef __cplusplus
  extern "C" {
  #endif
---- unitcore.c	2020-12-08 19:27:27.000000000 +0100
-+++ unitcore.c	2021-10-15 13:24:33.000000000 +0200
+--- unitcore.c
++++ unitcore.c
 @@ -252,7 +252,7 @@
  /*
   * Convert a Julian day number to a Gregorian/Julian date.
@@ -40,8 +40,8 @@
  gregorianDateToJulianDay(year, month, day)
      int		year;	/* Gregorian year */
      int		month;	/* Gregorian month (1-12) */
---- utparser.y	2020-12-07 19:37:03.000000000 +0100
-+++ utparser.y	2021-10-15 13:23:33.000000000 +0200
+--- utparser.y
++++ utparser.y
 @@ -16,6 +16,46 @@
  
  /*LINTLIBRARY*/
@@ -218,9 +218,9 @@
                      unit = _finalUnit;	/* success */
                      status = UT_SUCCESS;
                  }
---- utscanner.l	2020-11-23 21:21:07.000000000 +0100
-+++ utscanner.l	2021-10-15 13:02:13.000000000 +0200
-@@ -9,10 +9,16 @@
+--- utscanner.l
++++ utscanner.l
+@@ -9,13 +9,20 @@
   * lex(1) specification for tokens for the Unidata units package, UDUNITS2.
   */
  
@@ -237,7 +237,11 @@
  #include <ctype.h>
  #include <errno.h>
  #include <limits.h>
-@@ -23,6 +29,17 @@
++#define _USE_MATH_DEFINES
+ #include <math.h>
+ #include <stddef.h>
+ #include <stdio.h>
+@@ -23,6 +30,17 @@
  #include <string.h>
  #include <time.h>
  
@@ -255,7 +259,7 @@
  /**
   * Decodes a date.
   *
-@@ -144,9 +161,9 @@
+@@ -144,9 +162,9 @@
  %Start		ID_SEEN SHIFT_SEEN DATE_SEEN CLOCK_SEEN
  
  %%
@@ -267,7 +271,7 @@
      }
  
  <INITIAL,ID_SEEN>{space}*(@|{after}|{from}|{ref}|{since}){space}* {
-@@ -247,7 +264,7 @@
+@@ -247,7 +265,7 @@
  }
  
  <SHIFT_SEEN>{packed_date}(T|{space}*) {

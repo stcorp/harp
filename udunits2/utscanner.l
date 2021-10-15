@@ -22,6 +22,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>
