@@ -1,14 +1,21 @@
+* Updated embedded udunits2 library to version 2.2.28.
+
+* Improved CMake build system.
+
+* Fixed issue when building against HDF5 1.12.
+
 * Updates to product ingestions:
   - AEOLUS L1B: fixed ingestion of Mie/measurement data; added sensor angles
   - AEOLUS L2B: fixed ingestion of Mie data; added sensor angles
-  - CLOUDNET L2 classification: add support for new (netcdf4) format
+  - CLOUDNET L2 classification: added support for new (netcdf4) format
   - ECMWF GRIB: fixed unit of backscatter coefficient 1/(milli sr) -> 1/(m sr),
-    add support for new masterTablesVersion=27 data
+    added support for new masterTablesVersion=27 data
   - GEOMS UVVIS.DOAS: allow template V007 files to be stored in hdf5 format
   - GHG CCI: added support for TROPOMI WFMD L2
-  - QA4ECV HCHO: add amf=clear_sky ingestion option
+  - QA4ECV HCHO: added amf=clear_sky ingestion option
   - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
   - S5P L2 NO2+FRESCO: added scene_albedo and scene_pressure
+  - S5P L2 SO2: updated SO2_type enumeration list
 
 1.13 2021-03-12
 ~~~~~~~~~~~~~~~
