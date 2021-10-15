@@ -6638,7 +6638,10 @@ static void register_so2_product(void)
 {
     const char *so2_column_options[] = { "1km", "7km", "15km" };
     const char *cloud_fraction_options[] = { "radiance" };
-    const char *so2_type_values[] = { "none", "unknown", "volcanic", "anthropogenic" };
+    const char *so2_type_values[] = {
+        "no_detection", "so2_detected", "volcanic_detection", "detection_near_anthropogenic_source",
+        "detection_at_high_sza"
+    };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -6842,7 +6845,7 @@ static void register_so2_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "SO2_type",
                                                    harp_type_int8, 1, dimension_type, NULL, description, NULL,
                                                    NULL, read_so2_type);
-    harp_variable_definition_set_enumeration_values(variable_definition, 4, so2_type_values);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, so2_type_values);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_detection_flag[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
