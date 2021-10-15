@@ -371,7 +371,7 @@ if test $ac_cv_enable_python = yes ; then
     AC_MSG_ERROR(BOXED_TEXT([ERROR: Python is required to build the Python interface.
 Try setting the PYTHON environment variable to the location of your Python interpreter.]))
   fi
-  harppythondir="$pyexecdir/harp"
+  harppythondir="$pythondir/harp"
 fi
 
 AM_CONDITIONAL(BUILD_PYTHON, test $ac_cv_enable_python = yes)
