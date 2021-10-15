@@ -326,6 +326,7 @@ EXTRA_DIST += \
 	expat/README \
 	udunits2/tsearch.c \
 	udunits2/tsearch.h \
+	udunits2/udunits_snprintf.c \
 	udunits2/LICENSE \
 	udunits2/README
 
