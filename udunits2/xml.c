@@ -2131,13 +2131,15 @@ readXml(
 static const char*
 default_udunits2_xml_path()
 {
+    return DEFAULT_UDUNITS2_XML_PATH;
+#if 0
     // Returned absolute pathname of XML database
     static char absXmlPathname[PATH_MAX];
 
     if (absXmlPathname[0] == 0) {
         const char* prefix = NULL; // Installation directory
 
-#       if 0
+#       if defined(__APPLE__) || defined(__linux__)
             Dl_info     info;
             const char  sep = '/'; // Pathname component separator
             char        buf[PATH_MAX];
@@ -2189,6 +2191,7 @@ default_udunits2_xml_path()
     } // `absXmlPathname` not set
 
     return absXmlPathname;
+#endif
 }
 
 /**
