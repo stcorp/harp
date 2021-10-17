@@ -15,6 +15,7 @@
   - QA4ECV HCHO: added amf=clear_sky ingestion option
   - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
   - S5P L2 NO2+FRESCO: added scene_albedo and scene_pressure
+  - S5P L2 O3 Profile: fixed wrong concentration variables (vmr -> nd)
   - S5P L2 SO2: updated SO2_type enumeration list
 
 1.13 2021-03-12

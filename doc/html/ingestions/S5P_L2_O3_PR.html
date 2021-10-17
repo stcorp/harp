@@ -288,47 +288,47 @@
 <td><p>[m]</p></td>
 <td><p>altitude</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_volume_mixing_ratio</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
-<td><p>[ppmv]</p></td>
-<td><p>O3 volume mixing ratio</p></td>
+<td><p>[mol/m^3]</p></td>
+<td><p>O3 number density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_volume_mixing_ratio_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_number_density_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
-<td><p>[ppmv]</p></td>
-<td><p>uncertainty of the O3 volume mixing ratio</p></td>
+<td><p>[mol/m^3]</p></td>
+<td><p>uncertainty of the O3 number density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_volume_mixing_ratio_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_number_density_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_volume_mixing_ratio_avk</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_number_density_avk</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>O3 volume mixing ratio averaging kernel</p></td>
+<td><p>O3 number density averaging kernel</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_volume_mixing_ratio_apriori</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_number_density_apriori</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
-<td><p>[ppmv]</p></td>
-<td><p>O3 volume mixing ratio apriori</p></td>
+<td><p>[mol/m^3]</p></td>
+<td><p>O3 number density apriori</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_volume_mixing_ratio_apriori_covariance</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_number_density_apriori_covariance</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</p></td>
-<td><p>[ppmv^2]</p></td>
-<td><p>covariance of the O3 volume mixing ratio apriori</p></td>
+<td><p>[(mol/m^3)^2]</p></td>
+<td><p>covariance of the O3 number density apriori</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_volume_mixing_ratio_covariance</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_number_density_covariance</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</p></td>
-<td><p>[ppmv^2]</p></td>
-<td><p>O3 volume mixing ratio covariance</p></td>
+<td><p>[(mol/m^3)^2]</p></td>
+<td><p>O3 number density covariance</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p>float</p></td>
@@ -552,27 +552,27 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/altitude[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_volume_mixing_ratio</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/ozone_profile[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_volume_mixing_ratio_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_number_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/ozone_profile_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_volume_mixing_ratio_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_number_density_validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_volume_mixing_ratio_avk</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_number_density_avk</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_volume_mixing_ratio_apriori</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_number_density_apriori</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_profile_apriori[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><p><strong>O3_volume_mixing_ratio_apriori_covariance</strong></p></td>
+<tr class="row-odd"><td rowspan="6"><p><strong>O3_number_density_apriori_covariance</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>processor version &lt; 02.01.00</p></td>
 </tr>
@@ -591,7 +591,7 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>covariance[i,j] = exp(-(latitude[i]-latitude[j])/correlation_length) * precision[i] * precision[j]</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_volume_mixing_ratio_covariance</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_number_density_covariance</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_profile_error_covariance_matrix[]</strong></p></td>
 </tr>
