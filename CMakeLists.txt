@@ -619,7 +619,7 @@ if(HARP_BUILD_R)
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/R/create_rds.r.in
     ${CMAKE_CURRENT_BINARY_DIR}/R/create_rds.r)
-  add_library(Rharp MODULE R/harp.c R/Rharp.def)
+  add_library(Rharp SHARED R/harp.c R/Rharp.def)
   set_target_properties(Rharp PROPERTIES PREFIX "")
   if(WIN32)
     add_custom_command(OUTPUT R/R.lib
