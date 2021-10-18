@@ -14,6 +14,7 @@
   - GHG CCI: added support for TROPOMI WFMD L2
   - QA4ECV HCHO: added amf=clear_sky ingestion option
   - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
+  - S5P L2 NO2: added retrieval of O2-O2 cloud (O22CLD) data
   - S5P L2 NO2+FRESCO: added scene_albedo and scene_pressure
   - S5P L2 O3 Profile: fixed wrong concentration variables (vmr -> nd)
   - S5P L2 SO2: updated SO2_type enumeration list
