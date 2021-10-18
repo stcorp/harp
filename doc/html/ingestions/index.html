@@ -159,6 +159,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#s5p-l1b-ir-sir">S5P_L1B_IR_SIR</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#s5p-l1b-ir-uvn">S5P_L1B_IR_UVN</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#s5p-l2-cloud">S5P_L2_CLOUD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#s5p-l2-no2">S5P_L2_NO2</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#temis-products">TEMIS products</a></li>
@@ -3024,7 +3025,7 @@
 <td><p>Sentinel5P/L2__HCHO__</p></td>
 <td><p>Sentinel-5P L2 HCHO total column</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="S5P_L2_NO2.html"><span class="doc">S5P_L2_NO2</span></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#s5p-l2-no2"><span class="std std-ref">S5P_L2_NO2</span></a></p></td>
 <td><p>Sentinel5P/L2__NO2___</p></td>
 <td><p>Sentinel-5P L2 NO2 tropospheric column</p></td>
 </tr>
@@ -3202,6 +3203,62 @@
 <tr class="row-even"><td><p>model</p></td>
 <td><p>CAL, CRB</p></td>
 <td><p>whether to retrieve the cloud properties from the CAL model or the CRB model; option values are ‘CAL’ (default) and ‘CRB’</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="s5p-l2-no2">
+<span id="id28"></span><h3>S5P_L2_NO2</h3>
+<p>Sentinel-5P L2 NO2 tropospheric column</p>
+<p>The table below lists the available product conversions for <code class="docutils literal notranslate"><span class="pre">S5P_L2_NO2</span></code> products.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>ingestion option</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="S5P_L2_NO2.html"><span class="doc">S5P_L2_NO2</span></a></p></td>
+<td><p>data unset</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="S5P_L2_O22CLD.html"><span class="doc">S5P_L2_O22CLD</span></a></p></td>
+<td><p>data=o22cld</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L2_NO2</span></code> products.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 25%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>option name</p></th>
+<th class="head"><p>legal values</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>data</p></td>
+<td><p>o22cld</p></td>
+<td><p>whether to ingest the NO2 data (default) or the O2-O2 cloud data (data=o22cld)</p></td>
+</tr>
+<tr class="row-odd"><td><p>total_column</p></td>
+<td><p>summed, total</p></td>
+<td><p>whether to use nitrogendioxide_total_column (which is derived from the total slant column diveded by the total amf) or nitrogendioxide_summed_total_column (which is the sum of the retrieved tropospheric and stratospheric columns); option values are ‘summed’ (default) and ‘total’</p></td>
+</tr>
+<tr class="row-even"><td><p>cloud_fraction</p></td>
+<td><p>radiance</p></td>
+<td><p>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance) for the NO2 data</p></td>
 </tr>
 </tbody>
 </table>

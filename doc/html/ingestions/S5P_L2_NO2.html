@@ -487,16 +487,21 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>total_column</p></td>
+<tr class="row-even"><td><p>data</p></td>
+<td><p>o22cld</p></td>
+<td><p>whether to ingest the NO2 data (default) or the O2-O2 cloud data (data=o22cld)</p></td>
+</tr>
+<tr class="row-odd"><td><p>total_column</p></td>
 <td><p>summed, total</p></td>
 <td><p>whether to use nitrogendioxide_total_column (which is derived from the total slant column diveded by the total amf) or nitrogendioxide_summed_total_column (which is the sum of the retrieved tropospheric and stratospheric columns); option values are ‘summed’ (default) and ‘total’</p></td>
 </tr>
-<tr class="row-odd"><td><p>cloud_fraction</p></td>
+<tr class="row-even"><td><p>cloud_fraction</p></td>
 <td><p>radiance</p></td>
-<td><p>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)</p></td>
+<td><p>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance) for the NO2 data</p></td>
 </tr>
 </tbody>
 </table>
+<p>This definition is only applicable when: data unset</p>
 </div>
 <div class="section" id="mapping-description">
 <h2>Mapping description</h2>

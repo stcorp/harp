@@ -715,9 +715,17 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             }
             if (strcmp(option_value, "CRB") == 0)
             {
-                /* use the seond product definition, which is the one for the CRB model */
+                /* use the second product definition, which is the one for the CRB model */
                 *definition = module->product_definition[1];
             }
+        }
+    }
+    if (strcmp(module->name, "S5P_L2_NO2") == 0)
+    {
+        if (harp_ingestion_options_has_option(options, "data"))
+        {
+            /* use the second product definition, which is the one for O22CLD */
+            *definition = module->product_definition[1];
         }
     }
     *user_data = info;
@@ -3072,6 +3080,81 @@ static int read_hcho_column_tropospheric_avk(void *user_data, harp_array data)
     free(layer_data.int32_data);
 
     return 0;
+}
+
+static int read_o22cld_dataset(coda_cursor cursor, const char *dataset_name, harp_data_type data_type,
+                               long num_elements, harp_array data)
+{
+    if (coda_cursor_goto_record_field_by_name(&cursor, "O22CLD") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    return read_dataset(cursor, dataset_name, data_type, num_elements, data);
+}
+
+static int read_o22cld_cloud_fraction_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_cloud_fraction_crb", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o22cld_cloud_fraction_crb_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_cloud_fraction_crb_precision", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o22cld_cloud_pressure_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_cloud_pressure_crb", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o22cld_cloud_pressure_crb_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_cloud_pressure_crb_precision", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o22cld_cloud_height_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_cloud_height_crb", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o22cld_cloud_height_crb_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_cloud_height_crb_precision", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o22cld_cloud_albedo_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_cloud_albedo_crb", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_o22cld_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_o22cld_dataset(info->detailed_results_cursor, "o22cld_surface_albedo", harp_type_float,
+                               info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_o3_cloud_fraction(void *user_data, harp_array data)
@@ -6357,8 +6440,96 @@ static void register_o3_tcl_product(void)
 
 }
 
+static void register_o22cloud_subproduct(harp_ingestion_module *module)
+{
+    const char *path;
+    const char *description;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    product_definition = harp_ingestion_register_product(module, "S5P_L2_O22CLD", NULL, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "data=o22cld");
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2]);
+    register_geolocation_variables(product_definition);
+    register_additional_geolocation_variables(product_definition);
+
+    /* cloud_fraction */
+    description = "effective cloud fraction retrieved from the O2–O2 absorption";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_o22cld_cloud_fraction_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_cloud_fraction_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_uncertainty */
+    description = "uncertainty of the effective cloud fraction retrieved from the O2–O2 absorption";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_o22cld_cloud_fraction_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_cloud_fraction_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_pressure */
+    description = "cloud pressure derived from the O2–O2 absorption at 477nm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_o22cld_cloud_pressure_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_cloud_pressure_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_pressure_uncertainty */
+    description = "error of the cloud pressure derived from the O2–O2 absorption at 477nm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
+                                                   read_o22cld_cloud_pressure_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_cloud_pressure_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_height */
+    description = "retrieved cloud height from the O22CLD algorithm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_o22cld_cloud_height_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_cloud_height_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_height_uncertainty */
+    description = "error of the retrieved cloud height from the O22CLD algorithm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_o22cld_cloud_height_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_cloud_height_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_albedo */
+    description = "cloud albedo parameter";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_o22cld_cloud_albedo_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_cloud_albedo_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "assumed surface albedo at 475 nm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_o22cld_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/O22CLD/o22cld_surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
 static void register_no2_product(void)
 {
+    const char *dataset_options[] = { "o22cld" };
     const char *total_column_options[] = { "summed", "total" };
     const char *cloud_fraction_options[] = { "radiance" };
     const char *path;
@@ -6374,6 +6545,9 @@ static void register_no2_product(void)
     module = harp_ingestion_register_module("S5P_L2_NO2", "Sentinel-5P", "Sentinel5P", "L2__NO2___",
                                             "Sentinel-5P L2 NO2 tropospheric column", ingestion_init, ingestion_done);
 
+    harp_ingestion_register_option(module, "data", "whether to ingest the NO2 data (default) or the O2-O2 cloud data "
+                                   "(data=o22cld)", 1, dataset_options);
+
     harp_ingestion_register_option(module, "total_column", "whether to use nitrogendioxide_total_column (which is "
                                    "derived from the total slant column diveded by the total amf) or "
                                    "nitrogendioxide_summed_total_column (which is the sum of the retrieved "
@@ -6381,9 +6555,11 @@ static void register_no2_product(void)
                                    "'total'", 2, total_column_options);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
-                                   "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
+                                   "radiance cloud fraction (cloud_fraction=radiance) for the NO2 data", 1,
+                                   cloud_fraction_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_NO2", NULL, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "data unset");
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
@@ -6632,6 +6808,9 @@ static void register_no2_product(void)
     description = "pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index "
         "k: tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+
+    register_o22cloud_subproduct(module);
 }
 
 static void register_so2_product(void)
