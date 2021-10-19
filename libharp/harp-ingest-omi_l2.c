@@ -1515,13 +1515,6 @@ static int read_uv_aerosol_index(void *user_data, harp_array data)
     return read_variable_double(info, &info->swath_cursor, "UVAerosolIndex", 2, NULL, data);
 }
 
-static int read_vis_aerosol_index(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_variable_double(info, &info->swath_cursor, "VISAerosolIndex", 2, NULL, data);
-}
-
 static int read_solar_zenith_angle_wgs84(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2411,15 +2404,6 @@ static void register_omaeruv_product(void)
                                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                                      read_uv_aerosol_index);
     path = "/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/UVAerosolIndex[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* vis_aerosol_index */
-    description = "VIS aerosol index";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "vis_aerosol_index",
-                                                                     harp_type_double, 1, dimension_type, NULL,
-                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                     read_vis_aerosol_index);
-    path = "/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/VISAerosolIndex[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
