@@ -1483,10 +1483,9 @@ static int read_uv_irradiance_surface(void *user_data, harp_array data)
     return read_variable_double(info, &info->swath_cursor, variable_name, 2, NULL, data);
 }
 
-static int read_aerosol_wavelength(void *user_data, long index, harp_array data)
+static int read_aerosol_wavelength(void *user_data, harp_array data)
 {
     (void)user_data;
-    (void)index;
 
     data.double_data[0] = 354.0;
     data.double_data[1] = 388.0;
@@ -2378,10 +2377,10 @@ static void register_omaeruv_product(void)
 
     /* wavelength */
     description = "wavelength";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "wavelength",
-                                                                      harp_type_double, 1, dimension_type_wavelength,
-                                                                      NULL, description, "nm", NULL,
-                                                                      read_aerosol_wavelength);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "wavelength",
+                                                                     harp_type_double, 1, dimension_type_wavelength,
+                                                                     NULL, description, "nm", NULL,
+                                                                     read_aerosol_wavelength);
     description = "three fixed wavelengths (354, 388, and 500 nm) as defined by the OMI OMAERUV product specification";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 
