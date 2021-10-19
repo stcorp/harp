@@ -12,6 +12,7 @@
     added support for new masterTablesVersion=27 data
   - GEOMS UVVIS.DOAS: allow template V007 files to be stored in hdf5 format
   - GHG CCI: added support for TROPOMI WFMD L2
+  - OMI L2 OMAERUV: fix ingestion issues
   - QA4ECV HCHO: added amf=clear_sky ingestion option
   - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
   - S5P L2 NO2: added retrieval of O2-O2 cloud (O22CLD) data
