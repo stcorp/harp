@@ -1,3 +1,6 @@
+1.14 2021-10-20
+~~~~~~~~~~~~~~~
+
 * Updated embedded udunits2 library to version 2.2.28.
 
 * Improved CMake build system.
@@ -8,13 +11,13 @@
   - AEOLUS L1B: fixed ingestion of Mie/measurement data; added sensor angles
   - AEOLUS L2B: fixed ingestion of Mie data; added sensor angles
   - CLOUDNET L2 classification: added support for new (netcdf4) format
+  - EARTHCARE: added very early support (limited version of ECA_ACM_CAP_2B)
   - ECMWF GRIB: fixed unit of backscatter coefficient 1/(milli sr) -> 1/(m sr),
     added support for new masterTablesVersion=27 data
   - GEOMS UVVIS.DOAS: allow template V007 files to be stored in hdf5 format
   - GHG CCI: added support for TROPOMI WFMD L2
+  - OMI L2: added sensor alt/lat/lon and surface altitude/pressure
   - OMI L2 OMAERUV: fix ingestion issues
-  - OMI L2: added sensor altitude/latitude/longitude and surface
-    altitude/pressure
   - QA4ECV HCHO: added amf=clear_sky ingestion option
   - S5P L2 HCHO: renamed cloud_altitude variable to cloud_height
   - S5P L2 NO2: added retrieval of O2-O2 cloud (O22CLD) data
