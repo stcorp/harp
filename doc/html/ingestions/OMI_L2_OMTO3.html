@@ -234,37 +234,55 @@
 <td><p>[degree]</p></td>
 <td><p>viewing azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>altitude of Aura spacecraft</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>geodetic latitude above WGS84 ellipsoid</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>geodetic longitude above WGS84 ellipsoid</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[DU]</p></td>
 <td><p>ozone vertical column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density_validity</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_column_number_density_validity</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>flags describing the O3 vertical column processing quality</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>effective or radiative cloud fraction</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>effective cloud pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_top_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>cloud top pressure</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -351,54 +369,66 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/ViewingAzimuthAngle[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>sensor_altitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/SpacecraftAltitude[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/SpacecraftLatitude[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/SpacecraftLongitude[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/ColumnAmountO3[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_column_number_density_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_column_number_density_validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/QualityFlags[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><p><strong>cloud_fraction</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>V2 product</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudFraction[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>cloud_fraction_variant=effective or cloud_fraction_variant unset and V3 product</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/fc[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>cloud_fraction_variant=radiative and V3 product</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/RadiativeCloudFraction[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-odd"><td rowspan="7"><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>V3 product</p></td>
+<td><p>V2 product</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudPressure[]</strong></p></td>
+<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudFraction[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><p><strong>cloud_top_pressure</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>cloud_fraction_variant=effective or cloud_fraction_variant unset and V3 product</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/fc[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>cloud_fraction_variant=radiative and V3 product</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/RadiativeCloudFraction[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>cloud_pressure</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>V2 product</p></td>
+<td><p>V3 product</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudPressure[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p><strong>cloud_top_pressure</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>V2 product</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/OMI_Column_Amount_O3/Data_Fields/CloudTopPressure[]</strong></p></td>
 </tr>
 </tbody>

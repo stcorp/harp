@@ -234,127 +234,145 @@
 <td><p>[degree]</p></td>
 <td><p>viewing azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>NO2_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>altitude of Aura spacecraft</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>geodetic latitude above WGS84 ellipsoid</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>geodetic longitude above WGS84 ellipsoid</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>terrain height</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[hPa]</p></td>
+<td><p>terrain pressure</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>NO2_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>NO2 vertical column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the NO2 vertical column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>NO2 tropospheric column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density_uncertainty</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the NO2 tropospheric column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density_amf</strong></p></td>
+<tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density_amf</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>air mass factor of the NO2 tropospheric column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density_apriori</strong></p></td>
+<tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density_apriori</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>apriori of the NO2 tropospheric column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>stratospheric_NO2_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>stratospheric_NO2_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>NO2 stratospheric column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>stratospheric_NO2_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>stratospheric_NO2_column_number_density_uncertainty</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the NO2 stratospheric column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>stratospheric_NO2_column_number_density_amf</strong></p></td>
+<tr class="row-even"><td><p><strong>stratospheric_NO2_column_number_density_amf</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>air mass factor of the NO2 stratospheric column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>stratospheric_NO2_column_number_density_apriori</strong></p></td>
+<tr class="row-odd"><td><p><strong>stratospheric_NO2_column_number_density_apriori</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>apriori of the NO2 stratospheric column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>NO2_slant_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>NO2_slant_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>NO2 slant column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>NO2_slant_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>NO2_slant_column_number_density_uncertainty</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the NO2 slant column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>validity</strong></p></td>
+<tr class="row-even"><td><p><strong>validity</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>Vertical column density quality flags</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropopause_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>tropopause_pressure</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>Pressure of the tropopause</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>Terrain height</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[hPa]</p></td>
-<td><p>Terrain pressure</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>effective cloud fraction</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the effective cloud fraction</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>effective cloud pressure</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>uncertainty of the effective cloud pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -441,94 +459,17 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/ViewingAzimuthAngle[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>NO2_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>sensor_altitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2[]</strong></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/SpacecraftAltitude[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>sensor_latitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2Std[]</strong></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/SpacecraftLatitude[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>sensor_longitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2Trop[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2TropStd[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>tropospheric_NO2_column_number_density_amf</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfTrop[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>tropospheric_NO2_column_number_density_apriori</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApTrop[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2Strat[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density_uncertainty</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2StratStd[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density_amf</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfStrat[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density_apriori</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApStrat[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><p><strong>NO2_slant_column_number_density</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>destriped unset</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>destriped=true</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2Destriped[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>NO2_slant_column_number_density_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2Std[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><p><strong>validity</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdQualityFlags[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><p><strong>tropopause_pressure</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TropopausePressure[]</strong></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/SpacecraftLongitude[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -538,19 +479,108 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TerrainPressure[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td><p><strong>NO2_column_number_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2Std[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2Trop[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2TropStd[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>tropospheric_NO2_column_number_density_amf</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfTrop[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>tropospheric_NO2_column_number_density_apriori</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApTrop[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2Strat[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density_uncertainty</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/ColumnAmountNO2StratStd[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density_amf</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/AmfStrat[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>stratospheric_NO2_column_number_density_apriori</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdApStrat[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>NO2_slant_column_number_density</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>destriped unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>destriped=true</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2Destriped[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>NO2_slant_column_number_density_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/SlantColumnAmountNO2Std[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>validity</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/VcdQualityFlags[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>tropopause_pressure</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TropopausePressure[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudFraction[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudFractionStd[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudPressure[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/CloudPressureStd[]</strong></p></td>
 </tr>

@@ -210,35 +210,35 @@
 <td><p>[degree_north]</p></td>
 <td><p>latitudes of the ground pixel corners (WGS84)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>wavelength</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[hPa]</p></td>
+<td><p>terrain pressure</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>wavelength</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>spectral</em>}</p></td>
 <td><p>[nm]</p></td>
 <td><p>wavelength</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>aerosol optical depth</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_absorbing_optical_depth</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_absorbing_optical_depth</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>aerosol absorbing optical depth</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>uv_aerosol_index</strong></p></td>
+<tr class="row-odd"><td><p><strong>uv_aerosol_index</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>UV aerosol index</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>vis_aerosol_index</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>VIS aerosol index</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -288,25 +288,25 @@
 <td><p><em>description</em></p></td>
 <td><p>interpolated from the available center coordinates for each of the ground pixels</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>wavelength</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/TerrainPressure[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>wavelength</strong></p></td>
 <td><p><em>description</em></p></td>
 <td><p>three fixed wavelengths (354, 388, and 500 nm) as defined by the OMI OMAERUV product specification</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/FinalAerosolOpticalDepth[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_absorbing_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_absorbing_optical_depth</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/FinalAerosolAbsOpticalDepth[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>uv_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>uv_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/UVAerosolIndex[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>vis_aerosol_index</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/SWATHS/Aerosol_NearUV_Swath/Data_Fields/VISAerosolIndex[]</strong></p></td>
 </tr>
 </tbody>
 </table>

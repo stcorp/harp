@@ -1064,20 +1064,6 @@ static int read_pressure(void *user_data, long index, harp_array data)
     return read_variable_partial_double(info, &info->omo3pr_pressure, index, data);
 }
 
-static int read_terrain_height(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_variable_double(info, &info->swath_cursor, "TerrainHeight", 2, NULL, data);
-}
-
-static int read_terrain_pressure(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_variable_double(info, &info->swath_cursor, "TerrainPressure", 2, NULL, data);
-}
-
 static int read_o3(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1548,6 +1534,82 @@ static int read_relative_azimuth_angle_wgs84(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_variable_double(info, &info->geo_cursor, "RelativeAzimuthAngle", 2, NULL, data);
+}
+
+static int read_spacecraft_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    /* read SpacecraftAltitude */
+    if (read_variable_double(info, &info->geo_cursor, "SpacecraftAltitude", 1, NULL, data) != 0)
+    {
+        return -1;
+    }
+
+    /* broadcast the result along the xtrack dimension */
+    broadcast_array_double(info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack], data.double_data);
+
+    return 0;
+}
+
+static int read_spacecraft_latitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    /* read SpacecraftLatitude */
+    if (read_variable_double(info, &info->geo_cursor, "SpacecraftLatitude", 1, NULL, data) != 0)
+    {
+        return -1;
+    }
+
+    /* broadcast the result along the xtrack dimension */
+    broadcast_array_double(info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack], data.double_data);
+
+    return 0;
+}
+
+static int read_spacecraft_longitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    /* read SpacecraftLongitude */
+    if (read_variable_double(info, &info->geo_cursor, "SpacecraftLongitude", 1, NULL, data) != 0)
+    {
+        return -1;
+    }
+
+    /* broadcast the result along the xtrack dimension */
+    broadcast_array_double(info->dimension[omi_dim_time], info->dimension[omi_dim_xtrack], data.double_data);
+
+    return 0;
+}
+
+static int read_terrain_height_from_data(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(info, &info->swath_cursor, "TerrainHeight", 2, NULL, data);
+}
+
+static int read_terrain_height_from_geolocation(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(info, &info->geo_cursor, "TerrainHeight", 2, NULL, data);
+}
+
+static int read_terrain_pressure_from_data(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(info, &info->swath_cursor, "TerrainPressure", 2, NULL, data);
+}
+
+static int read_terrain_pressure_from_geolocation(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(info, &info->geo_cursor, "TerrainPressure", 2, NULL, data);
 }
 
 static int include_no_destriped(void *user_data)
@@ -2337,6 +2399,84 @@ static void register_viewing_azimuth_angle_variable(harp_product_definition *pro
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void register_spacecraft_altitude_variable(harp_product_definition *product_definition, const char *path)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    const char *description;
+
+    description = "altitude of Aura spacecraft";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "m", NULL,
+                                                                     read_spacecraft_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
+static void register_spacecraft_latitude_variable(harp_product_definition *product_definition, const char *path)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    const char *description;
+
+    description = "geodetic latitude above WGS84 ellipsoid";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "degree_north", NULL,
+                                                                     read_spacecraft_latitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
+static void register_spacecraft_longitude_variable(harp_product_definition *product_definition, const char *path)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    const char *description;
+
+    description = "geodetic longitude above WGS84 ellipsoid";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "degree_east", NULL,
+                                                                     read_spacecraft_longitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
+static void register_terrain_height_variable(harp_product_definition *product_definition, const char *path)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    int (*read_func)(void *, harp_array) = read_terrain_height_from_geolocation;
+    const char *description;
+
+    if (strstr(path, "Data_Fields") != NULL)
+    {
+        read_func = read_terrain_height_from_data;
+    }
+    description = "terrain height";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "m", NULL, read_func);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
+static void register_terrain_pressure_variable(harp_product_definition *product_definition, const char *path)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    int (*read_func)(void *, harp_array) = read_terrain_pressure_from_geolocation;
+    const char *description;
+
+    if (strstr(path, "Data_Fields") != NULL)
+    {
+        read_func = read_terrain_pressure_from_data;
+    }
+    description = "terrain pressure";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_pressure",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "hPa", NULL, read_func);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
 static void register_omaeruv_product(void)
 {
     harp_ingestion_module *module;
@@ -2367,6 +2507,10 @@ static void register_omaeruv_product(void)
 
     /* longitude_bounds and latitude_bounds */
     register_footprint_variables(product_definition);
+
+    /* surface_pressure */
+    path = "/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/TerrainPressure[]";
+    register_terrain_pressure_variable(product_definition, path);
 
     /* wavelength */
     description = "wavelength";
@@ -2441,6 +2585,14 @@ static void register_ombro_product(void)
 
     /* longitude_bounds and latitude_bounds */
     register_footprint_variables(product_definition);
+
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_BRO/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
 
     /* BrO_column_number_density */
     description = "BrO vertical column density";
@@ -2572,6 +2724,26 @@ static void register_omcldo2_product(void)
     path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Geolocation_Fields/ViewingAzimuthAngle[]";
     register_viewing_azimuth_angle_variable(product_definition, path);
 
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* sensor_latitude */
+    path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Geolocation_Fields/SpacecraftLatitude[]";
+    register_spacecraft_latitude_variable(product_definition, path);
+
+    /* sensor_longitude */
+    path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Geolocation_Fields/SpacecraftLongitude[]";
+    register_spacecraft_longitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
+
+    /* surface_pressure */
+    path = "/HDFEOS/SWATHS/CloudFractionAndPressure/Data_Fields/TerrainPressure[]";
+    register_terrain_pressure_variable(product_definition, path);
+
     /* cloud_fraction */
     description = "effective cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
@@ -2668,6 +2840,14 @@ static void register_omcldrr_product(void)
     path = "/HDFEOS/SWATHS/Cloud_Product/Geolocation_Fields/RelativeAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/Cloud_Product/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
+
+    /* surface_pressure */
+    path = "/HDFEOS/SWATHS/Cloud_Product/Data_Fields/TerrainPressure[]";
+    register_terrain_pressure_variable(product_definition, path);
+
     /* cloud_fraction */
     description = "effective cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
@@ -2740,6 +2920,26 @@ static void register_omdoao3_product(void)
     /* viewing_azimuth_angle */
     path = "/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/ViewingAzimuthAngle[]";
     register_viewing_azimuth_angle_variable(product_definition, path);
+
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* sensor_latitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/SpacecraftLatitude[]";
+    register_spacecraft_latitude_variable(product_definition, path);
+
+    /* sensor_longitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/SpacecraftLongitude[]";
+    register_spacecraft_longitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountO3/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
+
+    /* surface_pressure */
+    path = "/HDFEOS/SWATHS/ColumnAmountO3/Data_Fields/TerrainPressure[]";
+    register_terrain_pressure_variable(product_definition, path);
 
     /* O3_column_number_density */
     description = "O3 vertical column density";
@@ -2994,6 +3194,14 @@ static void register_omhcho_product(void)
     /* longitude_bounds and latitude_bounds */
     register_footprint_variables(product_definition);
 
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_HCHO/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
+
     /* HCHO_column_number_density */
     description = "HCHO vertical column density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density",
@@ -3066,6 +3274,26 @@ static void register_omno2_product(void)
     /* viewing_azimuth_angle */
     path = "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/ViewingAzimuthAngle[]";
     register_viewing_azimuth_angle_variable(product_definition, path);
+
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* sensor_latitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/SpacecraftLatitude[]";
+    register_spacecraft_latitude_variable(product_definition, path);
+
+    /* sensor_longitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation_Fields/SpacecraftLongitude[]";
+    register_spacecraft_longitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
+
+    /* surface_pressure */
+    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TerrainPressure[]";
+    register_terrain_pressure_variable(product_definition, path);
 
     /* NO2_column_number_density */
     description = "NO2 vertical column density";
@@ -3202,22 +3430,6 @@ static void register_omno2_product(void)
     path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TropopausePressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* surface_altitude */
-    description = "Terrain height";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
-                                                                     harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "m", NULL, read_terrain_height);
-    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TerrainHeight[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* surface_pressure */
-    description = "Terrain pressure";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_pressure",
-                                                                     harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "hPa", NULL, read_terrain_pressure);
-    path = "/HDFEOS/SWATHS/ColumnAmountNO2/Data_Fields/TerrainPressure[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
     /* cloud_fraction */
     description = "effective cloud fraction";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
@@ -3298,6 +3510,22 @@ static void register_omo3pr_product(void)
     path = "/HDFEOS/SWATHS/O3Profile/Geolocation_Fields/ViewingAzimuthAngle[]";
     register_viewing_azimuth_angle_variable(product_definition, path);
 
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/O3Profile/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* sensor_latitude */
+    path = "/HDFEOS/SWATHS/O3Profile/Geolocation_Fields/SpacecraftLatitude[]";
+    register_spacecraft_latitude_variable(product_definition, path);
+
+    /* sensor_longitude */
+    path = "/HDFEOS/SWATHS/O3Profile/Geolocation_Fields/SpacecraftLongitude[]";
+    register_spacecraft_longitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/O3Profile/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
+
     /* pressure */
     description = "pressure level for each profile element";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "pressure", harp_type_double,
@@ -3367,6 +3595,14 @@ static void register_omoclo_product(void)
 
     /* longitude_bounds and latitude_bounds */
     register_footprint_variables(product_definition);
+
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_OClO/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
 
     /* OClO_column_number_density */
     description = "OClO vertical column density";
@@ -3442,6 +3678,26 @@ static void register_omso2_product(void)
     /* viewing_azimuth_angle */
     path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Geolocation_Fields/ViewingAzimuthAngle[]";
     register_viewing_azimuth_angle_variable(product_definition, path);
+
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* sensor_latitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Geolocation_Fields/SpacecraftLatitude[]";
+    register_spacecraft_latitude_variable(product_definition, path);
+
+    /* sensor_longitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Geolocation_Fields/SpacecraftLongitude[]";
+    register_spacecraft_longitude_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
+
+    /* surface_pressure */
+    path = "/HDFEOS/SWATHS/OMI_Total_Column_Amount_SO2/Data_Fields/TerrainPressure[]";
+    register_terrain_pressure_variable(product_definition, path);
 
     /* SO2_column_number_density */
     description = "SO2 vertical column density";
@@ -3546,6 +3802,18 @@ static void register_omto3_product(void)
     path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/ViewingAzimuthAngle[]";
     register_viewing_azimuth_angle_variable(product_definition, path);
 
+    /* sensor_altitude */
+    path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/SpacecraftAltitude[]";
+    register_spacecraft_altitude_variable(product_definition, path);
+
+    /* sensor_latitude */
+    path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/SpacecraftLatitude[]";
+    register_spacecraft_latitude_variable(product_definition, path);
+
+    /* sensor_longitude */
+    path = "/HDFEOS/SWATHS/OMI_Column_Amount_O3/Geolocation_Fields/SpacecraftLongitude[]";
+    register_spacecraft_longitude_variable(product_definition, path);
+
     /* O3_column_number_density */
     description = "ozone vertical column density";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density",
@@ -3641,6 +3909,10 @@ static void register_omuvb_product(void)
     /* solar_zenith_angle */
     path = "/HDFEOS/SWATHS/UVB/Geolocation_Fields/SolarZenithAngle[]";
     register_solar_zenith_angle_variable(product_definition, path);
+
+    /* surface_altitude */
+    path = "/HDFEOS/SWATHS/UVB/Geolocation_Fields/TerrainHeight[]";
+    register_terrain_height_variable(product_definition, path);
 
     /* surface_irradiance */
     description = "surface irradiance";
