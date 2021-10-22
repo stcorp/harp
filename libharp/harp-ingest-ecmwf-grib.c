@@ -251,9 +251,21 @@ typedef struct ingest_info_struct
     coda_product *product;
     long num_messages;
     long num_grid_data;
-    /* GRIB1 grid_data_parameter_ref = (1 * 256 * 256 + table2Version) * 256 + indicatorOfParameter
-     * GRIB2 grid_data_parameter_ref = ((2 * 256 + discipline) * 256 + parameterCategory) * 256 + parameterNumber */
-    long *grid_data_parameter_ref;      /* [num_grid_data] */
+    /* GRIB1 grid_data_parameter_ref =
+     *   ((((1 * 256 +
+     *       0) * 256 +
+     *       0) * 256 +
+     *       0) * 256 +
+     *       table2Version) * 256 +
+     *       indicatorOfParameter
+     * GRIB2 grid_data_parameter_ref =
+     *   ((((2 * 256 +
+     *       discipline) * 256 +
+     *       parameterCategory) * 256 +
+     *       parameterNumber) * 256) * 256 +
+     *       constituentType  // 2 bytes
+     */
+    uint64_t *grid_data_parameter_ref;      /* [num_grid_data] */
     coda_cursor *parameter_cursor;      /* [num_grid_data], array of cursors to /[]/data([])/values for each param */
     double *level;      /* [num_grid_data] */
 
@@ -647,7 +659,7 @@ static grib_parameter get_grib1_parameter(int parameter_ref)
     return grib_param_unknown;
 }
 
-static grib_parameter get_grib2_parameter(int parameter_ref)
+static grib_parameter get_grib2_parameter(int parameter_ref, int constituent_type)
 {
     uint8_t discipline = (parameter_ref >> 16) & 0xff;
     uint8_t parameterCategory = (parameter_ref >> 8) & 0xff;
@@ -670,6 +682,10 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                     {
                         case 0:
                             return grib_param_q;
+                        case 69:
+                            return grib_param_tclw;
+                        case 70:
+                            return grib_param_tciw;
                         case 83:
                             return grib_param_clwc;
                         case 84:
@@ -698,6 +714,34 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
                             return grib_param_z;
                         case 25:
                             return grib_param_lnsp;
+                    }
+                    break;
+                case 20:
+                    switch (parameterNumber)
+                    {
+                        case 2:
+                            switch (constituent_type)
+                            {
+                                case 0:
+                                    return grib_param_go3;
+                                case 2:
+                                    return grib_param_ch4;
+                                case 3:
+                                    return grib_param_co2;
+                                case 4:
+                                    return grib_param_co;
+                                case 5:
+                                    return grib_param_no2;
+                                case 7:
+                                    return grib_param_hcho;
+                                case 8:
+                                    return grib_param_so2;
+                                case 11:
+                                    return grib_param_no;
+                                case 17:
+                                    return grib_param_hno3;
+                            }
+                            break;
                     }
                     break;
             }
@@ -851,13 +895,13 @@ static grib_parameter get_grib2_parameter(int parameter_ref)
     return grib_param_unknown;
 }
 
-static grib_parameter get_grib_parameter(int parameter_ref)
+static grib_parameter get_grib_parameter(uint64_t parameter_ref)
 {
-    if (parameter_ref >> 24 == 1)
+    if (parameter_ref >> 40 == 1)
     {
-        return get_grib1_parameter(parameter_ref & 0xffffff);
+        return get_grib1_parameter(parameter_ref & 0xffff);
     }
-    return get_grib2_parameter(parameter_ref & 0xffffff);
+    return get_grib2_parameter((parameter_ref >> 16) & 0xffffff, parameter_ref & 0xffff);
 }
 
 static int read_grid_data(ingest_info *info, long grid_data_index, long latitude_index, harp_array data)
@@ -2130,11 +2174,11 @@ static int init_cursors_and_grid(ingest_info *info)
         return -1;
     }
 
-    info->grid_data_parameter_ref = malloc(info->num_grid_data * sizeof(long));
+    info->grid_data_parameter_ref = malloc(info->num_grid_data * sizeof(uint64_t));
     if (info->grid_data_parameter_ref == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       info->num_grid_data * sizeof(long), __FILE__, __LINE__);
+                       info->num_grid_data * sizeof(uint64_t), __FILE__, __LINE__);
         return -1;
     }
     info->parameter_cursor = malloc(info->num_grid_data * sizeof(coda_cursor));
@@ -2159,7 +2203,7 @@ static int init_cursors_and_grid(ingest_info *info)
     }
     for (i = 0; i < info->num_messages; i++)
     {
-        long parameter_ref;
+        uint64_t parameter_ref;
         int grib_version;
         long field_index;
         long num_data = 1;
@@ -2181,7 +2225,7 @@ static int init_cursors_and_grid(ingest_info *info)
                 assert(0);
                 exit(1);
         }
-        parameter_ref = grib_version << 24;
+        parameter_ref = ((uint64_t)grib_version) << 40;
         if (coda_cursor_goto_record_field_by_index(&cursor, field_index) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -2222,7 +2266,7 @@ static int init_cursors_and_grid(ingest_info *info)
                 return -1;
             }
             coda_cursor_goto_parent(&cursor);
-            parameter_ref += discipline * 256 * 256;
+            parameter_ref += ((uint64_t)discipline) << 32;
         }
 
         if (coda_cursor_goto_record_field_by_name(&cursor, "grid") != 0)
@@ -2295,8 +2339,10 @@ static int init_cursors_and_grid(ingest_info *info)
                 uint8_t typeOfFirstFixedSurface;
                 uint8_t parameterCategory;
                 uint8_t parameterNumber;
+                uint16_t constituentType = 65535;
                 grib_parameter parameter;
                 double datetime;
+                int available;
 
                 if (coda_cursor_goto(&cursor, "parameterCategory") != 0)
                 {
@@ -2309,7 +2355,7 @@ static int init_cursors_and_grid(ingest_info *info)
                     return -1;
                 }
                 coda_cursor_goto_parent(&cursor);
-                parameter_ref += parameterCategory * 256;
+                parameter_ref += ((uint64_t)parameterCategory) << 24;
 
                 if (coda_cursor_goto(&cursor, "parameterNumber") != 0)
                 {
@@ -2322,7 +2368,33 @@ static int init_cursors_and_grid(ingest_info *info)
                     return -1;
                 }
                 coda_cursor_goto_parent(&cursor);
-                parameter_ref += parameterNumber;
+                parameter_ref += ((uint64_t)parameterNumber << 16);
+
+                /* older versions of CODA didn't support this field -> leave it to 65535 (Missing) in that case */
+                if (coda_cursor_get_record_field_index_from_name(&cursor, "constituentType", &field_index) == 0)
+                {
+                    if (coda_cursor_get_record_field_available_status(&cursor, field_index, &available) != 0)
+                    {
+                        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+                        return -1;
+                    }
+                    if (available)
+                    {
+                        if (coda_cursor_goto(&cursor, "constituentType") != 0)
+                        {
+                            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+                            return -1;
+                        }
+                        if (coda_cursor_read_uint16(&cursor, &constituentType) != 0)
+                        {
+                            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, NULL);
+                            return -1;
+                        }
+                        coda_cursor_goto_parent(&cursor);
+                    }
+                }
+                parameter_ref += constituentType;
+
                 info->grid_data_parameter_ref[parameter_index] = parameter_ref;
                 parameter = get_grib_parameter(parameter_ref);
 
@@ -2607,7 +2679,7 @@ static int init_cursors_and_grid(ingest_info *info)
             /* only report the warning for the first occurrence */
             if (i == j)
             {
-                if (info->grid_data_parameter_ref[i] >> 24 == 1)
+                if (info->grid_data_parameter_ref[i] >> 40 == 1)
                 {
                     harp_report_warning("unsupported GRIB1 parameter (table2Version %d, indicatorOfParameter %d)",
                                         (info->grid_data_parameter_ref[i] >> 8) & 0xff,
@@ -2616,9 +2688,11 @@ static int init_cursors_and_grid(ingest_info *info)
                 else
                 {
                     harp_report_warning("unsupported GRIB2 parameter (discipline %d, parameterCategory %d, "
-                                        "parameterNumber %d)", (info->grid_data_parameter_ref[i] >> 16) & 0xff,
-                                        (info->grid_data_parameter_ref[i] >> 8) & 0xff,
-                                        info->grid_data_parameter_ref[i] & 0xff);
+                                        "parameterNumber %d, constituentType %d)",
+                                        (info->grid_data_parameter_ref[i] >> 32) & 0xff,
+                                        (info->grid_data_parameter_ref[i] >> 24) & 0xff,
+                                        (info->grid_data_parameter_ref[i] >> 16) & 0xff,
+                                        info->grid_data_parameter_ref[i] & 0xffff);
                 }
             }
         }
@@ -2626,7 +2700,7 @@ static int init_cursors_and_grid(ingest_info *info)
         {
             long level = (long)info->level[i];
 
-            if (param_is_profile[param])
+            if (param_is_profile[param] && info->num_grib_levels > 0)
             {
                 if (level < 1 || level > info->num_grib_levels)
                 {

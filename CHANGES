@@ -1,3 +1,7 @@
+* Updates to product ingestions:
+  - ECMWF GRIB: fix parameter mapping for CAMS model data that uses new
+    masterTablesVersion=27 data
+
 1.14 2021-10-20
 ~~~~~~~~~~~~~~~
 
