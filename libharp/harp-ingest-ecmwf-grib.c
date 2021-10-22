@@ -265,7 +265,7 @@ typedef struct ingest_info_struct
      *       parameterNumber) * 256) * 256 +
      *       constituentType  // 2 bytes
      */
-    uint64_t *grid_data_parameter_ref;      /* [num_grid_data] */
+    uint64_t *grid_data_parameter_ref;  /* [num_grid_data] */
     coda_cursor *parameter_cursor;      /* [num_grid_data], array of cursors to /[]/data([])/values for each param */
     double *level;      /* [num_grid_data] */
 
@@ -3454,7 +3454,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_co2, read_co2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,61)",
-                               "(discipline,category,number) = (192,210,61)");
+                               "(discipline,category,number) = (0,20,2,constituentType=3) or (192,210,61)");
 
     /* ch4: CH4_mass_mixing_ratio_dry_air */
     description = "methane mass mixing ratio";
@@ -3463,7 +3463,8 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_ch4, read_ch4);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,62) or (217,4)",
-                               "(discipline,category,number) = (192,210,62) or (192,217,4)");
+                               "(discipline,category,number) = (0,20,2,constituentType=2), (192,210,62) or "
+                               "(192,217,4)");
 
     /* pm1: surface_PM1_density */
     description = "surface density of particulate matter with d < 1 um";
@@ -3496,7 +3497,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_no2, read_no2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,121)",
-                               "(discipline,category,number) = (192,210,121)");
+                               "(discipline,category,number) = (0,20,2,constituentType=5) or (192,210,121)");
 
     /* so2: SO2_mass_mixing_ratio_dry_air */
     description = "sulphur dioxide mass mixing ratio";
@@ -3505,7 +3506,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_so2, read_so2);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,122)",
-                               "(discipline,category,number) = (192,210,122)");
+                               "(discipline,category,number) = (0,20,2,constituentType=8) or (192,210,122)");
 
     /* co: CO_mass_mixing_ratio_dry_air */
     description = "carbon monoxide mass mixing ratio";
@@ -3514,7 +3515,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_co, read_co);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,123)",
-                               "(discipline,category,number) = (192,210,123)");
+                               "(discipline,category,number) = (0,20,2,constituentType=4) or (192,210,123)");
 
     /* hcho: HCHO_mass_mixing_ratio_dry_air */
     description = "formaldehyde mass mixing ratio";
@@ -3523,7 +3524,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_hcho, read_hcho);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,124)",
-                               "(discipline,category,number) = (192,210,124)");
+                               "(discipline,category,number) = (0,20,2,constituentType=7) or (192,210,124)");
 
     /* tcno2: NO2_column_density */
     description = "total column nitrogen dioxide";
@@ -3565,7 +3566,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_go3, read_go3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (210,203)",
-                               "(discipline,category,number) = (192,210,203)");
+                               "(discipline,category,number) = (0,20,2,constituentType=0) or (192,210,203)");
 
     /* gtco3: O3_column_density */
     description = "total column ozone";
@@ -3673,7 +3674,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_hno3, read_hno3);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,6)",
-                               "(discipline,category,number) = (192,217,6)");
+                               "(discipline,category,number) = (0,20,2,constituentType=17) or (192,217,6)");
 
     /* pan: C2H3NO5_mass_mixing_ratio_dry_air */
     description = "peroxyacetyl nitrate (PAN) mass mixing ratio";
@@ -3700,7 +3701,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                                                       3, &dimension_type[1], NULL, description, "kg/kg",
                                                                       include_no, read_no);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (217,27)",
-                               "(discipline,category,number) = (192,217,27)");
+                               "(discipline,category,number) = (0,20,2,constituentType=11) or (192,217,27)");
 
     /* oh: OH_mass_mixing_ratio_dry_air */
     description = "hydroxyl radical mass mixing ratio";
