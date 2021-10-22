@@ -2408,8 +2408,7 @@ static void register_spacecraft_altitude_variable(harp_product_definition *produ
     description = "altitude of Aura spacecraft";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "m", NULL,
-                                                                     read_spacecraft_altitude);
+                                                                     description, "m", NULL, read_spacecraft_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
