@@ -49,12 +49,16 @@ typedef enum gas_enum
 {
     gas_NO2,
     gas_O3,
+    gas_SO2,
+    gas_HCHO,
     num_gas
 } gas_type;
 
 static const char *gas_name[num_gas] = {
     "NO2",
     "O3",
+    "SO2",
+    "HCHO",
 };
 
 typedef struct ingest_info_struct
@@ -268,12 +272,30 @@ static int read_column_solar(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
+static int read_column_solar_uncertainty_combined(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_COMBINED_STANDARD", gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
 static int read_column_solar_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD", gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
+static int read_column_solar_uncertainty_systematic(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_SYSTEMATIC_STANDARD", gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -293,6 +315,24 @@ static int read_column_solar_flag(void *user_data, harp_array data)
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_FLAG", gas_name[info->gas]);
     return read_variable_int32(user_data, path, info->num_time, data);
+}
+
+static int read_effective_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/EFFECTIVE_TEMPERATURE_%s", gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
+static int read_effective_temperature_combined_uncertainty(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/EFFECTIVE_TEMPERATURE_%s_UNCERTAINTY_COMBINED_STANDARD", gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
 }
 
 static void ingestion_done(void *user_data)
@@ -499,6 +539,16 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     char gas_mapping_path[MAX_PATH_LENGTH];
     char gas_description[MAX_DESCRIPTION_LENGTH];
     const char *description;
+    const char *gas_unit;
+
+    if (version < 2)
+    {
+        gas_unit = "DU";
+    }
+    else
+    {
+        gas_unit = "mol/m2";
+    }
 
     snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-PANDORA-DIRECTSUN-GAS-%03d-%s", version, gas_name[gas]);
     snprintf(product_description, MAX_NAME_LENGTH,
@@ -595,20 +645,58 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s column number density", gas_name[gas]);
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR", gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "DU", NULL,
+        (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit, NULL,
          read_column_solar);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
     /* <gas>_column_number_density_uncertainty */
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty", gas_name[gas]);
-    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s column number density",
-             gas_name[gas]);
-    snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
-             gas_name[gas]);
-    variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "DU", NULL,
-         read_column_solar_uncertainty_random);
+    if (version < 3)
+    {
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s column number density",
+                 gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
+                 gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
+             NULL, read_column_solar_uncertainty_random);
+    }
+    else
+    {
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "total uncertainty of the %s column number density",
+                 gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.COMBINED.STANDARD",
+                 gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
+             NULL, read_column_solar_uncertainty_combined);
+    }
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+    if (version >= 3)
+    {
+        /* <gas>_column_number_density_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_random", gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s column number density",
+                 gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD",
+                 gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
+             NULL, read_column_solar_uncertainty_random);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+        /* <gas>_column_number_density_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_uncertainty_systematic", gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic uncertainty of the %s column number density",
+                 gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.STANDARD",
+                 gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
+             NULL, read_column_solar_uncertainty_systematic);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+    }
 
     /* <gas>_column_number_density_amf */
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density_amf", gas_name[gas]);
@@ -628,6 +716,29 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
          read_column_solar_flag);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
+    if (version >= 3)
+    {
+        /* <gas>_effective_temperature */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_effective_temperature", gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s effective temperature", gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/TEMPERATURE.EFFECTIVE.%s", gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "K", NULL,
+             read_effective_temperature);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+        /* <gas>_effective_temperature_uncertainty */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_effective_temperature_uncertainty", gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "total uncertainty of the %s effective temperature",
+                 gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/TEMPERATURE.EFFECTIVE.%s_UNCERTAINTY.COMBINED.STANDARD",
+                 gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "K", NULL,
+             read_effective_temperature_combined_uncertainty);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+    }
+
     return 0;
 }
 
@@ -643,7 +754,11 @@ int harp_ingestion_module_geoms_pandora_init()
 
     for (i = 0; i < num_gas; i++)
     {
-        init_product_definition(module, i, 2);
+        if (i == gas_NO2 || i == gas_O3)
+        {
+            init_product_definition(module, i, 2);
+        }
+        init_product_definition(module, i, 3);
     }
 
     return 0;

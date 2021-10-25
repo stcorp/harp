@@ -249,14 +249,26 @@
 <tr class="row-odd"><td><p><strong>NO2_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[DU]</p></td>
+<td><p>[mol/m2]</p></td>
 <td><p>NO2 column number density</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[DU]</p></td>
+<td><p>[mol/m2]</p></td>
+<td><p>total uncertainty of the NO2 column number density</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>NO2_column_number_density_uncertainty_random</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[mol/m2]</p></td>
 <td><p>random uncertainty of the NO2 column number density</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>NO2_column_number_density_uncertainty_systematic</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[mol/m2]</p></td>
+<td><p>systematic uncertainty of the NO2 column number density</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>NO2_column_number_density_amf</strong></p></td>
 <td><p>double</p></td>
@@ -269,6 +281,18 @@
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>quality flag of NO2 column number density</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>NO2_effective_temperature</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>NO2 effective temperature</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>NO2_effective_temperature_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>total uncertainty of the NO2 effective temperature</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -284,9 +308,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 38%" />
-<col style="width: 7%" />
-<col style="width: 55%" />
+<col style="width: 42%" />
+<col style="width: 6%" />
+<col style="width: 52%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>field name</p></th>
@@ -344,7 +368,15 @@
 </tr>
 <tr class="row-even"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
+<td><p><strong>/NO2.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.COMBINED.STANDARD</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>NO2_column_number_density_uncertainty_random</strong></p></td>
+<td><p><em>path</em></p></td>
 <td><p><strong>/NO2.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>NO2_column_number_density_uncertainty_systematic</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/NO2.COLUMN.ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>NO2_column_number_density_amf</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -353,6 +385,14 @@
 <tr class="row-even"><td><p><strong>NO2_column_number_density_validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/NO2.COLUMN.ABSORPTION.SOLAR_FLAG</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>NO2_effective_temperature</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/TEMPERATURE.EFFECTIVE.NO2</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>NO2_effective_temperature_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/TEMPERATURE.EFFECTIVE.NO2_UNCERTAINTY.COMBINED.STANDARD</strong></p></td>
 </tr>
 </tbody>
 </table>

@@ -152,6 +152,15 @@
         <cd:MatchExpression path="/@DATA_TEMPLATE">str(.,35) == "GEOMS-TE-PANDORA-DIRECTSUN-GAS-002\000"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
+    <cd:ProductDefinition id="PANDORA_DIRECTSUN_GAS_003_hdf5" format="hdf5" version="2003">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-PANDORA-DIRECTSUN-GAS-003"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.,35) == "GEOMS-TE-PANDORA-DIRECTSUN-GAS-003\000"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
   </cd:ProductType>
   <cd:ProductType name="SONDE">
     <cd:Description>GEOMS template for Sonde measurements</cd:Description>
