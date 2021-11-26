@@ -343,6 +343,76 @@ class Product(object):
 
         return stream.getvalue()
 
+    def to_dict(self):
+        """Convert product to a dictionary (OrderedDict)."""
+
+        return to_dict(self)
+
+    def to_xarray(self):
+        """Convert product to an xarray dataset."""
+
+        import xarray
+
+        # TODO no _lib.harp_type_int64?
+        # TODO coord var heuristics, parameter overrides
+        # TODO pass through more attrs?
+
+        data = {}
+        vardims = {}
+
+        for varname, var in self._variable_dict.items():
+            # scalar/array data
+            if len(var.dimension) == 0:
+                conv_dims = ()
+            else:
+                conv_dims = []
+                for dim, dimsize in zip(var.dimension, var.data.shape):
+                    conv_dim = dim or 'independent_%d' % dimsize
+                    conv_dims.append(conv_dim)
+                    vardims[conv_dim] = dimsize
+
+            # attrs
+            attrs = None
+            unit = getattr(var, 'unit', None)
+            if unit is not None:
+                attrs = {
+                    'unit': unit,
+                }
+
+            # xarray datavar
+            data[varname] = (conv_dims, var.data, attrs)
+
+        coord_vars = {
+            'time': 'datetime',
+            'longitude': 'longitude',
+            'latitude': 'latitude',
+
+        }
+
+        # promote coordinate vars
+        dims = {}
+        for dim, varname in coord_vars.items():
+            if varname in data:
+                convdata = self[varname].data
+        #        if dim == 'time':
+        #            convdata = [datetime.datetime(2000, 1, 1) + datetime.timedelta(seconds=s) for s in convdata]
+                dims[dim] = convdata
+            del data[varname]
+
+        return xarray.Dataset(data, dims)
+
+    @staticmethod
+    def from_xarray(dataset):
+        """Convert dataset to HARP product."""
+        product = Product()
+
+        for varname, var in (list(dataset.data_vars.items()) + list(dataset.coords.items())):
+            dims = [None if d.startswith('independent_') else d for d in var.dims]
+            variable = Variable(var.values, dims, var.attrs.get('unit'))
+            setattr(product, varname, variable)
+
+        return product
+
 
 def _get_c_library_filename():
     """Return the filename of the HARP shared library depending on the current
