@@ -575,7 +575,7 @@ endif(HARP_BUILD_IDL)
 # matlab
 if(HARP_BUILD_MATLAB)
   set(Matlab_FIND_COMPONENTS MX_LIBRARY)
-  find_package(MATLAB)
+  find_package(Matlab)
   if(NOT MATLAB_FOUND)
     message(FATAL_ERROR "MATLAB installation not found.")
   endif(NOT MATLAB_FOUND)
