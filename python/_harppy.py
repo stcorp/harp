@@ -397,7 +397,7 @@ class Product(object):
         #        if dim == 'time':
         #            convdata = [datetime.datetime(2000, 1, 1) + datetime.timedelta(seconds=s) for s in convdata]
                 dims[dim] = convdata
-            del data[varname]
+                del data[varname]
 
         return xarray.Dataset(data, dims)
 
