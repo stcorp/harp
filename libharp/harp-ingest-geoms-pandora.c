@@ -541,7 +541,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     const char *description;
     const char *gas_unit;
 
-    if (version < 2)
+    if (version < 3)
     {
         gas_unit = "DU";
     }
