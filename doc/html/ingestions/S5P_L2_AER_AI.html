@@ -350,8 +350,8 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>wavelength_ratio</p></td>
-<td><p>354_388nm, 340_380nm</p></td>
-<td><p>ingest aerosol index retrieved at wavelengths 354/388 nm (default), or 340/380 nm</p></td>
+<td><p>354_388nm, 340_380nm, 335_367nm</p></td>
+<td><p>ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm</p></td>
 </tr>
 </tbody>
 </table>
@@ -485,7 +485,7 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-odd"><td rowspan="6"><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=354_388nm or wavelength_ratio unset</p></td>
 </tr>
@@ -498,7 +498,13 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_index_340_380</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>absorbing_aerosol_index_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>wavelength_ratio=335_367nm and processor version &gt;= 02.04.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/aerosol_index_335_367</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><p><strong>absorbing_aerosol_index_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=354_388nm (default)</p></td>
 </tr>
@@ -510,6 +516,12 @@
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_index_340_380_precision</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>wavelength_ratio=335_367nm</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/aerosol_index_335_367_precision</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>absorbing_aerosol_index_validity</strong></p></td>
 <td><p><em>path</em></p></td>

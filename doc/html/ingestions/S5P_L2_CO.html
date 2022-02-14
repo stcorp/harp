@@ -348,31 +348,37 @@
 <td><p>[]</p></td>
 <td><p>averaging kernel for the vertically integrated CO column density (for partial column number density profiles)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>H2O_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>CO_column_number_density_apriori</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[mol/m2]</p></td>
+<td><p>carbon monoxide apriori profile as partial column number densities</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>H2O_column_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>H2O total column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>uncertainty of the H2O column density (standard error)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>Scattering layer height</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_optical_depth</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_optical_depth</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>Scattering optical thickness SWIR</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -572,12 +578,12 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>CO_number_density_avk</strong></p></td>
+<tr class="row-odd"><td rowspan="7"><p><strong>CO_number_density_avk</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>avk=number_density</p></td>
+<td><p>avk=number_density and processor version &lt; 02.04.00</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
@@ -585,32 +591,60 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>CO_column_number_density_avk</strong></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>avk=number_density and processor version &gt;= 02.04.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending and each element is multiplied by 1000 [m] so the column avk can be applied to number density profiles instead of partial column number density profiles</p></td>
+</tr>
+<tr class="row-even"><td rowspan="7"><p><strong>CO_column_number_density_avk</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>avk unset and processor version &lt; 02.04.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending and each element is divided by 1000 [m] so the column avk can be applied to partial column number density profiles instead of number density profiles</p></td>
+</tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>avk unset</p></td>
+<td><p>avk unset and processor version &gt;= 02.04.00</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>the vertical grid is inverted to make it ascending and each element is divided by 1000 [m] so the column avk can be applied to partial column number density profiles instead of number density profiles</p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>H2O_column_number_density</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>CO_column_number_density_apriori</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.04.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/carbonmonoxide_profile_apriori[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>H2O_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/height_scattering_layer[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_optical_depth</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scattering_optical_thickness_SWIR[]</strong></p></td>
 </tr>

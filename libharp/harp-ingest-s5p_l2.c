@@ -1286,6 +1286,14 @@ static int read_input_apparent_scene_pressure(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_carbonmonoxide_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "carbonmonoxide_profile_apriori", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
 static int read_input_cloud_albedo_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1857,6 +1865,9 @@ static int read_product_aerosol_index(void *user_data, harp_array data)
         case 340:
             variable_name = "aerosol_index_340_380";
             break;
+        case 335:
+            variable_name = "aerosol_index_335_367";
+            break;
         default:
             assert(0);
             exit(1);
@@ -1878,6 +1889,9 @@ static int read_product_aerosol_index_precision(void *user_data, harp_array data
             break;
         case 340:
             variable_name = "aerosol_index_340_380_precision";
+            break;
+        case 335:
+            variable_name = "aerosol_index_335_367_precision";
             break;
         default:
             assert(0);
@@ -2580,24 +2594,6 @@ static int read_results_column_averaging_kernel_inverted(void *user_data, harp_a
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
-static int read_results_column_averaging_kernel_inverted_scaled(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    long i;
-
-    if (read_results_column_averaging_kernel_inverted(user_data, data) != 0)
-    {
-        return -1;
-    }
-
-    for (i = 0; i < info->num_scanlines * info->num_pixels * info->num_layers; i++)
-    {
-        data.float_data[i] /= 1e3;      /* divide each element by the layer height (= 1km) */
-    }
-
-    return 0;
-}
-
 static int read_results_degrees_of_freedom(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2955,6 +2951,48 @@ static int read_aer_lh_aerosol_mid_pressure(void *user_data, harp_array data)
 
     return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_co_column_number_density_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_results_column_averaging_kernel_inverted(user_data, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->processor_version < 20400)
+    {
+        for (i = 0; i < info->num_scanlines * info->num_pixels * info->num_layers; i++)
+        {
+            data.float_data[i] /= 1e3;  /* divide each element by the layer height (= 1km) */
+        }
+    }
+
+    return 0;
+}
+
+static int read_co_number_density_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_results_column_averaging_kernel_inverted(user_data, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->processor_version >= 20400)
+    {
+        for (i = 0; i < info->num_scanlines * info->num_pixels * info->num_layers; i++)
+        {
+            data.float_data[i] *= 1e3;  /* multiply each element by the layer height (= 1km) */
+        }
+    }
+
+    return 0;
 }
 
 static int read_co_surface_pressure(void *user_data, harp_array data)
@@ -4455,47 +4493,44 @@ static int read_sea_ice_fraction_nise(void *user_data, harp_array data)
     return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag_nise", data);
 }
 
-static int parse_option_wavelength_ratio(ingest_info *info, const harp_ingestion_options *options)
+static int ingestion_init_aer_ai(const harp_ingestion_module *module, coda_product *product,
+                                 const harp_ingestion_options *options, harp_product_definition **definition,
+                                 void **user_data)
 {
-    const char *value;
+    const char *option_value;
+    ingest_info *info;
 
-    if (harp_ingestion_options_get_option(options, "wavelength_ratio", &value) == 0)
+    if (ingestion_init(module, product, options, definition, (void **)&info) != 0)
     {
-        if (strcmp(value, "354_388nm") == 0)
+        return -1;
+    }
+
+    if (harp_ingestion_options_get_option(options, "wavelength_ratio", &option_value) == 0)
+    {
+        if (strcmp(option_value, "335_367nm") == 0)
+        {
+            info->wavelength_ratio = 335;
+            if (info->processor_version < 20400)
+            {
+                /* 335/367 is only available with processor version >= 02.04.00 */
+                /* return an empty product if the wavelength pair is not available */
+                info->num_times = 0;
+            }
+
+        }
+        else if (strcmp(option_value, "354_388nm") == 0)
         {
             info->wavelength_ratio = 354;
         }
         else
         {
             /* Option values are guaranteed to be legal if present. */
-            assert(strcmp(value, "340_380nm") == 0);
+            assert(strcmp(option_value, "340_380nm") == 0);
             info->wavelength_ratio = 340;
         }
     }
 
-    return 0;
-}
-
-static int ingestion_init_aer_ai(const harp_ingestion_module *module, coda_product *product,
-                                 const harp_ingestion_options *options, harp_product_definition **definition,
-                                 void **user_data)
-{
-    ingest_info *info;
-    harp_product_definition *tmp_definition;
-
-    if (ingestion_init(module, product, options, &tmp_definition, (void **)&info) != 0)
-    {
-        return -1;
-    }
-
-    if (parse_option_wavelength_ratio(info, options) != 0)
-    {
-        ingestion_done((void *)info);
-        return -1;
-    }
-
     *user_data = (void *)info;
-    *definition = tmp_definition;
 
     return 0;
 }
@@ -4514,6 +4549,11 @@ static int include_aer_lh_aerosol_pressure(void *user_data)
 {
     return !((ingest_info *)user_data)->use_aerosol_pressure_not_clipped ||
         ((ingest_info *)user_data)->processor_version >= 20000;
+}
+
+static int include_co_apriori(void *user_data)
+{
+    return ((ingest_info *)user_data)->processor_version >= 20400;
 }
 
 static int include_co_nd_avk(void *user_data)
@@ -4988,14 +5028,14 @@ static void register_aer_ai_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *wavelength_ratio_option_values[2] = { "354_388nm", "340_380nm" };
+    const char *wavelength_ratio_option_values[3] = { "354_388nm", "340_380nm", "335_367nm" };
     const char *description;
 
     module = harp_ingestion_register_module("S5P_L2_AER_AI", "Sentinel-5P", "Sentinel5P", "L2__AER_AI",
                                             "Sentinel-5P L2 aerosol index", ingestion_init_aer_ai, ingestion_done);
 
-    description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), or 340/380 nm";
-    harp_ingestion_register_option(module, "wavelength_ratio", description, 2, wavelength_ratio_option_values);
+    description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm";
+    harp_ingestion_register_option(module, "wavelength_ratio", description, 3, wavelength_ratio_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_AI", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_ai]);
@@ -5013,6 +5053,8 @@ static void register_aer_ai_product(void)
                                          NULL, "/PRODUCT/aerosol_index_354_388", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=335_367nm",
+                                         "processor version >= 02.04.00", "/PRODUCT/aerosol_index_335_367", NULL);
 
     /* absorbing_aerosol_index_uncertainty */
     description = "uncertainty of the aerosol index";
@@ -5024,6 +5066,8 @@ static void register_aer_ai_product(void)
                                          "/PRODUCT/aerosol_index_354_388_precision", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380_precision", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=335_367nm", NULL,
+                                         "/PRODUCT/aerosol_index_335_367_precision", NULL);
 
     /* absorbing_aerosol_index_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
@@ -5433,10 +5477,15 @@ static void register_co_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, "m", include_co_nd_avk,
-                                                   read_results_column_averaging_kernel_inverted);
+                                                   read_co_number_density_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]";
     description = "the vertical grid is inverted to make it ascending";
-    harp_variable_definition_add_mapping(variable_definition, "avk=number_density", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "avk=number_density", "processor version < 02.04.00",
+                                         path, description);
+    description = "the vertical grid is inverted to make it ascending and each element is multiplied by 1000 [m] so "
+        "the column avk can be applied to number density profiles instead of partial column number density profiles";
+    harp_variable_definition_add_mapping(variable_definition, "avk=number_density", "processor version >= 02.04.00",
+                                         path, description);
 
     /* CO_column_number_density_avk */
     description = "averaging kernel for the vertically integrated CO column density "
@@ -5444,11 +5493,23 @@ static void register_co_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   include_co_pcnd_avk,
-                                                   read_results_column_averaging_kernel_inverted_scaled);
+                                                   include_co_pcnd_avk, read_co_column_number_density_avk);
     description = "the vertical grid is inverted to make it ascending and each element is divided by 1000 [m] so the "
         "column avk can be applied to partial column number density profiles instead of number density profiles";
-    harp_variable_definition_add_mapping(variable_definition, "avk unset", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "avk unset", "processor version < 02.04.00", path,
+                                         description);
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, "avk unset", "processor version >= 02.04.00", path,
+                                         description);
+
+    /* CO_column_number_density_apriori */
+    description = "carbon monoxide apriori profile as partial column number densities";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "mol/m2",
+                                                   include_co_apriori, read_input_carbonmonoxide_profile_apriori);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/carbonmonoxide_profile_apriori[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.04.00", path, NULL);
 
     /* H2O_column_number_density */
     description = "H2O total column density";
