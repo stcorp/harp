@@ -378,49 +378,67 @@
 <td><p>[K]</p></td>
 <td><p>temperature</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
+<tr class="row-odd"><td><p><strong>wavelength</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>spectral</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>wavelengths at which the cloud and surface albedo are located</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>retrieved wavelength-dependent cloud albedo</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>retrieved wavelength-dependent surface albedo</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>surface altitude</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>surface altitude precision</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>surface pressure</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_meridional_wind_velocity</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_meridional_wind_velocity</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m/s]</p></td>
 <td><p>northward wind</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_zonal_wind_velocity</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_zonal_wind_velocity</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m/s]</p></td>
 <td><p>eastward wind</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>snow_ice_type</strong></p></td>
+<tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>sea_ice_fraction</strong></p></td>
+<tr class="row-even"><td><p><strong>sea_ice_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>sea-ice concentration (as a fraction)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -635,6 +653,21 @@
 <tr class="row-even"><td><p><strong>temperature</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/temperature[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>wavelength</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/dimension_cloud_albedo[], /PRODUCT/dimension_surface_albedo[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>cloud and surface albedo wavelength axis are expected to be the same</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_albedo</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p><em>path</em></p></td>

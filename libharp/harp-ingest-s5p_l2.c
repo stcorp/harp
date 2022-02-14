@@ -112,6 +112,7 @@ typedef struct ingest_info_struct
     long num_levels;
     long num_latitudes;
     long num_longitudes;
+    long num_spectral;
 
     coda_cursor product_cursor;
     coda_cursor geolocation_cursor;
@@ -462,6 +463,25 @@ static int init_dimensions(ingest_info *info)
         info->num_layers = info->num_levels - 1;
     }
 
+    if (info->product_type == s5p_type_o3_pr)
+    {
+        long dimension_cloud_albedo;
+
+        if (get_dimension_length(info, "dimension_surface_albedo", &info->num_spectral) != 0)
+        {
+            return -1;
+        }
+        if (get_dimension_length(info, "dimension_cloud_albedo", &dimension_cloud_albedo) != 0)
+        {
+            return -1;
+        }
+        if (dimension_cloud_albedo != info->num_spectral)
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "wavelength dimension for cloud albedo (%ld) does not match that of "
+                           "surface albedo (%s)", dimension_cloud_albedo, info->num_spectral);
+            return -1;
+        }
+    }
     return 0;
 }
 
@@ -983,6 +1003,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
             break;
         case s5p_type_o3_pr:
             dimension[harp_dimension_vertical] = info->num_levels;
+            dimension[harp_dimension_spectral] = info->num_spectral;
             break;
         case s5p_type_aer_lh:
         case s5p_type_aer_ai:
@@ -3453,6 +3474,60 @@ static int read_o3_pr_pressure(void *user_data, harp_array data)
 
     return read_dataset(*cursor, "pressure", harp_type_float, info->num_scanlines * info->num_pixels * info->num_levels,
                         data);
+}
+
+static int read_o3_pr_cloud_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_albedo_crb", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_o3_pr_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_o3_pr_wavelength(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array cloud_wavelength;
+    long i;
+
+    if (read_dataset(info->product_cursor, "dimension_surface_albedo", harp_type_float, info->num_spectral, data) != 0)
+    {
+        return -1;
+    }
+
+    cloud_wavelength.ptr = malloc(info->num_spectral * sizeof(float));
+    if (cloud_wavelength.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_spectral * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_dataset(info->product_cursor, "dimension_cloud_albedo", harp_type_float, info->num_spectral,
+                     cloud_wavelength) != 0)
+    {
+        free(cloud_wavelength.ptr);
+        return -1;
+    }
+    for (i = 0; i < info->num_spectral; i++)
+    {
+        if (cloud_wavelength.float_data[i] != data.float_data[i])
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "wavelength axis for cloud and surface albedo are not the same");
+            free(cloud_wavelength.ptr);
+            return -1;
+        }
+    }
+    free(cloud_wavelength.ptr);
+
+    return 0;
 }
 
 static int read_o3_tcl_pressure_bounds(void *user_data, harp_array data)
@@ -6084,6 +6159,7 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
     const char *description;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_vertical, harp_dimension_vertical };
+    harp_dimension_type dimension_type_spectral[2] = { harp_dimension_time, harp_dimension_spectral };
 
     /* pressure */
     description = "pressure";
@@ -6246,6 +6322,34 @@ static void register_o3_profile_variables(harp_product_definition *product_defin
                                                    dimension_type, NULL, description, "K", NULL,
                                                    read_input_temperature);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* wavelength */
+    description = "wavelengths at which the cloud and surface albedo are located";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_float, 1,
+                                                   &dimension_type_spectral[1], NULL, description, HARP_UNIT_WAVELENGTH,
+                                                   NULL, read_o3_pr_wavelength);
+    path = "/PRODUCT/dimension_cloud_albedo[], /PRODUCT/dimension_surface_albedo[]";
+    description = "cloud and surface albedo wavelength axis are expected to be the same";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* cloud_albedo */
+    description = "retrieved wavelength-dependent cloud albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 2,
+                                                   dimension_type_spectral, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_o3_pr_cloud_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "retrieved wavelength-dependent surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 2,
+                                                   dimension_type_spectral, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_o3_pr_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
