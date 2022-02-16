@@ -6792,8 +6792,7 @@ static void register_no2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* NO2_column_number_density */
-    description = "total vertical column of NO2 (ratio of the slant column density of NO2 and the total air mass "
-        "factor)";
+    description = "total vertical column of NO2";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "mol/m^2", NULL, read_no2_column);
