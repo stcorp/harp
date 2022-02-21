@@ -60,12 +60,6 @@ static binning_type get_binning_type(harp_variable *variable, int force_correlat
     long variable_name_length = (long)strlen(variable->name);
     int i;
 
-    /* variables with enumeration values get removed */
-    if (variable->num_enum_values > 0)
-    {
-        return binning_remove;
-    }
-
     /* any variable with a time dimension that is not the first dimension gets removed */
     for (i = 1; i < variable->num_dimensions; i++)
     {
@@ -105,6 +99,12 @@ static binning_type get_binning_type(harp_variable *variable, int force_correlat
     if (variable->num_dimensions == 0 || variable->dimension_type[0] != harp_dimension_time)
     {
         return binning_skip;
+    }
+
+    /* variables with enumeration values get removed */
+    if (variable->num_enum_values > 0)
+    {
+        return binning_remove;
     }
 
     /* we can't bin string values */

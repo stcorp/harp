@@ -1,3 +1,5 @@
+* Fixed issue where bin() operation was removing scalar enumeration variables.
+
 * Updates to product ingestions:
   - ECMWF GRIB: fix parameter mapping for CAMS model data that uses new
     masterTablesVersion=27 data
