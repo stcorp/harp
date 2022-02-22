@@ -545,7 +545,7 @@ static int init_processing_mode(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (strcmp(mode, "NRTI") == 0)
+    if (strcmp(mode, "NRTI") == 0 || strcmp(mode, "Near-realtime") == 0)
     {
         info->is_nrti = 1;
     }

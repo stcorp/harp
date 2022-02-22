@@ -8,6 +8,7 @@
   - S5P L2 AAI: added new 335/367 wavelength pair
   - S5P L2 CO: added new apriori profile and support for new AVK unit
   - S5P L2 O3 Profile: added surface_albedo and cloud_albedo
+  - S5P L2 HCHO/O3/SO2: added support for updated NRTI indication attribute.
 
 1.14 2021-10-20
 ~~~~~~~~~~~~~~~
