@@ -1,8 +1,9 @@
 * Fixed issue where bin() operation was removing scalar enumeration variables.
 
 * Updates to product ingestions:
-  - ECMWF GRIB: fix parameter mapping for CAMS model data that uses new
-    masterTablesVersion=27 data
+  - ECMWF GRIB: fixed parameter mapping for CAMS model data that uses
+    masterTablesVersion=27 data and added support for new
+    masterTablesVersion=28 data
   - GEOMS UVVIS.BREWER: added support for template V001
   - GEOMS PANDORA: added support for template V003
   - S5P L2 AAI: added new 335/367 wavelength pair
