@@ -522,7 +522,7 @@ static int init_versions(ingest_info *info)
 static int init_processing_mode(ingest_info *info)
 {
     coda_cursor cursor;
-    char mode[5];
+    char mode[14];
 
     if (info->product_type == s5p_type_o3_tcl)
     {
@@ -540,7 +540,7 @@ static int init_processing_mode(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_string(&cursor, mode, 5) != 0)
+    if (coda_cursor_read_string(&cursor, mode, 14) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
