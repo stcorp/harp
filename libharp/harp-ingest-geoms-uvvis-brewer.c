@@ -52,6 +52,7 @@ typedef struct ingest_info_struct
     coda_product *product;
     const char *template;
     long num_time;
+    int has_effective_temperature;
 } ingest_info;
 
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
@@ -59,6 +60,21 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     ingest_info *info = (ingest_info *)user_data;
 
     dimension[harp_dimension_time] = info->num_time;
+
+    return 0;
+}
+
+static int get_optional_variable_availability(ingest_info *info)
+{
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    info->has_effective_temperature = (coda_cursor_goto(&cursor, "/PRESSURE.EFFECTIVE.O3") == 0);
 
     return 0;
 }
@@ -211,41 +227,6 @@ static int read_variable_float(void *user_data, const char *path, long num_eleme
     return 0;
 }
 
-static int read_variable_int16(void *user_data, const char *path, long num_elements, harp_array data)
-{
-    coda_cursor cursor;
-    long actual_num_elements;
-
-    if (coda_cursor_set_product(&cursor, ((ingest_info *)user_data)->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, path) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (actual_num_elements != num_elements)
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected %ld)", path, actual_num_elements,
-                       num_elements);
-        return -1;
-    }
-    if (coda_cursor_read_int16_array(&cursor, data.int16_data, coda_array_ordering_c) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 static int read_data_source(void *user_data, harp_array data)
 {
     return read_attribute(user_data, "@DATA_SOURCE", data);
@@ -305,6 +286,11 @@ static int read_column_amf(void *user_data, harp_array data)
 static int read_effective_temperature(void *user_data, harp_array data)
 {
     return read_variable_float(user_data, "TEMPERATURE_EFFECTIVE_O3", ((ingest_info *)user_data)->num_time, data);
+}
+
+static int include_effective_temperature(void *user_data)
+{
+    return ((ingest_info *)user_data)->has_effective_temperature;
 }
 
 static void ingestion_done(void *user_data)
@@ -459,6 +445,12 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
 
+    if (get_optional_variable_availability(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
     *user_data = info;
     return 0;
 }
@@ -564,7 +556,7 @@ static int init_product_definition(harp_ingestion_module *module, int version)
     description = "Effective temperature of the ozone layer";
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, "O3_effective_temperature", harp_type_float, 1, dimension_type, NULL,
-         description, "1", NULL, read_effective_temperature);
+         description, "1", include_effective_temperature, read_effective_temperature);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE.EFFECTIVE.O3", NULL);
 
     return 0;
