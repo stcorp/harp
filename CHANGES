@@ -1,3 +1,6 @@
+1.15 2022-03-14
+~~~~~~~~~~~~~~~
+
 * Fixed issue where bin() operation was removing scalar enumeration variables.
 
 * Updates to product ingestions:
