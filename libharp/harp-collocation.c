@@ -227,9 +227,6 @@ LIBHARP_API int harp_collocation_result_new(harp_collocation_result **new_colloc
 
 /** Remove a collocation result set
  * \param collocation_result Result set that will be removed.
- * \return
- *   \arg \c 0, Success.
- *   \arg \c -1, Error occurred (check #harp_errno).
  */
 LIBHARP_API void harp_collocation_result_delete(harp_collocation_result *collocation_result)
 {
