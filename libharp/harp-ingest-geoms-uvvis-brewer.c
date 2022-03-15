@@ -74,7 +74,7 @@ static int get_optional_variable_availability(ingest_info *info)
         return -1;
     }
 
-    info->has_effective_temperature = (coda_cursor_goto(&cursor, "/PRESSURE.EFFECTIVE.O3") == 0);
+    info->has_effective_temperature = (coda_cursor_goto(&cursor, "/TEMPERATURE_EFFECTIVE_O3") == 0);
 
     return 0;
 }
