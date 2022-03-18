@@ -129,17 +129,49 @@ class Variable(object):
         if enum is not None:
             self.enum = enum
 
+    def _get_c_data_type(self):
+        """Return the C data type code corresponding to this variable, based
+            on the its data and optionally valid_min/max attributes.
+        """
+        c_data_type = _get_c_data_type(self.data)
+
+        dimension = getattr(self, "dimension", [])  # TODO can we avoid getattr?
+
+        if len(dimension) == 0:
+            # Allow valid_min/valid_max to influence data type as well
+            try:
+                c_data_type = max(c_data_type, _get_c_data_type(self.valid_min))
+            except Exception:
+                pass
+            try:
+                c_data_type = max(c_data_type, _get_c_data_type(self.valid_max))
+            except Exception:
+                pass
+
+        return c_data_type
+
+    def _format_data_type(self):
+        """Return the string representation of the C data type that would be used
+        to store the variable, or "<invalid>" if its data attribute is of an
+        unsupported type.
+
+        """
+        try:
+            return _get_c_data_type_name(self._get_c_data_type())
+        except UnsupportedTypeError:
+            return "<invalid>"
+
     def __repr__(self):
         if not self.dimension:
-            return "<Variable type=%s>" % _format_data_type(self.data)
+            return "<Variable type=%s>" % self._format_data_type()
 
-        return "<Variable type=%s dimension=%s>" % (_format_data_type(self.data),
+        return "<Variable type=%s dimension=%s>" % (self._format_data_type(),
                                                     _format_dimensions(self.dimension, self.data))
 
     def __str__(self):
         stream = StringIO()
 
-        print("type =", _format_data_type(self.data), file=stream)
+        print("type =", self._format_data_type(), file=stream)
 
         if self.dimension:
             print("dimension =", _format_dimensions(self.dimension, self.data), file=stream)
@@ -324,7 +356,7 @@ class Product(object):
                 continue
 
             # Data type and variable name.
-            stream.write(_format_data_type(variable.data) + " " + name)
+            stream.write(variable._format_data_type() + " " + name)
 
             # Dimensions.
             if variable.dimension:
@@ -419,6 +451,7 @@ def _get_c_library_filename():
     platform.
 
     """
+
     from platform import system as _system
 
     if _system() == "Windows":
@@ -777,18 +810,6 @@ def _decode_string(string):
         raise TypeError("string must be bytes or str, not %r" % string.__class__.__name__)
 
 
-def _format_data_type(data):
-    """Return the string representation of the C data type that would be used to
-    store the specified data, or "<invalid>" if the specified data is of an
-    unsupported type.
-
-    """
-    try:
-        return _get_c_data_type_name(_get_c_data_type(data))
-    except UnsupportedTypeError:
-        return "<invalid>"
-
-
 def _format_dimensions(dimension, data):
     """Construct a formatted string from the specified dimensions and data that
     provides information about dimension types and lengths, or "<invalid>" if this
@@ -971,21 +992,7 @@ def _export_variable(name, variable, c_product):
         raise Error("dimensions incorrect")
 
     # Determine C data type.
-    c_data_type = _get_c_data_type(data)
-    if len(dimension) == 0:
-        # Allow valid_min/valid_max to influence data type as well
-        try:
-            min_data_type = _get_c_data_type(variable.valid_min)
-            if min_data_type != c_data_type:
-                c_data_type = min_data_type
-        except Exception:
-            pass
-        try:
-            max_data_type = _get_c_data_type(variable.valid_max)
-            if max_data_type != c_data_type:
-                c_data_type = max_data_type
-        except Exception:
-            pass
+    c_data_type = variable._get_c_data_type()
 
     # Encode variable name.
     c_name = _encode_string(name)
