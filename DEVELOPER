@@ -15,7 +15,7 @@ Current versions used for generating the documentation are:
 - sphinx-rtd-theme 1.0.0
 - breathe 4.33.0
 - doxygen 1.9.2
-The full list of third party dependencies can be found in `doc/requirements.txt`
+A conda-forge environment file can be found in `doc/environment.yml`
 
 Run 'make dist' to have config.h.cmake.in and harp.h.cmake.in updated to be
 in line with config.h.in and harp.h.in.
@@ -25,8 +25,8 @@ This should happen automatically using the Makefile dependencies.
 But, make sure to do this by performing an in-source build of HARP such that
 the _harpc.py file in the python subdirectory of the source tree gets replaced.
 Current versions of cffi and pycparser for generating the python interface are:
-- cffi 1.7.0
-- pycparser 2.14
+- cffi 1.15.0
+- pycparser 2.21
 
 Run 'make indent' using GNU indent (2.2.11) to update the indentation of the C
 code. You may have to run it twice to work around flipping indentation choices

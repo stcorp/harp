@@ -608,7 +608,7 @@ RSTFILES = \
 EXTRA_DIST += \
 	$(RSTFILES) \
 	doc/conf.py \
-	doc/requirements.txt \
+	doc/environment.yml \
 	doc/static/custom.css \
 	doc/templates/searchbox.html \
 	$(DOCFILES)
