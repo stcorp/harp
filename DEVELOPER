@@ -10,11 +10,11 @@ get regenerated (all using the autotools build system):
 
 Run 'make doc' to regenerate the documentation.
 Current versions used for generating the documentation are:
-- Sphinx 3.3.1
-- sphinx-autobuild 2020.9.1
-- sphinx-rtd-theme 0.5.1
-- breathe 4.25.1
-- doxygen 1.8.20
+- Sphinx 4.4.0
+- sphinx-autobuild 2021.3.14
+- sphinx-rtd-theme 1.0.0
+- breathe 4.33.0
+- doxygen 1.9.2
 The full list of third party dependencies can be found in `doc/requirements.txt`
 
 Run 'make dist' to have config.h.cmake.in and harp.h.cmake.in updated to be

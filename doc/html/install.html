@@ -1,88 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Installation &mdash; HARP 1.15 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Conventions" href="conventions/index.html" />
     <link rel="prev" title="HARP manual" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> HARP
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.15
               </div>
-            
-          
-
-          
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#supported-platforms">Supported platforms</a></li>
@@ -108,82 +58,42 @@
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">HARP</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Installation</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="installation">
+             
+  <section id="installation">
 <h1>Installation</h1>
 <p>This documentation provides installation instructions for HARP.</p>
 <p>HARP is a toolset for ingesting, processing and inter-comparing satellite data
 against correlative data. The toolset is composed of a set of command line
 tools and a library of analysis functions.</p>
-<div class="section" id="supported-platforms">
+<section id="supported-platforms">
 <h2>Supported platforms</h2>
 <p>HARP is designed to run on most Unix-based operating systems (including Linux
 and macOS) and Windows. The platforms that are supported include at least
 Linux, Windows, and macOS.</p>
-</div>
-<div class="section" id="what-you-will-need">
+</section>
+<section id="what-you-will-need">
 <h2>What you will need</h2>
 <blockquote>
 <div><ul>
@@ -235,8 +145,8 @@ and <code class="docutils literal notranslate"><span class="pre">cffi</span></co
 <li><p>If you plan on using the R interface you need R version 3 or higher.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="using-github">
+</section>
+<section id="using-github">
 <h2>Using GitHub</h2>
 <p>HARP is also available as source code directly from GitHub, but this is only
 recommended to be used by users who want to co-develop HARP and it will only
@@ -268,16 +178,16 @@ $ git submodule update
 build HARP, but they do not allow regeneration of automatically generated
 files (such as the documentation), so they are not recommended for performing
 co-development of HARP.</p>
-</div>
-<div class="section" id="using-anaconda">
+</section>
+<section id="using-anaconda">
 <h2>Using Anaconda</h2>
 <p>HARP is also available as a conda package for Windows, Linux, and macOS
 (only 64bit and Python3). You can install HARP using conda with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c conda-forge harp
 </pre></div>
 </div>
-</div>
-<div class="section" id="building-the-source-package-unix">
+</section>
+<section id="building-the-source-package-unix">
 <h2>Building the source package (Unix)</h2>
 <p>To build the source package, make sure to download the official HARP source
 package, which is named harp-x.y.z.tar.gz. Don’t use the packages called
@@ -505,8 +415,8 @@ file.</p>
 </li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="installing-the-binary-package-windows">
+</section>
+<section id="installing-the-binary-package-windows">
 <h2>Installing the binary package (Windows)</h2>
 <p>First make sure that you have the <a class="reference external" href="https://www.microsoft.com/en-us/download/details.aspx?id=48145">Microsoft Visual C++ Redistributable
 Packages for Visual Studio 2015</a> installed.</p>
@@ -553,8 +463,8 @@ location different from <code class="docutils literal notranslate"><span class="
 directory by the installation directory you had chosen when you installed HARP.</p>
 <p>Note: The binary installer for Windows comes with DLLs for all dependencies,
 which are CODA, HDF4, HDF5, and their dependencies.</p>
-</div>
-<div class="section" id="building-the-source-package-windows">
+</section>
+<section id="building-the-source-package-windows">
 <h2>Building the source package (Windows)</h2>
 <p>To build the source package, make sure to download the official HARP source
 package, which is named <code class="docutils literal notranslate"><span class="pre">harp-x.y.z.tar.gz</span></code>. Don’t use the packages called
@@ -568,8 +478,8 @@ and libraries for the third-party dependencies can be set using
 <p>The generation of the Windows binary installer is done using CPack and WIX.
 So, in order to recreate the Windows binary installer, you will also have to
 make sure that you have CMake (3.0 or later) and WIX installed.</p>
-</div>
-<div class="section" id="documentation-location">
+</section>
+<section id="documentation-location">
 <h2>Documentation location</h2>
 <p>Both the source and binary HARP packages come with documentation in HTML.
 For the source package you can access the documentation from within the
@@ -578,8 +488,8 @@ subdirectory and opening the file index.html in your browser. If you perform
 an install of the source package all documentation will also be installed. You
 can find the documentation under the subdirectory <code class="docutils literal notranslate"><span class="pre">share/harp/doc/html</span></code> of
 your installation directory (<code class="docutils literal notranslate"><span class="pre">/usr/local</span></code> by default).</p>
-</div>
-<div class="section" id="feedback">
+</section>
+<section id="feedback">
 <h2>Feedback</h2>
 <p>If you encounter any problems while trying to build, install or run one or more
 components of the HARP package then create a topic on the Atmospheric Toolbox
@@ -593,47 +503,35 @@ copy of the output of <code class="docutils literal notranslate"><span class="pr
 <p>Apart from problems, we would also appreciate to hear from you if you have any
 ideas, suggestions, or comments that may help us to improve the quality or
 functionality of HARP.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="conventions/index.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="HARP manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="conventions/index.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.
+    <p>&#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.</p>
+  </div>
 
-    </p>
-  </div> 
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

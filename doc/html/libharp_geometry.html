@@ -1,88 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Geometry &mdash; HARP 1.15 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Product" href="libharp_product.html" />
     <link rel="prev" title="General" href="libharp_general.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> HARP
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.15
               </div>
-            
-          
-
-          
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions/index.html">Conventions</a></li>
@@ -112,223 +62,175 @@
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">HARP</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="libharp.html">C library</a> &raquo;</li>
-        
       <li>Geometry</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="geometry">
+             
+  <section id="geometry">
 <h1>Geometry</h1>
-<dl class="group">
-<dt>
-<span class="target" id="group__harp__geometry"></span><em>group</em> <code class="sig-name descname">harp_geometry</code></dt>
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group__harp__geometry"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">harp_geometry</span></span></dt>
 <dd><p>The HARP Geometry module contains public functions for dealing with polygons and points on a spherical surface. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv432harp_geometry_get_point_distanceddddPd">
-<span id="_CPPv332harp_geometry_get_point_distanceddddPd"></span><span id="_CPPv232harp_geometry_get_point_distanceddddPd"></span><span id="harp_geometry_get_point_distance__double.double.double.double.doubleP"></span><span class="target" id="group__harp__geometry_1ga6b52fe91c049f7313e7688039aa04cc5"></span>int <code class="sig-name descname">harp_geometry_get_point_distance</code><span class="sig-paren">(</span>double <em>latitude_a</em>, double <em>longitude_a</em>, double <em>latitude_b</em>, double <em>longitude_b</em>, double *<em>distance</em><span class="sig-paren">)</span><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv432harp_geometry_get_point_distanceddddPd">
+<span id="_CPPv332harp_geometry_get_point_distanceddddPd"></span><span id="_CPPv232harp_geometry_get_point_distanceddddPd"></span><span id="harp_geometry_get_point_distance__double.double.double.double.doubleP"></span><span class="target" id="group__harp__geometry_1ga6b52fe91c049f7313e7688039aa04cc5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_geometry_get_point_distance</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">latitude_a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">longitude_a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">latitude_b</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">longitude_b</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">distance</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Calculate the distance between two points on the surface of the Earth in meters</p>
-<p>This function assumes a spherical earth <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<p>This function assumes a spherical earth </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitude_a</strong> – Latitude of first point </p></li>
+<li><p><strong>longitude_a</strong> – Longitude of first point </p></li>
+<li><p><strong>latitude_b</strong> – Latitude of second point </p></li>
+<li><p><strong>longitude_b</strong> – Longitude of second point </p></li>
+<li><p><strong>distance</strong> – Pointer to the C variable where the surface distance in [m] between the two points will be stored. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
 </p>
 </dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude_a</span></code>: Latitude of first point </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">longitude_a</span></code>: Longitude of first point </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude_b</span></code>: Latitude of second point </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">longitude_b</span></code>: Longitude of second point </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">distance</span></code>: Pointer to the C variable where the surface distance in [m] between the two points will be stored. </p></li>
-</ul>
-</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv431harp_geometry_has_point_in_areaddiPdPdPi">
-<span id="_CPPv331harp_geometry_has_point_in_areaddiPdPdPi"></span><span id="_CPPv231harp_geometry_has_point_in_areaddiPdPdPi"></span><span id="harp_geometry_has_point_in_area__double.double.i.doubleP.doubleP.iP"></span><span class="target" id="group__harp__geometry_1ga3b02dad2aafb8f28c84963e47ea1ea91"></span>int <code class="sig-name descname">harp_geometry_has_point_in_area</code><span class="sig-paren">(</span>double <em>latitude_point</em>, double <em>longitude_point</em>, int <em>num_vertices</em>, double *<em>latitude_bounds</em>, double *<em>longitude_bounds</em>, int *<em>in_area</em><span class="sig-paren">)</span><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv431harp_geometry_has_point_in_areaddiPdPdPi">
+<span id="_CPPv331harp_geometry_has_point_in_areaddiPdPdPi"></span><span id="_CPPv231harp_geometry_has_point_in_areaddiPdPdPi"></span><span id="harp_geometry_has_point_in_area__double.double.i.doubleP.doubleP.iP"></span><span class="target" id="group__harp__geometry_1ga3b02dad2aafb8f28c84963e47ea1ea91"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_geometry_has_point_in_area</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">latitude_point</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">longitude_point</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_vertices</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">latitude_bounds</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">longitude_bounds</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">in_area</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Determine whether a point is in an area on the surface of the Earth</p>
 <p>This function assumes a spherical earth.</p>
 <p>The latitude/longitude bounds can be either vertices of a polygon (num_vertices&gt;=3) or represent corner points that define a bounding rect (num_vertices==2).</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitude_point</strong> – Latitude of the point </p></li>
+<li><p><strong>longitude_point</strong> – Longitude of the point </p></li>
+<li><p><strong>num_vertices</strong> – The number of vertices of the bounding polygon/rect of the area </p></li>
+<li><p><strong>latitude_bounds</strong> – Latitude values of the bounds of the area polygon/rect </p></li>
+<li><p><strong>longitude_bounds</strong> – Longitude values of the bounds of the area polygon/rect </p></li>
+<li><p><strong>in_area</strong> – Pointer to the C variable where the result will be stored (1 if point is in the area, 0 otherwise). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
 </p>
 </dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude_point</span></code>: Latitude of the point </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">longitude_point</span></code>: Longitude of the point </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">num_vertices</span></code>: The number of vertices of the bounding polygon/rect of the area </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude_bounds</span></code>: Latitude values of the bounds of the area polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">longitude_bounds</span></code>: Longitude values of the bounds of the area polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">in_area</span></code>: Pointer to the C variable where the result will be stored (1 if point is in the area, 0 otherwise). </p></li>
-</ul>
-</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv430harp_geometry_has_area_overlapiPdPdiPdPdPiPd">
-<span id="_CPPv330harp_geometry_has_area_overlapiPdPdiPdPdPiPd"></span><span id="_CPPv230harp_geometry_has_area_overlapiPdPdiPdPdPiPd"></span><span id="harp_geometry_has_area_overlap__i.doubleP.doubleP.i.doubleP.doubleP.iP.doubleP"></span><span class="target" id="group__harp__geometry_1gab800d2e7bbc465b2b1ce0028187e3601"></span>int <code class="sig-name descname">harp_geometry_has_area_overlap</code><span class="sig-paren">(</span>int <em>num_vertices_a</em>, double *<em>latitude_bounds_a</em>, double *<em>longitude_bounds_a</em>, int <em>num_vertices_b</em>, double *<em>latitude_bounds_b</em>, double *<em>longitude_bounds_b</em>, int *<em>has_overlap</em>, double *<em>fraction</em><span class="sig-paren">)</span><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv430harp_geometry_has_area_overlapiPdPdiPdPdPiPd">
+<span id="_CPPv330harp_geometry_has_area_overlapiPdPdiPdPdPiPd"></span><span id="_CPPv230harp_geometry_has_area_overlapiPdPdiPdPdPiPd"></span><span id="harp_geometry_has_area_overlap__i.doubleP.doubleP.i.doubleP.doubleP.iP.doubleP"></span><span class="target" id="group__harp__geometry_1gab800d2e7bbc465b2b1ce0028187e3601"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_geometry_has_area_overlap</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_vertices_a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">latitude_bounds_a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">longitude_bounds_a</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_vertices_b</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">latitude_bounds_b</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">longitude_bounds_b</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">has_overlap</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">fraction</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Determine the amount of overlap of two areas on the surface of the Earth</p>
 <p>This function assumes a spherical earth. The overlap fraction is calculated as area(intersection)/min(area(A),area(B)).</p>
 <p>The latitude/longitude bounds for A and B can be either vertices of a polygon (num_vertices&gt;=3), or represent corner points that define a bounding rect (num_vertices==2).</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_vertices_a</strong> – The number of vertices of the bounding polygon/rect of the first area </p></li>
+<li><p><strong>latitude_bounds_a</strong> – Latitude values of the bounds of the area of the first polygon/rect </p></li>
+<li><p><strong>longitude_bounds_a</strong> – Longitude values of the bounds of the area of the first polygon/rect </p></li>
+<li><p><strong>num_vertices_b</strong> – The number of vertices of the bounding polygon/rect of the second area </p></li>
+<li><p><strong>latitude_bounds_b</strong> – Latitude values of the bounds of the area of the second polygon/rect </p></li>
+<li><p><strong>longitude_bounds_b</strong> – Longitude values of the bounds of the area of the second polygon/rect </p></li>
+<li><p><strong>has_overlap</strong> – Pointer to the C variable where the result will be stored (1 if there is overlap, 0 otherwise). </p></li>
+<li><p><strong>fraction</strong> – Pointer to the C variable where the overlap fraction will be stored (use NULL if not needed). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
 </p>
 </dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">num_vertices_a</span></code>: The number of vertices of the bounding polygon/rect of the first area </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude_bounds_a</span></code>: Latitude values of the bounds of the area of the first polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">longitude_bounds_a</span></code>: Longitude values of the bounds of the area of the first polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">num_vertices_b</span></code>: The number of vertices of the bounding polygon/rect of the second area </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude_bounds_b</span></code>: Latitude values of the bounds of the area of the second polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">longitude_bounds_b</span></code>: Longitude values of the bounds of the area of the second polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">has_overlap</span></code>: Pointer to the C variable where the result will be stored (1 if there is overlap, 0 otherwise). </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fraction</span></code>: Pointer to the C variable where the overlap fraction will be stored (use NULL if not needed). </p></li>
-</ul>
-</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv422harp_geometry_get_areaiPdPdPd">
-<span id="_CPPv322harp_geometry_get_areaiPdPdPd"></span><span id="_CPPv222harp_geometry_get_areaiPdPdPd"></span><span id="harp_geometry_get_area__i.doubleP.doubleP.doubleP"></span><span class="target" id="group__harp__geometry_1ga1250d3e91ad26764d8e0b5e318f61dce"></span>int <code class="sig-name descname">harp_geometry_get_area</code><span class="sig-paren">(</span>int <em>num_vertices</em>, double *<em>latitude_bounds</em>, double *<em>longitude_bounds</em>, double *<em>area</em><span class="sig-paren">)</span><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv422harp_geometry_get_areaiPdPdPd">
+<span id="_CPPv322harp_geometry_get_areaiPdPdPd"></span><span id="_CPPv222harp_geometry_get_areaiPdPdPd"></span><span id="harp_geometry_get_area__i.doubleP.doubleP.doubleP"></span><span class="target" id="group__harp__geometry_1ga1250d3e91ad26764d8e0b5e318f61dce"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_geometry_get_area</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_vertices</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">latitude_bounds</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">longitude_bounds</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">area</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Calculate the area size for a polygon on the surface of the Earth</p>
 <p>This function assumes a spherical earth.</p>
 <p>The latitude/longitude bounds for A and B can be either vertices of a polygon (num_vertices&gt;=3), or represent corner points that define a bounding rect (num_vertices==2).</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_vertices</strong> – The number of vertices of the bounding polygon/rect </p></li>
+<li><p><strong>latitude_bounds</strong> – Latitude values of the bounds of the polygon/rect </p></li>
+<li><p><strong>longitude_bounds</strong> – Longitude values of the bounds of the polygon/rect </p></li>
+<li><p><strong>area</strong> – Pointer to the C variable where the area size will be stored (in [m2]). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
 </p>
 </dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">num_vertices</span></code>: The number of vertices of the bounding polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude_bounds</span></code>: Latitude values of the bounds of the polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">longitude_bounds</span></code>: Longitude values of the bounds of the polygon/rect </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">area</span></code>: Pointer to the C variable where the area size will be stored (in [m2]). </p></li>
-</ul>
-</dd>
 </dl>
-</p>
 </dd></dl>
 
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="libharp_product.html" class="btn btn-neutral float-right" title="Product" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="libharp_general.html" class="btn btn-neutral float-left" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="libharp_product.html" class="btn btn-neutral float-right" title="Product" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.
+    <p>&#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.</p>
+  </div>
 
-    </p>
-  </div> 
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

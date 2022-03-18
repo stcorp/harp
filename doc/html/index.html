@@ -1,87 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>HARP manual &mdash; HARP 1.15 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Installation" href="install.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="#" class="icon icon-home"> HARP
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.15
               </div>
-            
-          
-
-          
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions/index.html">Conventions</a></li>
@@ -96,72 +46,32 @@
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="#">HARP</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-        
       <li>HARP manual</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="harp-manual">
+             
+  <section id="harp-manual">
 <h1>HARP manual</h1>
-<div class="section" id="contents">
+<section id="contents">
 <h2>Contents</h2>
 <div class="toctree-wrapper compound">
 <ul>
@@ -290,8 +200,8 @@
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="what-is-harp">
+</section>
+<section id="what-is-harp">
 <h2>What is HARP?</h2>
 <p>HARP is a toolkit for reading, processing and inter-comparing satellite remote
 sensing data, model data, in-situ data, and ground based remote sensing data.
@@ -311,8 +221,8 @@ toolkit uses its own <a class="reference internal" href="#data-formats"><span cl
 intermediate files. The use of this harmonized formatting means that satellite
 products need to be converted first to HARP compliant files. Once in this
 format, further processing can be performed.</p>
-</div>
-<div class="section" id="data-formats">
+</section>
+<section id="data-formats">
 <span id="id1"></span><h2>Data formats</h2>
 <p>In order for HARP command line tools to handle each others output the toolkit
 makes uses of its own <a class="reference internal" href="conventions/index.html"><span class="doc">data format conventions</span></a>.</p>
@@ -324,37 +234,37 @@ inclusion of metadata from other standards such as netCDF-CF.</p>
 collocations, the <a class="reference internal" href="conventions/collocation_result.html"><span class="doc">Collocation Result File</span></a>,
 which is based on CSV.</p>
 <p>Both data formats are described in more detail in the <a class="reference internal" href="conventions/index.html"><span class="doc">Data formats</span></a> section of the documentation.</p>
-</div>
-<div class="section" id="algorithms">
+</section>
+<section id="algorithms">
 <h2>Algorithms</h2>
 <p>HARP can perform a wide variety of operations on the data. A description of
 the algorithms as used in HARP can be found in the <a class="reference internal" href="algorithms/index.html"><span class="doc">Algorithms</span></a> section of the documentation.</p>
-</div>
-<div class="section" id="operations">
+</section>
+<section id="operations">
 <h2>Operations</h2>
 <p>Several HARP functions and tools can take a sequence of operations, such as
 filters or regridding operations, which are then performed on a product.
 A description of the operations expressions is provided in the <a class="reference internal" href="operations.html"><span class="doc">Operations</span></a> section of the documentation.</p>
-</div>
-<div class="section" id="c-library">
+</section>
+<section id="c-library">
 <h2>C library</h2>
 <p>Common parts that are used by the various HARP command line tools are gathered
 in a single <a class="reference internal" href="libharp.html"><span class="doc">HARP C library</span></a>. This library can be used to build
 custom applications or libraries that work with HARP compliant data products.</p>
-</div>
-<div class="section" id="idl-interface">
+</section>
+<section id="idl-interface">
 <h2>IDL interface</h2>
 <p>The <a class="reference internal" href="idl.html"><span class="doc">HARP IDL interface</span></a> provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
 HARP from IDL.</p>
-</div>
-<div class="section" id="matlab-interface">
+</section>
+<section id="matlab-interface">
 <h2>MATLAB interface</h2>
 <p>The <a class="reference internal" href="matlab.html"><span class="doc">HARP MATLAB interface</span></a> provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
 HARP from MATLAB.</p>
-</div>
-<div class="section" id="python-interface">
+</section>
+<section id="python-interface">
 <h2>Python interface</h2>
 <p>The <a class="reference internal" href="python.html"><span class="doc">HARP Python interface</span></a> provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
@@ -362,14 +272,14 @@ HARP from Python. The Python interface depends on the <code class="docutils lite
 which is part of the C foreign function interface (cffi) package. This package
 must be installed in order to be able to use the Python interface. See the <a class="reference external" href="http://cffi.readthedocs.org/en/latest/installation.html">cffi
 documentation</a> for details on how to install the cffi package.</p>
-</div>
-<div class="section" id="r-interface">
+</section>
+<section id="r-interface">
 <h2>R interface</h2>
 <p>The <a class="reference internal" href="R.html"><span class="doc">HARP R interface</span></a> provides a set of functions to import
 and export HARP products, and to ingest non-HARP products of a type supported by
 HARP from R.</p>
-</div>
-<div class="section" id="command-line-tools">
+</section>
+<section id="command-line-tools">
 <span id="id2"></span><h2>Command line tools</h2>
 <p>The HARP command line tools perform various operations on HARP compliant data
 products. All command line tools except <code class="docutils literal notranslate"><span class="pre">harpconvert</span></code> expect one or more HARP
@@ -377,8 +287,8 @@ data products as input. The <code class="docutils literal notranslate"><span cla
 products into HARP products.</p>
 <p>The available command line tools are described in more detail in the
 <a class="reference internal" href="tools.html"><span class="doc">Command line tools</span></a> section of the documentation.</p>
-</div>
-<div class="section" id="a-typical-inter-comparison">
+</section>
+<section id="a-typical-inter-comparison">
 <h2>A typical inter-comparison</h2>
 <p>Typical sequence when comparing two datasets of measurements:</p>
 <dl class="simple">
@@ -407,46 +317,34 @@ command line using:</p>
 <blockquote>
 <div><p>harpdump …</p>
 </div></blockquote>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.
+    <p>&#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.</p>
+  </div>
 
-    </p>
-  </div> 
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

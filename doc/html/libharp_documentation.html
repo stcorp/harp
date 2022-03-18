@@ -1,88 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Documentation &mdash; HARP 1.15 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="Error" href="libharp_error.html" />
     <link rel="prev" title="Dataset" href="libharp_dataset.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> HARP
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.15
               </div>
-            
-          
-
-          
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions/index.html">Conventions</a></li>
@@ -112,165 +62,113 @@
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">HARP</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="libharp.html">C library</a> &raquo;</li>
-        
       <li>Documentation</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="documentation">
+             
+  <section id="documentation">
 <h1>Documentation</h1>
-<dl class="group">
-<dt>
-<span class="target" id="group__harp__documentation"></span><em>group</em> <code class="sig-name descname">harp_documentation</code></dt>
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group__harp__documentation"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">harp_documentation</span></span></dt>
 <dd><p>The HARP Generated documentation module contains public functions to output documentation that can be generated automatically by HARP. This includes the ingestion definitions and derived variable conversions. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Functions</p>
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv425harp_doc_list_conversionsPK12harp_productPKcPFiPKczE">
-<span id="_CPPv325harp_doc_list_conversionsPK12harp_productPKcPFiPKczE"></span><span id="_CPPv225harp_doc_list_conversionsPK12harp_productPKcPFiPKczE"></span><span class="target" id="group__harp__documentation_1gaf5c68c3e7dbef9fea9b5ef94fda8451b"></span>int <code class="sig-name descname">harp_doc_list_conversions</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="libharp_product.html#_CPPv412harp_product" title="harp_product">harp_product</a> *<em>product</em>, <em class="property">const</em> char *<em>variable_name</em>, int (*<em>print</em>)<span class="sig-paren">(</span><em class="property">const</em> char*, ...<span class="sig-paren">)</span><span class="sig-paren">)</span><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv425harp_doc_list_conversionsPK12harp_productPKcPFiPKczE">
+<span id="_CPPv325harp_doc_list_conversionsPK12harp_productPKcPFiPKczE"></span><span id="_CPPv225harp_doc_list_conversionsPK12harp_productPKcPFiPKczE"></span><span class="target" id="group__harp__documentation_1gaf5c68c3e7dbef9fea9b5ef94fda8451b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_doc_list_conversions</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="libharp_product.html#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable_name</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">print</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print the full listing of available variable conversions.</p>
-<p>If product is NULL then all possible conversions will be printed. If a product is provided then only conversions that can be made using the content of that product will be shown. The <em>print</em> function parameter should be a function that resembles printf(). The most common case use is to just use printf() itself. For example: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">harp_doc_list_conversions</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">printf</span><span class="p">);</span>
+<p>If product is NULL then all possible conversions will be printed. If a product is provided then only conversions that can be made using the content of that product will be shown. The <em>print</em> function parameter should be a function that resembles printf(). The most common case use is to just use printf() itself. For example: <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">harp_doc_list_conversions</span><span class="p">(</span><span class="n">product</span><span class="p">,</span><span class="w"> </span><span class="n">printf</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
- <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+ </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>product</strong> – Pointer to a HARP product (can be NULL). </p></li>
+<li><p><strong>variable_name</strong> – Name of the target variable for which to show conversions (can be NULL). </p></li>
+<li><p><strong>print</strong> – Reference to a printf compatible function. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
 </p>
 </dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">product</span></code>: Pointer to a HARP product (can be NULL). </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">variable_name</span></code>: Name of the target variable for which to show conversions (can be NULL). </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">print</span></code>: Reference to a printf compatible function. </p></li>
-</ul>
-</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv437harp_doc_export_ingestion_definitionsPKc">
-<span id="_CPPv337harp_doc_export_ingestion_definitionsPKc"></span><span id="_CPPv237harp_doc_export_ingestion_definitionsPKc"></span><span id="harp_doc_export_ingestion_definitions__cCP"></span><span class="target" id="group__harp__documentation_1ga414116bc37d125a69e14a3eb08f1b9f1"></span>int <code class="sig-name descname">harp_doc_export_ingestion_definitions</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>path</em><span class="sig-paren">)</span><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv437harp_doc_export_ingestion_definitionsPKc">
+<span id="_CPPv337harp_doc_export_ingestion_definitionsPKc"></span><span id="_CPPv237harp_doc_export_ingestion_definitionsPKc"></span><span id="harp_doc_export_ingestion_definitions__cCP"></span><span class="target" id="group__harp__documentation_1ga414116bc37d125a69e14a3eb08f1b9f1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_doc_export_ingestion_definitions</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Generate reStructuredText documentation for all ingestion definitions.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><ul class="simple">
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – Path to directory in which the documentation files will be written. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
 </ul>
 </p>
 </dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to directory in which the documentation files will be written. </p></li>
-</ul>
-</dd>
 </dl>
-</p>
 </dd></dl>
 
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="libharp_error.html" class="btn btn-neutral float-right" title="Error" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="libharp_dataset.html" class="btn btn-neutral float-left" title="Dataset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="libharp_error.html" class="btn btn-neutral float-right" title="Error" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.
+    <p>&#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.</p>
+  </div>
 
-    </p>
-  </div> 
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

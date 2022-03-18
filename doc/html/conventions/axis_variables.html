@@ -1,88 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Axis variables &mdash; HARP 1.15 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="next" title="Categorical Variables" href="categorical_variables.html" />
     <link rel="prev" title="Variable names" href="variable_names.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> HARP
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.15
               </div>
-            
-          
-
-          
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Conventions</a><ul class="current">
@@ -121,72 +71,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">HARP</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">Conventions</a> &raquo;</li>
-        
       <li>Axis variables</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="axis-variables">
+             
+  <section id="axis-variables">
 <h1>Axis variables</h1>
 <p>HARP does not impose a fixed link between dimensions and its axis variables.
 A product can contain multiple variables that can function as an axis variable for a dimension.
@@ -194,7 +103,7 @@ For instance, for the vertical dimension, a product can contain both a <code cla
 where either can function as an axis variable.
 The same applies for e.g. <code class="docutils literal notranslate"><span class="pre">wavelength</span></code> and <code class="docutils literal notranslate"><span class="pre">wavenumber</span></code> for the spectral axis.</p>
 <p>In order for a variable to function as an axis variable it should have either strict ascending or strict descending values.</p>
-<div class="section" id="intervals">
+<section id="intervals">
 <h2>Intervals</h2>
 <p>HARP has strict rules when it comes to dealing with the specification of an applicable interval along a dimension.</p>
 <p>Especially for the vertical dimension there is often some degree of confusion about the concept of layers vs. levels
@@ -212,7 +121,7 @@ The ordering of these values needs to be exactly the same as the ordering of the
 <p>Intervals are usually connected. So, if for instance we have an altitude grid of center points <code class="docutils literal notranslate"><span class="pre">latitude</span> <span class="pre">=</span> <span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">15,</span> <span class="pre">20]</span></code>
 then the corresponding intervals could be <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">=</span> <span class="pre">[[2.5,</span> <span class="pre">7.5],</span> <span class="pre">[7.5,</span> <span class="pre">12.5],</span> <span class="pre">[12.5,</span> <span class="pre">17.5],</span> <span class="pre">[17.5,</span> <span class="pre">22.5]]</span></code>.</p>
 <p>There are two special cases for intervals, which are described below.</p>
-<div class="section" id="time-intervals">
+<section id="time-intervals">
 <h3>Time intervals</h3>
 <p>One special case is the time dimension.
 In addition to a <code class="docutils literal notranslate"><span class="pre">datetime_bounds</span></code> variable, HARP supports separate <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code> and <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code> variables
@@ -221,8 +130,8 @@ Be aware that in HARP the <code class="docutils literal notranslate"><span class
 <p>If you provide two out of <code class="docutils literal notranslate"><span class="pre">datetime</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_start</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_stop</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime_length</span></code> then you can use
 the HARP derivation operations to automatically have the other two variables calculated.
 In addition any of these two can be converted into a <code class="docutils literal notranslate"><span class="pre">datetime_bounds</span></code> variable and vice-versa.</p>
-</div>
-<div class="section" id="spatial-extent">
+</section>
+<section id="spatial-extent">
 <h3>Spatial extent</h3>
 <p>The other special case is the spatial dimensions.</p>
 <p>When data is gridded spatially using a <code class="docutils literal notranslate"><span class="pre">latitude</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude</span></code> dimension then the normal rules apply and you
@@ -238,48 +147,36 @@ has a length of 2 then the two values define the corner of a bounding rectangle 
 For instance, <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">=</span> <span class="pre">[[3.3,</span> <span class="pre">7.1]]</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude_bounds</span> <span class="pre">=</span> <span class="pre">[[50.8,</span> <span class="pre">53.6]]</span></code> as a bounding rectangle definition
 is the same as <code class="docutils literal notranslate"><span class="pre">latitude_bounds</span> <span class="pre">=</span> <span class="pre">[[3.3,</span> <span class="pre">3.3,</span> <span class="pre">7.1,</span> <span class="pre">7.1]]</span></code> and <code class="docutils literal notranslate"><span class="pre">longitude_bounds</span> <span class="pre">=</span> <span class="pre">[[50.8,</span> <span class="pre">53.6,</span> <span class="pre">53.6,</span> <span class="pre">50.8]]</span></code>
 in terms of a polygon definition (mind the counter clockwise ordering of the polygon points).</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="categorical_variables.html" class="btn btn-neutral float-right" title="Categorical Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="variable_names.html" class="btn btn-neutral float-left" title="Variable names" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="categorical_variables.html" class="btn btn-neutral float-right" title="Categorical Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.
+    <p>&#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.</p>
+  </div>
 
-    </p>
-  </div> 
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -36,7 +36,7 @@ HARP_DOCFILES = \
 	doc/html/_static/plus.png \
 	doc/html/_static/pygments.css \
 	doc/html/_static/searchtools.js \
-	doc/html/_static/underscore-1.3.1.js \
+	doc/html/_static/underscore-1.13.1.js \
 	doc/html/_static/underscore.js \
 	doc/html/algorithms/common.html \
 	doc/html/algorithms/definitions.html \
@@ -606,7 +606,7 @@ doc/html/_static/pygments.css:
 	$(MAKE) harp_doc
 doc/html/_static/searchtools.js:
 	$(MAKE) harp_doc
-doc/html/_static/underscore-1.3.1.js:
+doc/html/_static/underscore-1.13.1.js:
 	$(MAKE) harp_doc
 doc/html/_static/underscore.js:
 	$(MAKE) harp_doc
