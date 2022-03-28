@@ -198,6 +198,84 @@ static int read_attribute(void *user_data, const char *path, harp_array data)
     return 0;
 }
 
+static int read_scalar_variable_double(void *user_data, const char *path, harp_array data)
+{
+    coda_cursor cursor;
+    long actual_num_elements, i;
+    double fill_value;
+
+    if (coda_cursor_set_product(&cursor, ((ingest_info *)user_data)->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (actual_num_elements < 1)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected 1)", path, actual_num_elements);
+        return -1;
+    }
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    for (i = 1; i < actual_num_elements; i++)
+    {
+        double value;
+        if (coda_cursor_goto_next_array_element(&cursor) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_read_double(&cursor, &value) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (value != data.double_data[0])
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "having different values per time is not allowed for variable %s",
+                           path);
+            return -1;
+        }
+    }
+    coda_cursor_goto_parent(&cursor);
+    if (coda_cursor_goto(&cursor, "@VAR_FILL_VALUE") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, &fill_value) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (!harp_isnan(fill_value))
+    {
+        if (data.double_data[0] == fill_value)
+        {
+            data.double_data[0] = harp_nan();
+        }
+    }
+
+    return 0;
+}
+
 static int read_variable_double(void *user_data, const char *path, long num_elements, harp_array data)
 {
     coda_cursor cursor;
@@ -373,17 +451,17 @@ static int read_measurement_mode(void *user_data, harp_array data)
 
 static int read_instrument_altitude(void *user_data, harp_array data)
 {
-    return read_variable_double(user_data, "ALTITUDE_INSTRUMENT", 1, data);
+    return read_scalar_variable_double(user_data, "ALTITUDE_INSTRUMENT", data);
 }
 
 static int read_instrument_latitude(void *user_data, harp_array data)
 {
-    return read_variable_double(user_data, "LATITUDE_INSTRUMENT", 1, data);
+    return read_scalar_variable_double(user_data, "LATITUDE_INSTRUMENT", data);
 }
 
 static int read_instrument_longitude(void *user_data, harp_array data)
 {
-    return read_variable_double(user_data, "LONGITUDE_INSTRUMENT", 1, data);
+    return read_scalar_variable_double(user_data, "LONGITUDE_INSTRUMENT", data);
 }
 
 static int read_datetime(void *user_data, harp_array data)

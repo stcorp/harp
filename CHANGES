@@ -1,3 +1,7 @@
+* Updates to product ingestions:
+  - GEOMS FTIR: allow instrument lat/lon/alt variables to be one-dimensional
+    with replicated values.
+
 1.15 2022-03-14
 ~~~~~~~~~~~~~~~
 
