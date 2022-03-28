@@ -317,9 +317,8 @@ static int read_variable(coda_cursor *cursor, const char *name, int num_dimensio
 }
 
 static int read_int32_variable(coda_cursor *cursor, const char *name, int num_dimensions, long dimension_0,
-                               long dimension_1, harp_array data)
+                               harp_array data)
 {
-    long num_elements;
     long coda_dimension[CODA_MAX_NUM_DIMS];
     int num_coda_dimensions;
 
@@ -345,17 +344,6 @@ static int read_int32_variable(coda_cursor *cursor, const char *name, int num_di
                        "product error detected in MLS L2 product (first dimension for variable %s "
                        "has %ld elements, expected %ld", name, coda_dimension[0], dimension_0);
         return -1;
-    }
-    num_elements = coda_dimension[0];
-    if (num_dimensions > 1)
-    {
-        if (dimension_1 != coda_dimension[1])
-        {
-            harp_set_error(HARP_ERROR_INGESTION, "product error detected in MLS L2 product (second dimension for "
-                           "variable %s has %ld elements, expected %ld", name, coda_dimension[1], dimension_1);
-            return -1;
-        }
-        num_elements *= coda_dimension[1];
     }
     if (coda_cursor_read_int32_array(cursor, data.int32_data, coda_array_ordering_c) != 0)
     {
@@ -627,7 +615,7 @@ static int read_validity(void *user_data, harp_array data)
 
     /* The Status-field in the ingested file is 1-dimensional with size info->num_times but the       */
     /* validity-field in the HARP data is 2-dimensional with size info->num_times * info->num_levels. */
-    if (read_int32_variable(&info->swath_cursor, "Status", 1, info->num_times, 0, data) != 0)
+    if (read_int32_variable(&info->swath_cursor, "Status", 1, info->num_times, data) != 0)
     {
         return -1;
     }
