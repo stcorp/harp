@@ -398,8 +398,8 @@ static int compare_by_b(const void *a, const void *b)
     /* If b is equal, then further sort by a to get a fixed ordering. */
     if (pair_a->product_index_a != pair_b->product_index_a)
     {
-        return strcmp(sort_dataset_a->source_product[pair_a->product_index_b],
-                      sort_dataset_a->source_product[pair_b->product_index_b]);
+        return strcmp(sort_dataset_a->source_product[pair_a->product_index_a],
+                      sort_dataset_a->source_product[pair_b->product_index_a]);
     }
     if (pair_a->sample_index_a < pair_b->sample_index_a)
     {
