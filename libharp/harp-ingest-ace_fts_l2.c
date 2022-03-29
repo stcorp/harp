@@ -655,7 +655,7 @@ static int read_field_names(ingest_info *info, char *field_name_str)
         }
         else
         {
-            sprintf(name_plus_extra, "%s %s", info->field_names[field_nr - 1], name);
+            snprintf(name_plus_extra, 81, "%s %s", info->field_names[field_nr - 1], name);
             free(info->field_names[field_nr - 1]);
             info->field_names[field_nr - 1] = strdup(name_plus_extra);
         }
