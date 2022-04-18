@@ -3327,6 +3327,7 @@ int harp_operation_string_comparison_filter_new(const char *variable_name, harp_
     operation->eval = eval_string_comparison;
     operation->variable_name = NULL;
     operation->operator_type = operator_type;
+    operation->value = NULL;
 
     operation->variable_name = strdup(variable_name);
     if (operation->variable_name == NULL)
