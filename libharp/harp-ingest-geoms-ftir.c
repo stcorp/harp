@@ -237,6 +237,7 @@ static int read_scalar_variable_double(void *user_data, const char *path, harp_a
     for (i = 1; i < actual_num_elements; i++)
     {
         double value;
+
         if (coda_cursor_goto_next_array_element(&cursor) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
