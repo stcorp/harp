@@ -37,15 +37,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* ------------------- Defines ------------------ */
-
-#define FILL_VALUE_NO_DATA                   -999
-
-#define M_TO_KM                              0.001
-#define HOURS_TO_SECONDS                      3600
-
-#define CHECKED_MALLOC(v, s) v = malloc(s); if (v == NULL) { harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)", s, __FILE__, __LINE__); return -1;}
-
 /* ------------------ Typedefs ------------------ */
 
 typedef struct ingest_info_struct
@@ -55,10 +46,6 @@ typedef struct ingest_info_struct
     long num_altitudes;
     int use_amsl_height;
 } ingest_info;
-
-/* -------------- Global variables --------------- */
-
-static float nan;
 
 /* -------------------- Code -------------------- */
 
@@ -78,6 +65,7 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
 {
     coda_cursor cursor;
     coda_type_class type_class;
+    int result;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -122,9 +110,20 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
     }
 
     /* filter for NaN */
-    if (data.float_data[0] == FILL_VALUE_NO_DATA)
+    result = coda_cursor_goto(&cursor, "@FillValue[0]");
+    if (result == 0)
     {
-        data.float_data[0] = nan;
+        float fillValue;
+
+        if (coda_cursor_read_float(&cursor, &fillValue) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (data.float_data[0] == fillValue)
+        {
+            data.float_data[0] = (float)coda_NaN();
+        }
     }
 
     return 0;
@@ -159,6 +158,7 @@ static int read_array_variable(ingest_info *info, const char *name, long num_ele
     }
     if (data_type == harp_type_float)
     {
+        int result;
         long i;
 
         if (coda_cursor_read_float_array(&cursor, data.float_data, coda_array_ordering_c) != 0)
@@ -167,11 +167,23 @@ static int read_array_variable(ingest_info *info, const char *name, long num_ele
             return -1;
         }
         /* filter for NaN */
-        for (i = 0; i < num_elements; i++)
+        result = coda_cursor_goto(&cursor, "@FillValue[0]");
+        if (result == 0)
         {
-            if (data.float_data[i] == FILL_VALUE_NO_DATA)
+            float nan = (float)coda_NaN();
+            float fillValue;
+
+            if (coda_cursor_read_float(&cursor, &fillValue) != 0)
             {
-                data.float_data[i] = nan;
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            for (i = 0; i < num_elements; i++)
+            {
+                if (data.float_data[i] == fillValue)
+                {
+                    data.float_data[i] = nan;
+                }
             }
         }
     }
@@ -284,7 +296,7 @@ static int read_datetime(void *user_data, harp_array data)
     double_data = data.double_data;
     for (i = 0; i < info->num_times; i++)
     {
-        *double_data = (*double_data * HOURS_TO_SECONDS) + datetime_start_of_day;
+        *double_data = (*double_data * 60 * 60) + datetime_start_of_day;
         double_data++;
     }
     return 0;
@@ -438,7 +450,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 
     (void)options;
 
-    nan = (float)coda_NaN();
     info = malloc(sizeof(ingest_info));
     if (info == NULL)
     {

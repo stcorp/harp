@@ -1,4 +1,5 @@
 * Updates to product ingestions:
+  - CLOUDNET L2 classification: fixed fillvalue mapping of values to NaN.
   - GEOMS FTIR: allow instrument lat/lon/alt variables to be one-dimensional
     with replicated values.
 
