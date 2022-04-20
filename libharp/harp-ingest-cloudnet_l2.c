@@ -65,6 +65,7 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
 {
     coda_cursor cursor;
     coda_type_class type_class;
+    float fillValue = 9.96920996839e+36;
     int result;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
@@ -113,17 +114,15 @@ static int read_scalar_variable(ingest_info *info, const char *name, harp_array 
     result = coda_cursor_goto(&cursor, "@FillValue[0]");
     if (result == 0)
     {
-        float fillValue;
-
         if (coda_cursor_read_float(&cursor, &fillValue) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        if (data.float_data[0] == fillValue)
-        {
-            data.float_data[0] = (float)coda_NaN();
-        }
+    }
+    if (data.float_data[0] == fillValue)
+    {
+        data.float_data[0] = (float)coda_NaN();
     }
 
     return 0;
@@ -158,6 +157,8 @@ static int read_array_variable(ingest_info *info, const char *name, long num_ele
     }
     if (data_type == harp_type_float)
     {
+        float fillValue = 9.96920996839e+36;
+        float nan = (float)coda_NaN();
         int result;
         long i;
 
@@ -170,20 +171,17 @@ static int read_array_variable(ingest_info *info, const char *name, long num_ele
         result = coda_cursor_goto(&cursor, "@FillValue[0]");
         if (result == 0)
         {
-            float nan = (float)coda_NaN();
-            float fillValue;
-
             if (coda_cursor_read_float(&cursor, &fillValue) != 0)
             {
                 harp_set_error(HARP_ERROR_CODA, NULL);
                 return -1;
             }
-            for (i = 0; i < num_elements; i++)
+        }
+        for (i = 0; i < num_elements; i++)
+        {
+            if (data.float_data[i] == fillValue)
             {
-                if (data.float_data[i] == fillValue)
-                {
-                    data.float_data[i] = nan;
-                }
+                data.float_data[i] = nan;
             }
         }
     }
