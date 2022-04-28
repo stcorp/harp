@@ -291,6 +291,158 @@
 <div class="math notranslate nohighlight">
 \[s = \sqrt{u^2 + v^2}\]</div>
 </li>
+<li id="derivation-surface-meridional-wind-velocity-from-surface-wind-speed-and-direction"><p>surface meridional wind velocity from surface wind speed and direction</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 29%" />
+<col style="width: 13%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(u\)</span></p></td>
+<td><p>zonal wind velocity</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_zonal_wind_velocity {:}</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(s\)</span></p></td>
+<td><p>wind speed</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_wind_speed {:}</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\theta\)</span></p></td>
+<td><p>wind direction</p></td>
+<td><p><span class="math notranslate nohighlight">\(deg\)</span></p></td>
+<td><p><cite>surface_wind_direction {:}</cite></p></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[u = s \cos((180 - \theta)\frac{\pi}{180})\]</div>
+</li>
+<li id="derivation-surface-zonal-wind-velocity-from-surface-wind-speed-and-direction"><p>surface zonal wind velocity from surface wind speed and direction</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 28%" />
+<col style="width: 13%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(v\)</span></p></td>
+<td><p>meridional wind velocity</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_meridional_wind_velocity {:}</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(s\)</span></p></td>
+<td><p>wind speed</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_wind_speed {:}</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\theta\)</span></p></td>
+<td><p>wind direction</p></td>
+<td><p><span class="math notranslate nohighlight">\(deg\)</span></p></td>
+<td><p><cite>surface_wind_direction {:}</cite></p></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[v = s \sin((180 - \theta)\frac{\pi}{180})\]</div>
+</li>
+<li id="derivation-surface-wind-direction-from-surface-zonal-and-meridional-wind-velocity"><p>surface wind direction from surface zonal and meridional wind velocity</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 28%" />
+<col style="width: 13%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(u\)</span></p></td>
+<td><p>zonal wind velocity</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_zonal_wind_velocity {:}</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(v\)</span></p></td>
+<td><p>meridional wind velocity</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_meridional_wind_velocity {:}</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\theta\)</span></p></td>
+<td><p>wind direction</p></td>
+<td><p><span class="math notranslate nohighlight">\(deg\)</span></p></td>
+<td><p><cite>surface_wind_direction {:}</cite></p></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[\theta = 180 - \arctan2(u,v)\frac{180}{\pi}\]</div>
+</li>
+<li id="derivation-surface-wind-speed-from-surface-zonal-and-meridional-wind-velocity"><p>surface wind speed from surface zonal and meridional wind velocity</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 28%" />
+<col style="width: 13%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(u\)</span></p></td>
+<td><p>zonal wind velocity</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_zonal_wind_velocity {:}</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(v\)</span></p></td>
+<td><p>meridional wind velocity</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_meridional_wind_velocity {:}</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(s\)</span></p></td>
+<td><p>wind speed</p></td>
+<td><p><span class="math notranslate nohighlight">\(m/s\)</span></p></td>
+<td><p><cite>surface_wind_speed {:}</cite></p></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[s = \sqrt{u^2 + v^2}\]</div>
+</li>
 </ol>
 </section>
 
