@@ -278,6 +278,18 @@ static int read_column_uncertainty(void *user_data, harp_array data)
                                ((ingest_info *)user_data)->num_time, data);
 }
 
+static int read_column_uncertainty_random(void *user_data, harp_array data)
+{
+    return read_variable_float(user_data, "O3_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD",
+                               ((ingest_info *)user_data)->num_time, data);
+}
+
+static int read_column_uncertainty_systematic(void *user_data, harp_array data)
+{
+    return read_variable_float(user_data, "O3_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_SYSTEMATIC_STANDARD",
+                               ((ingest_info *)user_data)->num_time, data);
+}
+
 static int read_column_amf(void *user_data, harp_array data)
 {
     return read_variable_float(user_data, "O3_COLUMN_ABSORPTION_SOLAR_AMF", ((ingest_info *)user_data)->num_time, data);
@@ -544,6 +556,22 @@ static int init_product_definition(harp_ingestion_module *module, int version)
          description, "DU", NULL, read_column_uncertainty);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/O3.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.COMBINED.STANDARD", NULL);
+
+    /* O3_column_number_density_uncertainty_random */
+    description = "random component of the uncertainty of the O3 column number density";
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, "O3_column_number_density_uncertainty_random", harp_type_float, 1, dimension_type, NULL,
+         description, "DU", NULL, read_column_uncertainty_random);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/O3.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
+
+    /* O3_column_number_density_uncertainty_systematic */
+    description = "systematic component of the uncertainty of the O3 column number density";
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, "O3_column_number_density_uncertainty_systematic", harp_type_float, 1, dimension_type,
+         NULL, description, "DU", NULL, read_column_uncertainty_systematic);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/O3.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.STANDARD", NULL);
 
     /* O3_column_number_density_amf */
     description = "air mass factor of the O3 column number density";
