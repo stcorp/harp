@@ -50,7 +50,7 @@ typedef enum gas_enum
     gas_NO2,
     gas_O3,
     gas_SO2,
-    gas_HCHO,
+    gas_H2CO,
     num_gas
 } gas_type;
 
@@ -58,7 +58,7 @@ static const char *gas_name[num_gas] = {
     "NO2",
     "O3",
     "SO2",
-    "HCHO",
+    "H2CO",
 };
 
 typedef struct ingest_info_struct
@@ -322,7 +322,7 @@ static int read_effective_temperature(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/EFFECTIVE_TEMPERATURE_%s", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/TEMPERATURE_EFFECTIVE_%s", gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -331,7 +331,7 @@ static int read_effective_temperature_combined_uncertainty(void *user_data, harp
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
-    snprintf(path, MAX_PATH_LENGTH, "/EFFECTIVE_TEMPERATURE_%s_UNCERTAINTY_COMBINED_STANDARD", gas_name[info->gas]);
+    snprintf(path, MAX_PATH_LENGTH, "/TEMPERATURE_EFFECTIVE_%s_UNCERTAINTY_COMBINED_STANDARD", gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 

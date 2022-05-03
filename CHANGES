@@ -1,5 +1,6 @@
 * Updates to product ingestions:
   - CLOUDNET L2 classification: fixed fillvalue mapping of values to NaN.
+  - GEOMS PANDORA: fixes for template V003 support
   - GEOMS FTIR: allow instrument lat/lon/alt variables to be one-dimensional
     with replicated values.
   - GEOMS UVVIS.BREWER: added random+systematic uncertainty variables.
