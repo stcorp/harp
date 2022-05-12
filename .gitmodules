@@ -22,3 +22,7 @@
 	path = definitions/AEOLUS
 	url = https://github.com/stcorp/codadef-aeolus
 	update = rebase
+[submodule "definitions/EARTHCARE"]
+	path = definitions/EARTHCARE
+	url = https://github.com/stcorp/codadef-earthcare.git
+	update = rebase
