@@ -1,3 +1,6 @@
+1.15.1 2022-05-18
+~~~~~~~~~~~~~~~~~
+
 * Updates to product ingestions:
   - CLOUDNET L2 classification: fixed fillvalue mapping of values to NaN.
   - GEOMS PANDORA: fixes for template V003 support
