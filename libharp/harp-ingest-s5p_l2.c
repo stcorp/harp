@@ -1310,9 +1310,17 @@ static int read_input_apparent_scene_pressure(void *user_data, harp_array data)
 static int read_input_carbonmonoxide_profile_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
 
-    return read_dataset(info->input_data_cursor, "carbonmonoxide_profile_apriori", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+    if (read_dataset(info->input_data_cursor, "carbonmonoxide_profile_apriori", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
 static int read_input_cloud_albedo_crb(void *user_data, harp_array data)
@@ -5583,8 +5591,9 @@ static void register_co_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_apriori",
                                                    harp_type_float, 2, dimension_type, NULL, description, "mol/m2",
                                                    include_co_apriori, read_input_carbonmonoxide_profile_apriori);
+    description = "the vertical grid is inverted to make it ascending";
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/carbonmonoxide_profile_apriori[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.04.00", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.04.00", path, description);
 
     /* H2O_column_number_density */
     description = "H2O total column density";

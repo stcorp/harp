@@ -4,6 +4,7 @@
   - GEOMS FTIR: allow instrument lat/lon/alt variables to be one-dimensional
     with replicated values.
   - GEOMS UVVIS.BREWER: added random+systematic uncertainty variables.
+  - S5P L2 CO: fixed vertical ordering of new apriori profile.
 
 1.15 2022-03-14
 ~~~~~~~~~~~~~~~
