@@ -326,12 +326,30 @@ static int read_effective_temperature(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_effective_temperature_combined_uncertainty(void *user_data, harp_array data)
+static int read_effective_temperature_uncertainty_combined(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/TEMPERATURE_EFFECTIVE_%s_UNCERTAINTY_COMBINED_STANDARD", gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
+static int read_effective_temperature_uncertainty_random(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/TEMPERATURE_EFFECTIVE_%s_UNCERTAINTY_RANDOM_STANDARD", gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
+static int read_effective_temperature_uncertainty_systematic(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/TEMPERATURE_EFFECTIVE_%s_UNCERTAINTY_SYSTEMATIC_STANDARD", gas_name[info->gas]);
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
@@ -735,7 +753,29 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
                  gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "K", NULL,
-             read_effective_temperature_combined_uncertainty);
+             read_effective_temperature_uncertainty_combined);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+        /* <gas>_effective_temperature_uncertainty_random */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_effective_temperature_uncertainty_random", gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s effective temperature",
+                 gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/TEMPERATURE.EFFECTIVE.%s_UNCERTAINTY.RANDOM.STANDARD",
+                 gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "K", NULL,
+             read_effective_temperature_uncertainty_random);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+        /* <gas>_effective_temperature_uncertainty_systematic */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_effective_temperature_uncertainty_systematic", gas_name[gas]);
+        snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic uncertainty of the %s effective temperature",
+                 gas_name[gas]);
+        snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/TEMPERATURE.EFFECTIVE.%s_UNCERTAINTY.SYSTEMATIC.STANDARD",
+                 gas_name[gas]);
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "K", NULL,
+             read_effective_temperature_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
     }
 
