@@ -1667,7 +1667,9 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             {
                 long target_index = index[bin_index[i]];
 
-                if (variable->data.double_data[i] < variable->data.double_data[target_index])
+                if (variable->data.double_data[i] < variable->data.double_data[target_index] ||
+                    (harp_isnan(variable->data.double_data[target_index]) &&
+                     !harp_isnan(variable->data.double_data[i])))
                 {
                     variable->data.double_data[target_index] = variable->data.double_data[i];
                 }
@@ -1681,7 +1683,9 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             {
                 long target_index = index[bin_index[i]];
 
-                if (variable->data.double_data[i] > variable->data.double_data[target_index])
+                if (variable->data.double_data[i] > variable->data.double_data[target_index] ||
+                    (harp_isnan(variable->data.double_data[target_index]) &&
+                     !harp_isnan(variable->data.double_data[i])))
                 {
                     variable->data.double_data[target_index] = variable->data.double_data[i];
                 }
