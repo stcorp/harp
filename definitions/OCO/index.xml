@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="OCO" last-modified="2022-06-16">
+  <cd:Description>OCO-2, OCO-3, and ACOS products</cd:Description>
+  <cd:ProductType name="acos_LtCO2">
+    <cd:Description>ACOS GOSAT L2 Lite CO2</cd:Description>
+    <cd:ProductDefinition id="acos_LtCO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netcdf4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 10, filename()) == "acos_LtCO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="oco2_LtCO2">
+    <cd:Description>OCO-2 L2 Lite CO2</cd:Description>
+    <cd:ProductDefinition id="oco2_LtCO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netcdf4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 10, filename()) == "oco2_LtCO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="oco2_LtSIF">
+    <cd:Description>OCO-2 L2 Lite SIF</cd:Description>
+    <cd:ProductDefinition id="oco2_LtSIF" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netcdf4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 10, filename()) == "oco2_LtSIF"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="oco2_GEOS_L3CO2">
+    <cd:Description>OCO-2 GEOS Level 3 daily</cd:Description>
+    <cd:ProductDefinition id="oco2_GEOS_L3CO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netcdf4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 15, filename()) == "oco2_GEOS_L3CO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="oco3_LtCO2">
+    <cd:Description>OCO-3 L2 Lite CO2</cd:Description>
+    <cd:ProductDefinition id="oco3_LtCO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netcdf4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 10, filename()) == "oco3_LtCO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="oco3_LtSIF">
+    <cd:Description>OCO-3 L2 Lite SIF</cd:Description>
+    <cd:ProductDefinition id="oco3_LtSIF" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netcdf4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0, 10, filename()) == "oco3_LtSIF"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>
