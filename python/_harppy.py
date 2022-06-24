@@ -869,7 +869,7 @@ def _import_variable(c_variable):
 
     num_dimensions = c_variable.num_dimensions
     if num_dimensions == 0:
-        variable = Variable(numpy.asscalar(data))
+        variable = Variable(data.item())
     else:
         data = data.reshape([c_variable.dimension[i] for i in range(num_dimensions)])
         dimension = [_get_py_dimension_type(c_variable.dimension_type[i]) for i in range(num_dimensions)]
