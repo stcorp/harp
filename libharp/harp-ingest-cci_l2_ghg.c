@@ -635,7 +635,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
     ingest_info *info;
-    coda_cursor cursor;
 
     (void)options;
 
@@ -644,11 +643,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (init_dimensions(info) != 0)
     {
         ingestion_done(info);
-        return -1;
-    }
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     *definition = *module->product_definition;
