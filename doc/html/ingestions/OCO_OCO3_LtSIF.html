@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCO_OCO3_LtSIF &mdash; HARP 1.15 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> HARP
+          </a>
+              <div class="version">
+                1.15
+              </div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions/index.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">R interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>OCO_OCO3_LtSIF</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="oco-oco3-ltsif">
+<h1>OCO_OCO3_LtSIF</h1>
+<section id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">OCO_OCO3_LtSIF</span></code> data.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 5%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 1990-01-01]</p></td>
+<td><p>time</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>center latitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>center longitude</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude_bounds</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, 4}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>corner latitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude_bounds</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, 4}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>corner longitude</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar azimuth angle</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar zenith angle</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>viewing_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>viewing azimuth angle</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>viewing_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>viewing zenith angle</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_induced_fluorescence</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>Solar Induced Fluorescence</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_induced_fluorescence_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>Estimated 1-Sigma Uncertainty of Solar Induced Fluorescence</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>wavelength</strong></p></td>
+<td><p>double</p></td>
+<td></td>
+<td><p>[nm]</p></td>
+<td><p>SIF wavelength</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>validity</strong></p></td>
+<td><p>int16</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>quality flag</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">OCO_OCO3_LtSIF</span></code> products.</p>
+<table class="colwidths-given docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 25%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>option name</p></th>
+<th class="head"><p>legal values</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sif_wavelength</p></td>
+<td><p>757, 771</p></td>
+<td><p>whether to ingest SIF at 740nm (default) or the one at 757nm (sif_wavelength=757) or the one at 771nm (sif_wavelength=771)</p></td>
+</tr>
+<tr class="row-odd"><td><p>daily_correction</p></td>
+<td><p>applied</p></td>
+<td><p>whether to ingest the instantaneous SIF (default) or the daily averaged SIF based on geometric correction (daily_correction=applied)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 14%" />
+<col style="width: 45%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/Delta_Time[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/Latitude[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/Longitude[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude_bounds</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/Latitude_Corners[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude_bounds</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/Longitude_Corners[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/SZa[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/SZA[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>viewing_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/VAz[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>viewing_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/VZA[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="12"><p><strong>solar_induced_fluorescence</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>sif_wavelength unset, daily_correction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/SIF_740nm[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=757, daily_correction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/Science/SIF_757nm[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=771, daily_correction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/Science/SIF_771nm[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength unset, daily_correction=applied</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/Daily_SIF_740nm[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=757, daily_correction=applied</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/Daily_SIF_757nm[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=771, daily_correction=applied</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/Daily_SIF_771nm[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><p><strong>solar_induced_fluorescence_uncertainty</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength unset, daily_correction unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/SIF_Uncertainty_740nm[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=757, daily_correction unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/Science/SIF_Uncertainty_757nm[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=771, daily_correction unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/Science/SIF_Uncertainty_771nm[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><p><strong>wavelength</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>sif_wavelength unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>741</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=757</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>757</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>sif_wavelength=771</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>771</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/Quality_Flag[]</strong></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 S[&amp;]T, The Netherlands.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

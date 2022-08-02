@@ -1,5 +1,6 @@
 * Updates to product ingestions:
   - GEOMS PANDORA: add systematic/random uncertainty for effective temperature.
+  - OCO: added support for ACOS/OCO-2/OCO-3 L2/L3 products.
 
 1.15.1 2022-05-18
 ~~~~~~~~~~~~~~~~~

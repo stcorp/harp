@@ -420,6 +420,12 @@ HARP_DOCFILES = \
 	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTH.html \
 	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTP.html \
 	doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTT.html \
+	doc/html/ingestions/OCO_ACOS_LtCO2.html \
+	doc/html/ingestions/OCO_OCO2_L3CO2.html \
+	doc/html/ingestions/OCO_OCO2_LtCO2.html \
+	doc/html/ingestions/OCO_OCO2_LtSIF.html \
+	doc/html/ingestions/OCO_OCO3_LtCO2.html \
+	doc/html/ingestions/OCO_OCO3_LtSIF.html \
 	doc/html/ingestions/OMI_L2_OMAERUV.html \
 	doc/html/ingestions/OMI_L2_OMBRO.html \
 	doc/html/ingestions/OMI_L2_OMCHOCHO.html \
@@ -1373,6 +1379,18 @@ doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTH.html:
 doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTP.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/NPP_SUOMI_L2_VIIRS_EDR_VCTT.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OCO_ACOS_LtCO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OCO_OCO2_L3CO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OCO_OCO2_LtCO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OCO_OCO2_LtSIF.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OCO_OCO3_LtCO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OCO_OCO3_LtSIF.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L2_OMAERUV.html:
 	$(MAKE) harp_doc

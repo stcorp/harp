@@ -143,6 +143,9 @@ libharp_la_SOURCES = \
 	libharp/harp-ingest-npp-suomi-omps_profiles_l2.c \
 	libharp/harp-ingest-npp-suomi-omps_totals_l2.c \
 	libharp/harp-ingest-npp-suomi-viirs_l2.c \
+	libharp/harp-ingest-oco-l3co2.c \
+	libharp/harp-ingest-oco-ltco2.c \
+	libharp/harp-ingest-oco-ltsif.c \
 	libharp/harp-ingest-omi_l2.c \
 	libharp/harp-ingest-omi_l3.c \
 	libharp/harp-ingest-osiris_l2.c \
