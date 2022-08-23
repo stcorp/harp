@@ -1,5 +1,6 @@
 * Updates to product ingestions:
-  - GEOMS PANDORA: add systematic/random uncertainty for effective temperature.
+  - GEOMS PANDORA: added systematic/random uncertainty for effective
+    temperature, renamed H2CO in harp variable names to HCHO.
   - OCO: added support for ACOS/OCO-2/OCO-3 L2/L3 products.
 
 1.15.1 2022-05-18
