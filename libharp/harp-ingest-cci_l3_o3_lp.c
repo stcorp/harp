@@ -566,6 +566,10 @@ static int read_o3_number_density_msmm(void *user_data, harp_array data)
     int order[4] = { 0, 3, 2, 1 };
     long dimension[4];
 
+    dimension[0] = info->num_time;
+    dimension[1] = info->num_vertical;
+    dimension[2] = info->num_longitude;
+    dimension[3] = info->num_latitude;
     return read_reordered_dataset(info, "/merged_ozone_concentration", 4, dimension, order, data);
 }
 
