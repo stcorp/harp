@@ -73,7 +73,7 @@ static void ingestion_done(void *user_data)
     }
 }
 
-static int read_variable(coda_cursor *cursor, const char *name, int num_dimensions, long dimensions[CODA_MAX_NUM_DIMS],
+static int read_variable(coda_cursor *cursor, const char *name, int num_dimensions, long *dimensions,
                          double error_range_start, double error_range_end, harp_array data)
 {
     double *double_data;
