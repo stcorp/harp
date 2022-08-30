@@ -315,8 +315,7 @@ int harp_ingestion_module_oco_l3co2_init(void)
     description = "averaging period";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "s", NULL,
-                                                   read_datetime_length);
+                                                   dimension_type, NULL, description, "s", NULL, read_datetime_length);
     description = "Fixed value of 86400";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 

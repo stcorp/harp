@@ -152,26 +152,22 @@ static int read_longitude_corners(void *user_data, harp_array data)
 
 static int read_saz(void *user_data, harp_array data)
 {
-    return read_dataset((ingest_info *)user_data, "SAz", harp_type_double,
-                        ((ingest_info *)user_data)->num_time, data);
+    return read_dataset((ingest_info *)user_data, "SAz", harp_type_double, ((ingest_info *)user_data)->num_time, data);
 }
 
 static int read_sza(void *user_data, harp_array data)
 {
-    return read_dataset((ingest_info *)user_data, "SZA", harp_type_double,
-                        ((ingest_info *)user_data)->num_time, data);
+    return read_dataset((ingest_info *)user_data, "SZA", harp_type_double, ((ingest_info *)user_data)->num_time, data);
 }
 
 static int read_vaz(void *user_data, harp_array data)
 {
-    return read_dataset((ingest_info *)user_data, "VAz", harp_type_double,
-                        ((ingest_info *)user_data)->num_time, data);
+    return read_dataset((ingest_info *)user_data, "VAz", harp_type_double, ((ingest_info *)user_data)->num_time, data);
 }
 
 static int read_vza(void *user_data, harp_array data)
 {
-    return read_dataset((ingest_info *)user_data, "VZA", harp_type_double,
-                        ((ingest_info *)user_data)->num_time, data);
+    return read_dataset((ingest_info *)user_data, "VZA", harp_type_double, ((ingest_info *)user_data)->num_time, data);
 }
 
 static int read_sif(void *user_data, harp_array data)
@@ -409,8 +405,7 @@ static void register_fields(harp_product_definition *product_definition)
     description = "solar azimuth angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_saz);
+                                                   dimension_type, NULL, description, "degree", NULL, read_saz);
     path = "/SZa[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -418,8 +413,7 @@ static void register_fields(harp_product_definition *product_definition)
     description = "solar zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_sza);
+                                                   dimension_type, NULL, description, "degree", NULL, read_sza);
     path = "/SZA[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -427,8 +421,7 @@ static void register_fields(harp_product_definition *product_definition)
     description = "viewing azimuth angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_vaz);
+                                                   dimension_type, NULL, description, "degree", NULL, read_vaz);
     path = "/VAz[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -436,8 +429,7 @@ static void register_fields(harp_product_definition *product_definition)
     description = "viewing zenith angle";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_vza);
+                                                   dimension_type, NULL, description, "degree", NULL, read_vza);
     path = "/VZA[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
