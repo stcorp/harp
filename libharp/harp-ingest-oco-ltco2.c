@@ -41,6 +41,7 @@
 typedef struct ingest_info_struct
 {
     coda_product *product;
+    int product_version;
     long num_time;
     long num_vertical;
 } ingest_info;
@@ -302,11 +303,11 @@ static int read_xco2_uncertainty(void *user_data, harp_array data)
     return read_dataset(info, "xco2_uncertainty", harp_type_double, info->num_time, data);
 }
 
-static int read_xco2_qf_bitflag(void *user_data, harp_array data)
+static int read_xco2_qf_simple_bitflag(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "xco2_qf_bitflag", harp_type_int32, info->num_time, data);
+    return read_dataset(info, "xco2_qf_simple_bitflag", harp_type_int8, info->num_time, data);
 }
 
 static int read_xco2_quality_flag(void *user_data, harp_array data)
@@ -414,6 +415,13 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
     info->product = product;
+    info->product_version = -1;
+    if (coda_get_product_version(info->product, &info->product_version) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        ingestion_done(info);
+        return -1;
+    }
     if (init_dimensions(info) != 0)
     {
         ingestion_done(info);
@@ -423,6 +431,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     *user_data = info;
 
     return 0;
+}
+
+static int include_xco2_qf_simple_bitflag(void *user_data)
+{
+    return ((ingest_info *)user_data)->product_version > 9;
 }
 
 static void register_fields(harp_product_definition *product_definition, int has_corner_coordinates)
@@ -567,13 +580,14 @@ static void register_fields(harp_product_definition *product_definition, int has
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* CO2_column_volume_mixing_ratio_dry_air_validity */
-    description = "XCO2 quality bitflag";
+    description = "XCO2 simple quality bitflag";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "CO2_column_volume_mixing_ratio_dry_air_validity",
-                                                   harp_type_int32, 1, dimension_type, NULL, description, NULL, NULL,
-                                                   read_xco2_qf_bitflag);
-    path = "/xco2_qf_bitflag[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "CO2_column_volume_mixing_ratio_dry_air_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL,
+                                                   include_xco2_qf_simple_bitflag, read_xco2_qf_simple_bitflag);
+    path = "/xco2_qf_simple_bitflag[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "version>9", path, NULL);
 
     /* CO2_column_volume_mixing_ratio_dry_air_apriori */
     description = "XCO2 a-priori";
