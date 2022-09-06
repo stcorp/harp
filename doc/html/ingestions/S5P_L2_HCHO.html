@@ -379,7 +379,11 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>cloud_fraction</p></td>
+<tr class="row-even"><td><p>amf</p></td>
+<td><p>clear_sky</p></td>
+<td><p>whether to ingest the default amf, vertical column and avk (default) or the clear sky amf, scaled vertical column, and omit the avk (amf=clear_sky)</p></td>
+</tr>
+<tr class="row-odd"><td><p>cloud_fraction</p></td>
 <td><p>radiance</p></td>
 <td><p>whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)</p></td>
 </tr>
@@ -490,13 +494,37 @@
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>pressure in Pa at layer k is derived from surface pressure in Pa as: tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_HCHO_column_number_density</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-even"><td rowspan="5"><p><strong>tropospheric_HCHO_column_number_density</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>amf unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/formaldehyde_tropospheric_vertical_column[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_HCHO_column_number_density_uncertainty_random</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>amf=clear_sky</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/formaldehyde_tropospheric_vertical_column[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>vertical_column = formaldehyde_tropospheric_vertical_column * formaldehyde_tropospheric_air_mass_factor / formaldehyde_clear_air_mass_factor</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><p><strong>tropospheric_HCHO_column_number_density_uncertainty_random</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>amf unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>amf=clear_sky</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty_random = formaldehyde_tropospheric_vertical_column_precision * formaldehyde_tropospheric_air_mass_factor / formaldehyde_clear_air_mass_factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>tropospheric_HCHO_column_number_density_uncertainty_systematic</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -506,39 +534,63 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="5"><p><strong>tropospheric_HCHO_column_number_density_avk</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>processor version &lt; 02.00.00</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>processor version &gt;= 02.00.00</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] else 0</p></td>
-</tr>
-<tr class="row-odd"><td rowspan="3"><p><strong>HCHO_volume_mixing_ratio_dry_air_apriori</strong></p></td>
+<tr class="row-even"><td rowspan="6"><p><strong>tropospheric_HCHO_column_number_density_avk</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>amf unset and processor version &lt; 02.00.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>amf unset and processor version &gt;= 02.00.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>averaging_kernel[layer] = if layer &lt;= tm5_tropopause_layer_index then averaging_kernel[layer] else 0</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>HCHO_volume_mixing_ratio_dry_air_apriori</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>NRTI or processor version &gt;= 01.00.00</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_profile_apriori[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_HCHO_column_number_density_amf</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>tropospheric_HCHO_column_number_density_amf</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>amf unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_HCHO_column_number_density_amf_uncertainty_random</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>amf=clear_sky</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><p><strong>tropospheric_HCHO_column_number_density_amf_uncertainty_random</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>amf unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>amf=clear_sky</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/formaldehyde_tropospheric_air_mass_factor_precision[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty_random = formaldehyde_tropospheric_air_mass_factor_precision * formaldehyde_tropospheric_air_mass_factor / formaldehyde_clear_air_mass_factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>tropospheric_HCHO_column_number_density_amf_uncertainty_systematic</strong></p></td>
 <td><p><em>path</em></p></td>

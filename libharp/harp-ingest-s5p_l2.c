@@ -98,6 +98,7 @@ typedef struct ingest_info_struct
     int use_ch4_bias_corrected;
     int use_co_corrected;
     int use_co_nd_avk;
+    int use_hcho_clear_sky_amf;
     int use_o3_tcl_csa;
     int use_o3_tcl_strat_reference;
     int use_custom_qa_filter;
@@ -2160,20 +2161,84 @@ static int read_product_cloud_top_pressure_precision(void *user_data, harp_array
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int scale_amf_hcho(ingest_info *info, harp_array data)
+{
+    harp_array amf;
+    harp_array amf_clear;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long i;
+
+    amf.ptr = malloc(num_elements * sizeof(float));
+    if (amf.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    amf_clear.ptr = malloc(num_elements * sizeof(float));
+    if (amf_clear.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        free(amf.ptr);
+        return -1;
+    }
+    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_air_mass_factor", harp_type_float,
+                     num_elements, amf) != 0)
+    {
+        free(amf.ptr);
+        free(amf_clear.ptr);
+        return -1;
+    }
+    if (read_dataset(info->detailed_results_cursor, "formaldehyde_clear_air_mass_factor", harp_type_float,
+                     num_elements, amf_clear) != 0)
+    {
+        free(amf.ptr);
+        free(amf_clear.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.float_data[i] = data.float_data[i] * amf.float_data[i] / amf_clear.float_data[i];
+    }
+
+    free(amf.ptr);
+    free(amf_clear.ptr);
+
+    return 0;
+}
+
 static int read_product_formaldehyde_tropospheric_vertical_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "formaldehyde_tropospheric_vertical_column", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
+    if (read_dataset(info->product_cursor, "formaldehyde_tropospheric_vertical_column", harp_type_float,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        return -1;
+    }
+    if (info->use_hcho_clear_sky_amf)
+    {
+        return scale_amf_hcho(info, data);
+    }
+    return 0;
 }
 
 static int read_product_formaldehyde_tropospheric_vertical_column_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "formaldehyde_tropospheric_vertical_column_precision", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
+    if (read_dataset(info->product_cursor, "formaldehyde_tropospheric_vertical_column_precision", harp_type_float,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        return -1;
+    }
+    if (info->use_hcho_clear_sky_amf)
+    {
+        return scale_amf_hcho(info, data);
+    }
+    return 0;
 }
 
 static int read_product_layer_inverted(void *user_data, harp_array data)
@@ -2667,6 +2732,11 @@ static int read_results_formaldehyde_tropospheric_air_mass_factor(void *user_dat
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->use_hcho_clear_sky_amf)
+    {
+        return read_dataset(info->detailed_results_cursor, "formaldehyde_clear_air_mass_factor", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
     return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_air_mass_factor", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -2675,8 +2745,16 @@ static int read_results_formaldehyde_tropospheric_air_mass_factor_precision(void
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_air_mass_factor_precision",
-                        harp_type_float, info->num_scanlines * info->num_pixels, data);
+    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_air_mass_factor_precision",
+                     harp_type_float, info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        return -1;
+    }
+    if (info->use_hcho_clear_sky_amf)
+    {
+        return scale_amf_hcho(info, data);
+    }
+    return 0;
 }
 
 static int read_results_formaldehyde_tropospheric_air_mass_factor_trueness(void *user_data, harp_array data)
@@ -4656,6 +4734,11 @@ static int include_hcho_apriori(void *user_data)
     return (((ingest_info *)user_data)->is_nrti || ((ingest_info *)user_data)->processor_version >= 10000);
 }
 
+static int include_hcho_avk(void *user_data)
+{
+    return !((ingest_info *)user_data)->use_hcho_clear_sky_amf;
+}
+
 static int include_o3_tcl_csa(void *user_data)
 {
     return ((ingest_info *)user_data)->use_o3_tcl_csa;
@@ -5634,6 +5717,7 @@ static void register_co_product(void)
 
 static void register_hcho_product(void)
 {
+    const char *amf_options[] = { "clear_sky" };
     const char *cloud_fraction_options[] = { "radiance" };
     const char *path;
     const char *description;
@@ -5645,6 +5729,9 @@ static void register_hcho_product(void)
     module = harp_ingestion_register_module("S5P_L2_HCHO", "Sentinel-5P", "Sentinel5P", "L2__HCHO__",
                                             "Sentinel-5P L2 HCHO total column", ingestion_init, ingestion_done);
 
+    harp_ingestion_register_option(module, "amf", "whether to ingest the default amf, vertical column and avk (default)"
+                                   " or the clear sky amf, scaled vertical column, and omit the avk (amf=clear_sky)", 1,
+                                   amf_options);
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
 
@@ -5671,7 +5758,13 @@ static void register_hcho_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_product_formaldehyde_tropospheric_vertical_column);
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "/PRODUCT/formaldehyde_tropospheric_vertical_column[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]";
+    description = "vertical_column = formaldehyde_tropospheric_vertical_column * "
+        "formaldehyde_tropospheric_air_mass_factor / formaldehyde_clear_air_mass_factor";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, description);
 
     /* tropospheric_HCHO_column_number_density_uncertainty_random */
     description = "uncertainty of the tropospheric HCHO column number density due to random effects";
@@ -5682,7 +5775,13 @@ static void register_hcho_product(void)
                                                    NULL,
                                                    read_product_formaldehyde_tropospheric_vertical_column_precision);
     path = "/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "/PRODUCT/formaldehyde_tropospheric_vertical_column_precision[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]";
+    description = "uncertainty_random = formaldehyde_tropospheric_vertical_column_precision * "
+        "formaldehyde_tropospheric_air_mass_factor / formaldehyde_clear_air_mass_factor";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, description);
 
     /* tropospheric_HCHO_column_number_density_uncertainty_systematic */
     description = "uncertainty of the tropospheric HCHO column number density due to systematic effects";
@@ -5709,14 +5808,16 @@ static void register_hcho_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_hcho_column_tropospheric_avk);
+                                                   HARP_UNIT_DIMENSIONLESS, include_hcho_avk,
+                                                   read_hcho_column_tropospheric_avk);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.00.00", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", "processor version < 02.00.00", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[]";
     description =
         "averaging_kernel[layer] = if layer <= tm5_tropopause_layer_index then averaging_kernel[layer] else 0";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", "processor version >= 02.00.00", path,
+                                         description);
 
     /* HCHO_volume_mixing_ratio_dry_air_apriori */
     description = "HCHO apriori profile in volume mixing ratios (with regard to dry air)";
@@ -5736,7 +5837,9 @@ static void register_hcho_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_formaldehyde_tropospheric_air_mass_factor);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, NULL);
 
     /* tropospheric_HCHO_column_number_density_amf_uncertainty_random */
     description = "random part of the tropospheric air mass factor uncertainty";
@@ -5747,7 +5850,13 @@ static void register_hcho_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_formaldehyde_tropospheric_air_mass_factor_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "/PRODUCT/formaldehyde_tropospheric_air_mass_factor_precision[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]";
+    description = "uncertainty_random = formaldehyde_tropospheric_air_mass_factor_precision * "
+        "formaldehyde_tropospheric_air_mass_factor / formaldehyde_clear_air_mass_factor";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, description);
 
     /* tropospheric_HCHO_column_number_density_amf_uncertainty_systematic */
     description = "systematic part of the tropospheric air mass factor uncertainty";
