@@ -163,10 +163,10 @@
 <td><p>XCO2 posterior error</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>CO2_column_volume_mixing_ratio_dry_air_validity</strong></p></td>
-<td><p>int32</p></td>
+<td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>XCO2 quality bitflag</p></td>
+<td><p>XCO2 simple quality bitflag</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>CO2_column_volume_mixing_ratio_dry_air_apriori</strong></p></td>
 <td><p>double</p></td>
@@ -267,9 +267,15 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/xco2_uncertainty[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>CO2_column_volume_mixing_ratio_dry_air_validity</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/xco2_qf_bitflag[]</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>CO2_column_volume_mixing_ratio_dry_air_validity</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>version&gt;9</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/xco2_qf_simple_bitflag[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>CO2_column_volume_mixing_ratio_dry_air_apriori</strong></p></td>
 <td><p><em>path</em></p></td>
