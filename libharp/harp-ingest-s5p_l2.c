@@ -587,6 +587,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_ch4_bias_corrected = 0;
     info->use_co_corrected = 0;
     info->use_co_nd_avk = 0;
+    info->use_hcho_clear_sky_amf = 0;
     info->use_o3_tcl_csa = 0;
     info->use_o3_tcl_strat_reference = 0;
     info->use_custom_qa_filter = 0;
@@ -661,6 +662,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "co_avk"))
     {
         info->use_co_nd_avk = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "amf"))
+    {
+        info->use_hcho_clear_sky_amf = 1;
     }
     if (harp_ingestion_options_has_option(options, "o3"))
     {
