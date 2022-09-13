@@ -2750,16 +2750,8 @@ static int read_results_formaldehyde_tropospheric_air_mass_factor_precision(void
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_air_mass_factor_precision",
-                     harp_type_float, info->num_scanlines * info->num_pixels, data) != 0)
-    {
-        return -1;
-    }
-    if (info->use_hcho_clear_sky_amf)
-    {
-        return scale_amf_hcho(info, data);
-    }
-    return 0;
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_air_mass_factor_precision",
+                        harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_results_formaldehyde_tropospheric_air_mass_factor_trueness(void *user_data, harp_array data)
@@ -5855,13 +5847,7 @@ static void register_hcho_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_formaldehyde_tropospheric_air_mass_factor_precision);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
-    path = "/PRODUCT/formaldehyde_tropospheric_air_mass_factor_precision[], "
-        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[], "
-        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]";
-    description = "uncertainty_random = formaldehyde_tropospheric_air_mass_factor_precision * "
-        "formaldehyde_tropospheric_air_mass_factor / formaldehyde_clear_air_mass_factor";
-    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* tropospheric_HCHO_column_number_density_amf_uncertainty_systematic */
     description = "systematic part of the tropospheric air mass factor uncertainty";
