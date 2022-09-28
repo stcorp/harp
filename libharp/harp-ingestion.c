@@ -1589,7 +1589,7 @@ static int execute_polygon_filter(ingest_info *info, harp_program *program)
                                                                                                          num_points],
                                                                       &longitude_bounds->data.double_data[i *
                                                                                                           num_points],
-                                                                      &area) != 0)
+                                                                      1, &area) != 0)
             {
                 harp_variable_delete(latitude_bounds);
                 harp_variable_delete(longitude_bounds);

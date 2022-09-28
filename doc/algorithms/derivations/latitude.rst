@@ -14,17 +14,24 @@ latitude derivations
    :math:`\phi^{B}(i)`    latitude    :math:`degN` `latitude_bounds {:,N}`
    ====================== =========== ============ ========================
 
+   The centroid is determined from the normal vector of the polygon area, which is the sum of the area
+   weighted moments of consecutive vertices :math:`\mathbf{p}(i)`, :math:`\mathbf{p}(i+1)` for all polygon edges
+   (with :math:`\mathbf{p}(N+1):=\mathbf{p}(1)`).
+
    Convert all polygon corner coordinates defined by :math:`\phi^{B}(i)` and
    :math:`\lambda^{B}(i)` into unit sphere points :math:`\mathbf{p}(i) = [x_{i}, y_{i}, z_{i}]`
 
-   :math:`x_{min} = min(x_{i}), y_{min} = min(y_{i}), z_{min} = min(z_{i})`
+   .. math::
 
-   :math:`x_{max} = max(x_{i}), y_{max} = max(y_{i}), z_{max} = max(z_{i})`
-
-   :math:`\mathbf{p}_{center} = [\frac{x_{min} + x_{max}}{2}, \frac{y_{min} + y_{max}}{2}, \frac{z_{min} + z_{max}}{2}]`
+      \begin{eqnarray}
+        w_{i} & = & \frac{1}{2} \begin{cases}
+          \mathbf{p}(i) \cdot \mathbf{p}(i+1) \lt 0, & \pi - 2 asin(\frac{\Vert\mathbf{p}(i) + \mathbf{p}(i+1)\Vert}{2}) \\
+          \mathbf{p}(i) \cdot \mathbf{p}(i+1) \ge 0, & 2 asin(\frac{\Vert\mathbf{p}(i) - \mathbf{p}(i+1)\Vert}{2})
+        \end{cases} \\
+        \mathbf{p}_{center} & = & \sum_{i}{w_{i} \frac{\mathbf{p}(i) \times \mathbf{p}(i+1)}{\Vert\mathbf{p}(i) \times \mathbf{p}(i+1)\Vert}} \\
+      \end{eqnarray}
 
    The vector :math:`\mathbf{p}_{center}` is converted back to :math:`\phi` and :math:`\lambda`
-
 
    .. _derivation_latitude_from_range:
 

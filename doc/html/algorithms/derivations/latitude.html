@@ -177,11 +177,19 @@
 </tr>
 </tbody>
 </table>
+<p>The centroid is determined from the normal vector of the polygon area, which is the sum of the area
+weighted moments of consecutive vertices <span class="math notranslate nohighlight">\(\mathbf{p}(i)\)</span>, <span class="math notranslate nohighlight">\(\mathbf{p}(i+1)\)</span> for all polygon edges
+(with <span class="math notranslate nohighlight">\(\mathbf{p}(N+1):=\mathbf{p}(1)\)</span>).</p>
 <p>Convert all polygon corner coordinates defined by <span class="math notranslate nohighlight">\(\phi^{B}(i)\)</span> and
 <span class="math notranslate nohighlight">\(\lambda^{B}(i)\)</span> into unit sphere points <span class="math notranslate nohighlight">\(\mathbf{p}(i) = [x_{i}, y_{i}, z_{i}]\)</span></p>
-<p><span class="math notranslate nohighlight">\(x_{min} = min(x_{i}), y_{min} = min(y_{i}), z_{min} = min(z_{i})\)</span></p>
-<p><span class="math notranslate nohighlight">\(x_{max} = max(x_{i}), y_{max} = max(y_{i}), z_{max} = max(z_{i})\)</span></p>
-<p><span class="math notranslate nohighlight">\(\mathbf{p}_{center} = [\frac{x_{min} + x_{max}}{2}, \frac{y_{min} + y_{max}}{2}, \frac{z_{min} + z_{max}}{2}]\)</span></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{eqnarray}
+  w_{i} &amp; = &amp; \frac{1}{2} \begin{cases}
+    \mathbf{p}(i) \cdot \mathbf{p}(i+1) \lt 0, &amp; \pi - 2 asin(\frac{\Vert\mathbf{p}(i) + \mathbf{p}(i+1)\Vert}{2}) \\
+    \mathbf{p}(i) \cdot \mathbf{p}(i+1) \ge 0, &amp; 2 asin(\frac{\Vert\mathbf{p}(i) - \mathbf{p}(i+1)\Vert}{2})
+  \end{cases} \\
+  \mathbf{p}_{center} &amp; = &amp; \sum_{i}{w_{i} \frac{\mathbf{p}(i) \times \mathbf{p}(i+1)}{\Vert\mathbf{p}(i) \times \mathbf{p}(i+1)\Vert}} \\
+\end{eqnarray}\end{split}\]</div>
 <p>The vector <span class="math notranslate nohighlight">\(\mathbf{p}_{center}\)</span> is converted back to <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\lambda\)</span></p>
 </li>
 <li id="derivation-latitude-from-range"><p>latitude from range</p>

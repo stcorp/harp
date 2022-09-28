@@ -599,7 +599,7 @@ static int execute_polygon_filter(harp_product *product, harp_program *program)
         if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_points,
                                                                   &latitude_bounds->data.double_data[i * num_points],
                                                                   &longitude_bounds->data.double_data[i * num_points],
-                                                                  &area) != 0)
+                                                                  1, &area) != 0)
         {
             harp_variable_delete(latitude_bounds);
             harp_variable_delete(longitude_bounds);

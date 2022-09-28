@@ -102,7 +102,7 @@ static int add_latitude_longitude_bounds_to_area_mask(harp_area_mask *area_mask,
             }
         }
         if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, coordinates,
-                                                                  &coordinates[num_vertices], &polygon) != 0)
+                                                                  &coordinates[num_vertices], 1, &polygon) != 0)
         {
             free(coordinates);
             return -1;
@@ -111,7 +111,8 @@ static int add_latitude_longitude_bounds_to_area_mask(harp_area_mask *area_mask,
     }
     else
     {
-        if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude, longitude, &polygon) != 0)
+        if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude, longitude, 1, &polygon) !=
+            0)
         {
             return -1;
         }

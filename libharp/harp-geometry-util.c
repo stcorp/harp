@@ -286,7 +286,7 @@ int harp_geographic_center_from_bounds(long num_vertices, const double *latitude
     harp_spherical_point point;
 
     /* Convert to a spherical polygon */
-    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds,
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds, 0,
                                                               &polygon) != 0)
     {
         return -1;

@@ -302,61 +302,50 @@ static int spherical_polygon_apply_euler_transformation(harp_spherical_polygon *
 /* Derive the centre coordinates of a polygon */
 int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spherical_polygon *polygon)
 {
-    harp_vector3d vector_polygon_point;
-    harp_spherical_point pointa, pointb;        /* Start with two 3D vectors */
-    harp_vector3d vectora, vectorb;
+    harp_vector3d a;
     int32_t i;
 
-    vectora.x = 2.0;
-    vectora.y = 2.0;
-    vectora.z = 2.0;
+    vector_centre->x = 0;
+    vector_centre->y = 0;
+    vector_centre->z = 0;
 
-    vectorb.x = -2.0;
-    vectorb.y = -2.0;
-    vectorb.z = -2.0;
-
-    /* Search for minimum and maximum value of (x,y,z);
-     * store minimum in vector a and maximum in vector b */
-    for (i = 0; i < polygon->numberofpoints; ++i)
+    harp_vector3d_from_spherical_point(&a, &polygon->point[polygon->numberofpoints - 1]);
+    for (i = 0; i < polygon->numberofpoints; i++)
     {
-        harp_vector3d_from_spherical_point(&vector_polygon_point, (harp_spherical_point *)&polygon->point[i]);
+        double dotab, outernorm, weight, vnorm;
+        harp_vector3d b, outer, v;
 
-        /* Store minimum in vector a */
-        if (vector_polygon_point.x < vectora.x)
+        harp_vector3d_from_spherical_point(&b, &polygon->point[i]);
+
+        dotab = a.x * b.x + a.y * b.y + a.z * b.z;
+        outer.x = a.y * b.z - a.z * b.y;
+        outer.y = a.z * b.x - a.x * b.z;
+        outer.z = a.x * b.y - a.y * b.x;
+        outernorm = sqrt(outer.x * outer.x + outer.y * outer.y + outer.z * outer.z);
+
+        if (dotab < 0)
         {
-            vectora.x = vector_polygon_point.x;
+            v.x = a.x + b.x;
+            v.y = a.y + b.y;
+            v.z = a.z + b.z;
+            vnorm = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+            weight = (M_PI - 2 * asin(vnorm / 2)) / 2;
         }
-        if (vector_polygon_point.y < vectora.y)
+        else
         {
-            vectora.y = vector_polygon_point.y;
-        }
-        if (vector_polygon_point.z < vectora.z)
-        {
-            vectora.z = vector_polygon_point.z;
+            v.x = a.x - b.x;
+            v.y = a.y - b.y;
+            v.z = a.z - b.z;
+            vnorm = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+            weight = asin(vnorm / 2);
         }
 
-        /* Store maximum in vector b */
-        if (vector_polygon_point.x > vectorb.x)
-        {
-            vectorb.x = vector_polygon_point.x;
-        }
-        if (vector_polygon_point.y > vectorb.y)
-        {
-            vectorb.y = vector_polygon_point.y;
-        }
-        if (vector_polygon_point.z > vectorb.z)
-        {
-            vectorb.z = vector_polygon_point.z;
-        }
+        vector_centre->x += weight * outer.x / outernorm;
+        vector_centre->y += weight * outer.y / outernorm;
+        vector_centre->z += weight * outer.z / outernorm;
+
+        a = b;
     }
-
-    /* Points a and b */
-    harp_spherical_point_from_vector3d(&pointa, &vectora);
-    harp_spherical_point_from_vector3d(&pointb, &vectorb);
-
-    vector_centre->x = (vectora.x + vectorb.x) / 2.0;
-    vector_centre->y = (vectora.y + vectorb.y) / 2.0;
-    vector_centre->z = (vectora.z + vectorb.z) / 2.0;
 
     return 0;
 }
@@ -1080,9 +1069,8 @@ static int spherical_polygon_begin_end_point_equal(long measurement_id, long num
  * - counter-clockwise (right-hand rule)
  * - no duplicate points (i.e. begin and end point must not be the same) */
 int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
-                                                          const double *latitude_bounds,
-                                                          const double *longitude_bounds,
-                                                          harp_spherical_polygon **new_polygon)
+                                                          const double *latitude_bounds, const double *longitude_bounds,
+                                                          int check_polygon, harp_spherical_polygon **new_polygon)
 {
     harp_spherical_polygon *polygon = NULL;
     double deg2rad = (double)(CONST_DEG2RAD);
@@ -1151,11 +1139,14 @@ int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, l
         harp_spherical_point_check(&polygon->point[i]);
     }
 
-    /* Check the polygon */
-    if (harp_spherical_polygon_check(polygon) != 0)
+    if (check_polygon)
     {
-        harp_spherical_polygon_delete(polygon);
-        return -1;
+        /* Check the polygon */
+        if (harp_spherical_polygon_check(polygon) != 0)
+        {
+            harp_spherical_polygon_delete(polygon);
+            return -1;
+        }
     }
 
     *new_polygon = polygon;
@@ -1190,7 +1181,7 @@ LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double lo
     harp_spherical_point_rad_from_deg(&point);
     harp_spherical_point_check(&point);
 
-    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds,
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds, 1,
                                                               &polygon) != 0)
     {
         return -1;
@@ -1232,12 +1223,12 @@ LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latit
     harp_spherical_polygon *polygon_b = NULL;
 
     if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices_a, latitude_bounds_a, longitude_bounds_a,
-                                                              &polygon_a) != 0)
+                                                              1, &polygon_a) != 0)
     {
         return -1;
     }
     if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices_b, latitude_bounds_b, longitude_bounds_b,
-                                                              &polygon_b) != 0)
+                                                              1, &polygon_b) != 0)
     {
         return -1;
     }
@@ -1288,7 +1279,7 @@ LIBHARP_API int harp_geometry_get_area(int num_vertices, double *latitude_bounds
 {
     harp_spherical_polygon *polygon = NULL;
 
-    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds,
+    if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices, latitude_bounds, longitude_bounds, 1,
                                                               &polygon) != 0)
     {
         return -1;

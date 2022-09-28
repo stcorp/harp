@@ -1,3 +1,6 @@
+* Improved algorithm to calculate center point from latitude/longitude bounds
+  polygon.
+
 * Updates to product ingestions:
   - GEOMS PANDORA: added systematic/random uncertainty for effective
     temperature, renamed H2CO in harp variable names to HCHO.

@@ -206,7 +206,7 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon);
 void harp_spherical_polygon_delete(harp_spherical_polygon *polygon);
 int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
                                                           const double *latitude_bounds, const double *longitude_bounds,
-                                                          harp_spherical_polygon **new_polygon);
+                                                          int check_polygon, harp_spherical_polygon **new_polygon);
 int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spherical_polygon *polygon);
 int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon, const harp_spherical_point *point);
 int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_polygon *polygon,
