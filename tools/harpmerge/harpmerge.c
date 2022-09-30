@@ -151,6 +151,7 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
                 /* if this remains the only product then make sure it still looks like it was the result of a merge */
                 if (harp_product_append(*merged_product, NULL) != 0)
                 {
+                    harp_add_error_message(" (while merging '%s')", dataset->metadata[index]->filename);
                     return -1;
                 }
             }
@@ -158,6 +159,7 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
             {
                 if (harp_product_append(*merged_product, product) != 0)
                 {
+                    harp_add_error_message(" (while merging '%s')", dataset->metadata[index]->filename);
                     harp_product_delete(product);
                     return -1;
                 }
