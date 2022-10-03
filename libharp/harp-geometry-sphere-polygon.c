@@ -213,7 +213,7 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
     int32_t i, k;
 
     /* Centre should not correspond to 0-vector */
-    harp_spherical_polygon_centre(&vector, (harp_spherical_polygon *)polygon);
+    harp_spherical_polygon_centre(&vector, polygon);
 
     if (HARP_GEOMETRY_FPzero(vector.x) && HARP_GEOMETRY_FPzero(vector.y) && HARP_GEOMETRY_FPzero(vector.z))
     {
@@ -302,49 +302,91 @@ static int spherical_polygon_apply_euler_transformation(harp_spherical_polygon *
 /* Derive the centre coordinates of a polygon */
 int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spherical_polygon *polygon)
 {
-    harp_vector3d a;
-    int32_t i;
+    double norm2 = 0;
 
     vector_centre->x = 0;
     vector_centre->y = 0;
     vector_centre->z = 0;
 
-    harp_vector3d_from_spherical_point(&a, &polygon->point[polygon->numberofpoints - 1]);
-    for (i = 0; i < polygon->numberofpoints; i++)
+    if (polygon->numberofpoints > 2)
     {
-        double dotab, outernorm, weight, vnorm;
-        harp_vector3d b, outer, v;
+        harp_vector3d a, b, edge1;
+        double rotation = 0;
+        int32_t i;
 
-        harp_vector3d_from_spherical_point(&b, &polygon->point[i]);
-
-        dotab = a.x * b.x + a.y * b.y + a.z * b.z;
-        outer.x = a.y * b.z - a.z * b.y;
-        outer.y = a.z * b.x - a.x * b.z;
-        outer.z = a.x * b.y - a.y * b.x;
-        outernorm = sqrt(outer.x * outer.x + outer.y * outer.y + outer.z * outer.z);
-
-        if (dotab < 0)
+        harp_vector3d_from_spherical_point(&a, &polygon->point[polygon->numberofpoints - 1]);
+        harp_vector3d_from_spherical_point(&b, &polygon->point[0]);
+        edge1.x = b.x - a.x;
+        edge1.y = b.y - a.y;
+        edge1.z = b.z - a.z;
+        for (i = 1; i < polygon->numberofpoints; i++)
         {
-            v.x = a.x + b.x;
-            v.y = a.y + b.y;
-            v.z = a.z + b.z;
-            vnorm = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-            weight = (M_PI - 2 * asin(vnorm / 2)) / 2;
+            double dotab, outernorm, weight, vnorm;
+            harp_vector3d c, outer, edge2, v;
+
+            /* update the norm */
+            dotab = a.x * b.x + a.y * b.y + a.z * b.z;
+            outer.x = a.y * b.z - a.z * b.y;
+            outer.y = a.z * b.x - a.x * b.z;
+            outer.z = a.x * b.y - a.y * b.x;
+            outernorm = sqrt(outer.x * outer.x + outer.y * outer.y + outer.z * outer.z);
+
+            if (dotab < 0)
+            {
+                v.x = a.x + b.x;
+                v.y = a.y + b.y;
+                v.z = a.z + b.z;
+                vnorm = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+                weight = (M_PI - 2 * asin(vnorm / 2)) / 2;
+            }
+            else
+            {
+                v.x = a.x - b.x;
+                v.y = a.y - b.y;
+                v.z = a.z - b.z;
+                vnorm = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+                weight = asin(vnorm / 2);
+            }
+
+            vector_centre->x += weight * outer.x / outernorm;
+            vector_centre->y += weight * outer.y / outernorm;
+            vector_centre->z += weight * outer.z / outernorm;
+
+            /* update the rotation (to determin CW/CCW of polygon) */
+            harp_vector3d_from_spherical_point(&c, &polygon->point[i]);
+            edge2.x = c.x - b.x;
+            edge2.y = c.y - b.y;
+            edge2.z = c.z - b.z;
+
+            /* rotation += dot(cross(b-a,c-b),b) */
+            v.x = edge1.y * edge2.z - edge1.z * edge2.y;
+            v.y = edge1.z * edge2.x - edge1.x * edge2.z;
+            v.z = edge1.x * edge2.y - edge1.y * edge2.x;
+            rotation += v.x * b.x + v.y * b.y + v.z * b.z;
+
+            a = b;
+            b = c;
+            edge1 = edge2;
         }
-        else
+
+        if (rotation < 0)
         {
-            v.x = a.x - b.x;
-            v.y = a.y - b.y;
-            v.z = a.z - b.z;
-            vnorm = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-            weight = asin(vnorm / 2);
+            /* invert the centroid vector of the polygon was ordered clockwise */
+            vector_centre->x = -vector_centre->x;
+            vector_centre->y = -vector_centre->y;
+            vector_centre->z = -vector_centre->z;
         }
 
-        vector_centre->x += weight * outer.x / outernorm;
-        vector_centre->y += weight * outer.y / outernorm;
-        vector_centre->z += weight * outer.z / outernorm;
+        norm2 = vector_centre->x * vector_centre->x + vector_centre->y * vector_centre->y +
+            vector_centre->z * vector_centre->z;
+    }
 
-        a = b;
+    if (norm2 == 0)
+    {
+        vector_centre->x = 1;
+        vector_centre->y = 0;
+        vector_centre->z = 0;
+        return 0;
     }
 
     return 0;
@@ -1065,9 +1107,8 @@ static int spherical_polygon_begin_end_point_equal(long measurement_id, long num
  * The latitude/longitude bounds can be either vertices of a polygon (num_vertices>=3),
  * or represent corner points that define a bounding rect (num_vertices==2).
  *
- * The function makes sure that the points are organized as follows:
- * - counter-clockwise (right-hand rule)
- * - no duplicate points (i.e. begin and end point must not be the same) */
+ * The function discards the end point if was equal to the begin point
+ */
 int harp_spherical_polygon_from_latitude_longitude_bounds(long measurement_id, long num_vertices,
                                                           const double *latitude_bounds, const double *longitude_bounds,
                                                           int check_polygon, harp_spherical_polygon **new_polygon)
