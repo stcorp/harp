@@ -141,6 +141,7 @@ int merge_dataset(harp_product **merged_product, harp_dataset *dataset, const ch
         }
         if (harp_import(dataset->metadata[index]->filename, operations, options, &product) != 0)
         {
+            harp_add_error_message(" (while merging '%s')", dataset->metadata[index]->filename);
             return -1;
         }
         if (!harp_product_is_empty(product))
