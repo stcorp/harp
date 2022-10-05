@@ -340,8 +340,8 @@ static void spherical_line_meridian(harp_spherical_line *line, double lon)
 }
 
 /* Derive a spherical line from two spherical points */
-int harp_spherical_line_from_spherical_points(harp_spherical_line *line, const harp_spherical_point *point_begin,
-                                              const harp_spherical_point *point_end)
+void harp_spherical_line_from_spherical_points(harp_spherical_line *line, const harp_spherical_point *point_begin,
+                                               const harp_spherical_point *point_end)
 {
     /* Declare an Euler transformation */
     harp_euler_transformation se;
@@ -352,16 +352,13 @@ int harp_spherical_line_from_spherical_points(harp_spherical_line *line, const h
     /* Calculate the distance between begin and end point */
     length = harp_spherical_point_distance(point_begin, point_end);
 
-    /* Deal with special case that the distance between begin and end point is exactly 180 deg. */
-    /* Then, the line corresponds to a meridian. */
+    /* Deal with special case that the line corresponds to a meridian. */
     if (HARP_GEOMETRY_FPeq(length, M_PI))
     {
         if (HARP_GEOMETRY_FPeq(point_begin->lon, point_end->lon))
         {
             spherical_line_meridian(line, point_begin->lon);
-            return 1;   /* true */
         }
-        return 0;       /* false */
     }
 
     /* Transform the spherical point to an Euler transformation */
@@ -382,8 +379,6 @@ int harp_spherical_line_from_spherical_points(harp_spherical_line *line, const h
         line->psi = se.psi;
         line->length = length;
     }
-
-    return 1;   /* true */
 }
 
 /* Check if a point lies at a spherical line */
