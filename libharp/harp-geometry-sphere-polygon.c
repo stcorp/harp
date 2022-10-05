@@ -319,7 +319,7 @@ int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spher
         edge1.x = b.x - a.x;
         edge1.y = b.y - a.y;
         edge1.z = b.z - a.z;
-        for (i = 1; i < polygon->numberofpoints; i++)
+        for (i = 0; i < polygon->numberofpoints; i++)
         {
             double dotab, outernorm, weight, vnorm;
             harp_vector3d c, outer, edge2, v;
@@ -353,7 +353,7 @@ int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spher
             vector_centre->z += weight * outer.z / outernorm;
 
             /* update the rotation (to determin CW/CCW of polygon) */
-            harp_vector3d_from_spherical_point(&c, &polygon->point[i]);
+            harp_vector3d_from_spherical_point(&c, &polygon->point[i < polygon->numberofpoints - 1 ? i + 1 : 0]);
             edge2.x = c.x - b.x;
             edge2.y = c.y - b.y;
             edge2.z = c.z - b.z;
