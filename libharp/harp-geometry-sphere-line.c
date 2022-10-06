@@ -192,6 +192,11 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
         spherical_line_apply_euler_transformation(&sl2, line1, &se);
         switched = 1;
     }
+    else
+    {
+        /* length is NaN for at least one of the lines */
+        return HARP_GEOMETRY_LINE_SEPARATE;
+    }
     if (HARP_GEOMETRY_FPzero(sl1.length))
     {   /* both are points */
         return HARP_GEOMETRY_LINE_SEPARATE;

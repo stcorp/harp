@@ -155,6 +155,11 @@ void harp_spherical_point_from_vector3d(harp_spherical_point *point, const harp_
         {
             point->lat = -M_PI_2;
         }
+        else
+        {
+            /* z is NaN */
+            point->lat = harp_nan();
+        }
     }
     else
     {
