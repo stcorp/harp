@@ -7194,6 +7194,15 @@ static int add_axis_conversions(void)
 
         /*** datetime ***/
 
+        if (num_dimensions == 1)
+        {
+            if (add_time_indepedent_to_dependent_conversion("datetime", harp_type_double, HARP_UNIT_DATETIME,
+                                                            num_dimensions, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+        }
+
         /* midpoint from start/stop */
         if (harp_variable_conversion_new("datetime", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
                                          dimension_type, 0, get_midpoint_from_begin_and_end, &conversion) != 0)
@@ -7212,6 +7221,15 @@ static int add_axis_conversions(void)
         }
 
         /*** datetime_bounds ***/
+
+        if (num_dimensions == 1)
+        {
+            if (add_time_indepedent_to_dependent_conversion("datetime_bounds", harp_type_double, HARP_UNIT_DATETIME,
+                                                            num_dimensions + 1, dimension_type, 2) != 0)
+            {
+                return -1;
+            }
+        }
 
         /* range from start/stop */
         if (harp_variable_conversion_new("datetime_bounds", harp_type_double, HARP_UNIT_DATETIME, num_dimensions + 1,
@@ -7232,7 +7250,7 @@ static int add_axis_conversions(void)
 
         /*** datetime_length ***/
 
-        if (num_dimensions > 0)
+        if (num_dimensions == 1)
         {
             if (add_time_indepedent_to_dependent_conversion("datetime_length", harp_type_double, HARP_UNIT_TIME,
                                                             num_dimensions, dimension_type, 0) != 0)
@@ -7259,6 +7277,15 @@ static int add_axis_conversions(void)
         }
 
         /*** datetime_start ***/
+
+        if (num_dimensions == 1)
+        {
+            if (add_time_indepedent_to_dependent_conversion("datetime_start", harp_type_double, HARP_UNIT_DATETIME,
+                                                            num_dimensions, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+        }
 
         /* start from bounds */
         if (harp_variable_conversion_new("datetime_start", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,
@@ -7307,6 +7334,15 @@ static int add_axis_conversions(void)
         }
 
         /*** datetime_stop ***/
+
+        if (num_dimensions == 1)
+        {
+            if (add_time_indepedent_to_dependent_conversion("datetime_stop", harp_type_double, HARP_UNIT_DATETIME,
+                                                            num_dimensions, dimension_type, 0) != 0)
+            {
+                return -1;
+            }
+        }
 
         /* stop from bounds */
         if (harp_variable_conversion_new("datetime_stop", harp_type_double, HARP_UNIT_DATETIME, num_dimensions,

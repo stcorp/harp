@@ -244,6 +244,11 @@ static int create_variable(conversion_info *info)
         else
         {
             dimension[i] = info->product->dimension[conversion->dimension_type[i]];
+            if (dimension[i] == 0 && conversion->dimension_type[i] == harp_dimension_time)
+            {
+                /* make product time dependent */
+                dimension[i] = 1;
+            }
         }
     }
 
