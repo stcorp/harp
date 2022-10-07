@@ -7915,14 +7915,18 @@ static int add_misc_conversions(void)
 
     /*** month ***/
 
-    if (harp_variable_conversion_new("month", harp_type_int8, NULL, 1, dimension_type, 0, get_month, &conversion) != 0)
+    for (i = 0; i < 2; i++)
     {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
+        if (harp_variable_conversion_new("month", harp_type_int8, NULL, i, dimension_type, 0, get_month, &conversion)
+            != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     /*** sensor_altitude ***/
@@ -7951,14 +7955,18 @@ static int add_misc_conversions(void)
 
     /*** year ***/
 
-    if (harp_variable_conversion_new("year", harp_type_int16, NULL, 1, dimension_type, 0, get_year, &conversion) != 0)
+    for (i = 0; i < 2; i++)
     {
-        return -1;
-    }
-    if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, 1,
-                                            dimension_type, 0) != 0)
-    {
-        return -1;
+        if (harp_variable_conversion_new("year", harp_type_int16, NULL, i, dimension_type, 0, get_year, &conversion)
+            != 0)
+        {
+            return -1;
+        }
+        if (harp_variable_conversion_add_source(conversion, "datetime", harp_type_double, HARP_UNIT_DATETIME, i,
+                                                dimension_type, 0) != 0)
+        {
+            return -1;
+        }
     }
 
     return 0;
