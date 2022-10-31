@@ -1,6 +1,7 @@
 HARP_DOCFILES = \
 	doc/html/.buildinfo \
 	doc/html/R.html \
+	doc/html/_static/_sphinx_javascript_frameworks_compat.js \
 	doc/html/_static/basic.css \
 	doc/html/_static/css/badge_only.css \
 	doc/html/_static/css/fonts/Roboto-Slab-Bold.woff \
@@ -25,7 +26,7 @@ HARP_DOCFILES = \
 	doc/html/_static/doctools.js \
 	doc/html/_static/documentation_options.js \
 	doc/html/_static/file.png \
-	doc/html/_static/jquery-3.5.1.js \
+	doc/html/_static/jquery-3.6.0.js \
 	doc/html/_static/jquery.js \
 	doc/html/_static/js/badge_only.js \
 	doc/html/_static/js/html5shiv-printshiv.min.js \
@@ -36,6 +37,7 @@ HARP_DOCFILES = \
 	doc/html/_static/plus.png \
 	doc/html/_static/pygments.css \
 	doc/html/_static/searchtools.js \
+	doc/html/_static/sphinx_highlight.js \
 	doc/html/_static/underscore-1.13.1.js \
 	doc/html/_static/underscore.js \
 	doc/html/algorithms/common.html \
@@ -542,6 +544,8 @@ doc/html/.buildinfo:
 	$(MAKE) harp_doc
 doc/html/R.html:
 	$(MAKE) harp_doc
+doc/html/_static/_sphinx_javascript_frameworks_compat.js:
+	$(MAKE) harp_doc
 doc/html/_static/basic.css:
 	$(MAKE) harp_doc
 doc/html/_static/css/badge_only.css:
@@ -590,7 +594,7 @@ doc/html/_static/documentation_options.js:
 	$(MAKE) harp_doc
 doc/html/_static/file.png:
 	$(MAKE) harp_doc
-doc/html/_static/jquery-3.5.1.js:
+doc/html/_static/jquery-3.6.0.js:
 	$(MAKE) harp_doc
 doc/html/_static/jquery.js:
 	$(MAKE) harp_doc
@@ -611,6 +615,8 @@ doc/html/_static/plus.png:
 doc/html/_static/pygments.css:
 	$(MAKE) harp_doc
 doc/html/_static/searchtools.js:
+	$(MAKE) harp_doc
+doc/html/_static/sphinx_highlight.js:
 	$(MAKE) harp_doc
 doc/html/_static/underscore-1.13.1.js:
 	$(MAKE) harp_doc

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IDL interface &mdash; HARP 1.15 documentation</title>
+  <title>IDL interface &mdash; HARP 1.16 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="MATLAB interface" href="matlab.html" />
@@ -30,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> HARP
           </a>
               <div class="version">
-                1.15
+                1.16
               </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
@@ -45,7 +47,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#data-types">Data types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#unicode">Unicode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#harp_import"><code class="docutils literal notranslate"><span class="pre">harp_import()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#harp_export"><code class="docutils literal notranslate"><span class="pre">harp_export()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#harp_version"><code class="docutils literal notranslate"><span class="pre">harp_version()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#harp_unload"><code class="docutils literal notranslate"><span class="pre">harp_unload()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="matlab.html">MATLAB interface</a></li>
@@ -158,31 +166,31 @@ to instances of type <code class="docutils literal notranslate"><span class="pre
 </section>
 <section id="examples">
 <h2>Examples</h2>
-<div class="highlight-IDL notranslate"><div class="highlight"><pre><span></span><span class="c1">; Import a file as a HARP product.</span>
-prod <span class="o">=</span> harp_import(<span class="s2">&quot;filename.ext&quot;</span>)
+<div class="highlight-IDL notranslate"><div class="highlight"><pre><span></span><span class="c1">; Import a file as a HARP product.</span><span class="w"></span>
+prod<span class="w"> </span><span class="o">=</span><span class="w"> </span>harp_import(<span class="s2">&quot;filename.ext&quot;</span>)<span class="w"></span>
 
-<span class="c1">; Print information about the product.</span>
-<span class="nb">help</span>, prod, <span class="o">/</span>struct
+<span class="c1">; Print information about the product.</span><span class="w"></span>
+<span class="nb">help</span>,<span class="w"> </span>prod,<span class="w"> </span><span class="o">/</span>struct<span class="w"></span>
 
-<span class="c1">; Print information about the variable &#39;temperature&#39;.</span>
-<span class="nb">help</span>, prod.temperature, <span class="o">/</span>struct
+<span class="c1">; Print information about the variable &#39;temperature&#39;.</span><span class="w"></span>
+<span class="nb">help</span>,<span class="w"> </span>prod.temperature,<span class="w"> </span><span class="o">/</span>struct<span class="w"></span>
 
-<span class="c1">; Print the contents of the variable &#39;temperature&#39;.</span>
-<span class="nb">print</span>, prod.temperature.data
+<span class="c1">; Print the contents of the variable &#39;temperature&#39;.</span><span class="w"></span>
+<span class="nb">print</span>,<span class="w"> </span>prod.temperature.data<span class="w"></span>
 
-<span class="c1">; Export the updated product as an HDF4 file (the format must be</span>
-<span class="c1">; HDF4, HDF5 or netCDF, if no format is specified netCDF is used).</span>
-result <span class="o">=</span> harp_export(prod, <span class="s2">&quot;filename.hdf&quot;</span>, <span class="s2">&quot;hdf4&quot;</span>)
+<span class="c1">; Export the updated product as an HDF4 file (the format must be</span><span class="w"></span>
+<span class="c1">; HDF4, HDF5 or netCDF, if no format is specified netCDF is used).</span><span class="w"></span>
+result<span class="w"> </span><span class="o">=</span><span class="w"> </span>harp_export(prod,<span class="w"> </span><span class="s2">&quot;filename.hdf&quot;</span>,<span class="w"> </span><span class="s2">&quot;hdf4&quot;</span>)<span class="w"></span>
 
-<span class="c1">; Print the result of the export.</span>
-<span class="nb">print</span>, result
+<span class="c1">; Print the result of the export.</span><span class="w"></span>
+<span class="nb">print</span>,<span class="w"> </span>result<span class="w"></span>
 
-<span class="c1">; Import the HDF4 file and perform an operation to exclude the variable</span>
-<span class="c1">; temperature (variable name must be in uppercase).</span>
-prod2 <span class="o">=</span> harp_import(<span class="s2">&quot;filename.hdf&quot;</span>, <span class="s2">&quot;exclude(temperature)&quot;</span>);
+<span class="c1">; Import the HDF4 file and perform an operation to exclude the variable</span><span class="w"></span>
+<span class="c1">; temperature (variable name must be in uppercase).</span><span class="w"></span>
+prod2<span class="w"> </span><span class="o">=</span><span class="w"> </span>harp_import(<span class="s2">&quot;filename.hdf&quot;</span>,<span class="w"> </span><span class="s2">&quot;exclude(temperature)&quot;</span>);<span class="w"></span>
 
-<span class="c1">; Print information about the product.</span>
-<span class="nb">help</span>, prod2, <span class="o">/</span>struct
+<span class="c1">; Print information about the product.</span><span class="w"></span>
+<span class="nb">help</span>,<span class="w"> </span>prod2,<span class="w"> </span><span class="o">/</span>struct<span class="w"></span>
 </pre></div>
 </div>
 </section>

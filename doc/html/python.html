@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python interface &mdash; HARP 1.15 documentation</title>
+  <title>Python interface &mdash; HARP 1.16 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -15,7 +15,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="next" title="R interface" href="R.html" />
@@ -30,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> HARP
           </a>
               <div class="version">
-                1.15
+                1.16
               </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
@@ -48,9 +50,32 @@
 <li class="toctree-l2"><a class="reference internal" href="#unicode">Unicode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#types">Types</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#types">Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harp.Product"><code class="docutils literal notranslate"><span class="pre">harp.Product</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.Variable"><code class="docutils literal notranslate"><span class="pre">harp.Variable</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harp.import_product"><code class="docutils literal notranslate"><span class="pre">harp.import_product()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.import_product_metadata"><code class="docutils literal notranslate"><span class="pre">harp.import_product_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.export_product"><code class="docutils literal notranslate"><span class="pre">harp.export_product()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.concatenate"><code class="docutils literal notranslate"><span class="pre">harp.concatenate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.execute_operations"><code class="docutils literal notranslate"><span class="pre">harp.execute_operations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.convert_unit"><code class="docutils literal notranslate"><span class="pre">harp.convert_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.to_dict"><code class="docutils literal notranslate"><span class="pre">harp.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.get_encoding"><code class="docutils literal notranslate"><span class="pre">harp.get_encoding()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.set_encoding"><code class="docutils literal notranslate"><span class="pre">harp.set_encoding()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.version"><code class="docutils literal notranslate"><span class="pre">harp.version()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exceptions">Exceptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harp.Error"><code class="docutils literal notranslate"><span class="pre">harp.Error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.CLibraryError"><code class="docutils literal notranslate"><span class="pre">harp.CLibraryError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.UnsupportedTypeError"><code class="docutils literal notranslate"><span class="pre">harp.UnsupportedTypeError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.UnsupportedDimensionError"><code class="docutils literal notranslate"><span class="pre">harp.UnsupportedDimensionError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harp.NoDataError"><code class="docutils literal notranslate"><span class="pre">harp.NoDataError</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
