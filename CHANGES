@@ -1,10 +1,17 @@
+1.16 2022-10-31
+~~~~~~~~~~~~~~~
+
 * Improved algorithm to calculate center point from latitude/longitude bounds
   polygon.
+
+* Add derivation of time dependent from time indepent for datetime variables.
 
 * Updates to product ingestions:
   - GEOMS PANDORA: added systematic/random uncertainty for effective
     temperature, renamed H2CO in harp variable names to HCHO.
   - OCO: added support for ACOS/OCO-2/OCO-3 L2/L3 products.
+  - Ozone CCI L3 LP: fixed memory issue when reading
+    merged_ozone_concentration.
   - S5P L2 HCHO: added amf=clear_sky ingestion option
 
 1.15.1 2022-05-18
