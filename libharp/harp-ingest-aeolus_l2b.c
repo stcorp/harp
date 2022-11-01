@@ -316,6 +316,16 @@ static int read_datetime(void *user_data, long index, harp_array data)
     return get_double_value(((ingest_info *)user_data)->profile_cursor[index], "profile_datetime_average", data);
 }
 
+static int read_datetime_start(void *user_data, long index, harp_array data)
+{
+    return get_double_value(((ingest_info *)user_data)->profile_cursor[index], "profile_datetime_start", data);
+}
+
+static int read_datetime_stop(void *user_data, long index, harp_array data)
+{
+    return get_double_value(((ingest_info *)user_data)->profile_cursor[index], "profile_datetime_stop", data);
+}
+
 static int read_orbit_index(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -501,13 +511,31 @@ static void register_common_variables(harp_product_definition *product_definitio
     dimension[1] = -1;
     dimension[2] = 2;
 
+    /* datetime_start */
+    description = "datetime of the first measurement used for the wind profile";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_start",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "seconds since 2000-01-01",
+                                                                      NULL, read_datetime_start);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_profile[]/profile_datetime_start", rayleigh ? "rayleigh" : "mie");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* datetime */
     description = "average datetime of the measurements used for the wind profile";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_start",
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime",
                                                                       harp_type_double, 1, dimension_type, NULL,
                                                                       description, "seconds since 2000-01-01",
                                                                       NULL, read_datetime);
     snprintf(path, MAX_PATH_LENGTH, "/%s_profile[]/profile_datetime_average", rayleigh ? "rayleigh" : "mie");
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* datetime_stop */
+    description = "datetime of the last measurements used for the wind profile";
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "datetime_stop",
+                                                                      harp_type_double, 1, dimension_type, NULL,
+                                                                      description, "seconds since 2000-01-01",
+                                                                      NULL, read_datetime_stop);
+    snprintf(path, MAX_PATH_LENGTH, "/%s_profile[]/profile_datetime_stop", rayleigh ? "rayleigh" : "mie");
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* orbit_index */

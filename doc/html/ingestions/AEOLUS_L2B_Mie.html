@@ -96,7 +96,19 @@
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[seconds since 2000-01-01]</p></td>
+<td><p>datetime of the first measurement used for the wind profile</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
 <td><p>average datetime of the measurements used for the wind profile</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>datetime_stop</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
+<td><p>datetime of the last measurements used for the wind profile</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>orbit_index</strong></p></td>
 <td><p>int32</p></td>
@@ -202,7 +214,15 @@
 <tbody>
 <tr class="row-even"><td><p><strong>datetime_start</strong></p></td>
 <td><p><em>path</em></p></td>
+<td><p><strong>/mie_profile[]/profile_datetime_start</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
+<td><p><em>path</em></p></td>
 <td><p><strong>/mie_profile[]/profile_datetime_average</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>datetime_stop</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/mie_profile[]/profile_datetime_stop</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>orbit_index</strong></p></td>
 <td><p><em>path</em></p></td>

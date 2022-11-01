@@ -1,3 +1,6 @@
+* Updates to product ingestions:
+  - AEOLUS L2B: properly split datetime, datetime_start, and datetime_stop.
+
 1.16 2022-10-31
 ~~~~~~~~~~~~~~~
 
