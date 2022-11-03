@@ -480,7 +480,7 @@ set(LIBNETCDF_SOURCES
 
 include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/expat ${CMAKE_CURRENT_SOURCE_DIR}/netcdf)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION ${INCLUDE_PREFIX})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/harp.h DESTINATION ${INCLUDE_PREFIX} COMPONENT core)
 
 set(UDUNITS2_XML_DIR ${CMAKE_INSTALL_PREFIX}/${UDUNITS2_PREFIX})
 add_definitions(-DDEFAULT_UDUNITS2_XML_PATH="${UDUNITS2_XML_DIR}/udunits2.xml" -DHARP_UDUNITS2_NAME_MANGLE)
@@ -492,9 +492,9 @@ set_target_properties(harp PROPERTIES
 if(WIN32)
   # Also set DLL compile flags
   set_target_properties(harp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL -DLIBHARPDLL_EXPORTS -DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL -DYY_NO_UNISTD_H")
-  install(TARGETS harp RUNTIME DESTINATION ${BIN_PREFIX} ARCHIVE DESTINATION ${LIB_PREFIX})
+  install(TARGETS harp RUNTIME DESTINATION ${BIN_PREFIX} ARCHIVE DESTINATION ${LIB_PREFIX} COMPONENT core)
 else(WIN32)
-  install(TARGETS harp DESTINATION ${LIB_PREFIX})
+  install(TARGETS harp DESTINATION ${LIB_PREFIX} COMPONENT core)
 endif(WIN32)
 
 add_library(harp_static STATIC ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNETCDF_SOURCES})
@@ -503,11 +503,11 @@ add_library(harp_static STATIC ${LIBHARP_SOURCES} ${LIBUDUNITS2_SOURCES} ${LIBNE
 if(WIN32)
   set_target_properties(harp_static PROPERTIES OUTPUT_NAME "libharp")
   set_target_properties(harp_static PROPERTIES COMPILE_FLAGS "-DH5_BUILT_AS_DYNAMIC_LIB -DLIBCODADLL -DYY_NO_UNISTD_H")
-  install(TARGETS harp_static DESTINATION ${LIB_PREFIX})
+  install(TARGETS harp_static DESTINATION ${LIB_PREFIX} COMPONENT core)
 else(WIN32)
   set_target_properties(harp_static PROPERTIES OUTPUT_NAME "harp")
 endif(WIN32)
-install(TARGETS harp_static DESTINATION ${LIB_PREFIX})
+install(TARGETS harp_static DESTINATION ${LIB_PREFIX} COMPONENT core)
 
 #  harpcheck
 add_executable(harpcheck tools/harpcheck/harpcheck.c)
@@ -515,7 +515,7 @@ target_link_libraries(harpcheck harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_
 if(WIN32)
   set_target_properties(harpcheck PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpcheck DESTINATION ${BIN_PREFIX})
+install(TARGETS harpcheck DESTINATION ${BIN_PREFIX} COMPONENT core)
 
 #  harpcollocate
 set(HARPCOLLOCATE_SOURCES
@@ -528,7 +528,7 @@ target_link_libraries(harpcollocate harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${H
 if(WIN32)
   set_target_properties(harpcollocate PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpcollocate DESTINATION ${BIN_PREFIX})
+install(TARGETS harpcollocate DESTINATION ${BIN_PREFIX} COMPONENT core)
 
 #  harpconvert
 add_executable(harpconvert tools/harpconvert/harpconvert.c)
@@ -536,7 +536,7 @@ target_link_libraries(harpconvert harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF
 if(WIN32)
   set_target_properties(harpconvert PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpconvert DESTINATION ${BIN_PREFIX})
+install(TARGETS harpconvert DESTINATION ${BIN_PREFIX} COMPONENT core)
 
 #  harpdump
 add_executable(harpdump tools/harpdump/harpdump.c)
@@ -544,7 +544,7 @@ target_link_libraries(harpdump harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_L
 if(WIN32)
   set_target_properties(harpdump PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpdump DESTINATION ${BIN_PREFIX})
+install(TARGETS harpdump DESTINATION ${BIN_PREFIX} COMPONENT core)
 
 #  harpmerge
 add_executable(harpmerge tools/harpmerge/harpmerge.c)
@@ -552,7 +552,7 @@ target_link_libraries(harpmerge harp ${CODA_LIBRARIES} ${HDF4_LIBRARIES} ${HDF5_
 if(WIN32)
   set_target_properties(harpmerge PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
 endif(WIN32)
-install(TARGETS harpmerge DESTINATION ${BIN_PREFIX})
+install(TARGETS harpmerge DESTINATION ${BIN_PREFIX} COMPONENT core)
 
 # idl
 if(HARP_BUILD_IDL)
@@ -571,8 +571,8 @@ if(HARP_BUILD_IDL)
   configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/idl/harp_idl.dlm.in
     ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm)
-  install(TARGETS harp_idl DESTINATION ${IDL_PREFIX})
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm DESTINATION ${IDL_PREFIX})
+  install(TARGETS harp_idl DESTINATION ${IDL_PREFIX} COMPONENT idl)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/idl/harp_idl.dlm DESTINATION ${IDL_PREFIX} COMPONENT idl)
 endif(HARP_BUILD_IDL)
 
 # matlab
@@ -602,8 +602,8 @@ if(HARP_BUILD_MATLAB)
     matlab/harp_export.m
     matlab/harp_import.m
     matlab/harp_version.m)
-  install(TARGETS harp_matlab DESTINATION ${MATLAB_PREFIX})
-  install(FILES ${HARP_MATLAB_M_FILES} DESTINATION ${MATLAB_PREFIX})
+  install(TARGETS harp_matlab DESTINATION ${MATLAB_PREFIX} COMPONENT matlab)
+  install(FILES ${HARP_MATLAB_M_FILES} DESTINATION ${MATLAB_PREFIX} COMPONENT matlab)
 endif(HARP_BUILD_MATLAB)
 
 # python
@@ -612,7 +612,7 @@ if(HARP_BUILD_PYTHON)
     python/__init__.py
     python/_harpc.py
     python/_harppy.py
-    DESTINATION ${PYTHON_PREFIX})
+    DESTINATION ${PYTHON_PREFIX} COMPONENT python)
 endif(HARP_BUILD_PYTHON)
 
 # R
@@ -632,12 +632,12 @@ if(HARP_BUILD_R)
     add_custom_target(Rlib ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/R/R.lib)
     target_link_libraries(Rharp harp ${CMAKE_CURRENT_BINARY_DIR}/R/R.lib)
     add_dependencies(Rharp Rlib)
-    install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs/x64)
+    install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs/x64 COMPONENT r)
     set_target_properties(Rharp PROPERTIES COMPILE_FLAGS "-DLIBHARPDLL")
     string(REGEX REPLACE "\\.exe$" "script.exe" RSCRIPT_EXECUTABLE ${R_EXECUTABLE})
   else()
     target_link_libraries(Rharp harp ${R_LIBRARIES})
-    install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs)
+    install(TARGETS Rharp DESTINATION ${R_PREFIX}/libs COMPONENT r)
     set(RSCRIPT_EXECUTABLE "${R_EXECUTABLE}script")
   endif()
   add_custom_command(OUTPUT features.rds package.rds
@@ -646,18 +646,18 @@ if(HARP_BUILD_R)
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/features.rds
     ${CMAKE_CURRENT_BINARY_DIR}/package.rds
-    DESTINATION ${R_PREFIX}/Meta)
+    DESTINATION ${R_PREFIX}/Meta COMPONENT r)
   add_custom_target(rds_files ALL
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/features.rds ${CMAKE_CURRENT_BINARY_DIR}/package.rds)
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/R/DESCRIPTION
     R/NAMESPACE
-    DESTINATION ${R_PREFIX})
-  install(FILES R/harp.r DESTINATION ${R_PREFIX}/R RENAME harp)
+    DESTINATION ${R_PREFIX} COMPONENT r)
+  install(FILES R/harp.r DESTINATION ${R_PREFIX}/R RENAME harp COMPONENT r)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/help)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/html)
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/help DESTINATION ${R_PREFIX})
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/html DESTINATION ${R_PREFIX})
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/help DESTINATION ${R_PREFIX} COMPONENT r)
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/R/html DESTINATION ${R_PREFIX} COMPONENT r)
 endif(HARP_BUILD_R)
 
 
@@ -675,12 +675,12 @@ function(add_codadef name)
       add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}"
         COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
         DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh")
-      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CODADEF} DESTINATION ${CODADEF_PREFIX}})
+      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CODADEF} DESTINATION ${CODADEF_PREFIX}} COMPONENT core)
       add_custom_target(codadef_${name} ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}")
     endif(WIN32)
   else(CODADEF_DIR)
     file(GLOB CODADEF RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/definitions ${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}-*.codadef)
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${CODADEF}" DESTINATION ${CODADEF_PREFIX})
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${CODADEF}" DESTINATION ${CODADEF_PREFIX} COMPONENT core)
   endif(CODADEF_DIR)
 endfunction(add_codadef)
 
@@ -716,7 +716,7 @@ add_codadef(Sentinel5P)
 add_codadef(TEMIS)
 
 # documentation
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION ${DOC_PREFIX})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/html DESTINATION ${DOC_PREFIX} COMPONENT core)
 
 # udunits xml files
 install(FILES
@@ -726,7 +726,7 @@ install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-derived.xml
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2-prefixes.xml
   ${CMAKE_CURRENT_SOURCE_DIR}/udunits2/udunits2.xml
-  DESTINATION ${UDUNITS2_PREFIX})
+  DESTINATION ${UDUNITS2_PREFIX} COMPONENT core)
 
 # installer
 set(CPACK_PACKAGE_NAME "harp")
