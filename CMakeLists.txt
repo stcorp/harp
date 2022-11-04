@@ -675,7 +675,7 @@ function(add_codadef name)
       add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}"
         COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh" "${CMAKE_CURRENT_SOURCE_DIR}/definitions/${name}"
         DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/codadef.sh")
-      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CODADEF} DESTINATION ${CODADEF_PREFIX}} COMPONENT core)
+      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CODADEF} DESTINATION ${CODADEF_PREFIX} COMPONENT core)
       add_custom_target(codadef_${name} ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${CODADEF}")
     endif(WIN32)
   else(CODADEF_DIR)
