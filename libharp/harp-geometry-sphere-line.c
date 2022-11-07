@@ -224,9 +224,27 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
                 return HARP_GEOMETRY_LINE_CONTAINS;
             }
         }
-        else if (a1 || a2)
+        else if (a1)
         {
-            return HARP_GEOMETRY_LINE_OVERLAP;
+            if (HARP_GEOMETRY_FPeq(p[0].lon, p[2].lon) || HARP_GEOMETRY_FPeq(p[1].lon, p[2].lon))
+            {
+                return HARP_GEOMETRY_LINE_CONNECTED;
+            }
+            else
+            {
+                return HARP_GEOMETRY_LINE_OVERLAP;
+            }
+        }
+        else if (a2)
+        {
+            if (HARP_GEOMETRY_FPeq(p[0].lon, p[3].lon) || HARP_GEOMETRY_FPeq(p[1].lon, p[3].lon))
+            {
+                return HARP_GEOMETRY_LINE_CONNECTED;
+            }
+            else
+            {
+                return HARP_GEOMETRY_LINE_OVERLAP;
+            }
         }
 
         return HARP_GEOMETRY_LINE_SEPARATE;
