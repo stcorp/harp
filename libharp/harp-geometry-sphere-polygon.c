@@ -1255,9 +1255,9 @@ LIBHARP_API int harp_geometry_has_point_in_area(double latitude_point, double lo
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, double *latitude_bounds_a,
-                                               double *longitude_bounds_a, int num_vertices_b,
-                                               double *latitude_bounds_b, double *longitude_bounds_b, int *has_overlap,
+LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, const double *latitude_bounds_a,
+                                               const double *longitude_bounds_a, int num_vertices_b,
+                                               const double *latitude_bounds_b, const double *longitude_bounds_b, int *has_overlap,
                                                double *fraction)
 {
     harp_spherical_polygon *polygon_a = NULL;
