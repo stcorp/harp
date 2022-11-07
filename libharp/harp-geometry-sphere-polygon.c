@@ -1271,6 +1271,7 @@ LIBHARP_API int harp_geometry_has_area_overlap(int num_vertices_a, const double 
     if (harp_spherical_polygon_from_latitude_longitude_bounds(0, num_vertices_b, latitude_bounds_b, longitude_bounds_b,
                                                               1, &polygon_b) != 0)
     {
+        harp_spherical_polygon_delete(polygon_a);
         return -1;
     }
 
