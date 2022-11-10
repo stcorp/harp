@@ -398,12 +398,6 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
     harp_spherical_line sl;
     int result = 0;     /* false */
 
-    if (!spherical_polygon_bounds_contains_any_points(polygon, 1, point))
-    {
-        /* point is outside the lat/lon bounds of the polygon => return false */
-        return 0;
-    }
-
     /*--------------------------------
      * Check whether point is on edge.
      *--------------------------------*/
@@ -416,6 +410,12 @@ int harp_spherical_polygon_contains_point(const harp_spherical_polygon *polygon,
             /* return true */
             return 1;
         }
+    }
+
+    if (!spherical_polygon_bounds_contains_any_points(polygon, 1, point))
+    {
+        /* point is outside the lat/lon bounds of the polygon => return false */
+        return 0;
     }
 
     /*-------------------------------------------
@@ -626,7 +626,10 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
         pos = (int8_t)(1 << harp_spherical_line_spherical_line_relationship(&sl, line));
         if (pos == sl_eq)
         {
-            pos = sl_cd;        /* is contained */
+            /* if a line is equal to a line on the polygon then the line is
+             * separate. We can return immediately, since other lines will be
+             * either connected or separate. */
+            return HARP_GEOMETRY_LINE_POLY_SEPARATE;
         }
 
         if (pos == sl_ov)
@@ -668,6 +671,14 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
     {
         return HARP_GEOMETRY_LINE_POLY_SEPARATE;
     }
+    else if (p1 && !p2 && ((res - sl_os - sl_cn - 1) < 0))
+    {
+        return HARP_GEOMETRY_LINE_POLY_SEPARATE;
+    }
+    else if (!p1 && p2 && ((res - sl_os - sl_cn - 1) < 0))
+    {
+        return HARP_GEOMETRY_LINE_POLY_SEPARATE;
+    }
 
     return HARP_GEOMETRY_LINE_POLY_OVERLAP;
 }
@@ -699,7 +710,7 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
         pos = (int8_t)(1 << harp_spherical_polygon_spherical_line_relationship(polygon_a, &sl));
         if (pos == sp_ov)
         {
-            /* overlap */
+            /* If one edge is overlapping then the two polygons overlap. */
             return HARP_GEOMETRY_POLY_OVERLAP;
         }
 
@@ -715,12 +726,15 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
             {
                 return HARP_GEOMETRY_POLY_CONTAINED;
             }
-            assert(pos != HARP_GEOMETRY_LINE_POLY_OVERLAP);
+            assert(pos != HARP_GEOMETRY_POLY_OVERLAP);
         }
         return HARP_GEOMETRY_POLY_SEPARATE;
     }
 
-    if (res == sp_ct)
+    /* If the lines are contained and separate then polygon_a contains
+     * polygon_b with at least one equal edge. They cannot be overlapping,
+     * otherwise an edge would have crossed the polygon boundary. */
+    if ((res - sp_ct - sp_os - 1) < 0)
     {
         return HARP_GEOMETRY_POLY_CONTAINS;
     }
