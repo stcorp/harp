@@ -327,16 +327,6 @@ int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line
         return HARP_GEOMETRY_LINE_CONNECTED;
     }
 
-    if (res & (1 << HARP_GEOMETRY_LINE_CONTAINS))
-    {
-        return HARP_GEOMETRY_LINE_CONTAINS;
-    }
-
-    if (res & (1 << HARP_GEOMETRY_LINE_CONTAINED))
-    {
-        return HARP_GEOMETRY_LINE_CONTAINED;
-    }
-
     if (res & (1 << HARP_GEOMETRY_LINE_CROSS))
     {
         return HARP_GEOMETRY_LINE_CROSS;
