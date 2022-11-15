@@ -691,7 +691,6 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
     harp_spherical_line sl;
     int8_t pos = 0, res = 0;
     const int8_t sp_os = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_SEPARATE);
-    const int8_t sp_ct = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_CONTAINED);
     const int8_t sp_ov = (int8_t)(1 << HARP_GEOMETRY_LINE_POLY_OVERLAP);
 
     if (!recheck)
