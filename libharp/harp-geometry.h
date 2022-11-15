@@ -176,6 +176,8 @@ void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_l
 int harp_spherical_point_is_at_spherical_line(const harp_spherical_point *point, const harp_spherical_line *line);
 void harp_inverse_euler_transformation_from_spherical_line(harp_euler_transformation *inverse_transformation,
                                                            const harp_spherical_line *line);
+int8_t harp_line_intersects(const harp_spherical_point *p11, const harp_spherical_point *p12,
+                            const harp_spherical_point *p21, const harp_spherical_point *p22);
 int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line *linea,
                                                        const harp_spherical_line *lineb);
 void harp_spherical_line_from_spherical_points(harp_spherical_line *line, const harp_spherical_point *point_begin,

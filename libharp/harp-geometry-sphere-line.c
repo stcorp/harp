@@ -154,6 +154,88 @@ void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_l
     harp_spherical_point_apply_euler_transformation(point, &pointtmp, &euler);
 }
 
+/* Returns 1, if the line, defined by two vectors, contains the point.
+ * Otherwise returns 0. The input assumes normalized vectors.
+ */
+static int8_t point_on_line(const harp_vector3d *line_begin, const harp_vector3d *line_end,
+                            const harp_vector3d *point)
+{
+    double theta_begin_point, theta_end_point, theta_line;
+
+    /* Get the angle theta of the line and points.
+     * The dot product is defined by:
+     *
+     *   a . b = ||a|| * ||b|| * cos(theta)
+     * 
+     * if we re-arrange for theta we get
+     *
+     *   theta = acos((a . b) / (||a|| * ||b||))
+     *
+     * Since vectors are normalized we can simplify to:
+     *
+     *   theta = acos(a . b)
+     */
+    theta_begin_point = acos(harp_vector3d_dotproduct(line_begin, point));
+    theta_end_point = acos(harp_vector3d_dotproduct(point, line_end));
+    theta_line = acos(harp_vector3d_dotproduct(line_begin, line_end));
+
+    /* If the angles from the start and end point of the line is equal to the
+     * total angle of the line, then the point is on the line. */
+    return HARP_GEOMETRY_FPeq(theta_begin_point + theta_end_point, theta_line);
+}
+
+/* Returns 1, if the two lines, each defined by two spherical points,
+ * intersect. Also returns 1 if the lines are equal.  Otherwise returns 0.
+ *
+ * Parameters:
+ * p11: the starting point of first line
+ * p12: the end point of first line
+ * p21: the starting point of second line
+ * p22: the end point of second line
+ */
+int8_t harp_line_intersects(const harp_spherical_point *p11, const harp_spherical_point *p12,
+                            const harp_spherical_point *p21, const harp_spherical_point *p22)
+{
+    harp_vector3d v11, v12, v21, v22, n1, n2, i1, i2;
+    double norm;
+
+    /* Convert spherical points to vectors in 3D space */
+    harp_vector3d_from_spherical_point(&v11, p11);
+    harp_vector3d_from_spherical_point(&v12, p12);
+    harp_vector3d_from_spherical_point(&v21, p21);
+    harp_vector3d_from_spherical_point(&v22, p22);
+
+    /* Compute normal of great circles */
+    harp_vector3d_crossproduct(&n1, &v11, &v12);
+    harp_vector3d_crossproduct(&n2, &v21, &v22);
+
+    /* Compute normal of normal of planes, this is equal to one intersection
+     * point. */
+    harp_vector3d_crossproduct(&i1, &n1, &n2);
+
+    norm = harp_vector3d_norm(&i1);
+    /* If the cross product is the zero vector then the lines are equal */
+    if (norm == 0.0)
+    {
+        return 1;
+    }
+    else {
+        /* Normalize intersection point */
+        i1.x = i1.x / norm;
+        i1.y = i1.y / norm;
+        i1.z = i1.z / norm;
+
+        /* The second intersection point is opposite of the first */
+        i2.x = -i1.x;
+        i2.y = -i1.y;
+        i2.z = -i1.z;
+
+        /* Check if the intersection points are within both original lines */
+        return (point_on_line(&v11, &v12, &i1) && point_on_line(&v21, &v22, &i1))
+            || (point_on_line(&v11, &v12, &i2) && point_on_line(&v21, &v22, &i2));
+    }
+}
+
 int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line *line1,
                                                        const harp_spherical_line *line2)
 {
