@@ -667,7 +667,7 @@ int8_t harp_spherical_polygon_spherical_line_relationship(const harp_spherical_p
     {
         return HARP_GEOMETRY_LINE_POLY_CONTAINED;
     }
-    else if (!p1 && !p2 && ((res - sl_os - 1) < 0))
+    else if (!p1 && !p2 && res == sl_os)
     {
         return HARP_GEOMETRY_LINE_POLY_SEPARATE;
     }
@@ -717,6 +717,9 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
         res |= pos;
     }
 
+    /* If all lines are separate, then either polygon_a is contained in
+     * polygon_b or the other way around. Therefore, we check the relation
+     * again, but the other way around. */
     if (res == sp_os)
     {
         if (!recheck)
@@ -728,18 +731,17 @@ int8_t harp_spherical_polygon_spherical_polygon_relationship(const harp_spherica
             }
             assert(pos != HARP_GEOMETRY_POLY_OVERLAP);
         }
+        /* If the check has already been performed, then they are separate */
         return HARP_GEOMETRY_POLY_SEPARATE;
     }
-
-    /* If the lines are contained and separate then polygon_a contains
-     * polygon_b with at least one equal edge. They cannot be overlapping,
-     * otherwise an edge would have crossed the polygon boundary. */
-    if ((res - sp_ct - sp_os - 1) < 0)
+    else
     {
+        /* If the edges are not all separate and there is no overlap, then
+         * polygon_a must contain polygon_b with at least one equal edge, which
+         * is regarded as separate.They cannot be overlapping, otherwise an
+         * edge would have crossed the polygon boundary. */
         return HARP_GEOMETRY_POLY_CONTAINS;
     }
-
-    return HARP_GEOMETRY_POLY_OVERLAP;
 }
 
 /* Determine whether two polygons overlap */
