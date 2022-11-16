@@ -158,8 +158,7 @@ void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_l
  * Otherwise returns 0. The input assumes normalized vectors and that the point
  * lies on the great circle of the line.
  */
-static int8_t point_on_line(const harp_vector3d *line_begin, const harp_vector3d *line_end,
-                            const harp_vector3d *point)
+static int8_t point_on_line(const harp_vector3d *line_begin, const harp_vector3d *line_end, const harp_vector3d *point)
 {
     double theta_begin_point, theta_end_point, theta_line;
 
@@ -198,7 +197,7 @@ static int8_t point_on_line(const harp_vector3d *line_begin, const harp_vector3d
  *   \arg \c 0, Lines are separate or connected
  */
 int8_t harp_spherical_line_intersects(const harp_spherical_point *p11, const harp_spherical_point *p12,
-                            const harp_spherical_point *p21, const harp_spherical_point *p22)
+                                      const harp_spherical_point *p21, const harp_spherical_point *p22)
 {
     /* The idea is to get the two intersection points of the great circles of
      * the lines, i.e. intersect the planes of the lines. We perform this in 3D
@@ -227,7 +226,8 @@ int8_t harp_spherical_line_intersects(const harp_spherical_point *p11, const har
     {
         return 1;
     }
-    else {
+    else
+    {
         /* Normalize intersection point */
         i1.x = i1.x / norm;
         i1.y = i1.y / norm;
@@ -240,17 +240,15 @@ int8_t harp_spherical_line_intersects(const harp_spherical_point *p11, const har
 
         /* Return false, if an intersection point is equal to begin or end
          * point of a line */
-        if (harp_vector3d_equal(&v11, &v21) ||
-            harp_vector3d_equal(&v11, &v22) ||
-            harp_vector3d_equal(&v12, &v21) ||
+        if (harp_vector3d_equal(&v11, &v21) || harp_vector3d_equal(&v11, &v22) || harp_vector3d_equal(&v12, &v21) ||
             harp_vector3d_equal(&v12, &v22))
         {
             return 0;
         }
 
         /* Check if the intersection points are within both original lines */
-        return (point_on_line(&v11, &v12, &i1) && point_on_line(&v21, &v22, &i1))
-            || (point_on_line(&v11, &v12, &i2) && point_on_line(&v21, &v22, &i2));
+        return (point_on_line(&v11, &v12, &i1) && point_on_line(&v21, &v22, &i1)) ||
+            (point_on_line(&v11, &v12, &i2) && point_on_line(&v21, &v22, &i2));
     }
 }
 
