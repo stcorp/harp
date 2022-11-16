@@ -205,11 +205,10 @@ static int spherical_line_segment_from_polygon(harp_spherical_line *line, const 
  */
 int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
 {
-    harp_spherical_line linei, linek;
     harp_vector3d vector;
     harp_spherical_point point;
+    const harp_spherical_point *p11, *p12, *p21, *p22;
     harp_euler_transformation se;
-    int8_t relationship;        /* Relationship between lines */
     int32_t i, k;
 
     /* Centre should not correspond to 0-vector */
@@ -224,19 +223,24 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
     /* Line segments should not cross each other */
     for (i = 0; i < polygon->numberofpoints; i++)
     {
-        /* Grab line segment from polygon */
-        spherical_line_segment_from_polygon(&linei, polygon, i);
-
         for (k = (i + 1); k < polygon->numberofpoints; k++)
         {
-            /* Grab line segment from polygon */
-            spherical_line_segment_from_polygon(&linek, polygon, k);
+            /* the first edge */
+            p11 = polygon->point + i;
+            p12 = polygon->point + i + 1;
 
-            /* Determine the relationship between two line segments */
-            relationship = harp_spherical_line_spherical_line_relationship(&linei, &linek);
+            /* the second edge */
+            p21 = polygon->point + k;
+            if (k == polygon->numberofpoints - 1)
+            {
+                p22 = polygon->point + 0;
+            }
+            else
+            {
+                p22 = polygon->point + k + 1;
+            }
 
-            /* Line segments should not cross each other, i.e. they should connect or avoid each other entirely */
-            if (!(relationship == HARP_GEOMETRY_LINE_CONNECTED || relationship == HARP_GEOMETRY_LINE_SEPARATE))
+            if (harp_spherical_line_intersects(p11, p12, p21, p22))
             {
                 harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon (line segments overlap)");
                 return -1;
