@@ -189,11 +189,13 @@ static int8_t point_on_line(const harp_vector3d *line_begin, const harp_vector3d
  * or are equal. Returns 0 for connected lines, which are lines where one of
  * the points are equal, and for separate lines.
  *
- * Parameters:
- * p11: the starting point of first line
- * p12: the end point of first line
- * p21: the starting point of second line
- * p22: the end point of second line
+ * \param p11 the starting point of first line
+ * \param p12 the end point of first line
+ * \param p21 the starting point of second line
+ * \param p22 the end point of second line
+ * \return
+ *   \arg \c 1, Lines intersect or are equal
+ *   \arg \c 0, Lines are separate or connected
  */
 int8_t harp_spherical_line_intersects(const harp_spherical_point *p11, const harp_spherical_point *p12,
                             const harp_spherical_point *p21, const harp_spherical_point *p22)
