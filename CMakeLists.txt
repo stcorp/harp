@@ -283,8 +283,10 @@ set(LIBHARP_SOURCES
   libharp/harp-filter-collocation.c
   libharp/harp-geometry-sphere-euler.c
   libharp/harp-geometry-sphere-line.c
+  libharp/harp-geometry-sphere-line3d.c
   libharp/harp-geometry-sphere-point.c
   libharp/harp-geometry-sphere-polygon.c
+  libharp/harp-geometry-sphere-polygon3d.c
   libharp/harp-geometry-vector3d.c
   libharp/harp-geometry-util.c
   libharp/harp-geometry.h

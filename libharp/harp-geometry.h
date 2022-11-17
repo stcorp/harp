@@ -75,6 +75,8 @@
  *   harp_euler_transformationAxis
  * In addition,
  *   harp_vector3d
+ *   harp_spherical_line3d
+ *   harp_spherical_polygon3d
  *-----------------------------------------*/
 
 /* Define a 3D vector with Cartesian coordinates (x,y,z) */
@@ -84,6 +86,23 @@ typedef struct harp_vector3d_struct
     double y;
     double z;
 } harp_vector3d;
+
+/* A spherical line stored as 3D cartesian coordinates.  The line is defined as
+ * the geodesic between `begin` and `end`. In other words the shortest
+ * "straight" line between the two points. */
+typedef struct harp_spherical_line3d_struct
+{
+    harp_vector3d begin;  /* The begin point of the spherical line */
+    harp_vector3d end;    /* The end point of the spherical line */
+} harp_spherical_line3d;
+
+/* A spherical polygon on a sphere stored as 3D cartesian coordinates. */
+typedef struct harp_spherical_polygon3d_struct
+{
+    int32_t size;            /* total size in bytes */
+    int32_t numberofpoints;  /* number of points in `point` array */
+    harp_vector3d point[];   /* variable length array of 3D vectors */
+} harp_spherical_polygon3d;
 
 /* Define point on sphere */
 typedef struct harp_spherical_point_struct
@@ -161,6 +180,79 @@ double harp_vector3d_dotproduct(const harp_vector3d *vectora, const harp_vector3
 void harp_vector3d_crossproduct(harp_vector3d *vectorc, const harp_vector3d *vectora, const harp_vector3d *vectorb);
 double harp_vector3d_norm(const harp_vector3d *vector);
 
+/* Spherical line 3D functions */
+/**
+ * Computes the normal of the plane on which the line lies. Defined as the
+ * cross product of the line begin and line end:
+ *   n = line_begin x line_end
+ *
+ * \param normalout Address to write the normal to
+ * \param linein    Line to compute normal for
+ */
+void harp_spherical_line3d_normal(harp_vector3d *normalout, const harp_spherical_line3d *linein);
+/**
+ * Returns 1, if the line, defined by two vectors, contains the point.
+ * Otherwise returns 0. The input assumes normalized vectors and that the point
+ * lies on the great circle of the line.
+ *
+ * \param line The line on which the point could lie
+ * \param point The point to check
+ * \return
+ *   \arg \c 1, Given point is on line
+ *   \arg \c 0, Given point is not on the line
+ */
+int8_t harp_point_on_spherical_line3d(const harp_spherical_line3d *line, const harp_vector3d *point);
+/**
+ * Returns 1, if the two lines, each defined by two spherical points, intersect
+ * or are equal. Returns 0 for connected lines, which are lines where one of
+ * the points are equal, and for separate lines.
+ *
+ * \param line1 The first line
+ * \param line2 The second line
+ * \return
+ *   \arg \c 1, Lines intersect or are equal
+ *   \arg \c 0, Lines are separate or connected
+ */
+int8_t harp_spherical_line3d_intersects(const harp_spherical_line3d *line1, const harp_spherical_line3d *line2);
+
+/* Spherical polygon 3D functions */
+/**
+ * Allocate a new spherical polygon 3D with given amount of points
+ * \return
+ *   \arg \c  0, Success
+ *   \arg \c -1, Error while allocating, see #harp_errno
+ */
+int harp_spherical_polygon3d_new(int32_t numberofpoints, harp_spherical_polygon3d **polygon);
+/**
+ * Delete an allocated spherical polygon 3D.
+ *
+ * \param polygon Polygon structure to delete
+ */
+void harp_spherical_polygon3d_delete(harp_spherical_polygon3d *polygon);
+/**
+ * Allocate a new spherical polygon 3d on the unit sphere from a spherical
+ * polygon.
+ *
+ * \param polygonout The address to write the new polygon to
+ * \param polygonin  The polygon to convert from
+ * \return
+ *   \arg \c  0, Success
+ *   \arg \c -1, Error while allocating, see #harp_errno
+ */
+int harp_spherical_polygon3d_from_spherical_polygon(harp_spherical_polygon3d **polygonout, const harp_spherical_polygon *polygonin);
+/**
+ * Get a spherical line segment in 3D coordinates from a spherical polygon.
+ * The line segment will start at `i` and end at `i + 1` or 0 if `i` is the last line segment.
+ *
+ * \param line    The address to write the line segment to
+ * \param polygon The polygon to get the segment from
+ * \param i       The index of the line segment
+ * \return
+ *   \arg \c  0, Success
+ *   \arg \c -1, Given index `i` is out of bounds
+ */
+int harp_spherical_polygon3d_segment(harp_spherical_line3d *line, const harp_spherical_polygon3d *polygon, int32_t i);
+
 /* Spherical point functions */
 int harp_spherical_point_equal(const harp_spherical_point *pointa, const harp_spherical_point *pointb);
 void harp_spherical_point_check(harp_spherical_point *point);
@@ -176,8 +268,6 @@ void harp_spherical_line_end(harp_spherical_point *point, const harp_spherical_l
 int harp_spherical_point_is_at_spherical_line(const harp_spherical_point *point, const harp_spherical_line *line);
 void harp_inverse_euler_transformation_from_spherical_line(harp_euler_transformation *inverse_transformation,
                                                            const harp_spherical_line *line);
-int8_t harp_spherical_line_intersects(const harp_spherical_point *p11, const harp_spherical_point *p12,
-                                      const harp_spherical_point *p21, const harp_spherical_point *p22);
 int8_t harp_spherical_line_spherical_line_relationship(const harp_spherical_line *linea,
                                                        const harp_spherical_line *lineb);
 void harp_spherical_line_from_spherical_points(harp_spherical_line *line, const harp_spherical_point *point_begin,

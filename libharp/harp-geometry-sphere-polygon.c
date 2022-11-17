@@ -207,7 +207,8 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
 {
     harp_vector3d vector;
     harp_spherical_point point;
-    const harp_spherical_point *p11, *p12, *p21, *p22;
+    harp_spherical_polygon3d *polygon3d = NULL;
+    harp_spherical_line3d line1, line2;
     harp_euler_transformation se;
     int32_t i, k;
 
@@ -220,33 +221,29 @@ int harp_spherical_polygon_check(const harp_spherical_polygon *polygon)
         return -1;
     }
 
-    /* Line segments should not cross each other */
-    for (i = 0; i < polygon->numberofpoints; i++)
+    if (harp_spherical_polygon3d_from_spherical_polygon(&polygon3d, polygon) != 0)
     {
-        for (k = (i + 1); k < polygon->numberofpoints; k++)
+        return -1;
+    }
+
+    /* Line segments should not cross each other */
+    for (i = 0; i < polygon3d->numberofpoints; i++)
+    {
+        for (k = (i + 1); k < polygon3d->numberofpoints; k++)
         {
-            /* the first edge */
-            p11 = polygon->point + i;
-            p12 = polygon->point + i + 1;
+            harp_spherical_polygon3d_segment(&line1, polygon3d, i);
+            harp_spherical_polygon3d_segment(&line2, polygon3d, k);
 
-            /* the second edge */
-            p21 = polygon->point + k;
-            if (k == polygon->numberofpoints - 1)
+            if (harp_spherical_line3d_intersects(&line1, &line2))
             {
-                p22 = polygon->point + 0;
-            }
-            else
-            {
-                p22 = polygon->point + k + 1;
-            }
-
-            if (harp_spherical_line_intersects(p11, p12, p21, p22))
-            {
+                harp_spherical_polygon3d_delete(polygon3d);
                 harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid polygon (line segments overlap)");
                 return -1;
             }
         }
     }
+
+    harp_spherical_polygon3d_delete(polygon3d);
 
     /* Check that polygon does not cover more than half the globe */
     /* (all polygon points should be on the northern hemisphere if the polygon center was the north pole) */
