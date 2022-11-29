@@ -703,7 +703,7 @@ int harp_ingestion_module_tes_l2_init(void)
     register_limb_product("CH4", "methane", "TL2CH4L", ingestion_init_ch4_limb);
     register_limb_product("H2O", "water vapour", "TL2H2OL", ingestion_init_h2o_limb);
     register_limb_product("HDO", "deuterium oxide", "TL2HDOL", ingestion_init_hdo_limb);
-    register_limb_product("HNO3", "water vapour", "TL2HNO3L", ingestion_init_hno3_limb);
+    register_limb_product("HNO3", "nitric acid", "TL2HNO3L", ingestion_init_hno3_limb);
     register_limb_product("NO2", "nitrogen dioxide", "TL2NO2L", ingestion_init_no2_limb);
     register_limb_product("O3", "ozone", "TL2O3L", ingestion_init_o3_limb);
     register_limb_product("Temperature", "atmospheric temperature", "TL2ATMTL", ingestion_init_tatm_limb);
