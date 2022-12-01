@@ -476,27 +476,28 @@ static void register_no2_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "altitude information will be duplicated for each profile");
 
-    /* no2_vmr */
+    /* no2_volume_mixing_ratio */
     description = "volume mixing ratio of NO2";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "no2_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "ppmv", NULL, read_no2_vmr);
+        harp_ingestion_register_variable_full_read(product_definition, "no2_volume_mixing_ratio", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_no2_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Data_Fields/NO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* no2_vmr_error */
+    /* no2_volume_mixing_ratio_uncertainty */
     description = "precision of the volume mixing ratio of NO2";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "no2_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppmv", NULL, read_no2_vmr_error);
+        harp_ingestion_register_variable_full_read(product_definition, "no2_volume_mixing_ratio_uncertainty",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_no2_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Data_Fields/NO2Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* no2 */
+    /* no2_number_density */
     description = "NO2 number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "no2", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "molec/cm3", NULL, read_no2);
+        harp_ingestion_register_variable_full_read(product_definition, "no2_number_density", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "molec/cm3", NULL, read_no2);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2_DOAS_OE/Data_Fields/NO2NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -579,27 +580,28 @@ static void register_no2_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "altitude information will be duplicated for each profile");
 
-    /* no2_vmr */
+    /* no2_volume_mixing_ratio */
     description = "volume mixing ratio of NO2";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "no2_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "ppmv", NULL, read_no2_vmr);
+        harp_ingestion_register_variable_full_read(product_definition, "no2_volume_mixing_ratio", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_no2_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* no2_vmr_error */
+    /* no2_volume_mixing_ratio_uncertainty */
     description = "precision of the volume mixing ratio of NO2";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "no2_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppmv", NULL, read_no2_vmr_error);
+        harp_ingestion_register_variable_full_read(product_definition, "no2_volume_mixing_ratio_uncertainty",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_no2_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* no2 */
+    /* no2_number_density */
     description = "NO2 number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "no2", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "molec/cm3", NULL, read_no2);
+        harp_ingestion_register_variable_full_read(product_definition, "no2_number_density", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "molec/cm3", NULL, read_no2);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_NO2MART/Data_Fields/NO2NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -682,27 +684,28 @@ static void register_o3_oe_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "altitude information will be duplicated for each profile");
 
-    /* o3_vmr */
+    /* o3_volume_mixing_ratio */
     description = "volume mixing ratio of O3";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "o3_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "ppmv", NULL, read_o3_vmr);
+        harp_ingestion_register_variable_full_read(product_definition, "o3_volume_mixing_ratio", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_o3_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Data_Fields/O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* o3_vmr_error */
+    /* o3_volume_mixing_ratio_uncertainty */
     description = "precision of the volume mixing ratio of O3";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "o3_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppmv", NULL, read_o3_vmr_error);
+        harp_ingestion_register_variable_full_read(product_definition, "o3_volume_mixing_ratio_uncertainty",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_o3_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Data_Fields/O3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* o3 */
+    /* o3_number_density */
     description = "O3 number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "o3", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "molec/cm3", NULL, read_o3);
+        harp_ingestion_register_variable_full_read(product_definition, "o3_number_density", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "molec/cm3", NULL, read_o3);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3_Chappuis_triplet_OE/Data_Fields/O3NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -785,27 +788,28 @@ static void register_o3_mart_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path,
                                          "altitude information will be duplicated for each profile");
 
-    /* o3_vmr */
+    /* o3_volume_mixing_ratio */
     description = "volume mixing ratio of O3";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "o3_vmr", harp_type_double, 2, dimension_type,
-                                                   NULL, description, "ppmv", NULL, read_o3_vmr);
+        harp_ingestion_register_variable_full_read(product_definition, "o3_volume_mixing_ratio", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "ppmv", NULL, read_o3_vmr);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Data_Fields/O3[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* o3_vmr_error */
+    /* o3_volume_mixing_ratio_uncertainty */
     description = "precision of the volume mixing ratio of O3";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "o3_vmr_error", harp_type_double, 2,
-                                                   dimension_type, NULL, description, "ppmv", NULL, read_o3_vmr_error);
+        harp_ingestion_register_variable_full_read(product_definition, "o3_volume_mixing_ratio_uncertainty",
+                                                   harp_type_double, 2, dimension_type, NULL, description, "ppmv", NULL,
+                                                   read_o3_vmr_error);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Data_Fields/O3Precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, "ppmv");
 
-    /* o3 */
+    /* o3_number_density */
     description = "O3 number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "o3", harp_type_double, 2, dimension_type, NULL,
-                                                   description, "molec/cm3", NULL, read_o3);
+        harp_ingestion_register_variable_full_read(product_definition, "o3_number_density", harp_type_double, 2,
+                                                   dimension_type, NULL, description, "molec/cm3", NULL, read_o3);
     path = "/HDFEOS/SWATHS/OSIRIS_Odin_O3MART/Data_Fields/O3NumberDensity[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

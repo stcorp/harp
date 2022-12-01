@@ -610,23 +610,46 @@ static void register_nadir_product(const char *gas_code, const char *gas_name, c
     sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/Pressure[]", gas_code);
     register_pressure_variable(product_definition, path);
 
-    /* volume_mixing_ratio */
-    sprintf(name, "%s_volume_mixing_ratio", gas_code);
-    sprintf(description, "%s volume mixing ratio", gas_name);
-    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%s[]", gas_code, gas_code);
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
-                                                                     dimension_type, NULL, description, "ppv", NULL,
-                                                                     read_value);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    if (strcmp(gas_code, "Temperature") == 0)
+    {
+        /* temperature */
+        sprintf(name, "temperature");
+        sprintf(description, "atmospheric temperature");
+        sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%s[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "K", NULL,
+                                                                         read_value);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* volume_mixing_ratio_uncertainty */
-    sprintf(name, "%s_volume_mixing_ratio_uncertainty", gas_code);
-    sprintf(description, "%s volume mixing ratio precision", gas_name);
-    sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
-                                                                     dimension_type, NULL, description, "ppv", NULL,
-                                                                     read_error);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+        /* temperature_uncertainty */
+        sprintf(name, "temperature_uncertainty");
+        sprintf(description, "atmospheric temperature precision");
+        sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "K", NULL,
+                                                                         read_error);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    }
+    else
+    {
+        /* volume_mixing_ratio */
+        sprintf(name, "%s_volume_mixing_ratio", gas_code);
+        sprintf(description, "%s volume mixing ratio", gas_name);
+        sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%s[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "ppv", NULL,
+                                                                         read_value);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+        /* volume_mixing_ratio_uncertainty */
+        sprintf(name, "%s_volume_mixing_ratio_uncertainty", gas_code);
+        sprintf(description, "%s volume mixing ratio precision", gas_name);
+        sprintf(path, "/HDFEOS/SWATHS/%sNadirSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "ppv", NULL,
+                                                                         read_error);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    }
 }
 
 static void register_limb_product(const char *gas_code, const char *gas_name, const char *product_type,
@@ -667,23 +690,46 @@ static void register_limb_product(const char *gas_code, const char *gas_name, co
     sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/Pressure[]", gas_code);
     register_pressure_variable(product_definition, path);
 
-    /* volume_mixing_ratio */
-    sprintf(name, "%s_volume_mixing_ratio", gas_code);
-    sprintf(description, "%s volume mixing ratio", gas_name);
-    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%s[]", gas_code, gas_code);
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
-                                                                     dimension_type, NULL, description, "ppv", NULL,
-                                                                     read_value);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    if (strcmp(gas_code, "Temperature") == 0)
+    {
+        /* temperature */
+        sprintf(name, "temperature");
+        sprintf(description, "atmospheric temperature");
+        sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%s[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "K", NULL,
+                                                                         read_value);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* volume_mixing_ratio_uncertainty */
-    sprintf(name, "%s_volume_mixing_ratio_uncertainty", gas_code);
-    sprintf(description, "%s volume mixing ratio precision", gas_name);
-    sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
-                                                                     dimension_type, NULL, description, "ppv", NULL,
-                                                                     read_error);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+        /* volume_mixing_ratio_uncertainty */
+        sprintf(name, "temperature_uncertainty");
+        sprintf(description, "atmospheric temperature precision");
+        sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "K", NULL,
+                                                                         read_error);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    }
+    else
+    {
+        /* volume_mixing_ratio */
+        sprintf(name, "%s_volume_mixing_ratio", gas_code);
+        sprintf(description, "%s volume mixing ratio", gas_name);
+        sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%s[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "ppv", NULL,
+                                                                         read_value);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+        /* volume_mixing_ratio_uncertainty */
+        sprintf(name, "%s_volume_mixing_ratio_uncertainty", gas_code);
+        sprintf(description, "%s volume mixing ratio precision", gas_name);
+        sprintf(path, "/HDFEOS/SWATHS/%sLimbSwath/Data_Fields/%sPrecision[]", gas_code, gas_code);
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, name, harp_type_double, 2,
+                                                                         dimension_type, NULL, description, "ppv", NULL,
+                                                                         read_error);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    }
 }
 
 int harp_ingestion_module_tes_l2_init(void)
@@ -698,7 +744,7 @@ int harp_ingestion_module_tes_l2_init(void)
     register_nadir_product("N2O", "nitrous oxide", "TL2N2ON", ingestion_init_n2o_nadir);
     register_nadir_product("NH3", "ammonia", "TL2NH3N", ingestion_init_nh3_nadir);
     register_nadir_product("O3", "ozone", "TL2O3N", ingestion_init_o3_nadir);
-    register_nadir_product("Temperature", "atmospheric temperature", "TL2ATMTN", ingestion_init_tatm_nadir);
+    register_nadir_product("Temperature", NULL, "TL2ATMTN", ingestion_init_tatm_nadir);
 
     register_limb_product("CH4", "methane", "TL2CH4L", ingestion_init_ch4_limb);
     register_limb_product("H2O", "water vapour", "TL2H2OL", ingestion_init_h2o_limb);
@@ -706,7 +752,7 @@ int harp_ingestion_module_tes_l2_init(void)
     register_limb_product("HNO3", "nitric acid", "TL2HNO3L", ingestion_init_hno3_limb);
     register_limb_product("NO2", "nitrogen dioxide", "TL2NO2L", ingestion_init_no2_limb);
     register_limb_product("O3", "ozone", "TL2O3L", ingestion_init_o3_limb);
-    register_limb_product("Temperature", "atmospheric temperature", "TL2ATMTL", ingestion_init_tatm_limb);
+    register_limb_product("Temperature", NULL, "TL2ATMTL", ingestion_init_tatm_limb);
 
     return 0;
 }
