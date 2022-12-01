@@ -342,15 +342,15 @@ static void register_acm_cap_2b_product()
                                                                      read_height);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
 
-    /* LWC_density */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "LWC_density",
+    /* liquid_water_density */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "liquid_water_density",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "liquid water content", "kg/m3", NULL,
                                                                      read_liquid_water_content);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_water_content", NULL);
 
-    /* IWC_density */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "IWC_density",
+    /* ice_water_density */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "ice_water_density",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "ice water content", "kg/m3", NULL,
                                                                      read_ice_water_content);

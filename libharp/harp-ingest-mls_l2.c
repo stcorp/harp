@@ -1695,27 +1695,27 @@ static void register_iwc_product(void)
     path = "/HDFEOS/SWATHS/IWC/Geolocation_Fields/Pressure[]";
     register_pressure_variable(product_definition, path);
 
-    /* ice_water_content */
+    /* ice_water_density */
     description = "Ice water content";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "ice_water_content", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "ice_water_density", harp_type_double, 2,
                                                    dimension_type, NULL, description, "g/m^3", NULL, read_value);
     path = "/HDFEOS/SWATHS/IWC/Data_Fields/L2gpValue[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* ice_water_content_uncertainty */
+    /* ice_water_density_uncertainty */
     description = "uncertainty of the ice water content";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "ice_water_content_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "ice_water_density_uncertainty",
                                                    harp_type_double, 2, dimension_type, NULL, description, "g/m^3",
                                                    NULL, read_value);
     path = "/HDFEOS/SWATHS/IWC/Data_Fields/L2gpPrecision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* ice_water_content_validity */
+    /* ice_water_density_validity */
     description = "quality flag for the ice water content";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "ice_water_content_validity",
+        harp_ingestion_register_variable_full_read(product_definition, "ice_water_density_validity",
                                                    harp_type_int32, 2, dimension_type, NULL, description, NULL, NULL,
                                                    read_validity);
     path = "/HDFEOS/SWATHS/IWC/Data_Fields/Status[], /HDFEOS/SWATHS/IWC/Data_Fields/Quality[], "

@@ -3274,33 +3274,35 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "one or more AOD quantities are present", NULL,
                                          description);
 
-    /* crwc: RWC_mass_mixing_ratio */
+    /* crwc: rain_water_mass_mixing_ratio */
     description = "specific rain water content";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "RWC_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_crwc, read_crwc);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "rain_water_mass_mixing_ratio", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_crwc, read_crwc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,75)",
                                "(discipline,category,number) = (0,1,85)");
 
-    /* cswc: SWC_mass_mixing_ratio */
+    /* cswc: snow_water_mass_mixing_ratio */
     description = "specific snow water content";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "SWC_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_cswc, read_cswc);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "snow_water_mass_mixing_ratio", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_cswc, read_cswc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,76)",
                                "(discipline,category,number) = (0,1,86)");
 
-    /* tclw: LWC_column_density */
+    /* tclw: liquid_water_column_density */
     description = "total column cloud liquid water";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "LWC_column_density",
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "liquid_water_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, "kg/m^2", include_tclw, read_tclw);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,78)",
                                "(discipline,category,number) = (192,128,78)");
 
-    /* tciw: IWC_column_density */
+    /* tciw: ice_water_column_density */
     description = "total column cloud ice water";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "IWC_column_density",
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "ice_water_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, "kg/m^2", include_tciw, read_tciw);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,79)",
@@ -3431,17 +3433,18 @@ int harp_ingestion_module_ecmwf_grib_init(void)
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,172), (160,172), (171,172), (174,172), "
                                "(175,172), (180,172), or (190,172)", "(discipline,category,number) = (2,0,0)");
 
-    /* clwc: LWC_mass_mixing_ratio */
+    /* clwc: liquid_water_mass_mixing_ratio */
     description = "specific cloud liquid water content";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "LWC_mass_mixing_ratio",
-                                                                      harp_type_float, 3, &dimension_type[1], NULL,
-                                                                      description, "kg/kg", include_clwc, read_clwc);
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition,
+                                                                      "liquid_water_mass_mixing_ratio", harp_type_float,
+                                                                      3, &dimension_type[1], NULL, description, "kg/kg",
+                                                                      include_clwc, read_clwc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,246)",
                                "(discipline,category,number) = (0,1,83)");
 
-    /* ciwc: IWC_mass_mixing_ratio */
+    /* ciwc: ice_water_mass_mixing_ratio */
     description = "specific cloud ice water content";
-    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "IWC_mass_mixing_ratio",
+    variable_definition = harp_ingestion_register_variable_block_read(product_definition, "ice_water_mass_mixing_ratio",
                                                                       harp_type_float, 3, &dimension_type[1], NULL,
                                                                       description, "kg/kg", include_ciwc, read_ciwc);
     add_value_variable_mapping(variable_definition, "(table,indicator) = (128,247)",

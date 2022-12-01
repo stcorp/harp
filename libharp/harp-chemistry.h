@@ -80,8 +80,8 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_H2O_181,
     harp_chemical_species_H2O2,
     harp_chemical_species_IO,
-    harp_chemical_species_IWC,
-    harp_chemical_species_LWC,
+    harp_chemical_species_ice_water,
+    harp_chemical_species_liquid_water,
     harp_chemical_species_NH3,
     harp_chemical_species_NO,
     harp_chemical_species_NOCl,
@@ -99,10 +99,11 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_O3_668,
     harp_chemical_species_O3_686,
     harp_chemical_species_O4,
-    harp_chemical_species_RWC,
+    harp_chemical_species_rain_water,
     harp_chemical_species_SF6,
     harp_chemical_species_SO2,
-    harp_chemical_species_SWC,
+    harp_chemical_species_snow_water,
+    harp_chemical_species_water_vapour,
     harp_chemical_species_unknown
 } harp_chemical_species;
 

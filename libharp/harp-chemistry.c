@@ -78,8 +78,8 @@ static const char *chemical_species_names[] = {
     "H2O_181",
     "H2O2",
     "IO",
-    "IWC",
-    "LWC",
+    "ice_water",
+    "liquid_water",
     "NH3",
     "NO",
     "NOCl",
@@ -97,10 +97,11 @@ static const char *chemical_species_names[] = {
     "O3_668",
     "O3_686",
     "O4",
-    "RWC",
+    "rain_water",
     "SF6",
     "SO2",
-    "SWC",
+    "snow_water",
+    "water_vapour",
     "unknown"
 };
 
@@ -146,8 +147,8 @@ double chemical_species_molar_mass[] = {
     CONST_MOLAR_MASS_H2O_181,
     CONST_MOLAR_MASS_H2O2,
     CONST_MOLAR_MASS_IO,
-    CONST_MOLAR_MASS_H2O,       /* IWC has H2O molar mass */
-    CONST_MOLAR_MASS_H2O,       /* LWC has H2O molar mass */
+    CONST_MOLAR_MASS_H2O,       /* ice has H2O molar mass */
+    CONST_MOLAR_MASS_H2O,       /* liquid_water has H2O molar mass */
     CONST_MOLAR_MASS_NH3,
     CONST_MOLAR_MASS_NO,
     CONST_MOLAR_MASS_NOCl,
@@ -169,6 +170,7 @@ double chemical_species_molar_mass[] = {
     CONST_MOLAR_MASS_SF6,
     CONST_MOLAR_MASS_SO2,
     CONST_MOLAR_MASS_H2O,       /* snow has H2O molar mass */
+    CONST_MOLAR_MASS_H2O,       /* water vapour has H2O molar mass */
     0   /* value for 'unknown' */
 };
 
