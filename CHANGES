@@ -1,3 +1,6 @@
+* Added additional conventions for variable names related to areosol/cloud
+  properties.
+
 * Windows .msi installer now allows HARP component selection for core, Python,
   IDL, MATLAB, and R.
 
