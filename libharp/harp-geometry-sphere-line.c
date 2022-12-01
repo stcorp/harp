@@ -166,7 +166,7 @@ static int8_t point_on_line(const harp_vector3d *line_begin, const harp_vector3d
      * The dot product is defined by:
      *
      *   a . b = ||a|| * ||b|| * cos(theta)
-     * 
+     *
      * if we re-arrange for theta we get
      *
      *   theta = acos((a . b) / (||a|| * ||b||))
