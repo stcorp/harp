@@ -7,7 +7,7 @@
 * Updates to product ingestions:
   - AEOLUS L2B: properly split datetime, datetime_start, and datetime_stop
   - CCI L3 O3 LP: fixed wrong variable name
-  - EarthCARE ACM_CAP_2B: changed LWC/IWC variable names
+  - EarthCARE: added additional product types and updated ACM_CAP_2B
   - ECMWF GRIB: changed RWC/SWC/LWC/IWC variable names
   - OSIRIS L2: fixed wrong variable names
   - TES TL2ATMTN/TL2ATMTL: fixed wrong variable names

@@ -46,6 +46,7 @@ typedef struct ingest_info_struct
     long num_time;
     long num_vertical;
     coda_cursor science_data_cursor;
+    int resolution;     /* 0: default, 1: medium, 2: low */
 } ingest_info;
 
 
@@ -160,11 +161,118 @@ static int init_cursors(ingest_info *info)
     return 0;
 }
 
-static int read_time(void *user_data, harp_array data)
+static int read_aerosol_extinction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "time", harp_type_double, info->num_time, data);
+    return read_array(info->science_data_cursor, "aerosol_extinction", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_aerosol_mass_content(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_mass_content", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_aerosol_number_concentration(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_number_concentration", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_aerosol_optical_depth(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_optical_depth", harp_type_float, info->num_time, data);
+}
+
+static int read_elevation(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "elevation", harp_type_float, info->num_time, data);
+}
+
+static int read_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "height", harp_type_float, info->num_time * info->num_vertical, data);
+}
+
+static int read_ice_effective_radius(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "ice_effective_radius", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_ice_mass_flux(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "ice_mass_flux", harp_type_float, info->num_time * info->num_vertical,
+                      data);
+}
+
+static int read_ice_water_content(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "ice_water_content", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_ice_water_path(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "ice_water_path", harp_type_float, info->num_time, data);
+}
+
+static int read_latitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "latitude", harp_type_double, info->num_time, data);
+}
+
+static int read_liquid_effective_radius(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "liquid_effective_radius", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_liquid_extinction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "liquid_extinction", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_liquid_water_content(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "liquid_water_content", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_longitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "longitude", harp_type_double, info->num_time, data);
 }
 
 static int read_orbit_index(void *user_data, harp_array data)
@@ -193,80 +301,11 @@ static int read_orbit_index(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_latitude(void *user_data, harp_array data)
+static int read_quality_status(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "latitude", harp_type_double, info->num_time, data);
-}
-
-static int read_longitude(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "longitude", harp_type_double, info->num_time, data);
-}
-
-static int read_height(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "height", harp_type_float, info->num_time * info->num_vertical, data);
-}
-
-static int read_liquid_water_content(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "liquid_water_content", harp_type_float,
-                      info->num_time * info->num_vertical, data);
-}
-
-static int read_liquid_extinction(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "liquid_extinction", harp_type_float,
-                      info->num_time * info->num_vertical, data);
-}
-
-static int read_liquid_effective_radius(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "liquid_effective_radius", harp_type_float,
-                      info->num_time * info->num_vertical, data);
-}
-
-static int read_ice_water_content(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "ice_water_content", harp_type_float,
-                      info->num_time * info->num_vertical, data);
-}
-
-static int read_ice_effective_radius(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "ice_effective_radius", harp_type_float,
-                      info->num_time * info->num_vertical, data);
-}
-
-static int read_ice_mass_flux(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "ice_mass_flux", harp_type_float, info->num_time * info->num_vertical,
-                      data);
-}
-
-static int read_ice_water_path(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "ice_water_path", harp_type_float, info->num_time, data);
+    return read_array(info->science_data_cursor, "quality_status", harp_type_int8, info->num_time, data);
 }
 
 static int read_rain_rate(void *user_data, harp_array data)
@@ -285,42 +324,28 @@ static int read_rain_water_content(void *user_data, harp_array data)
                       info->num_time * info->num_vertical, data);
 }
 
-static int read_aerosol_number_concentration(void *user_data, harp_array data)
+static int read_synergetic_target_classification(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    const char *name = "synergetic_target_classification";
 
-    return read_array(info->science_data_cursor, "aerosol_number_concentration", harp_type_float,
-                      info->num_time * info->num_vertical, data);
+    if (info->resolution == 1)
+    {
+        name = "synergetic_target_classification_medium_resolution";
+    }
+    else if (info->resolution == 2)
+    {
+        name = "synergetic_target_classification_low_resolution";
+    }
+
+    return read_array(info->science_data_cursor, name, harp_type_int8, info->num_time * info->num_vertical, data);
 }
 
-static int read_aerosol_extinction(void *user_data, harp_array data)
+static int read_time(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "aerosol_extinction", harp_type_float,
-                      info->num_time * info->num_vertical, data);
-}
-
-static int read_aerosol_optical_depth(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "aerosol_optical_depth", harp_type_float, info->num_time, data);
-}
-
-static int read_aerosol_mass_content(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "aerosol_mass_content", harp_type_float,
-                      info->num_time * info->num_vertical, data);
-}
-
-static int read_quality_status(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "quality_status", harp_type_int8, info->num_time, data);
+    return read_array(info->science_data_cursor, "time", harp_type_double, info->num_time, data);
 }
 
 static void ingestion_done(void *user_data)
@@ -333,9 +358,8 @@ static void ingestion_done(void *user_data)
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
+    const char *option_value;
     ingest_info *info;
-
-    (void)options;
 
     info = malloc(sizeof(ingest_info));
     if (info == NULL)
@@ -345,7 +369,26 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
     info->product = product;
+    info->resolution = 0;
     *definition = module->product_definition[0];
+
+    if (harp_ingestion_options_has_option(options, "resolution"))
+    {
+        if (harp_ingestion_options_get_option(options, "resolution", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "medium") == 0)
+        {
+            info->resolution = 1;
+        }
+        else
+        {
+            /* option_value == "low" */
+            info->resolution = 2;
+        }
+    }
 
     if (init_cursors(info) != 0)
     {
@@ -390,6 +433,57 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                                      read_orbit_index);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber", NULL);
+}
+
+static void register_ac__tc__2b_product()
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2];
+    const char *resolution_option_values[3] = { "medium", "low" };
+    const char *description;
+
+    description = "ATLID/CPR synergetic lidar/radar classification";
+    module = harp_ingestion_register_module("ECA_AC__TC__2B", "EarthCARE", "EARTHCARE", "AC__TC__2B", description,
+                                            ingestion_init, ingestion_done);
+
+    description = "classification resolution: normal (default), medium (resolution=medium), or low (resolution=low)";
+    harp_ingestion_register_option(module, "resolution", description, 2, resolution_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_AC__TC__2B", NULL, read_dimensions);
+
+    register_common_variables(product_definition);
+
+    dimension_type[0] = harp_dimension_time;
+    dimension_type[1] = harp_dimension_vertical;
+
+    /* altitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float,
+                                                                     2, dimension_type, NULL,
+                                                                     "joint standard grid height", "m", NULL,
+                                                                     read_height);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
+
+    /* surface_height */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_height",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     "elevation ", "m", NULL,
+                                                                     read_elevation);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/elevation", NULL);
+
+    /* scene_type */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "scene_type",
+                                                                     harp_type_int8, 2, dimension_type, NULL,
+                                                                     "synergetic target classification", NULL, NULL,
+                                                                     read_synergetic_target_classification);
+    harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
+                                         "/ScienceData/synergetic_target_classification", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
+                                         "/ScienceData/synergetic_target_classification_medium_resolution", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
+                                         "/ScienceData/synergetic_target_classification_low_resolution", NULL);
+
 }
 
 static void register_acm_cap_2b_product()
@@ -521,6 +615,7 @@ static void register_acm_cap_2b_product()
 
 int harp_ingestion_module_earthcare_l2_init(void)
 {
+    register_ac__tc__2b_product();
     register_acm_cap_2b_product();
 
     return 0;

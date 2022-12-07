@@ -138,6 +138,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/CLOUDNET_L2_classification.html \
 	doc/html/ingestions/EARLINET.html \
 	doc/html/ingestions/ECA_ACM_CAP_2B.html \
+	doc/html/ingestions/ECA_AC__TC__2B.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html \
@@ -817,6 +818,8 @@ doc/html/ingestions/CLOUDNET_L2_classification.html:
 doc/html/ingestions/EARLINET.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_ACM_CAP_2B.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECA_AC__TC__2B.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc
