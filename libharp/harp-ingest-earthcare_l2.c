@@ -81,6 +81,13 @@ static int read_array(coda_cursor cursor, const char *path, harp_data_type data_
 
     switch (data_type)
     {
+        case harp_type_int8:
+            if (coda_cursor_read_int8_array(&cursor, data.int8_data, coda_array_ordering_c) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+            break;
         case harp_type_int32:
             if (coda_cursor_read_int32_array(&cursor, data.int32_data, coda_array_ordering_c) != 0)
             {
@@ -215,11 +222,66 @@ static int read_liquid_water_content(void *user_data, harp_array data)
                       info->num_time * info->num_vertical, data);
 }
 
+static int read_liquid_extinction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "liquid_extinction", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_liquid_effective_radius(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "liquid_effective_radius", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
 static int read_ice_water_content(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "ice_water_content", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_ice_effective_radius(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "ice_effective_radius", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_ice_mass_flux(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "ice_mass_flux", harp_type_float, info->num_time * info->num_vertical,
+                      data);
+}
+
+static int read_ice_water_path(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "ice_water_path", harp_type_float, info->num_time, data);
+}
+
+static int read_rain_rate(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "rain_rate", harp_type_float, info->num_time * info->num_vertical,
+                      data);
+}
+
+static int read_rain_water_content(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "rain_water_content", harp_type_float,
                       info->num_time * info->num_vertical, data);
 }
 
@@ -231,6 +293,21 @@ static int read_aerosol_number_concentration(void *user_data, harp_array data)
                       info->num_time * info->num_vertical, data);
 }
 
+static int read_aerosol_extinction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_extinction", harp_type_float,
+                      info->num_time * info->num_vertical, data);
+}
+
+static int read_aerosol_optical_depth(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_optical_depth", harp_type_float, info->num_time, data);
+}
+
 static int read_aerosol_mass_content(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -239,12 +316,11 @@ static int read_aerosol_mass_content(void *user_data, harp_array data)
                       info->num_time * info->num_vertical, data);
 }
 
-static int read_aerosol_extinction(void *user_data, harp_array data)
+static int read_quality_status(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "aerosol_extinction", harp_type_float,
-                      info->num_time * info->num_vertical, data);
+    return read_array(info->science_data_cursor, "quality_status", harp_type_int8, info->num_time, data);
 }
 
 static void ingestion_done(void *user_data)
@@ -349,12 +425,63 @@ static void register_acm_cap_2b_product()
                                                                      read_liquid_water_content);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_water_content", NULL);
 
+    /* liquid_water_extinction_coefficient */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "liquid_water_extinction_coefficient",
+                                                                     harp_type_float, 2, dimension_type, NULL,
+                                                                     "liquid extinction", "1/m", NULL,
+                                                                     read_liquid_extinction);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_extinction", NULL);
+
+    /* liquid_particle_effective_radius */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "liquid_particle_effective_radius",
+                                                                     harp_type_float, 2, dimension_type, NULL,
+                                                                     "liquid optical depth", "m",
+                                                                     NULL, read_liquid_effective_radius);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_effective_radius", NULL);
+
     /* ice_water_density */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "ice_water_density",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "ice water content", "kg/m3", NULL,
                                                                      read_ice_water_content);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/ice_water_content", NULL);
+
+    /* ice_particle_effective_radius */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "ice_particle_effective_radius",
+                                                                     harp_type_float, 2, dimension_type, NULL,
+                                                                     "ice effective radius", "m", NULL,
+                                                                     read_ice_effective_radius);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/ice_effective_radius", NULL);
+
+    /* ice_water_mass_flux */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "ice_water_mass_flux",
+                                                                     harp_type_float, 2, dimension_type, NULL,
+                                                                     "ice mass flux", "kg/m2/s", NULL,
+                                                                     read_ice_mass_flux);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/ice_mass_flux", NULL);
+
+    /* ice_water_column_density */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "ice_water_column_density",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     "ice water path", "kg/m2", NULL,
+                                                                     read_ice_water_path);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/ice_water_path", NULL);
+
+    /* rain_rate */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "rain_rate", harp_type_float,
+                                                                     2, dimension_type, NULL, "rain rate", "mm/h", NULL,
+                                                                     read_rain_rate);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/rain_rate", NULL);
+
+    /* rain_water_density */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "rain_water_density",
+                                                                     harp_type_float, 2, dimension_type, NULL,
+                                                                     "rain water content", "kg/m3", NULL,
+                                                                     read_rain_water_content);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/rain_water_content", NULL);
 
     /* aerosol_number_density */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "aerosol_number_density",
@@ -364,6 +491,20 @@ static void register_acm_cap_2b_product()
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_number_concentration",
                                          NULL);
 
+    /* aerosol_extinction_coefficient */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "aerosol_extinction_coefficient", harp_type_float,
+                                                                     2, dimension_type, NULL, "aerosol extinction",
+                                                                     "1/m", NULL, read_aerosol_extinction);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_extinction", NULL);
+
+    /* aerosol_optical_depth */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     "aerosol optical depth", HARP_UNIT_DIMENSIONLESS,
+                                                                     NULL, read_aerosol_optical_depth);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_optical_depth", NULL);
+
     /* aerosol_density */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "aerosol_density",
                                                                      harp_type_float, 2, dimension_type, NULL,
@@ -371,13 +512,11 @@ static void register_acm_cap_2b_product()
                                                                      read_aerosol_mass_content);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_mass_content", NULL);
 
-    /* aerosol_extinction_coefficient */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "aerosol_extinction_coefficient", harp_type_float,
-                                                                     2, dimension_type, NULL,
-                                                                     "aerosol geometric extinction coefficient",
-                                                                     "1/m", NULL, read_aerosol_extinction);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_extinction", NULL);
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL, NULL,
+                                                                     read_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
 }
 
 int harp_ingestion_module_earthcare_l2_init(void)

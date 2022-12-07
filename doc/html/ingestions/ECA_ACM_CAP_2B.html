@@ -128,31 +128,85 @@
 <td><p>[kg/m3]</p></td>
 <td><p>liquid water content</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>liquid_water_extinction_coefficient</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[1/m]</p></td>
+<td><p>liquid extinction</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>liquid_particle_effective_radius</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>liquid optical depth</p></td>
+</tr>
 <tr class="row-even"><td><p><strong>ice_water_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[kg/m3]</p></td>
 <td><p>ice water content</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>ice_particle_effective_radius</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>ice effective radius</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ice_water_mass_flux</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/m2/s]</p></td>
+<td><p>ice mass flux</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ice_water_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[kg/m2]</p></td>
+<td><p>ice water path</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>rain_rate</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[mm/h]</p></td>
+<td><p>rain rate</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>rain_water_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[kg/m3]</p></td>
+<td><p>rain water content</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[1/m3]</p></td>
 <td><p>aerosol number concentration</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_extinction_coefficient</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[1/m]</p></td>
+<td><p>aerosol extinction</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>aerosol optical depth</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>aerosol_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[kg/m3]</p></td>
 <td><p>aerosol mass content</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_extinction_coefficient</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
-<td><p>[1/m]</p></td>
-<td><p>aerosol geometric extinction coefficient</p></td>
+<tr class="row-even"><td><p><strong>validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>quality status</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -166,9 +220,9 @@
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 32%" />
+<col style="width: 35%" />
 <col style="width: 7%" />
-<col style="width: 61%" />
+<col style="width: 58%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>field name</p></th>
@@ -200,21 +254,57 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/liquid_water_content</strong></p></td>
 </tr>
+<tr class="row-even"><td><p><strong>liquid_water_extinction_coefficient</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/liquid_extinction</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>liquid_particle_effective_radius</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/liquid_effective_radius</strong></p></td>
+</tr>
 <tr class="row-even"><td><p><strong>ice_water_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/ice_water_content</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>ice_particle_effective_radius</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/ice_effective_radius</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ice_water_mass_flux</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/ice_mass_flux</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ice_water_column_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/ice_water_path</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>rain_rate</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/rain_rate</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>rain_water_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/rain_water_content</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/aerosol_number_concentration</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>aerosol_density</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/ScienceData/aerosol_mass_content</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>aerosol_extinction_coefficient</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/aerosol_extinction</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/aerosol_optical_depth</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>aerosol_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/aerosol_mass_content</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/quality_status</strong></p></td>
 </tr>
 </tbody>
 </table>
