@@ -1,8 +1,11 @@
-1.17 2022-12-09
+1.17 2022-12-12
 ~~~~~~~~~~~~~~~
 
 * Added additional conventions for variable names related to areosol/cloud
   properties.
+
+* Fixed issue with geographical area overlap calculation and improvided
+  performance of performing operations on geographical polygon data.
 
 * Windows .msi installer now allows HARP component selection for core, Python,
   IDL, MATLAB, and R.
