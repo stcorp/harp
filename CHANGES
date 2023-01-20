@@ -1,3 +1,6 @@
+* Added &| bitfield operater to allow filtering for the case where only some
+  bits within the mask are set.
+
 1.17 2022-12-12
 ~~~~~~~~~~~~~~~
 

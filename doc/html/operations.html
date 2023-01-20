@@ -102,10 +102,11 @@ of the referenced variable.</p>
 <div><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">==</span></code> <code class="docutils literal notranslate"><span class="pre">!=</span></code></div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">&lt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code> <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code> <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> (for numerical values only)</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">=&amp;</span></code> <code class="docutils literal notranslate"><span class="pre">!&amp;</span></code> (bitfield operators, for integer values only)</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">=&amp;</span></code> <code class="docutils literal notranslate"><span class="pre">=|</span></code> <code class="docutils literal notranslate"><span class="pre">!&amp;</span></code> (bitfield operators, for integer values only)</div>
 </div>
 </div></blockquote>
-<p>Bitfield operators work such that <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">=&amp;</span> <span class="pre">5</span></code> returns true if both bits 1 and 3 in <code class="docutils literal notranslate"><span class="pre">a</span></code> are set
+<p>Bitfield operators work such that <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">=&amp;</span> <span class="pre">5</span></code> returns true if both bits 1 and 3 in <code class="docutils literal notranslate"><span class="pre">a</span></code> are set,
+<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">=|</span> <span class="pre">5</span></code> returns true of either bits 1 or 3 or both in <code class="docutils literal notranslate"><span class="pre">a</span></code> are set,
 and <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">!&amp;</span> <span class="pre">5</span></code> returns true if neither bits 1 and 3 in <code class="docutils literal notranslate"><span class="pre">a</span></code> are set.</p>
 <p>If a unit is specified, the comparison will be performed in the specified unit.
 Otherwise, it will be performed in the unit that the variable currently has.

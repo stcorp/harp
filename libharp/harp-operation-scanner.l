@@ -78,8 +78,9 @@ WHITESPACE   [[:space:]]+
 "!="                    return NOT_EQUAL;
 ">="                    return GREATER_EQUAL;
 "<="                    return LESS_EQUAL;
-"=&"                    return BIT_AND;
-"!&"                    return BIT_NAND;
+"=&"                    return BITFIELD_ALL;
+"=|"                    return BITFIELD_ANY;
+"!&"                    return BITFIELD_NONE;
 
 "nan"                   return NAN;
 "inf"                   return INF;

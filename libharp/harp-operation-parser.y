@@ -271,7 +271,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  INF
 %token                  IN
 %left                   EQUAL NOT_EQUAL GREATER_EQUAL LESS_EQUAL
-%left                   BIT_NAND BIT_AND
+%left                   BITFIELD_ALL BITFIELD_ANY BITFIELD_NONE
 %nonassoc               NOT
 
 %type   <program>               program
@@ -549,8 +549,9 @@ comparison_operator:
     ;
 
 bit_mask_operator:
-      BIT_NAND { $$ = operator_bit_mask_none; }
-    | BIT_AND { $$ = operator_bit_mask_any; }
+      BITFIELD_ANY { $$ = operator_bit_mask_any; }
+    | BITFIELD_ALL { $$ = operator_bit_mask_all; }
+    | BITFIELD_NONE { $$ = operator_bit_mask_none; }
     ;
 
 membership_operator:

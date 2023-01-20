@@ -21,10 +21,11 @@ Supported operators are:
 
     | ``==`` ``!=``
     | ``<`` ``<=`` ``>=`` ``>`` (for numerical values only)
-    | ``=&`` ``!&`` (bitfield operators, for integer values only)
+    | ``=&`` ``=|`` ``!&`` (bitfield operators, for integer values only)
 
 
-Bitfield operators work such that ``a =& 5`` returns true if both bits 1 and 3 in ``a`` are set
+Bitfield operators work such that ``a =& 5`` returns true if both bits 1 and 3 in ``a`` are set,
+``a =| 5`` returns true of either bits 1 or 3 or both in ``a`` are set,
 and ``a !& 5`` returns true if neither bits 1 and 3 in ``a`` are set.
 
 If a unit is specified, the comparison will be performed in the specified unit.

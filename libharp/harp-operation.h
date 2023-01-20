@@ -91,6 +91,7 @@ typedef enum harp_comparison_operator_type_enum
 
 typedef enum harp_bit_mask_operator_type_enum
 {
+    operator_bit_mask_all,
     operator_bit_mask_any,
     operator_bit_mask_none
 } harp_bit_mask_operator_type;
