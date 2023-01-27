@@ -235,6 +235,7 @@ ST_CODADEF_VERSION([definitions],[OCO])
 ST_CODADEF_VERSION([definitions],[ODIN_OSIRIS])
 ST_CODADEF_VERSION([definitions],[ODIN_SMR])
 ST_CODADEF_VERSION([definitions],[QA4ECV])
+ST_CODADEF_VERSION([definitions],[S5P_PAL])
 ST_CODADEF_VERSION([definitions],[Sentinel5P])
 ST_CODADEF_VERSION([definitions],[TEMIS])
 

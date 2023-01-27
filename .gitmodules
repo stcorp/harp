@@ -26,3 +26,7 @@
 	path = definitions/EARTHCARE
 	url = https://github.com/stcorp/codadef-earthcare.git
 	update = rebase
+[submodule "definitions/S5P_PAL"]
+	path = definitions/S5P_PAL
+	url = https://github.com/stcorp/codadef-s5p-pal.git
+	update = rebase

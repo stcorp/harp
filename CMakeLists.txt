@@ -713,6 +713,7 @@ add_codadef(OCO)
 add_codadef(ODIN_OSIRIS)
 add_codadef(ODIN_SMR)
 add_codadef(QA4ECV)
+add_codadef(S5P_PAL)
 add_codadef(Sentinel5P)
 add_codadef(TEMIS)
 
