@@ -460,6 +460,7 @@ DEFINITION_FILES = \
 	definitions/$(CODADEF_FILE_ODIN_OSIRIS) \
 	definitions/$(CODADEF_FILE_ODIN_SMR) \
 	definitions/$(CODADEF_FILE_QA4ECV) \
+	definitions/$(CODADEF_FILE_S5P_PAL) \
 	definitions/$(CODADEF_FILE_Sentinel5P) \
 	definitions/$(CODADEF_FILE_TEMIS)
 
