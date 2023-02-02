@@ -5153,13 +5153,13 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
 
     if (nise_extension)
     {
-        path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag_nise[]";
+        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag_nise[]";
         read_snow_ice_type_function = read_snow_ice_type_nise;
         read_sea_ice_fraction_function = read_sea_ice_fraction_nise;
     }
     else
     {
-        path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/snow_ice_flag[]";
+        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
         read_snow_ice_type_function = read_snow_ice_type;
         read_sea_ice_fraction_function = read_sea_ice_fraction;
     }
