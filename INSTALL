@@ -110,6 +110,11 @@ HARP is also available as a conda package for Windows, Linux, and macOS
 
     $ conda install -c conda-forge harp
 
+The R interface of HARP is provided as a separate conda package (that has
+the core HARP package as dependency). You can install this using::
+
+    $ conda install -c conda-forge r-harp
+
 
 Building the source package (Unix)
 ----------------------------------
