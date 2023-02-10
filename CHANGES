@@ -1,6 +1,9 @@
 * Added =| bitfield operater to allow filtering for the case where only some
   bits within the mask are set.
 
+* The uncertainty propagation of *_uncertainty_random variables for the spatial
+  and temporal binning operations now always assume no correlation.
+
 * Fixed reading of string arrays in HARP Python interface.
 
 1.17 2022-12-12

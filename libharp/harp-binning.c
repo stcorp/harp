@@ -121,8 +121,18 @@ static binning_type get_binning_type(harp_variable *variable, int force_correlat
 
     if (strstr(variable->name, "_uncertainty") != NULL)
     {
-        if (force_correlated_uncertainty || strstr(variable->name, "_uncertainty_systematic") != NULL ||
-            harp_get_option_propagate_uncertainty() == 1)
+        if (strstr(variable->name, "_uncertainty_systematic") != NULL)
+        {
+            /* always propagate uncertainty assuming full correlation for the systematic part */
+            return binning_average;
+        }
+        if (strstr(variable->name, "_uncertainty_random") != NULL)
+        {
+            /* always propagate uncertainty assuming no correlation for the random part */
+            return binning_uncertainty;
+        }
+        /* for the total uncertainty let it depend on the given parameter/option */
+        if (force_correlated_uncertainty || harp_get_option_propagate_uncertainty() == 1)
         {
             /* propagate uncertainty assuming full correlation */
             return binning_average;
