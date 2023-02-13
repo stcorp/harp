@@ -2173,7 +2173,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
     long *latlon_cell_index = NULL;     /* flat latlon cell index for each matching cell for each sample [sum(num_latlon_index)] */
     double *latlon_weight = NULL;       /* weight for each matching cell for each sample [sum(num_latlon_index)] */
     long *time_index = NULL;    /* index of first contributing sample for each bin */
-    long weight_size = 0;
+    long weight_size;
     int32_t *bin_count = NULL;  /* number of contributing samples for each time bin [num_time_bins] */
     float *weight = NULL;       /* sum of weights per latlon cell and time [num_time_bins, num_latitude_edges-1, num_longitude_edges-1] */
     long cumsum_index;  /* index into latlon_cell_index and latlon_weight */
@@ -2310,6 +2310,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                        (2 * product->num_variables + 2) * sizeof(binning_type), __FILE__, __LINE__);
         goto error;
     }
+    weight_size = num_time_bins * spatial_block_length;
     for (k = 0; k < product->num_variables; k++)
     {
         bintype[k] = get_spatial_binning_type(product->variable[k]);
@@ -2347,7 +2348,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                        num_time_bins * sizeof(int32_t), __FILE__, __LINE__);
         goto error;
     }
-    memset(bin_count, 0, num_time_bins * sizeof(int32_t));
     weight = malloc(weight_size * sizeof(float));
     if (weight == NULL)
     {
