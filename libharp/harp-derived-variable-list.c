@@ -107,6 +107,7 @@ static int get_angstrom_exponent_from_aod(harp_variable *variable, const harp_va
     return 0;
 }
 
+/* area from latitude_bounds {time,N} and longitude_bounds {time,N} */
 static int get_area(harp_variable *variable, const harp_variable **source_variable)
 {
     long num_vertices;
@@ -127,6 +128,31 @@ static int get_area(harp_variable *variable, const harp_variable **source_variab
                                    &variable->data.double_data[i]) != 0)
         {
             return -1;
+        }
+    }
+
+    return 0;
+}
+
+/* area from latitude_bounds {latitude,2} and longitude_bounds {longitude,2} */
+static int get_area_gridded(harp_variable *variable, const harp_variable **source_variable)
+{
+    long num_latitude, num_longitude;
+    long i, j;
+
+    num_latitude = source_variable[0]->dimension[0];
+    num_longitude = source_variable[1]->dimension[0];
+
+    for (i = 0; i < num_latitude; i++)
+    {
+        for (j = 0; j < num_longitude; j++)
+        {
+            if (harp_geometry_get_area(2, &source_variable[0]->data.double_data[i * 2],
+                                       &source_variable[1]->data.double_data[j * 2],
+                                       &variable->data.double_data[i * num_longitude + j]) != 0)
+            {
+                return -1;
+            }
         }
     }
 
@@ -7942,6 +7968,27 @@ static int add_misc_conversions(void)
             return -1;
         }
     }
+
+    dimension_type[0] = harp_dimension_latitude;
+    dimension_type[1] = harp_dimension_longitude;
+    if (harp_variable_conversion_new("area", harp_type_double, HARP_UNIT_AREA, 2, dimension_type, 0, get_area_gridded,
+                                     &conversion) != 0)
+    {
+        return -1;
+    }
+    dimension_type[1] = harp_dimension_independent;
+    if (harp_variable_conversion_add_source(conversion, "latitude_bounds", harp_type_double, HARP_UNIT_LATITUDE, 2,
+                                            dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+    dimension_type[0] = harp_dimension_longitude;
+    if (harp_variable_conversion_add_source(conversion, "longitude_bounds", harp_type_double, HARP_UNIT_LONGITUDE, 2,
+                                            dimension_type, 2) != 0)
+    {
+        return -1;
+    }
+    dimension_type[0] = harp_dimension_time;
 
     /*** index ***/
 

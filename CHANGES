@@ -4,6 +4,8 @@
 * The uncertainty propagation of *_uncertainty_random variables for the spatial
   and temporal binning operations now always assume no correlation.
 
+* Add derivation for 'area {latitude,longitude}'.
+
 * Fixed reading of string arrays in HARP Python interface.
 
 1.17 2022-12-12
