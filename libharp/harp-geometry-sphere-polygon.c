@@ -826,7 +826,15 @@ static int spherical_polygon_get_surface_area(const harp_spherical_polygon *poly
             c = M_PI_2 - latA;
             sinangle = sqrt(hav(a - c) + sin(a) * sin(c) * hav(lonC - lonA));
             HARP_CLAMP(sinangle, -1.0, 1.0);
-            b = 2 * asin(sinangle);
+            if (HARP_GEOMETRY_FPeq(sinangle, 0) && a > M_PI_2)
+            {
+                /* we need to special case the situation where we have the South Pole as a point */
+                b = M_PI;
+            }
+            else
+            {
+                b = 2 * asin(sinangle);
+            }
             s = 0.5 * (a + b + c);
             E = 4 * atan(sqrt(fabs(tan(s / 2) * tan((s - a) / 2) * tan((s - b) / 2) * tan((s - c) / 2))));
             if (lonC < lonA)
