@@ -2315,7 +2315,11 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
     {
         bintype[k] = get_spatial_binning_type(product->variable[k]);
 
-        assert(bintype[k] != binning_uncertainty);
+        if (bintype[k] == binning_uncertainty && area_binning)
+        {
+            /* we can't perform uncorrelated uncertainty propagation when using area binning */
+            bintype[k] = binning_remove;
+        }
 
         /* determine the maximum number of elements (as size for the 'weight' array) */
         if (bintype[k] != binning_remove && bintype[k] != binning_skip)
@@ -2408,6 +2412,15 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             {
                 variable->data.double_data[i] = cos(variable->data.double_data[i]);
                 variable->data.double_data[i + 1] = sin(variable->data.double_data[i + 1]);
+            }
+        }
+
+        if (bintype[k] == binning_uncertainty)
+        {
+            /* square the uncertainties */
+            for (i = 0; i < variable->num_elements; i++)
+            {
+                variable->data.double_data[i] *= variable->data.double_data[i];
             }
         }
     }
@@ -2540,7 +2553,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             harp_variable *new_variable = NULL;
             int store_weight_variable = 0;
 
-            assert(bintype[k] == binning_average || bintype[k] == binning_angle);
+            assert(bintype[k] == binning_average || bintype[k] == binning_angle || bintype[k] == binning_uncertainty);
 
             /* we need to create a variable that includes the lat/lon dimensions and uses the binned time dimension */
             if (variable->num_dimensions + 2 >= HARP_MAX_NUM_DIMS)
@@ -2655,6 +2668,15 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
             }
             else
             {
+                /* take square root of the sum before dividing by the sum of the weights */
+                if (bintype[k] == binning_uncertainty)
+                {
+                    for (i = 0; i < variable->num_elements; i++)
+                    {
+                        variable->data.double_data[i] = sqrt(variable->data.double_data[i]);
+                    }
+                }
+
                 for (i = 0; i < variable->num_elements; i++)
                 {
                     if (weight[i] == 0)
