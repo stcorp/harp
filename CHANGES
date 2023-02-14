@@ -1,8 +1,11 @@
 * Added =| bitfield operater to allow filtering for the case where only some
   bits within the mask are set.
 
-* The uncertainty propagation of *_uncertainty_random variables for the spatial
-  and temporal binning operations now always assume no correlation.
+* The uncertainty propagation of *_uncertainty_random variables for the
+  temporal binning operation now always assumes no correlation. For spatial
+  binning the random component is removed for the area weighted average
+  approach and it is propagated using no correlation for the simple binning
+  based on center points.
 
 * Add derivation for 'area {latitude,longitude}'.
 
