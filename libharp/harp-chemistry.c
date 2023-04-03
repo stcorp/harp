@@ -101,7 +101,7 @@ static const char *chemical_species_names[] = {
     "SF6",
     "SO2",
     "snow_water",
-    "water_vapour",
+    "water_vapor",
     "unknown"
 };
 
@@ -170,16 +170,16 @@ double chemical_species_molar_mass[] = {
     CONST_MOLAR_MASS_SF6,
     CONST_MOLAR_MASS_SO2,
     CONST_MOLAR_MASS_H2O,       /* snow has H2O molar mass */
-    CONST_MOLAR_MASS_H2O,       /* water vapour has H2O molar mass */
+    CONST_MOLAR_MASS_H2O,       /* water vapor has H2O molar mass */
     0   /* value for 'unknown' */
 };
 
-/** Calculate water vapour saturation pressure.
+/** Calculate water vapor saturation pressure.
  * Use August-Roche-Magnus formula.
  * \param temperature  Temperature [K]
- * \return the water vapour saturation pressure [Pa]
+ * \return the water vapor saturation pressure [Pa]
  */
-static double get_water_vapour_saturation_pressure_from_temperature(double temperature)
+static double get_water_vapor_saturation_pressure_from_temperature(double temperature)
 {
     double temperature_C = temperature - 273.15;        /* Temperature [degreeC] */
 
@@ -404,16 +404,16 @@ double harp_pressure_from_number_density_and_temperature(double number_density, 
     return number_density * CONST_BOLTZMANN * temperature;
 }
 
-/** Calculate the relative humidity from the given temperature and water vapour partial pressure.
- * The relative humidity is the ratio of the partial pressure of water vapour in a
- * gaseous mixture of air and water vapour to the saturated vapour pressure of water at a given temperature.
- * \param partial_pressure_h2o  Water vapour partial pressure [Pa]
+/** Calculate the relative humidity from the given temperature and water vapor partial pressure.
+ * The relative humidity is the ratio of the partial pressure of water vapor in a
+ * gaseous mixture of air and water vapor to the saturated vapor pressure of water at a given temperature.
+ * \param partial_pressure_h2o  Water vapor partial pressure [Pa]
  * \param temperature  Temperature [K]
  * \return the relative humidity [%]
  */
 double harp_relative_humidity_from_h2o_partial_pressure_and_temperature(double partial_pressure_h2o, double temperature)
 {
-    return partial_pressure_h2o / get_water_vapour_saturation_pressure_from_temperature(temperature);
+    return partial_pressure_h2o / get_water_vapor_saturation_pressure_from_temperature(temperature);
 }
 
 /** Convert number density to temperature

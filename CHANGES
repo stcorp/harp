@@ -1,3 +1,5 @@
+* Rename all uses of 'water vapour' to 'water vapor'.
+
 * Added =| bitfield operater to allow filtering for the case where only some
   bits within the mask are set.
 

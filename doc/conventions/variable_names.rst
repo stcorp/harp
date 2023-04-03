@@ -337,7 +337,7 @@ rain_water   H2O as rain                   RWC
 SF6          sulfur hexafluoride
 SO2          sulfur dioxide
 snow_water   H2O as snow/ice               SWC
-water_vapour H2O as water vapour
+water_vapor  H2O as water vapor
 ============ ============================= ===========================
 
 Variables for which a prefix and/or postfix is provided can have any of the given prefixes and/or any of the given

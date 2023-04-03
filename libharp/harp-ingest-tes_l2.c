@@ -738,7 +738,7 @@ int harp_ingestion_module_tes_l2_init(void)
     register_nadir_product("CH4", "methane", "TL2CH4N", ingestion_init_ch4_nadir);
     register_nadir_product("CO", "carbon monoxide", "TL2CON", ingestion_init_co_nadir);
     register_nadir_product("CO2", "carbon dioxide", "TL2CO2N", ingestion_init_co2_nadir);
-    register_nadir_product("H2O", "water vapour", "TL2H2ON", ingestion_init_h2o_nadir);
+    register_nadir_product("H2O", "water vapor", "TL2H2ON", ingestion_init_h2o_nadir);
     register_nadir_product("HCOOH", "formic acid", "TL2FORN", ingestion_init_hcooh_nadir);
     register_nadir_product("HDO", "deuterium oxide", "TL2HDON", ingestion_init_hdo_nadir);
     register_nadir_product("N2O", "nitrous oxide", "TL2N2ON", ingestion_init_n2o_nadir);
@@ -747,7 +747,7 @@ int harp_ingestion_module_tes_l2_init(void)
     register_nadir_product("Temperature", NULL, "TL2ATMTN", ingestion_init_tatm_nadir);
 
     register_limb_product("CH4", "methane", "TL2CH4L", ingestion_init_ch4_limb);
-    register_limb_product("H2O", "water vapour", "TL2H2OL", ingestion_init_h2o_limb);
+    register_limb_product("H2O", "water vapor", "TL2H2OL", ingestion_init_h2o_limb);
     register_limb_product("HDO", "deuterium oxide", "TL2HDOL", ingestion_init_hdo_limb);
     register_limb_product("HNO3", "nitric acid", "TL2HNO3L", ingestion_init_hno3_limb);
     register_limb_product("NO2", "nitrogen dioxide", "TL2NO2L", ingestion_init_no2_limb);

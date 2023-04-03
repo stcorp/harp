@@ -103,7 +103,7 @@ typedef enum harp_chemical_species_enum
     harp_chemical_species_SF6,
     harp_chemical_species_SO2,
     harp_chemical_species_snow_water,
-    harp_chemical_species_water_vapour,
+    harp_chemical_species_water_vapor,
     harp_chemical_species_unknown
 } harp_chemical_species;
 

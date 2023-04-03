@@ -54,7 +54,7 @@ typedef enum grib_parameter_enum
     grib_param_z,       /* 129: Geopotential [m2/s2] (at the surface: orography) */
     grib_param_t,       /* 130: Temperature [K] */
     grib_param_q,       /* 133: Specific humidity [kg/kg] */
-    grib_param_tcwv,    /* 137: Total column water vapour [kg/m2] */
+    grib_param_tcwv,    /* 137: Total column water vapor [kg/m2] */
     grib_param_vo,      /* 138: Vorticity (relative) [1/s] */
     grib_param_lnsp,    /* 152: Logarithm of surface pressure [-] */
     grib_param_blh,     /* 159: Boundary layer height [m] */
@@ -3333,7 +3333,7 @@ int harp_ingestion_module_ecmwf_grib_init(void)
                                "or (190,133)", "(discipline,category,number) = (0,1,0)");
 
     /* tcwv: H2O_column_density */
-    description = "total column water vapour";
+    description = "total column water vapor";
     variable_definition = harp_ingestion_register_variable_block_read(product_definition, "H2O_column_density",
                                                                       harp_type_float, 2, &dimension_type[1], NULL,
                                                                       description, "kg/m^2", include_tcwv, read_tcwv);

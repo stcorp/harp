@@ -164,15 +164,13 @@ additional steps if you want to build HARP from the GitHub git repository.</p>
 </dl>
 <p>When you clone and checkout the HARP git repository make sure to also
 initialize the git submodules:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/stcorp/harp.git
-$ cd harp
-$ git submodule init
-$ git submodule update
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone --recurse-submodules https://github.com/stcorp/harp.git
 </pre></div>
 </div>
 <p>This will pull in several entries in the definitions subdirectory.</p>
 <p>Then, run the bootstrap script in the root of the source directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./bootstrap
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd harp
+$ ./bootstrap
 </pre></div>
 </div>
 <p>After that you can follow the steps as usual for building the source package.</p>

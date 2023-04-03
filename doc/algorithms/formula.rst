@@ -491,7 +491,7 @@ saturated water vapor pressure
    :math:`T`     temperature                     :math:`K`
    ============= =============================== ===========
 
-   This is the August-Roche-Magnus formula for the saturated water vapour pressure
+   This is the August-Roche-Magnus formula for the saturated water vapor pressure
 
    .. math::
 

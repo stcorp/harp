@@ -5128,7 +5128,7 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         int is_h2o_related = (i == harp_chemical_species_dry_air || i == harp_chemical_species_H2O ||
                               i == harp_chemical_species_ice_water || i == harp_chemical_species_liquid_water ||
                               i == harp_chemical_species_rain_water || i == harp_chemical_species_snow_water ||
-                              i == harp_chemical_species_water_vapour);
+                              i == harp_chemical_species_water_vapor);
 
         if (add_species_conversions_for_grid(harp_chemical_species_name(i), num_dimensions, dimension_type,
                                              has_vertical, is_h2o_related) != 0)
