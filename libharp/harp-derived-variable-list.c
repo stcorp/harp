@@ -1964,7 +1964,7 @@ static int add_aux_usstd76_conversion(const char *variable_name, const char *uni
     return 0;
 }
 
-static int add_model_conversions()
+static int add_model_conversions(void)
 {
     const char *items[] = {
         "number_density", "CH4_number_density", "CO_number_density", "CO2_number_density", "H2O_number_density",

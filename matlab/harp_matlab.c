@@ -16,7 +16,7 @@
 
 static int harp_matlab_initialised = 0;
 
-static void harp_matlab_cleanup();
+static void harp_matlab_cleanup(void);
 
 static void harp_matlab_export(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);
 static void harp_matlab_import(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]);

@@ -519,7 +519,7 @@ LIBHARP_API int harp_variable_convert_unit(harp_variable *variable, const char *
     return 0;
 }
 
-void harp_unit_done()
+void harp_unit_done(void)
 {
     unit_system_done();
 }

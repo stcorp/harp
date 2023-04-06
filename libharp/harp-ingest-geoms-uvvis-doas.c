@@ -2623,7 +2623,7 @@ static int init_product_definition(harp_ingestion_module *module, uvvis_doas_gas
     return 0;
 }
 
-int harp_ingestion_module_geoms_uvvis_doas_init()
+int harp_ingestion_module_geoms_uvvis_doas_init(void)
 {
     const char *aod_option_values[] = { "measured" };
     harp_ingestion_module *module;

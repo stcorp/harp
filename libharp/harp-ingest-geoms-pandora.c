@@ -795,7 +795,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     return 0;
 }
 
-int harp_ingestion_module_geoms_pandora_init()
+int harp_ingestion_module_geoms_pandora_init(void)
 {
     harp_ingestion_module *module;
     int i;

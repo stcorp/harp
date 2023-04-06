@@ -51,13 +51,13 @@ static int print_warning(const char *message, va_list ap)
     return result;
 }
 
-static void print_version()
+static void print_version(void)
 {
     printf("harpcheck version %s\n", libharp_version);
     printf("Copyright (C) 2015-2022 S[&]T, The Netherlands.\n\n");
 }
 
-static void print_help()
+static void print_help(void)
 {
     printf("Usage:\n");
     printf("    harpcheck <input product file> [input product file...]\n");

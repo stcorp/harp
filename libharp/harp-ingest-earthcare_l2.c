@@ -975,7 +975,7 @@ static void register_common_variables(harp_product_definition *product_definitio
                                          "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber", NULL);
 }
 
-static void register_ac__tc__2b_product()
+static void register_ac__tc__2b_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1025,7 +1025,7 @@ static void register_ac__tc__2b_product()
 
 }
 
-static void register_acm_cap_2b_product()
+static void register_acm_cap_2b_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1152,7 +1152,7 @@ static void register_acm_cap_2b_product()
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
 }
 
-static void register_atl_aer_2a_product()
+static void register_atl_aer_2a_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1287,7 +1287,7 @@ static void register_atl_aer_2a_product()
 
 }
 
-static void register_atl_ald_2a_product()
+static void register_atl_ald_2a_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1431,7 +1431,7 @@ static void register_atl_ald_2a_product()
 
 }
 
-static void register_atl_cth_2a_product()
+static void register_atl_cth_2a_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1480,7 +1480,7 @@ static void register_atl_cth_2a_product()
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
 }
 
-static void register_atl_ebd_2a_product()
+static void register_atl_ebd_2a_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1713,7 +1713,7 @@ static void register_atl_ebd_2a_product()
 
 }
 
-static void register_atl_ice_2a_product()
+static void register_atl_ice_2a_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
@@ -1799,7 +1799,7 @@ static void register_atl_ice_2a_product()
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
 }
 
-static void register_cpr_cld_2a_product()
+static void register_cpr_cld_2a_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;

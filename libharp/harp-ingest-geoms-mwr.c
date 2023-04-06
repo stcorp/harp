@@ -856,7 +856,7 @@ static int init_product_definition(harp_ingestion_module *module, mwr_gas gas, i
     return 0;
 }
 
-int harp_ingestion_module_geoms_mwr_init()
+int harp_ingestion_module_geoms_mwr_init(void)
 {
     harp_ingestion_module *module;
     int i;

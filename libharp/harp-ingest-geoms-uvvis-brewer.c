@@ -590,7 +590,7 @@ static int init_product_definition(harp_ingestion_module *module, int version)
     return 0;
 }
 
-int harp_ingestion_module_geoms_uvvis_brewer_init()
+int harp_ingestion_module_geoms_uvvis_brewer_init(void)
 {
     harp_ingestion_module *module;
 
