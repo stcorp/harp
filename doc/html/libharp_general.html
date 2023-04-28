@@ -29,7 +29,11 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> HARP
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            HARP
           </a>
               <div class="version">
                 1.17
@@ -77,9 +81,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="libharp.html">C library</a> &raquo;</li>
-      <li>General</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="libharp.html">C library</a></li>
+      <li class="breadcrumb-item active">General</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -221,10 +225,10 @@
 <p>The HARP C library uses the udunits2 library to perform unit conversions. The xml configuration files for udunits2 are included with a HARP installation and a default absolute path to these xml files is built into the library.</p>
 <p>If the HARP installation ends up in a different location on disk compared to what was provided at build time then you will either need to set the UDUNITS2_XML_PATH environment variable or call one of the functions <a class="reference internal" href="#group__harp__general_1ga92af8b1a8aaca9b9e665d35a0dad0895"><span class="std std-ref">harp_set_udunits2_xml_path()</span></a> or <a class="reference internal" href="#group__harp__general_1gab35a6e458ae75f777ceef7006244183d"><span class="std std-ref">harp_set_udunits2_xml_path_conditional()</span></a> to set the path programmatically.</p>
 <p>The path should be an absolute path to the udunits2.xml file that was included with the HARP installation.</p>
-<p>Specifying a path using this function will prevent HARP from using the UDUNITS2_XML_PATH environment variable. If you still want HARP to acknowledge the UDUNITS2_XML_PATH environment variable then use something like this in your code: <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;UDUNITS2_XML_PATH&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">harp_set_udunits2_xml_path</span><span class="p">(</span><span class="s">&quot;&lt;your path&gt;&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<p>Specifying a path using this function will prevent HARP from using the UDUNITS2_XML_PATH environment variable. If you still want HARP to acknowledge the UDUNITS2_XML_PATH environment variable then use something like this in your code: <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;UDUNITS2_XML_PATH&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">harp_set_udunits2_xml_path</span><span class="p">(</span><span class="s">&quot;&lt;your path&gt;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </p>
@@ -575,10 +579,10 @@
 <p>The path should be a searchpath for CODA .codadef files similar like the PATH environment variable of your system. Path components should be separated by ‘;’ on Windows and by ‘:’ on other systems.</p>
 <p>The path may contain both references to files and directories. CODA will load all .codadef files in the path. Any specified files should be valid .codadef files. For directories, CODA will (non-recursively) search the directory for all .codadef files.</p>
 <p>If multiple files for the same product class exist in the path, CODA will only use the one with the highest revision number (this is normally equal to a last modification date that is stored in a .codadef file). If there are two files for the same product class with identical revision numbers, CODA will use the definitions of the first .codadef file in the path and ignore the second one.</p>
-<p>Specifying a path using this function will prevent CODA from using the CODA_DEFINITION environment variable. If you still want CODA to acknowledge the CODA_DEFINITION environment variable then use something like this in your code: <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;CODA_DEFINITION&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">harp_set_coda_definition_path</span><span class="p">(</span><span class="s">&quot;&lt;your path&gt;&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<p>Specifying a path using this function will prevent CODA from using the CODA_DEFINITION environment variable. If you still want CODA to acknowledge the CODA_DEFINITION environment variable then use something like this in your code: <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;CODA_DEFINITION&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">harp_set_coda_definition_path</span><span class="p">(</span><span class="s">&quot;&lt;your path&gt;&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </p>
@@ -656,7 +660,7 @@
 <span id="_CPPv343harp_get_option_create_collocation_datetimev"></span><span id="_CPPv243harp_get_option_create_collocation_datetimev"></span><span id="harp_get_option_create_collocation_datetime__void"></span><span class="target" id="group__harp__general_1gad1eef31adb573b95e1eaa0d1f93192d7"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_option_create_collocation_datetime</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the current setting for the creation of collocation_datetime variables option. <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#group__harp__general_1ga95b3fd9454431662647a0bad099c2aba"><span class="std std-ref">harp_set_option_create_collocation_datetime()</span></a> </p>
+<p><a class="reference internal" href="#group__harp__general_1ga95b3fd9454431662647a0bad099c2aba"><span class="std std-ref">harp_set_option_create_collocation_datetime()</span></a></p>
 </div>
 </p>
 <dl class="field-list simple">
@@ -710,7 +714,7 @@
 <span id="_CPPv333harp_get_option_enable_aux_afgl86v"></span><span id="_CPPv233harp_get_option_enable_aux_afgl86v"></span><span id="harp_get_option_enable_aux_afgl86__void"></span><span class="target" id="group__harp__general_1gadef7f0b01e01812bc2707d5ce186cb7f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_option_enable_aux_afgl86</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the current setting for the usage of AFGL86 option. <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#group__harp__general_1ga38646e2cec16b6d94f143af90de664af"><span class="std std-ref">harp_set_option_enable_aux_afgl86()</span></a> </p>
+<p><a class="reference internal" href="#group__harp__general_1ga38646e2cec16b6d94f143af90de664af"><span class="std std-ref">harp_set_option_enable_aux_afgl86()</span></a></p>
 </div>
 </p>
 <dl class="field-list simple">
@@ -764,7 +768,7 @@
 <span id="_CPPv334harp_get_option_enable_aux_usstd76v"></span><span id="_CPPv234harp_get_option_enable_aux_usstd76v"></span><span id="harp_get_option_enable_aux_usstd76__void"></span><span class="target" id="group__harp__general_1ga7327c3e52a6e791c454966519f74ea10"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_option_enable_aux_usstd76</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the current setting for the usage of US Standard 76 option. <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#group__harp__general_1ga70782e2ade60c7f06549d379b523e203"><span class="std std-ref">harp_set_option_enable_aux_usstd76()</span></a> </p>
+<p><a class="reference internal" href="#group__harp__general_1ga70782e2ade60c7f06549d379b523e203"><span class="std std-ref">harp_set_option_enable_aux_usstd76()</span></a></p>
 </div>
 </p>
 <dl class="field-list simple">
@@ -801,7 +805,7 @@
 <span id="_CPPv332harp_get_option_hdf5_compressionv"></span><span id="_CPPv232harp_get_option_hdf5_compressionv"></span><span id="harp_get_option_hdf5_compression__void"></span><span class="target" id="group__harp__general_1ga6de1b72347e2a6e4c5ee86f098f32376"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_option_hdf5_compression</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the compression level that is used for storing variables in HDF5 files. <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#group__harp__general_1ga37df50bf61d353f47a60cda03c920f36"><span class="std std-ref">harp_set_option_hdf5_compression()</span></a> </p>
+<p><a class="reference internal" href="#group__harp__general_1ga37df50bf61d353f47a60cda03c920f36"><span class="std std-ref">harp_set_option_hdf5_compression()</span></a></p>
 </div>
 </p>
 <dl class="field-list simple">
@@ -838,7 +842,7 @@
 <span id="_CPPv337harp_get_option_propagate_uncertaintyv"></span><span id="_CPPv237harp_get_option_propagate_uncertaintyv"></span><span id="harp_get_option_propagate_uncertainty__void"></span><span class="target" id="group__harp__general_1ga9fea5f821a70646daeb1915bf2ae3ddb"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_option_propagate_uncertainty</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the current setting for how to propagate uncertainty. <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#group__harp__general_1ga31e452a3e090b3d9cc143f86553b76db"><span class="std std-ref">harp_set_option_propagate_uncertainty()</span></a> </p>
+<p><a class="reference internal" href="#group__harp__general_1ga31e452a3e090b3d9cc143f86553b76db"><span class="std std-ref">harp_set_option_propagate_uncertainty()</span></a></p>
 </div>
 </p>
 <dl class="field-list simple">
@@ -880,7 +884,7 @@
 <span id="_CPPv336harp_get_option_regrid_out_of_boundsv"></span><span id="_CPPv236harp_get_option_regrid_out_of_boundsv"></span><span id="harp_get_option_regrid_out_of_bounds__void"></span><span class="target" id="group__harp__general_1ga6119ed7d2ec68bdddb35845cd663fbef"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_option_regrid_out_of_bounds</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the current setting for treating out of bound values during regridding operations. <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#group__harp__general_1ga83bdb60fc511d16c19e7c51d48aae84d"><span class="std std-ref">harp_set_option_regrid_out_of_bounds()</span></a> </p>
+<p><a class="reference internal" href="#group__harp__general_1ga83bdb60fc511d16c19e7c51d48aae84d"><span class="std std-ref">harp_set_option_regrid_out_of_bounds()</span></a></p>
 </div>
 </p>
 <dl class="field-list simple">

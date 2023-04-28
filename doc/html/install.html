@@ -29,7 +29,11 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> HARP
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            HARP
           </a>
               <div class="version">
                 1.17
@@ -40,7 +44,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#supported-platforms">Supported platforms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-you-will-need">What you will need</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-github">Using GitHub</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#using-anaconda">Using Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-conda">Using Conda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-the-source-package-unix">Building the source package (Unix)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-the-binary-package-windows">Installing the binary package (Windows)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-the-source-package-windows">Building the source package (Windows)</a></li>
@@ -73,8 +77,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Installation</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -179,8 +183,8 @@ build HARP, but they do not allow regeneration of automatically generated
 files (such as the documentation), so they are not recommended for performing
 co-development of HARP.</p>
 </section>
-<section id="using-anaconda">
-<h2>Using Anaconda</h2>
+<section id="using-conda">
+<h2>Using Conda</h2>
 <p>HARP is also available as a conda package for Windows, Linux, and macOS
 (only 64bit and Python3). You can install HARP using conda with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c conda-forge harp
@@ -191,6 +195,13 @@ the core HARP package as dependency). You can install this using:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c conda-forge r-harp
 </pre></div>
 </div>
+<p>Note that these installations of HARP do not include the MATLAB or IDL
+interfaces.</p>
+<p>Also be aware that if you use conda within an Anaconda installation to first
+create a separate environment using e.g. <cite>conda create -n harp</cite> and
+<cite>conda activate harp</cite>, otherwise the conda installation will likely fail.
+The recommended installation of conda is Miniforge or Mambaforge as this will
+ensure that all packages are taken from the conda-forge channel by default.</p>
 </section>
 <section id="building-the-source-package-unix">
 <h2>Building the source package (Unix)</h2>

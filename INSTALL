@@ -100,8 +100,8 @@ build HARP, but they do not allow regeneration of automatically generated
 files (such as the documentation), so they are not recommended for performing
 co-development of HARP.
 
-Using Anaconda
---------------
+Using Conda
+-----------
 
 HARP is also available as a conda package for Windows, Linux, and macOS
 (only 64bit and Python3). You can install HARP using conda with::
@@ -112,6 +112,15 @@ The R interface of HARP is provided as a separate conda package (that has
 the core HARP package as dependency). You can install this using::
 
     $ conda install -c conda-forge r-harp
+
+Note that these installations of HARP do not include the MATLAB or IDL
+interfaces.
+
+Also be aware that if you use conda within an Anaconda installation to first
+create a separate environment using e.g. `conda create -n harp` and
+`conda activate harp`, otherwise the conda installation will likely fail.
+The recommended installation of conda is Miniforge or Mambaforge as this will
+ensure that all packages are taken from the conda-forge channel by default.
 
 
 Building the source package (Unix)

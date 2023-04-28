@@ -29,7 +29,11 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> HARP
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            HARP
           </a>
               <div class="version">
                 1.17
@@ -77,9 +81,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="libharp.html">C library</a> &raquo;</li>
-      <li>Error</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="libharp.html">C library</a></li>
+      <li class="breadcrumb-item active">Error</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -371,15 +375,15 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv424harp_set_warning_handlerPFiPKc7va_listE">
 <span id="_CPPv324harp_set_warning_handlerPFiPKc7va_listE"></span><span id="_CPPv224harp_set_warning_handlerPFiPKc7va_listE"></span><span class="target" id="group__harp__error_1ga88c982481989852993829a34cd310b7d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_set_warning_handler</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">print</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">ap</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><br /></dt>
-<dd><p>Set handler for warning messages The <em>print</em> function parameter should be a function that resembles vprintf(). The most common case is to provide a function that prints a ‘WARNING’ prefix, prints the message, and adds a newline. For example: <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">print_warning</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="kt">va_list</span><span class="w"> </span><span class="n">ap</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
-<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;WARNING: &quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vprintf</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">ap</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="n">harp_set_warning_handler</span><span class="p">(</span><span class="n">print_warning</span><span class="p">);</span><span class="w"></span>
+<dd><p>Set handler for warning messages The <em>print</em> function parameter should be a function that resembles vprintf(). The most common case is to provide a function that prints a ‘WARNING’ prefix, prints the message, and adds a newline. For example: <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">print_warning</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="kt">va_list</span><span class="w"> </span><span class="n">ap</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;WARNING: &quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vprintf</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">ap</span><span class="p">);</span>
+<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">harp_set_warning_handler</span><span class="p">(</span><span class="n">print_warning</span><span class="p">);</span>
 </pre></div>
 </div>
  The handler function will get called whenever <a class="reference internal" href="#group__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> is called (several functions inside the HARP library may call <a class="reference internal" href="#group__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> to report on certain warning conditions). The warning handler can be set before a call to <a class="reference internal" href="libharp_general.html#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is made. </p>
