@@ -2931,6 +2931,20 @@ static int read_results_processing_quality_flags(void *user_data, harp_array dat
     return 0;
 }
 
+static int read_results_qa_value_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int result;
+
+    /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
+    coda_set_option_perform_conversions(0);
+    result = read_dataset(info->detailed_results_cursor, "qa_value_crb", harp_type_int8,
+                          info->num_scanlines * info->num_pixels, data);
+    coda_set_option_perform_conversions(1);
+
+    return result;
+}
+
 static int read_results_scattering_optical_thickness_SWIR(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -7574,9 +7588,10 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
-                                                   read_product_qa_value);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+                                                   dimension_type, NULL, description, NULL, include_from_010000,
+                                                   read_results_qa_value_crb);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00",
+                                         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb", NULL);
 
     /* cloud_fraction_apriori */
     description = "effective radiometric cloud fraction a priori";

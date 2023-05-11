@@ -13,6 +13,9 @@
 
 * Fixed reading of string arrays in HARP Python interface.
 
+* Updates to product ingestions:
+  - S5P L2 CLOUD: fixed qa_value ingestion for CRB (now use qa_value_crb)
+
 1.17 2022-12-12
 ~~~~~~~~~~~~~~~
 
