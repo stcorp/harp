@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HDF5/netCDF-4 &mdash; HARP 1.17 documentation</title>
@@ -101,10 +101,6 @@
 <p>The following table shows the mapping between HARP data types and HDF5 data types. The HDF5 backend uses this mapping
 for writing only.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 45%" />
-<col style="width: 55%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>HARP data type</p></th>
 <th class="head"><p>HDF5 data type</p></th>
@@ -134,13 +130,6 @@ for writing only.</p>
 <p>The mapping used by the HDF5 backend for reading is shown below. The HDF5 data type interface (H5T) is used to
 introspect the data type of the variable to be read.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 18%" />
-<col style="width: 18%" />
-<col style="width: 26%" />
-<col style="width: 18%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>H5T_get_class()</p></th>
 <th class="head"><p>H5T_get_size()</p></th>
@@ -213,10 +202,6 @@ dimension scales to represent shared dimensions. For independent dimensions, the
 netCDF-3 backend. For each unique dimension length <code class="docutils literal notranslate"><span class="pre">L</span></code>, a dimension scale named <code class="docutils literal notranslate"><span class="pre">independent_L</span></code> is created.</p>
 <p>To summarize, HARP dimensions types are mapped to HDF5 dimension scales as follows:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 48%" />
-<col style="width: 53%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>HARP dimension type</p></th>
 <th class="head"><p>HDF5 dimension scale</p></th>

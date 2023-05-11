@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product &mdash; HARP 1.17 documentation</title>
@@ -129,7 +129,7 @@
 <p>For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains the magnitude of the sum of the unit vectors that was used to calculate the angle average.</p>
 <p>For uncertainty variables the first order propagation rules are used (assuming full correlation for systematic uncertainty variables and using the <a class="reference internal" href="libharp_general.html#group__harp__general_1ga9fea5f821a70646daeb1915bf2ae3ddb"><span class="std std-ref">harp_get_option_propagate_uncertainty()</span></a> setting for total and random uncertainty variables).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to regrid. </p></li>
 <li><p><strong>num_bins</strong> – Number of target bins. </p></li>
@@ -137,7 +137,7 @@
 <li><p><strong>bin_index</strong> – Array of target bin index numbers (0 .. num_bins-1) for each sample in the time dimension.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -162,7 +162,7 @@
 <p>For angle variables a variable-specific weight variable will be created that contains the magnitude of the sum of the unit vectors that was used to calculate the angle average.</p>
 <p>Axis variables for the time dimension such as datetime, datetime_length, datetime_start, and datetime_stop will only be binned in the time dimension (and will not gain a latitude or longitude dimension).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to regrid. </p></li>
 <li><p><strong>num_time_bins</strong> – Number of target bins in the time dimension. </p></li>
@@ -174,7 +174,7 @@
 <li><p><strong>longitude_edges</strong> – longitude grid edge vales</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -198,7 +198,7 @@
 <p>pointers to axis variables are passed through unmodified. </p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product from which to derive the new variable. </p></li>
 <li><p><strong>name</strong> – Name of the variable that should be created. </p></li>
@@ -209,7 +209,7 @@
 <li><p><strong>variable</strong> – Pointer to the C variable where the derived HARP variable will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -225,7 +225,7 @@
 <dd><p>Create a derived variable and add it to the product.</p>
 <p>If a similar named variable with the right dimensions was already in the product then that variable will be modified to match the given unit (and in case <em>unit</em> is NULL, then the function will just leave the product unmodified). Otherwise the function will call <a class="reference internal" href="#group__harp__product_1gaa5bdb44215a418514463022ca2672c66"><span class="std std-ref">harp_product_get_derived_variable()</span></a> and add the new variable using <a class="reference internal" href="#group__harp__product_1ga84a2e8737ef00ab3ec8cecb54bd53d51"><span class="std std-ref">harp_product_add_variable()</span></a> (removing any existing variable with the same name, but different dimensions) </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product from which to derive the new variable and into which the derived variable should be placed. </p></li>
 <li><p><strong>name</strong> – Name of the variable that should be added. </p></li>
@@ -235,7 +235,7 @@
 <li><p><strong>dimension_type</strong> – Type of dimension for each of the dimensions of the variable that should be created. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -250,10 +250,10 @@
 <span id="_CPPv316harp_product_newPP12harp_product"></span><span id="_CPPv216harp_product_newPP12harp_product"></span><span id="harp_product_new__harp_productPP"></span><span class="target" id="group__harp__product_1ga0d4b0729140d78db3441be1b66451e91"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_new</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">new_product</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create new product. The product will be initialized with 0 variables and 0 attributes. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>new_product</strong> – Pointer to the C variable where the new HARP product will be stored. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -268,7 +268,7 @@
 <span id="_CPPv319harp_product_deleteP12harp_product"></span><span id="_CPPv219harp_product_deleteP12harp_product"></span><span id="harp_product_delete__harp_productP"></span><span class="target" id="group__harp__product_1ga733c9e35d18dd76b7f9d7bf36c1c53a8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_delete</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Delete product. Remove product and all attached variables and attributes. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>product</strong> – HARP product. </p>
 </dd>
 </dl>
@@ -279,13 +279,13 @@
 <span id="_CPPv317harp_product_copyPK12harp_productPP12harp_product"></span><span id="_CPPv217harp_product_copyPK12harp_productPP12harp_product"></span><span id="harp_product_copy__harp_productCP.harp_productPP"></span><span class="target" id="group__harp__product_1gaeb2e6f3916f21319e8c8576efaa1e351"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_copy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">other_product</span></span>, <a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">new_product</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create a copy of a product. The function will create a deep-copy of the given product, also creating copyies of all attributes and variables. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other_product</strong> – Product that should be copied. </p></li>
 <li><p><strong>new_product</strong> – Pointer to the variable where the new HARP product will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -301,13 +301,13 @@
 <dd><p>Append one product to another. The ‘index’ variable, if present, will be removed. All variables in both products will have a ‘time’ dimension introduced as first dimension. Both products will have all non-time dimensions extended to the maximum of either product. Any ‘source_product’ attribute for the first product will be removed.</p>
 <p>If you pass NULL for ‘other_product’, then ‘product’ will be updated as if it was the result of a merge (i.e. remove ‘index’, add ‘time’ dimension, and remove ‘source_product’ attribute). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to which data should be appended. </p></li>
 <li><p><strong>other_product</strong> – (optional) Product that should be appended. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -322,13 +322,13 @@
 <span id="_CPPv331harp_product_set_source_productP12harp_productPKc"></span><span id="_CPPv231harp_product_set_source_productP12harp_productPKc"></span><span id="harp_product_set_source_product__harp_productP.cCP"></span><span class="target" id="group__harp__product_1ga2788cc7c42cf9fe9b2f60ed3231e3589"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_set_source_product</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product_path</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the source product attribute of the specified product. Stores the base name of <em>product_path</em> as the value of the source product attribute of the specified product. The previous value (if any) will be freed. The base name of the product path is the filename of the product without any directory name components. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product for which to set the source product attribute. </p></li>
 <li><p><strong>product_path</strong> – Relative or absolute path to the product or just the product filename (can be NULL). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -343,13 +343,13 @@
 <span id="_CPPv324harp_product_set_historyP12harp_productPKc"></span><span id="_CPPv224harp_product_set_historyP12harp_productPKc"></span><span id="harp_product_set_history__harp_productP.cCP"></span><span class="target" id="group__harp__product_1ga7693ca9ca73d407973f93f4a3d27d3bf"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_set_history</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">history</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the history attribute of the specified product. Store a copy of <em>history</em> as the value of the history attribute of the specified product. The previous value (if any) will be freed. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product for which to set the history attribute. </p></li>
 <li><p><strong>history</strong> – New value for the history attribute (can be NULL). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -368,13 +368,13 @@
 <p>The memory management of the variable will be handled via the product after you have added the variable. </p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to which the variable should be added. </p></li>
 <li><p><strong>variable</strong> – Variable that should be added to the product. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -389,13 +389,13 @@
 <span id="_CPPv328harp_product_detach_variableP12harp_productPK13harp_variable"></span><span id="_CPPv228harp_product_detach_variableP12harp_productPK13harp_variable"></span><span id="harp_product_detach_variable__harp_productP.harp_variableCP"></span><span class="target" id="group__harp__product_1ga99d5d7f3a1e70ee69ee7519aaf9e3be4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_detach_variable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Detach a variable from a product. Removes a variable from a product without deleting the variable itself. After detaching, the caller of the function will be responsible for the further memory management of the variable. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product from which the variable should be detached. </p></li>
 <li><p><strong>variable</strong> – Variable that should be detached. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -410,13 +410,13 @@
 <span id="_CPPv328harp_product_remove_variableP12harp_productP13harp_variable"></span><span id="_CPPv228harp_product_remove_variableP12harp_productP13harp_variable"></span><span id="harp_product_remove_variable__harp_productP.harp_variableP"></span><span class="target" id="group__harp__product_1ga88c38cc628718f06065e9160bf735057"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_remove_variable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Remove a variable from a product. This function removes the specified variable from the product and then deletes the variable itself. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product from which the variable should be removed. </p></li>
 <li><p><strong>variable</strong> – Variable that should be removed. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -431,13 +431,13 @@
 <span id="_CPPv336harp_product_remove_variable_by_nameP12harp_productPKc"></span><span id="_CPPv236harp_product_remove_variable_by_nameP12harp_productPKc"></span><span id="harp_product_remove_variable_by_name__harp_productP.cCP"></span><span class="target" id="group__harp__product_1ga592399cec1ab4a611a620fc788a9c84d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_remove_variable_by_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Remove a variable from a product using the name of the variable. This function removes the variable with the specified name from the product and then deletes the variable itself. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product from which the variable should be removed. </p></li>
 <li><p><strong>name</strong> – Name of the variable that should be removed. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -452,13 +452,13 @@
 <span id="_CPPv329harp_product_replace_variableP12harp_productP13harp_variable"></span><span id="_CPPv229harp_product_replace_variableP12harp_productP13harp_variable"></span><span id="harp_product_replace_variable__harp_productP.harp_variableP"></span><span class="target" id="group__harp__product_1ga29283b1d2a2042fb164ade0b8b5be9e7"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_replace_variable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Replaces an existing variable with the one provided. The product should already contain a variable with the same name as <em>variable</em>. This function searches in the list of variables in the product for one with the same name, removes this variable and then adds the given <em>variable</em> in its place. Note that if you try to replace a variable with itself the function does nothing (and returns success). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product in which the variable should be replaced. </p></li>
 <li><p><strong>variable</strong> – Variable that should be used to replace an existing variable. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -473,13 +473,13 @@
 <span id="_CPPv325harp_product_has_variablePK12harp_productPKc"></span><span id="_CPPv225harp_product_has_variablePK12harp_productPKc"></span><span id="harp_product_has_variable__harp_productCP.cCP"></span><span class="target" id="group__harp__product_1ga38ab016c406bcb69f3286b1285bf9f82"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_has_variable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if product contains a variable with the specified name. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to search. </p></li>
 <li><p><strong>name</strong> – Name of the variable to search for. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Product does not contain a variable of the specified name. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Product contains a variable of the specified name. </p></li>
@@ -494,14 +494,14 @@
 <span id="_CPPv333harp_product_get_variable_by_namePK12harp_productPKcPP13harp_variable"></span><span id="_CPPv233harp_product_get_variable_by_namePK12harp_productPKcPP13harp_variable"></span><span id="harp_product_get_variable_by_name__harp_productCP.cCP.harp_variablePP"></span><span class="target" id="group__harp__product_1gab79f5cc57e53ecc01e2b83debd423446"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_get_variable_by_name</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find variable with a given name for a product. If no variable with the given name can be found an error is returned. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product in which to find the variable. </p></li>
 <li><p><strong>name</strong> – Name of the variable. </p></li>
 <li><p><strong>variable</strong> – Pointer to the C variable where the found HARP variable will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -516,14 +516,14 @@
 <span id="_CPPv339harp_product_get_variable_index_by_namePK12harp_productPKcPi"></span><span id="_CPPv239harp_product_get_variable_index_by_namePK12harp_productPKcPi"></span><span id="harp_product_get_variable_index_by_name__harp_productCP.cCP.iP"></span><span class="target" id="group__harp__product_1ga954f21b21958d1f316b83d60a8816d4e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_get_variable_index_by_name</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find index of variable with a given name for a product. If no variable with the given name can be found an error is returned. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product in which the find the variable. </p></li>
 <li><p><strong>name</strong> – Name of the variable. </p></li>
 <li><p><strong>index</strong> – Pointer to the C variable where the index in the HARP variables list for the product is returned. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -538,10 +538,10 @@
 <span id="_CPPv321harp_product_is_emptyPK12harp_product"></span><span id="_CPPv221harp_product_is_emptyPK12harp_product"></span><span id="harp_product_is_empty__harp_productCP"></span><span class="target" id="group__harp__product_1ga49f593a4807148aebdea48acc9b8e6af"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_is_empty</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Determine whether all variables in a product have at least one element. If at least one variable has 0 elements or if the product has 0 variables the function returns 1, and 0 otherwise. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>product</strong> – Product to check for empty data. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, The product does not contain empty data. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, The product contains 0 variables or at least one variable has 0 elements. </p></li>
@@ -556,7 +556,7 @@
 <span id="_CPPv327harp_product_update_historyP12harp_productPKciA_Pc"></span><span id="_CPPv227harp_product_update_historyP12harp_productPKciA_Pc"></span><span id="harp_product_update_history__harp_productP.cCP.i.cPA"></span><span class="target" id="group__harp__product_1ga6e574e19c463cf244b60cc4d25710195"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_update_history</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">executable</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">argc</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">argv</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Update the history attribute in the product based on the command line parameters. This function will extend the existing product history metadata element with a line containing the current UTC time, the HARP version, and the call that was used to run this program. The command line execution call is constructed based on the <em>argc</em> and <em>argv</em> arguments. The format of the added line is: YYYY-MM-DDThh:mm:ssZ [harp-x.y] args …. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product for which the history metada should be extended. </p></li>
 <li><p><strong>executable</strong> – Name of the command line executable (this value is used instead of argv[0]). </p></li>
@@ -564,7 +564,7 @@
 <li><p><strong>argv</strong> – Variable as passed by main(). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -579,10 +579,10 @@
 <span id="_CPPv319harp_product_verifyPK12harp_product"></span><span id="_CPPv219harp_product_verifyPK12harp_product"></span><span id="harp_product_verify__harp_productCP"></span><span class="target" id="group__harp__product_1ga84b6effef3e96d88fa623d14015112df"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_verify</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Verify that a product is internally consistent and complies with conventions. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>product</strong> – Product to verify. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Product verified successfully. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -597,7 +597,7 @@
 <span id="_CPPv318harp_product_printPK12harp_productiiPFiPKczE"></span><span id="_CPPv218harp_product_printPK12harp_productiiPFiPKczE"></span><span class="target" id="group__harp__product_1gaa19c7763369e3ab99129c7beb6bbedad"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_print</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">show_attributes</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">show_data</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">print</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print a harp_product struct using the specified print function. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to print. </p></li>
 <li><p><strong>show_attributes</strong> – Whether or not to print the attributes of variables. </p></li>
@@ -622,13 +622,13 @@
 </ul>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – HARP product. </p></li>
 <li><p><strong>dimension_type</strong> – Dimension to use for the flattening. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -645,14 +645,14 @@
 <p>Variables for the provided variable_name list should exist in the product and the variables should be one dimensional variables, all using the same dimension. The dimension that will be reordered is this single dimension of the referenced variables.</p>
 <p>Only up to eight variables can be used for sorting.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – HARP product </p></li>
 <li><p><strong>num_variables</strong> – Number of variables to use for sorting (1 &lt;= num_variables &lt;= 8) </p></li>
 <li><p><strong>variable_name</strong> – Names of the variables to use for sorting </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -668,13 +668,13 @@
 <dd><p>Execute one or more operations on a product.</p>
 <p>if one of the operations results in an empty product then the function will immediately return with the empty product (and return code 0) and will not execute any of the remaining actions anymore. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product that the operations should be executed on. </p></li>
 <li><p><strong>operations</strong> – Operations to execute; should be specified as a semi-colon separated string of operations. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -692,13 +692,13 @@
 <p>Variables that depend on the rebinned dimenion but have no unit (or use a string data type) will be removed. Any existing count or weight variables will also be removed.</p>
 <p>All variables that are rebinned are converted to a double data type. Bins that have no overlapping source boundaries will end up with a NaN value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to rebin. </p></li>
 <li><p><strong>target_bounds</strong> – Target grid boundaries variable.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -716,14 +716,14 @@
 <p>For each variable in the product a dimension-specific rule based on the variable name will determine how to regrid the variable (point/interval interpolation). If interval interpolation is needed for one of the variables then target boundaries are needed. These can be provided using the optional target_bounds parameter. If this parameter is not provided, the boundaries will be calculated automatically from the target grid (by inter/extrapolating intervals from mid-points).</p>
 <p>The source grid (and bounds) are determined by performing a variable derivation on the product (using the variable name of the target_grid variable).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to resample. </p></li>
 <li><p><strong>target_grid</strong> – Target grid variable. </p></li>
 <li><p><strong>target_bounds</strong> – Target grid boundaries variable (optional).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -740,7 +740,7 @@
 <p>This function cannot be used to regrid the time dimension (or an independent dimension).</p>
 <p>Both the product and the collocated product need to have <code class="docutils literal notranslate"><span class="pre">collocation_index</span></code> variables. These collocation indices will be used to determine the matching pairs. For each <code class="docutils literal notranslate"><span class="pre">collocation_index</span></code> value in <em>product</em> there needs to be a matching value in the <code class="docutils literal notranslate"><span class="pre">collocation_index</span></code> variable of <em>collocated_product</em> (but the reverse does not have to be true).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to regrid. </p></li>
 <li><p><strong>dimension_type</strong> – Type of dimension that should be regridded. </p></li>
@@ -749,7 +749,7 @@
 <li><p><strong>collocated_product</strong> – The product containing the collocated measurements and the target grid for the regridding.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -765,7 +765,7 @@
 <dd><p>Regrid the product’s variables (from dataset a in the collocation result) to the target grid of collocated products in dataset b.</p>
 <p>This function cannot be used to regrid the time dimension (or an independent dimension).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to regrid. </p></li>
 <li><p><strong>dimension_type</strong> – Type of dimension that should be regridded. </p></li>
@@ -774,7 +774,7 @@
 <li><p><strong>collocation_result</strong> – The collocation result used to find matching variables. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -790,7 +790,7 @@
 <dd><p>Smooth the product’s variables using the vertical grids, avks and a apriori of the collocated product.</p>
 <p>The product is first fully regridded (using the vertical dimension) to the vertical grid of the averaging kernel (and apriori). Then, the given list of variables is smoothed using the list of AVKs and apriori variables.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to smooth. </p></li>
 <li><p><strong>num_smooth_variables</strong> – length of smooth_variables. </p></li>
@@ -800,7 +800,7 @@
 <li><p><strong>collocated_product</strong> – The product containing the collocated measurements and the averaging kernel and a-priori.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -816,7 +816,7 @@
 <dd><p>Smooth the product’s variables (from dataset a in the collocation result) using the vertical grids, avks and a apriori of collocated products in dataset b.</p>
 <p>The product is first fully regridded (using the vertical dimension) to the vertical grid of the averaging kernel (and apriori). Then, the given list of variables is smoothed using the list of AVKs and apriori variables.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to smooth. </p></li>
 <li><p><strong>num_smooth_variables</strong> – length of smooth_variables. </p></li>
@@ -826,7 +826,7 @@
 <li><p><strong>collocation_result</strong> – The collocation result used to locate the matching vertical grids/avks/apriori. The collocation result is assumed to have the appropriate metadata available for all matches (dataset b).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -841,7 +841,7 @@
 <span id="_CPPv332harp_product_get_smoothed_columnP12harp_productPKcPKcP13harp_variableP13harp_variableP13harp_variableP13harp_variablePP13harp_variable"></span><span id="_CPPv232harp_product_get_smoothed_columnP12harp_productPKcPKcP13harp_variableP13harp_variableP13harp_variableP13harp_variablePP13harp_variable"></span><span id="harp_product_get_smoothed_column__harp_productP.cCP.cCP.harp_variableP.harp_variableP.harp_variableP.harp_variableP.harp_variablePP"></span><span class="target" id="group__harp__product_1ga63186eb4d5508d85d8f2d332245871f1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_get_smoothed_column</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">unit</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vertical_grid</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vertical_bounds</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">column_avk</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">apriori</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Derive vertical column smoothed with column averaging kernel and optional a-priori First a partial column profile will be derived from the product. This partial column profile will be regridded to the column averaging kernel grid. The regridded column profile will then be combined with the column averaging kernel and optional apriori profile to create an integrated smoothed vertical column. All inputs need to be provided as ‘double’ data. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product from which to derive a smoothed integrated vertical column. </p></li>
 <li><p><strong>name</strong> – Name of the variable that should be created. </p></li>
@@ -853,7 +853,7 @@
 <li><p><strong>variable</strong> – Pointer to the C variable where the derived HARP variable will be stored.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -868,7 +868,7 @@
 <span id="_CPPv357harp_product_get_smoothed_column_using_collocated_productP12harp_productPKcPKciPK19harp_dimension_typePKcPKcPK12harp_productPP13harp_variable"></span><span id="_CPPv257harp_product_get_smoothed_column_using_collocated_productP12harp_productPKcPKciPK19harp_dimension_typePKcPKcPK12harp_productPP13harp_variable"></span><span id="harp_product_get_smoothed_column_using_collocated_product__harp_productP.cCP.cCP.i.harp_dimension_typeCP.cCP.cCP.harp_productCP.harp_variablePP"></span><span class="target" id="group__harp__product_1gac2af6aea04439393cfdea79dcb5b528b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_get_smoothed_column_using_collocated_product</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">unit</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_dimensions</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="libharp_general.html#_CPPv419harp_dimension_type" title="harp_dimension_type"><span class="n"><span class="pre">harp_dimension_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dimension_type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vertical_axis</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vertical_unit</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">collocated_product</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Derive a vertical column smoothed with column averaging kernel and a-priori from the collocated product</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to regrid. </p></li>
 <li><p><strong>name</strong> – Name of the variable that should be created. </p></li>
@@ -881,7 +881,7 @@
 <li><p><strong>variable</strong> – Pointer to the C variable where the derived HARP variable will be stored.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -896,7 +896,7 @@
 <span id="_CPPv357harp_product_get_smoothed_column_using_collocated_datasetP12harp_productPKcPKciPK19harp_dimension_typePKcPKcPK23harp_collocation_resultPP13harp_variable"></span><span id="_CPPv257harp_product_get_smoothed_column_using_collocated_datasetP12harp_productPKcPKciPK19harp_dimension_typePKcPKcPK23harp_collocation_resultPP13harp_variable"></span><span id="harp_product_get_smoothed_column_using_collocated_dataset__harp_productP.cCP.cCP.i.harp_dimension_typeCP.cCP.cCP.harp_collocation_resultCP.harp_variablePP"></span><span class="target" id="group__harp__product_1gaa1910631a41729975dffe7a2dda8aa33"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_get_smoothed_column_using_collocated_dataset</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">unit</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_dimensions</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="libharp_general.html#_CPPv419harp_dimension_type" title="harp_dimension_type"><span class="n"><span class="pre">harp_dimension_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dimension_type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vertical_axis</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vertical_unit</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="libharp_collocation.html#_CPPv423harp_collocation_result" title="harp_collocation_result"><span class="n"><span class="pre">harp_collocation_result</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">collocation_result</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Derive a vertical column smoothed with column averaging kernel and a-priori from collocated products in dataset b</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> – Product to regrid. </p></li>
 <li><p><strong>name</strong> – Name of the variable that should be created. </p></li>
@@ -909,7 +909,7 @@
 <li><p><strong>variable</strong> – Pointer to the C variable where the derived HARP variable will be stored.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -925,7 +925,7 @@
 <dd><p>Import a product from a file.</p>
 <p>This will first try to import the file as an HDF4, HDF5, or netCDF file that complies to the HARP Data Format. If the file is not stored using the HARP format then it will try to import it using one of the available ingestion modules. The <em>options</em> parameter is optional (can be NULL) and describes the ingestion options. The parameter is only applicable if the file is not already using the HARP format and needs to be converted using one of the ingestion modules. The <em>operations</em> parameter is optional (can be NULL) and provides the list of operations that will be performed as part of the import. Some operations, such as filters, can already be performed as part of an import and this may thus be faster than using a <a class="reference internal" href="#group__harp__product_1gaac9e4b48ca9a060f53c1e2bb4f44d840"><span class="std std-ref">harp_product_execute_operations()</span></a> after a full import of the product. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – <strong>[in]</strong> Path to the file that is to be imported. </p></li>
 <li><p><strong>operations</strong> – <strong>[in]</strong> string (optional) containing actions to apply as part of the import; should be specified as a semi-colon separated string of operations. </p></li>
@@ -933,7 +933,7 @@
 <li><p><strong>product</strong> – <strong>[out]</strong> Pointer to a location where a pointer to the ingested product will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -949,13 +949,13 @@
 <dd><p>Test import of a product.</p>
 <p>If the product is a HARP product then verify that the product is a HARP compliant netCDF/HDF4/HDF5 product. Otherwise, try to import the product using an applicable ingestion module and test the ingestion for all possible ingestion options. Results are printed using the provided <em>print</em> function. The <em>print</em> function parameter should be a function that resembles printf(). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – <strong>[in]</strong> Filename of the product to import. </p></li>
 <li><p><strong>print</strong> – <strong>[in]</strong> Reference to a printf compatible function. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Import failed (error is already printed, <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a> should be ignored). </p></li>
@@ -972,14 +972,14 @@
 <dd><p>Retrieve global attributes from a product file.</p>
 <p>This function retrieves the product metadata without performing a full import. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – Path to the file for which to retrieve global attributes. </p></li>
 <li><p><strong>options</strong> – Ingestion module specific options (optional); should be specified as a semi-colon separated string of key=value pair; only used if the file is not in HARP format. </p></li>
 <li><p><strong>new_metadata</strong> – Pointer to the variable where the metadata should be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -995,14 +995,14 @@
 <dd><p>Export HARP product to a file.</p>
 <p>Export product to an HDF4, HDF5, or netCDF file that complies to the HARP Data Format. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – Path to the file to which the product is to be exported. </p></li>
 <li><p><strong>export_format</strong> – Either “hdf4”, “hdf5”, or “netcdf”. </p></li>
 <li><p><strong>product</strong> – Product that should be exported to file. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Geometry &mdash; HARP 1.17 documentation</title>
@@ -106,7 +106,7 @@
 <dd><p>Calculate the distance between two points on the surface of the Earth in meters</p>
 <p>This function assumes a spherical earth </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>latitude_a</strong> – Latitude of first point </p></li>
 <li><p><strong>longitude_a</strong> – Longitude of first point </p></li>
@@ -115,7 +115,7 @@
 <li><p><strong>distance</strong> – Pointer to the C variable where the surface distance in [m] between the two points will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -132,7 +132,7 @@
 <p>This function assumes a spherical earth.</p>
 <p>The latitude/longitude bounds can be either vertices of a polygon (num_vertices&gt;=3) or represent corner points that define a bounding rect (num_vertices==2).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>latitude_point</strong> – Latitude of the point </p></li>
 <li><p><strong>longitude_point</strong> – Longitude of the point </p></li>
@@ -142,7 +142,7 @@
 <li><p><strong>in_area</strong> – Pointer to the C variable where the result will be stored (1 if point is in the area, 0 otherwise). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -159,7 +159,7 @@
 <p>This function assumes a spherical earth. The overlap fraction is calculated as area(intersection)/min(area(A),area(B)).</p>
 <p>The latitude/longitude bounds for A and B can be either vertices of a polygon (num_vertices&gt;=3), or represent corner points that define a bounding rect (num_vertices==2).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>num_vertices_a</strong> – The number of vertices of the bounding polygon/rect of the first area </p></li>
 <li><p><strong>latitude_bounds_a</strong> – Latitude values of the bounds of the area of the first polygon/rect </p></li>
@@ -171,7 +171,7 @@
 <li><p><strong>fraction</strong> – Pointer to the C variable where the overlap fraction will be stored (use NULL if not needed). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -188,7 +188,7 @@
 <p>This function assumes a spherical earth.</p>
 <p>The latitude/longitude bounds for A and B can be either vertices of a polygon (num_vertices&gt;=3), or represent corner points that define a bounding rect (num_vertices==2).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>num_vertices</strong> – The number of vertices of the bounding polygon/rect </p></li>
 <li><p><strong>latitude_bounds</strong> – Latitude values of the bounds of the polygon/rect </p></li>
@@ -196,7 +196,7 @@
 <li><p><strong>area</strong> – Pointer to the C variable where the area size will be stored (in [m2]). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MATLAB interface &mdash; HARP 1.17 documentation</title>
@@ -113,10 +113,6 @@ variable according to the type map shown below. Zero-dimensional arrays of
 length 1 are converted to MATLAB arrays of 1x1. The resulting MATLAB type is also
 shown in the type map.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 58%" />
-<col style="width: 42%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>HARP data type</p></th>
 <th class="head"><p>MATLAB type</p></th>
@@ -196,7 +192,7 @@ pattern then the harp.import_product() function will be called on each
 individual file and the result of harp.concatenate() on the imported products
 will be returned.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em>) – Filename of the product to ingest</p></li>
 <li><p><strong>operations</strong> (<em>str</em>) – Actions to apply as part of the import; should be
@@ -206,7 +202,7 @@ a semi-colon separated string of key=value pairs; only
 used if the file is not in HARP format.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Ingested product.</p>
 </dd>
 </dl>
@@ -217,7 +213,7 @@ used if the file is not in HARP format.</p></li>
 <span class="sig-name descname"><span class="pre">harp_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'netcdf'</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Export a HARP compliant product.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> (<em>str</em>) – Product to export.</p></li>
 <li><p><strong>filename</strong> (<em>str</em>) – Filename of the exported product.</p></li>

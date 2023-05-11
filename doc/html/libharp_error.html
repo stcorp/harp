@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Error &mdash; HARP 1.17 documentation</title>
@@ -306,7 +306,7 @@
 <span id="_CPPv322harp_add_error_messagePKcz"></span><span id="_CPPv222harp_add_error_messagePKcz"></span><span id="harp_add_error_message__cCP.z"></span><span class="target" id="group__harp__error_1gae96d94cb25a16e81133a7346c0a970bd"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_add_error_message</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">message</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Extend the current error message with additional information. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>message</strong> – Error message using printf() format. </p>
 </dd>
 </dl>
@@ -317,7 +317,7 @@
 <span id="_CPPv314harp_set_erroriPKcz"></span><span id="_CPPv214harp_set_erroriPKcz"></span><span id="harp_set_error__i.cCP.z"></span><span class="target" id="group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_set_error</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">err</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">message</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the error value and optionally set a custom error message. If <em>message</em> is NULL then the default error message for the error number will be used. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>err</strong> – Value of <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </p></li>
 <li><p><strong>message</strong> – Optional error message using printf() format. </p></li>
@@ -331,10 +331,10 @@
 <span id="_CPPv320harp_errno_to_stringi"></span><span id="_CPPv220harp_errno_to_stringi"></span><span id="harp_errno_to_string__i"></span><span class="target" id="group__harp__error_1ga3e1f9afd3dbc79e6eda1ad0a3e4fab4c"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">harp_errno_to_string</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">err</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Returns a string with the description of the HARP error. If <em>err</em> equals the current HARP error status then this function will return the error message that was last set using <a class="reference internal" href="#group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. If the error message argument to <a class="reference internal" href="#group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a> was NULL or if <em>err</em> does not equal the current HARP error status then the default error message for <em>err</em> will be returned. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>err</strong> – Value of <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>String with a description of the HARP error. </p>
 </dd>
 </dl>
@@ -345,10 +345,10 @@
 <span id="_CPPv319harp_report_warningPKcz"></span><span id="_CPPv219harp_report_warningPKcz"></span><span id="harp_report_warning__cCP.z"></span><span class="target" id="group__harp__error_1gaff834a64542a617684269b9512d957f4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_report_warning</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">message</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Report a warning message The warning message will be passed on to the current warning handler that was set by <a class="reference internal" href="#group__harp__error_1ga88c982481989852993829a34cd310b7d"><span class="std std-ref">harp_set_warning_handler()</span></a>. If no warning handler was set, then this function will do nothing (and return the value 0). The convention is for warning messages to start with a non-capital letter and not contain end-of-line characters. This is similar to the error messages that can be set with <a class="reference internal" href="#group__harp__error_1ga4c4481ea12d137e0168fa578874cd13c"><span class="std std-ref">harp_set_error()</span></a>. Printing of line endings, if these are needed, should be performed by the warning handler. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>message</strong> – Warning message using printf() format. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Return code from the warning handler. </p>
 </dd>
 </dl>
@@ -359,10 +359,10 @@
 <span id="_CPPv324harp_get_warning_handlerPPFiPKc7va_listE"></span><span id="_CPPv224harp_get_warning_handlerPPFiPKc7va_listE"></span><span class="target" id="group__harp__error_1ga81bc467879f19fd0083ae1c66b2552d0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_warning_handler</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">print</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">va_list</span></span><span class="w"> </span><span class="n"><span class="pre">ap</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get a reference to the current handler for warning messages If no warning handler was set, the NULL pointer will be returned. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>print</strong> – Pointer to the variable in which the reference to the vprintf compatible function will be stored </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -388,10 +388,10 @@
 </div>
  The handler function will get called whenever <a class="reference internal" href="#group__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> is called (several functions inside the HARP library may call <a class="reference internal" href="#group__harp__error_1gaff834a64542a617684269b9512d957f4"><span class="std std-ref">harp_report_warning()</span></a> to report on certain warning conditions). The warning handler can be set before a call to <a class="reference internal" href="libharp_general.html#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> is made. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>print</strong> – Reference to a vprintf compatible function. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>

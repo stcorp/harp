@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>General &mdash; HARP 1.17 documentation</title>
@@ -233,10 +233,10 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>path</strong> – Absolute path to the udunits2.xml file </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -260,14 +260,14 @@
 <p>The <em>relative_location</em> parameter should point to the udunits2.xml file itself (and not the directory that the file is in).</p>
 <p>Note that this function differs from <a class="reference internal" href="#group__harp__general_1ga92af8b1a8aaca9b9e665d35a0dad0895"><span class="std std-ref">harp_set_udunits2_xml_path()</span></a> in that it will not modify the udunits2 xml path if the UDUNITS2_XML_PATH variable was set.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> – Filename of the file to search for </p></li>
 <li><p><strong>searchpath</strong> – Search path where to look for the file <em>file</em> (can be NULL) </p></li>
 <li><p><strong>relative_location</strong> – Filepath relative to the directory from <em>searchpath</em> where <em>file</em> was found that provides the location of the udunits2.xml file. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -283,7 +283,7 @@
 <dd><p>Perform unit conversion on data</p>
 <p>Apply unit conversion on a range of floating point values. Conversion will be performed in-place. If there is no conversion available from the current unit to the new unit then an error will be raised. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_unit</strong> – Existing unit of the data that should be converted (use udunits2 compliant units). </p></li>
 <li><p><strong>to_unit</strong> – Unit to which the data should be converted (use udunits2 compliant units). </p></li>
@@ -291,7 +291,7 @@
 <li><p><strong>value</strong> – Array of floating point values that should be converted. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -306,10 +306,10 @@
 <span id="_CPPv313harp_basenamePKc"></span><span id="_CPPv213harp_basenamePKc"></span><span id="harp_basename__cCP"></span><span class="target" id="group__harp__general_1gab3604231ffff1237b8ed245ae30eac53"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">harp_basename</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">path</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Remove everything but the last pathname component from <em>path</em>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>path</strong> – Path to compute the basename of. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Pointer to the last pathname component of <em>path</em>, i.e. everything from the end of <em>path</em> up to the first pathname component separation character (’' or ‘/’ on Windows, ‘/’ otherwise). </p>
 </dd>
 </dl>
@@ -320,10 +320,10 @@
 <span id="_CPPv323harp_get_data_type_name14harp_data_type"></span><span id="_CPPv223harp_get_data_type_name14harp_data_type"></span><span id="harp_get_data_type_name__harp_data_type"></span><span class="target" id="group__harp__general_1ga9c1402a37824f5e7489c427e8e8e81f2"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_data_type_name</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Returns the name of a data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data_type</strong> – HARP basic data type </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>if the data type is known a string containing the name of the type, otherwise the string “unknown”. </p>
 </dd>
 </dl>
@@ -334,10 +334,10 @@
 <span id="_CPPv322harp_get_size_for_type14harp_data_type"></span><span id="_CPPv222harp_get_size_for_type14harp_data_type"></span><span id="harp_get_size_for_type__harp_data_type"></span><span class="target" id="group__harp__general_1ga04e7afdfba69e2ee2596bfed9dc87355"></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_size_for_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the byte size for a HARP data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data_type</strong> – Data type for which to retrieve the size. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The size of the data type in bytes. </p>
 </dd>
 </dl>
@@ -348,10 +348,10 @@
 <span id="_CPPv328harp_get_fill_value_for_type14harp_data_type"></span><span id="_CPPv228harp_get_fill_value_for_type14harp_data_type"></span><span id="harp_get_fill_value_for_type__harp_data_type"></span><span class="target" id="group__harp__general_1ga00efcbd66b05ad34562435771e600341"></span><a class="reference internal" href="#_CPPv411harp_scalar" title="harp_scalar"><span class="n"><span class="pre">harp_scalar</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_fill_value_for_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the fill value for a HARP data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data_type</strong> – Data type for which to retrieve the fill value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The fill value for the data type. </p>
 </dd>
 </dl>
@@ -362,10 +362,10 @@
 <span id="_CPPv327harp_get_valid_min_for_type14harp_data_type"></span><span id="_CPPv227harp_get_valid_min_for_type14harp_data_type"></span><span id="harp_get_valid_min_for_type__harp_data_type"></span><span class="target" id="group__harp__general_1ga854ceb4ea5b4953cfa94a0b738bdbee5"></span><a class="reference internal" href="#_CPPv411harp_scalar" title="harp_scalar"><span class="n"><span class="pre">harp_scalar</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_valid_min_for_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the minimum valid value for a HARP data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data_type</strong> – Data type for which to retrieve the minimum valid value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The minimum valid value of the data type. </p>
 </dd>
 </dl>
@@ -376,10 +376,10 @@
 <span id="_CPPv327harp_get_valid_max_for_type14harp_data_type"></span><span id="_CPPv227harp_get_valid_max_for_type14harp_data_type"></span><span id="harp_get_valid_max_for_type__harp_data_type"></span><span class="target" id="group__harp__general_1ga0161b0bb8622db439ce702d125855de9"></span><a class="reference internal" href="#_CPPv411harp_scalar" title="harp_scalar"><span class="n"><span class="pre">harp_scalar</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_get_valid_max_for_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve the maximum valid value for a HARP data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data_type</strong> – Data type for which to retrieve the maximum valid value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The maximum valid value of the data type. </p>
 </dd>
 </dl>
@@ -390,13 +390,13 @@
 <span id="_CPPv327harp_is_fill_value_for_type14harp_data_type11harp_scalar"></span><span id="_CPPv227harp_is_fill_value_for_type14harp_data_type11harp_scalar"></span><span id="harp_is_fill_value_for_type__harp_data_type.harp_scalar"></span><span class="target" id="group__harp__general_1gaffeedbea853fee203d4555664225e261"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_is_fill_value_for_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span>, <a class="reference internal" href="#_CPPv411harp_scalar" title="harp_scalar"><span class="n"><span class="pre">harp_scalar</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if <em>value</em> equals the fill value for the specified data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_type</strong> – Data type corresponding to the value of <em>value</em>. </p></li>
 <li><p><strong>value</strong> – Value to test. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Value is not equal to the fill value. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Value equals the fill value. </p></li>
@@ -411,13 +411,13 @@
 <span id="_CPPv326harp_is_valid_min_for_type14harp_data_type11harp_scalar"></span><span id="_CPPv226harp_is_valid_min_for_type14harp_data_type11harp_scalar"></span><span id="harp_is_valid_min_for_type__harp_data_type.harp_scalar"></span><span class="target" id="group__harp__general_1ga43fde638ad814bb4a88c2e63ab06deca"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_is_valid_min_for_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span>, <a class="reference internal" href="#_CPPv411harp_scalar" title="harp_scalar"><span class="n"><span class="pre">harp_scalar</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if <em>value</em> equals the minimum valid value for the specified data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_type</strong> – Data type corresponding to the value of <em>value</em>. </p></li>
 <li><p><strong>value</strong> – Value to test. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Value is not equal to the minimum valid value. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Value equals the minimum valid value. </p></li>
@@ -432,13 +432,13 @@
 <span id="_CPPv326harp_is_valid_max_for_type14harp_data_type11harp_scalar"></span><span id="_CPPv226harp_is_valid_max_for_type14harp_data_type11harp_scalar"></span><span id="harp_is_valid_max_for_type__harp_data_type.harp_scalar"></span><span class="target" id="group__harp__general_1gace82158c05757551242151c4cb8709f6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_is_valid_max_for_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span>, <a class="reference internal" href="#_CPPv411harp_scalar" title="harp_scalar"><span class="n"><span class="pre">harp_scalar</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if <em>value</em> equals the maximum valid value for the specified data type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_type</strong> – Data type corresponding to the value of <em>value</em>. </p></li>
 <li><p><strong>value</strong> – Value to test. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Value is not equal to the maximum valid value. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Value equals the maximum valid value. </p></li>
@@ -453,10 +453,10 @@
 <span id="_CPPv313harp_isfinited"></span><span id="_CPPv213harp_isfinited"></span><span id="harp_isfinite__double"></span><span class="target" id="group__harp__general_1gab2573bc2856e63bf0f13c342c97fcc74"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_isfinite</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value is a finite number (i.e. not NaN and not infinite). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> – A double value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, The double value is a finite number. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, The double value is not a finite number. </p></li>
@@ -471,10 +471,10 @@
 <span id="_CPPv310harp_isnand"></span><span id="_CPPv210harp_isnand"></span><span id="harp_isnan__double"></span><span class="target" id="group__harp__general_1gabc115e3ba02afd21054b75ccb025a8a3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_isnan</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals NaN (Not a Number). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> – A double value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, The double value equals NaN. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, The double value does not equal NaN. </p></li>
@@ -489,7 +489,7 @@
 <span id="_CPPv38harp_nanv"></span><span id="_CPPv28harp_nanv"></span><span id="harp_nan__void"></span><span class="target" id="group__harp__general_1ga10caef8ce343d5b5bec3b8240441ef86"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_nan</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a double value that respresents NaN (Not a Number). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The double value ‘NaN’. </p>
 </dd>
 </dl>
@@ -500,10 +500,10 @@
 <span id="_CPPv310harp_isinfd"></span><span id="_CPPv210harp_isinfd"></span><span id="harp_isinf__double"></span><span class="target" id="group__harp__general_1ga29b220390a28440d8f4f8e50afcdbd0a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_isinf</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals inf (either positive or negative infinity). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> – A double value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, The double value equals inf. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, The double value does not equal inf. </p></li>
@@ -518,10 +518,10 @@
 <span id="_CPPv314harp_isplusinfd"></span><span id="_CPPv214harp_isplusinfd"></span><span id="harp_isplusinf__double"></span><span class="target" id="group__harp__general_1gae3a1e45bedf7743577d367ba7edb9f27"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_isplusinf</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals +inf (positive infinity). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> – A double value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, The double value equals +inf. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, The double value does not equal +inf. </p></li>
@@ -536,10 +536,10 @@
 <span id="_CPPv313harp_ismininfd"></span><span id="_CPPv213harp_ismininfd"></span><span id="harp_ismininf__double"></span><span class="target" id="group__harp__general_1gad3a45b9aefba353096685388531e7012"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_ismininf</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">x</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Find out whether a double value equals -inf (negative infinity). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> – A double value. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, The double value equals -inf. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, The double value does not equal -inf. </p></li>
@@ -554,7 +554,7 @@
 <span id="_CPPv312harp_plusinfv"></span><span id="_CPPv212harp_plusinfv"></span><span id="harp_plusinf__void"></span><span class="target" id="group__harp__general_1gadbfd3aa6ed1b7743899a67399971620f"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_plusinf</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a double value that respresents +inf (positive infinity). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The double value ‘+inf’. </p>
 </dd>
 </dl>
@@ -565,7 +565,7 @@
 <span id="_CPPv311harp_mininfv"></span><span id="_CPPv211harp_mininfv"></span><span id="harp_mininf__void"></span><span class="target" id="group__harp__general_1ga0d6fdf4326a386b00e7f68851b450581"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_mininf</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Retrieve a double value that respresents -inf (negative infinity). </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The double value ‘-inf’. </p>
 </dd>
 </dl>
@@ -587,10 +587,10 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>path</strong> – Search path for .codadef files </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -616,14 +616,14 @@
 </ul>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> – Filename of the file to search for </p></li>
 <li><p><strong>searchpath</strong> – Search path where to look for the file <em>file</em> (can be NULL) </p></li>
 <li><p><strong>relative_location</strong> – Filepath relative to the directory from <em>searchpath</em> where <em>file</em> was found that should be used to determine the CODA definition path. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -638,14 +638,14 @@
 <span id="_CPPv343harp_set_option_create_collocation_datetimei"></span><span id="_CPPv243harp_set_option_create_collocation_datetimei"></span><span id="harp_set_option_create_collocation_datetime__i"></span><span class="target" id="group__harp__general_1ga95b3fd9454431662647a0bad099c2aba"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_set_option_create_collocation_datetime</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Enable/Disable the creation of collocation_datetime variables Enabling this option will create a collocation_datetime variable when a collocate_left or collocation_right operation is performed. The collocation_datetime variable will contain the datetime of the sample from the other dataset for the collocated pair. The variable will only be created if the collocation result file contains a datetime_diff column. By default the creation of the collocation_datetime variable is disabled. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>enable</strong> – <ul class="simple">
 <li><p>0: Disable creation of collocation_datetime variables. </p></li>
 <li><p>1: Enable creation of collocation_datetime variables. </p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -664,7 +664,7 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Creation of collocation_datetime variables is disabled. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Ceation of collocation_datetime variables is enabled. </p></li>
@@ -692,14 +692,14 @@
 </ul>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>enable</strong> – <ul class="simple">
 <li><p>0: Disable use of AFGL86. </p></li>
 <li><p>1: Enable use of AFGL86. </p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -718,7 +718,7 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Use of AFGL86 is disabled. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Use of AFGL86 is enabled. </p></li>
@@ -746,14 +746,14 @@
 </ul>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>enable</strong> – <ul class="simple">
 <li><p>0: Disable use of US Standard 76. </p></li>
 <li><p>1: Enable use of US Standard 76. </p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -772,7 +772,7 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Use of US Standard 76 is disabled. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Use of US Standard 76 is enabled. </p></li>
@@ -787,10 +787,10 @@
 <span id="_CPPv332harp_set_option_hdf5_compressioni"></span><span id="_CPPv232harp_set_option_hdf5_compressioni"></span><span id="harp_set_option_hdf5_compression__i"></span><span class="target" id="group__harp__general_1ga37df50bf61d353f47a60cda03c920f36"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_set_option_hdf5_compression</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">level</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the compression level to use for storing variables in HDF5 files. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>level</strong> – The compression level (1=low, …, 9=high) or 0 to disable compression. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -809,7 +809,7 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>0=disabled, 1=low, …, 9=high </p>
 </dd>
 </dl>
@@ -820,14 +820,14 @@
 <span id="_CPPv337harp_set_option_propagate_uncertaintyi"></span><span id="_CPPv237harp_set_option_propagate_uncertaintyi"></span><span id="harp_set_option_propagate_uncertainty__i"></span><span class="target" id="group__harp__general_1ga31e452a3e090b3d9cc143f86553b76db"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_set_option_propagate_uncertainty</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">method</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set how to propagate uncertainty. This is only applicable for operations that support propagation of uncertainties. And then only if there is a choice. The propagation can either assume uncertainties to be fully uncorrelated (the default) or fully correlated. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>method</strong> – <ul class="simple">
 <li><p>0: Assume uncertainties to be uncorrelated. </p></li>
 <li><p>1: Assume uncertainties to be fully correlated. </p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -846,7 +846,7 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code> Assume uncertainties to be uncorrelated. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code> Assume uncertainties to be fully correlated. </p></li>
@@ -861,7 +861,7 @@
 <span id="_CPPv336harp_set_option_regrid_out_of_boundsi"></span><span id="_CPPv236harp_set_option_regrid_out_of_boundsi"></span><span id="harp_set_option_regrid_out_of_bounds__i"></span><span class="target" id="group__harp__general_1ga83bdb60fc511d16c19e7c51d48aae84d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_set_option_regrid_out_of_bounds</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">method</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set how to treat out of bound values during regridding operations. This is only applicable for point interpolation regridding. Any point that falls outside the target grid can be either set to NaN (the default), set to the nearest edge value, or set based on extrapolation (of two nearest points). This global HARP option determines which of the three cases will be used. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>method</strong> – <ul class="simple">
 <li><p>0: Set values outside source grid to NaN </p></li>
 <li><p>1: Set value outside source grid to edge value (=min/max of source grid) </p></li>
@@ -869,7 +869,7 @@
 </ul>
 </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -888,7 +888,7 @@
 </div>
 </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code> Set values outside source grid to NaN </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code> Set value outside source grid to edge value (=min/max of source grid) </p></li>
@@ -907,7 +907,7 @@
 <p>If you use CODA functions directly in combination with HARP functions you should call coda_init() and coda_done() explicitly yourself and not rely on HARP having performed the coda_init() for you.</p>
 <p>It is valid to perform multiple calls to <a class="reference internal" href="#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> after each other. Only the first call to <a class="reference internal" href="#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> will do the actual initialization and all following calls to <a class="reference internal" href="#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> will only increase an initialization counter. Each call to <a class="reference internal" href="#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a> needs to be matched by a call to <a class="reference internal" href="#group__harp__general_1ga450874cf522aa206ac0101a013b372c0"><span class="std std-ref">harp_done()</span></a> at clean-up time (i.e. the number of calls to <a class="reference internal" href="#group__harp__general_1ga450874cf522aa206ac0101a013b372c0"><span class="std std-ref">harp_done()</span></a> needs to be equal to the number of calls to <a class="reference internal" href="#group__harp__general_1gad1f344feb3bea74322283efca649a045"><span class="std std-ref">harp_init()</span></a>). Only the final <a class="reference internal" href="#group__harp__general_1ga450874cf522aa206ac0101a013b372c0"><span class="std std-ref">harp_done()</span></a> call (when the initialization counter has reached 0) will perform the actual clean-up of the HARP C library.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
