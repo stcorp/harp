@@ -157,6 +157,8 @@ sensor_zenith_angle                                                            X
 <species>_column_volume_mixing_ratio_dry_air   stratospheric,                  X            X             [ppv]
                                                tropospheric
 <species>_density                              surface                         X       X    X             [kg/m3]
+<species>_layer_height                                                         X            X             [m]
+<species>_layer_pressure                                                       X            X             [Pa]
 <species>_mass_flux                                                            X       X    X             [kg/m2/s]
 <species>_mass_mixing_ratio                    surface         apriori, avk,   X       X    X             [kg/kg]
                                                                dfs, sic

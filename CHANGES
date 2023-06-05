@@ -15,6 +15,7 @@
 
 * Updates to product ingestions:
   - S5P L2 CLOUD: fixed qa_value ingestion for CRB (now use qa_value_crb)
+  - S5P L2 SO2: added support for SO2 layer height
 
 1.17 2022-12-12
 ~~~~~~~~~~~~~~~
