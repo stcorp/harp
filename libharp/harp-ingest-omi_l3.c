@@ -51,6 +51,7 @@ typedef struct ingest_info_struct
     double latitude_step;
     double longitude_origin;
     double longitude_step;
+    int use_cloud_screened_no2;
 } ingest_info;
 
 static int get_dataset_attributes(coda_cursor *cursor, double *missing_value, double *scale_factor, double *offset)
@@ -124,6 +125,41 @@ static int get_dataset_attributes(coda_cursor *cursor, double *missing_value, do
     return 0;
 }
 
+static int read_variable(ingest_info *info, const char *path, double *buffer, long num_expected_elements)
+{
+    coda_cursor cursor;
+    long num_elements;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (num_elements != num_expected_elements)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "product error detected (inconsistent array size %ld != %ld)",
+                       num_elements, num_expected_elements);
+        return -1;
+    }
+    if (coda_cursor_read_double_array(&cursor, buffer, coda_array_ordering_c) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_data_set(ingest_info *info, const char *data_set_name, double *buffer)
 {
     coda_cursor cursor;
@@ -188,11 +224,20 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
-static int read_datetime(void *user_data, harp_array data)
+static int read_datetime_start(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     *data.double_data = info->granule_time;
+
+    return 0;
+}
+
+static int read_datetime_length(void *user_data, harp_array data)
+{
+    (void)user_data;
+
+    *data.double_data = 1;
 
     return 0;
 }
@@ -240,6 +285,18 @@ static int read_cloud_fraction_precision(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     if (read_data_set(info, "CloudFractionPrecision", data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_cloud_radiance_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (read_data_set(info, "CloudRadianceFraction", data.double_data) != 0)
     {
         return -1;
     }
@@ -307,6 +364,18 @@ static int read_column_amount_o3_precision(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_column_amount_so2(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (read_data_set(info, "ColumnAmountSO2", data.double_data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_uv_aerosol_index(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -319,88 +388,116 @@ static int read_uv_aerosol_index(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_so2e_radiative_cloud_fraction(void *user_data, harp_array data)
+static int read_hcho_beginning_date(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    char string[20];
 
-    if (read_data_set(info, "CloudRadianceFraction", data.double_data) != 0)
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/@RangeBeginningDate") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, string, 20) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_time_string_to_double("yyyy-MM-dd", string, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
 
     return 0;
 }
 
-static int read_so2e_column_amount_so2(void *user_data, harp_array data)
+static int read_hcho_ending_date(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    char string[20];
 
-    if (read_data_set(info, "ColumnAmountSO2", data.double_data) != 0)
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/@RangeEndingDate") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, string, 20) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_time_string_to_double("yyyy-MM-dd", string, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
 
     return 0;
+}
+
+static int read_hcho_latitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable(info, "/latitude", data.double_data, info->num_latitudes);
+}
+
+static int read_hcho_longitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable(info, "/longitude", data.double_data, info->num_longitudes);
 }
 
 static int read_hcho_column_amount_hcho(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_data_set(info, "column_amount", data.double_data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
+    return read_variable(info, "/key_science_data/column_amount", data.double_data, info->num_grid_elements);
 }
 
 static int read_hcho_column_amount_hcho_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_data_set(info, "column_uncertainty", data.double_data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
+    return read_variable(info, "/key_science_data/column_uncertainty", data.double_data, info->num_grid_elements);
 }
 
 static int read_no2_column_amount_no2(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_data_set(info, "ColumnAmountNO2", data.double_data) != 0)
+    if (info->use_cloud_screened_no2)
     {
-        return -1;
+        return read_data_set(info, "ColumnAmountNO2CloudScreened", data.double_data);
     }
 
-    return 0;
+    return read_data_set(info, "ColumnAmountNO2", data.double_data);
 }
 
-static int read_no2_column_amount_no2_cloud_screened(void *user_data, harp_array data)
+static int read_no2_tropospheric_column_amount_no2(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_data_set(info, "ColumnAmountNO2CloudScreened", data.double_data) != 0)
+    if (info->use_cloud_screened_no2)
     {
-        return -1;
+        return read_data_set(info, "ColumnAmountNO2TropCloudScreened", data.double_data);
     }
 
-    return 0;
-}
-
-static int read_no2_trop_column_amount_no2_cloud_screened(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    if (read_data_set(info, "ColumnAmountNO2TropCloudScreened", data.double_data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
+    return read_data_set(info, "ColumnAmountNO2Trop", data.double_data);
 }
 
 static int init_cursors_and_grid(ingest_info *info, const char *data_group_name)
@@ -578,6 +675,7 @@ static int ingest_info_new(coda_product *product, ingest_info **new_info)
     info->latitude_step = 0.0;
     info->longitude_origin = 0.0;
     info->longitude_step = 0.0;
+    info->use_cloud_screened_no2 = 0;
 
     *new_info = info;
 
@@ -637,9 +735,6 @@ static int ingestion_init_omto3(const harp_ingestion_module *module, coda_produc
     return 0;
 }
 
-/**
- * --------------- TODO: On-going work ---------------
- **/
 static int ingestion_init_omso2(const harp_ingestion_module *module, coda_product *product,
                                 const harp_ingestion_options *options, harp_product_definition **definition,
                                 void **user_data)
@@ -652,7 +747,7 @@ static int ingestion_init_omso2(const harp_ingestion_module *module, coda_produc
         return -1;
     }
 
-    if (init_cursors_and_grid(info, "OMI_Column_Amount_O3") != 0)
+    if (init_cursors_and_grid(info, "OMI_Total_Column_Amount_SO2") != 0)
     {
         ingest_info_delete(info);
         return -1;
@@ -664,14 +759,13 @@ static int ingestion_init_omso2(const harp_ingestion_module *module, coda_produc
     return 0;
 }
 
-/**
- * --------------- TODO: On-going work ---------------
- **/
 static int ingestion_init_omhcho(const harp_ingestion_module *module, coda_product *product,
                                  const harp_ingestion_options *options, harp_product_definition **definition,
                                  void **user_data)
 {
     ingest_info *info;
+    coda_cursor cursor;
+    long length;
 
     (void)options;
     if (ingest_info_new(product, &info) != 0)
@@ -679,11 +773,38 @@ static int ingestion_init_omhcho(const harp_ingestion_module *module, coda_produ
         return -1;
     }
 
-    if (init_cursors_and_grid(info, "OMI_Column_Amount_O3") != 0)
+    /* the HCHO product does not follow the conventions of the other products in terms of format */
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
-        ingest_info_delete(info);
+        harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
+
+    if (coda_cursor_goto(&cursor, "/latitude") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &length) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->num_latitudes = (int)length;
+
+    if (coda_cursor_goto(&cursor, "/longitude") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &length) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->num_longitudes = (int)length;
+
+    info->num_grid_elements = info->num_latitudes * info->num_longitudes;
 
     *definition = *module->product_definition;
     *user_data = info;
@@ -691,9 +812,6 @@ static int ingestion_init_omhcho(const harp_ingestion_module *module, coda_produ
     return 0;
 }
 
-/**
- * --------------- TODO: On-going work ---------------
- **/
 static int ingestion_init_omno2(const harp_ingestion_module *module, coda_product *product,
                                 const harp_ingestion_options *options, harp_product_definition **definition,
                                 void **user_data)
@@ -706,7 +824,12 @@ static int ingestion_init_omno2(const harp_ingestion_module *module, coda_produc
         return -1;
     }
 
-    if (init_cursors_and_grid(info, "OMI_Column_Amount_O3") != 0)
+    if (harp_ingestion_options_has_option(options, "qa_filter"))
+    {
+        info->use_cloud_screened_no2 = 1;
+    }
+
+    if (init_cursors_and_grid(info, "ColumnAmountNO2") != 0)
     {
         ingest_info_delete(info);
         return -1;
@@ -718,20 +841,46 @@ static int ingestion_init_omno2(const harp_ingestion_module *module, coda_produc
     return 0;
 }
 
-static void register_datetime_variable(harp_product_definition *product_definition)
+static void register_datetime_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     const char *description;
     const char *path;
 
-    description = "time of the measurement";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double,
-                                                                     1, dimension_type, NULL, description,
-                                                                     "seconds since 2000-01-01", NULL, read_datetime);
-
+    /* datetime_start */
+    description = "start time of the grid";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime_start",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "seconds since 2000-01-01", NULL,
+                                                                     read_datetime_start);
     path = "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES@TAI93At0zOfGranule";
     description = "the time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* datetime_length */
+    description = "length of the grid";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime_length",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "days", NULL,
+                                                                     read_datetime_length);
+    description = "set to fixed value of 1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+}
+
+static void register_latitude_variable(harp_product_definition *product_definition, const char *path)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_latitude };
+    const char *description;
+
+    description = "latitude of the grid cell mid-point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
+                                                                     1, dimension_type, NULL, description,
+                                                                     "degree_north", NULL, read_latitude);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+
+    description = "a uniformly increasing sequence on the interval (-90, 90)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
@@ -748,22 +897,6 @@ static void register_longitude_variable(harp_product_definition *product_definit
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
 
     description = "a uniformly increasing sequence on the interval (-180, 180)";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-}
-
-static void register_latitude_variable(harp_product_definition *product_definition, const char *path)
-{
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[1] = { harp_dimension_latitude };
-    const char *description;
-
-    description = "latitude of the grid cell mid-point (WGS84)";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
-                                                                     1, dimension_type, NULL, description,
-                                                                     "degree_north", NULL, read_latitude);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
-
-    description = "a uniformly increasing sequence on the interval (-90, 90)";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
@@ -784,7 +917,7 @@ static void register_omdoao3e_product(void)
     product_definition = harp_ingestion_register_product(module, "OMI_L3_OMDOAO3e", NULL, read_dimensions);
 
     /* datetime */
-    register_datetime_variable(product_definition);
+    register_datetime_variables(product_definition);
 
     /* longitude and latitude */
     path = "/HDFEOS/GRIDS/ColumnAmountO3@GridSpacing, /HDFEOS/GRIDS/ColumnAmountO3@NumberOfLongitudesInGrid";
@@ -846,6 +979,178 @@ static void register_omdoao3e_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void register_omhchod_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
+    const char *description;
+    const char *path;
+
+    module = harp_ingestion_register_module("OMI_L3_OMHCHOd", "OMI", "AURA_OMI", "OMHCHOd", "OMI L3 daily Formaldehyde "
+                                            "(HCHO) total column -- Weighted Mean Global 0.1deg Lat/Lon Grid",
+                                            ingestion_init_omhcho, ingestion_done);
+
+    /* OMI_L3_OMHCHOd product */
+    product_definition = harp_ingestion_register_product(module, "OMI_L3_OMHCHOd", NULL, read_dimensions);
+
+    /* datetime_start */
+    description = "start time of the grid";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime_start",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "seconds since 2000-01-01", NULL,
+                                                                     read_hcho_beginning_date);
+    path = "/@RangeBeginningDate";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* datetime_stop */
+    description = "end time of the grid";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime_stop",
+                                                                     harp_type_double, 1, dimension_type, NULL,
+                                                                     description, "seconds since 2000-01-01", NULL,
+                                                                     read_hcho_ending_date);
+    path = "/@RangeEndingDate";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* latitude */
+    description = "latitude of the grid cell mid-point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
+                                                                     1, &dimension_type[1], NULL, description,
+                                                                     "degree_north", NULL, read_hcho_latitude);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    description = "a uniformly increasing sequence on the interval (-90, 90)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* longitude */
+    description = "longitude of the grid cell mid-point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double,
+                                                                     1, &dimension_type[2], NULL, description,
+                                                                     "degree_east", NULL, read_hcho_longitude);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    description = "a uniformly increasing sequence on the interval (-180, 180)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* HCHO_column_number_density */
+    description = "HCHO column number density";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density",
+                                                                     harp_type_double, 3, dimension_type, NULL,
+                                                                     description, "molecules/cm^2", NULL,
+                                                                     read_hcho_column_amount_hcho);
+    path = "/key_science_data/column_amount[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* HCHO_column_uncertainty */
+    description = "Uncertainty of the HCHO column number density.";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "HCHO_column_number_density_uncertainty",
+                                                                     harp_type_double, 3, dimension_type, NULL,
+                                                                     description, "molecules/cm^2", NULL,
+                                                                     read_hcho_column_amount_hcho_precision);
+    path = "/key_science_data/column_uncertainty[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
+static void register_omno2d_product(void)
+{
+    const char *no2_filter_options[] = { "cloud_screened" };
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
+    const char *description;
+    const char *path;
+
+    module = harp_ingestion_register_module("OMI_L3_OMNO2d", "OMI", "AURA_OMI", "OMNO2d", "OMI L3 daily NO2 "
+                                            "tropospheric, stratospheric and total columns MINDS on a global "
+                                            "0.25x0.25 degree grid", ingestion_init_omno2, ingestion_done);
+
+    harp_ingestion_register_option(module, "no2", "whether to ingested the unfiltered NO2 (default) or cloud screened "
+                                   "NO2 (no2=cloud_screened) data", 1, no2_filter_options);
+
+    /* OMI_L3_OMNO2d product */
+    product_definition = harp_ingestion_register_product(module, "OMI_L3_OMNO2d", NULL, read_dimensions);
+
+    /* datetime */
+    register_datetime_variables(product_definition);
+
+    /* longitude and latitude */
+    path = "/HDFEOS/GRIDS/ColumnAmountNO2@GridSpacing, "
+        "/HDFEOS/GRIDS/ColumnAmountNO2@NumberOfLongitudesInGrid";
+    register_longitude_variable(product_definition, path);
+    path = "/HDFEOS/GRIDS/ColumnAmountNO2@GridSpacing, "
+        "/HDFEOS/GRIDS/ColumnAmountNO2@NumberOfLatitudesInGrid";
+    register_latitude_variable(product_definition, path);
+
+    /* NO2_column_number_density */
+    description = "NO2 vertical column density";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density",
+                                                                     harp_type_double, 3, dimension_type, NULL,
+                                                                     description, "molec/cm2", NULL,
+                                                                     read_no2_column_amount_no2);
+    path = "/ColumnAmountNO2[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "no2 unset", path, NULL);
+    path = "/ColumnAmountNO2CloudScreened[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "no2=cloud_screened", path, NULL);
+
+    /* tropospheric_NO2_column_number_density */
+    description = "NO2 tropospheric column density";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "tropospheric_NO2_column_number_density",
+                                                                     harp_type_double, 3, dimension_type, NULL,
+                                                                     description, "molec/cm2", NULL,
+                                                                     read_no2_tropospheric_column_amount_no2);
+    path = "/ColumnAmountNO2Trop[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "no2 unset", path, NULL);
+    path = "/ColumnAmountNO2TropCloudScreened[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "no2=cloud_screened", path, NULL);
+}
+
+static void register_omso2e_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
+    const char *description;
+    const char *path;
+
+    module = harp_ingestion_register_module("OMI_L3_OMSO2e", "OMI", "AURA_OMI", "OMSO2e", "OMI L3 daily SO2  "
+                                            "total column density on a global 0.25x0.25 degree grid",
+                                            ingestion_init_omso2, ingestion_done);
+
+    /* OMI_L3_OMSO2e product */
+    product_definition = harp_ingestion_register_product(module, "OMI_L3_OMSO2e", NULL, read_dimensions);
+
+    /* datetime */
+    register_datetime_variables(product_definition);
+
+    /* longitude and latitude */
+    path = "/HDFEOS/GRIDS/TotalColumnAmountSO2@GridSpacing, "
+        "/HDFEOS/GRIDS/TotalColumnAmountSO2@NumberOfLongitudesInGrid";
+    register_longitude_variable(product_definition, path);
+    path = "/HDFEOS/GRIDS/TotalColumnAmountSO2@GridSpacing, "
+        "/HDFEOS/GRIDS/TotalColumnAmountSO2@NumberOfLatitudesInGrid";
+    register_latitude_variable(product_definition, path);
+
+    /* radiative_cloud_fraction */
+    description = "Cloud fraction";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "radiative_cloud_fraction",
+                                                                     harp_type_double, 3, dimension_type, NULL,
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                     read_cloud_radiance_fraction);
+    path = "/HDFEOS/GRIDS/TotalColumnAmountSO2/Data_Fields/CloudRadianceFraction[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* SO2_column_number_density */
+    description = "SO2 column number density";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density",
+                                                                     harp_type_double, 3, dimension_type, NULL,
+                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                                     read_column_amount_so2);
+    path = "/HDFEOS/GRIDS/TotalColumnAmountSO2/Data_Fields/ColumnAmountSO2[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
 
 static void register_omto3d_product(void)
 {
@@ -864,7 +1169,7 @@ static void register_omto3d_product(void)
     product_definition = harp_ingestion_register_product(module, "OMI_L3_OMTO3d", NULL, read_dimensions);
 
     /* datetime */
-    register_datetime_variable(product_definition);
+    register_datetime_variables(product_definition);
 
     /* longitude and latitude */
     path = "/HDFEOS/GRIDS/OMI_Column_Amount_O3@GridSpacing, "
@@ -918,7 +1223,7 @@ static void register_omto3e_product(void)
     product_definition = harp_ingestion_register_product(module, "OMI_L3_OMTO3e", NULL, read_dimensions);
 
     /* datetime */
-    register_datetime_variable(product_definition);
+    register_datetime_variables(product_definition);
 
     /* longitude and latitude */
     path = "/HDFEOS/GRIDS/OMI_Column_Amount_O3@GridSpacing, "
@@ -946,167 +1251,14 @@ static void register_omto3e_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-/**
- * --------------- TODO: Verify ---------------
- **/
-static void register_omso2e_product(void)
-{
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
-    const char *description;
-    const char *path;
-
-    module = harp_ingestion_register_module("OMI_L3_OMSO2e", "OMI", "AURA_OMI", "OMSO2e", "OMI L3 daily SO2  "
-                                            "total column density on a global 0.25x0.25 degree grid",
-                                            ingestion_init_omso2, ingestion_done);
-
-    /* OMI_L3_OMSO2e product */
-    product_definition = harp_ingestion_register_product(module, "OMI_L3_OMSO2e", NULL, read_dimensions);
-
-    /* datetime */
-    register_datetime_variable(product_definition);
-
-    /* longitude and latitude */
-    path = "/HDFEOS/GRIDS/ColumnAmountO3@GridSpacing, /HDFEOS/GRIDS/ColumnAmountO3@NumberOfLongitudesInGrid";
-    register_longitude_variable(product_definition, path);
-    path = "/HDFEOS/GRIDS/ColumnAmountO3@GridSpacing, /HDFEOS/GRIDS/ColumnAmountO3@NumberOfLatitudesInGrid";
-    register_latitude_variable(product_definition, path);
-
-    /* radiative_cloud_fraction */
-    description = "Cloud fraction.";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "radiative_cloud_fraction",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                     read_so2e_radiative_cloud_fraction);
-    path = "/HDFEOS/GRIDS/TotalColumnAmountSO2/Data_Fields/CloudRadianceFraction[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* O3_column_number_density */
-    description = "O3 column number density";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                     read_column_amount_o3);
-    path = "/HDFEOS/GRIDS/TotalColumnAmountSO2/Data_Fields/ColumnAmountO3[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* SO2_column_number_density */
-    description = "SO2 column number density";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density",
-                                                                     harp_type_double, 2, dimension_type, NULL,
-                                                                     description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                     read_so2e_column_amount_so2);
-    path = "/HDFEOS/GRIDS/TotalColumnAmountSO2/Data_Fields/ColumnAmountSO2[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-}
-
-/**
- * --------------- TODO: Verify ---------------
- **/
-static void register_omhchod_product(void)
-{
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
-    const char *description;
-    const char *path;
-
-    module = harp_ingestion_register_module("OMI_L3_OMHCHOd", "OMI", "AURA_OMI", "OMHCHOd", "OMI L3 daily Formaldehyde (HCHO) "
-                                            "total column -- Weighted Mean Global 0.1deg Lat/Lon Grid",
-                                            ingestion_init_omhcho, ingestion_done);
-
-    /* OMI_L3_OMHCHOd product */
-    product_definition = harp_ingestion_register_product(module, "OMI_L3_OMTO3e", NULL, read_dimensions);
-
-    /* TODO: no datetime because attribute TAI93At0zOfGranule not present in product. */
-    /* TODO: longitude and latitude because there is no NumberOfLongitudesInGrid, nor NumberOfLatitudesInGrid.*/
-
-    /* HCHO_column_number_density */
-    description = "HCHO column number density";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density",
-                                                                     harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "molecules/cm^2", NULL,
-                                                                     read_hcho_column_amount_hcho);
-    path = "/key_science_data/column_amount[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* column_uncertainty */
-    description = "Uncertainty of the HCHO column number density.";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_uncertainty",
-                                                                     harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "molecules/cm^2", NULL,
-                                                                     read_hcho_column_amount_hcho_precision);
-    path = "/key_science_data/column_uncertainty[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-}
-
-/**
- * --------------- TODO: Verify ---------------
- **/
-static void register_omno2d_product(void)
-{
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude };
-    const char *description;
-    const char *path;
-
-    module = harp_ingestion_register_module("OMI_L3_OMNO2d", "OMI", "AURA_OMI", "OMNO2d", "OMI L3 daily NO2 "
-                                            "tropospheric, stratospheric and total columns MINDS on a global 0.25x0.25 degree grid",
-                                            ingestion_init_omno2, ingestion_done);
-
-    /* OMI_L3_OMNO2d product */
-    product_definition = harp_ingestion_register_product(module, "OMI_L3_OMNO2d", NULL, read_dimensions);
-
-    /* datetime */
-    register_datetime_variable(product_definition);
-
-    /* longitude and latitude */
-    /* TODO: No NumberOfLongitudesInGrid, no NumberOfLatitudesInGrid.*/
-
-    /* NO2_column_number_density */
-    description = "NO2 column number density for high quality observations with solar zenith angles less than 85 degrees.";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density",
-                                                                     harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "molec/cm2", NULL,
-                                                                     read_no2_column_amount_no2);
-    path = "/ColumnAmountNO2[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* NO2_column_number_density_cloud_screened */
-    description = "The average total NO2 vertical column density (in molec/cm2) for high quality "
-        "observations with effective cloud fractions less than 0.3 and solar zenith angles less than 85 degrees.";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_cloud_screened",
-                                                                     harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "molec/cm2", NULL,
-                                                                     read_no2_column_amount_no2_cloud_screened);
-    path = "/ColumnAmountNO2CloudScreened[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* NO2_tropospheric_column_number_density_cloud_screened */
-    description = "The average tropospheric NO2 vertical column density (in molec/cm2) for high quality "
-        "observations with effective cloud fractions less than 0.3 and solar zenith angles less than 85 degrees.";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "NO2_tropospheric_column_number_density_cloud_screened",
-                                                                     harp_type_double, 3, dimension_type, NULL,
-                                                                     description, "molec/cm2", NULL,
-                                                                     read_no2_trop_column_amount_no2_cloud_screened);
-    path = "/ColumnAmountNO2TropCloudScreened[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-}
-
 int harp_ingestion_module_omi_l3_init(void)
 {
     register_omdoao3e_product();
-    register_omto3d_product();
-    register_omto3e_product();
-    register_omso2e_product();
     register_omhchod_product();
     register_omno2d_product();
+    register_omso2e_product();
+    register_omto3d_product();
+    register_omto3e_product();
 
     return 0;
 }

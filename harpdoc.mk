@@ -450,6 +450,9 @@ HARP_DOCFILES = \
 	doc/html/ingestions/OMI_L2_OMTO3.html \
 	doc/html/ingestions/OMI_L2_OMUVB.html \
 	doc/html/ingestions/OMI_L3_OMDOAO3e.html \
+	doc/html/ingestions/OMI_L3_OMHCHOd.html \
+	doc/html/ingestions/OMI_L3_OMNO2d.html \
+	doc/html/ingestions/OMI_L3_OMSO2e.html \
 	doc/html/ingestions/OMI_L3_OMTO3d.html \
 	doc/html/ingestions/OMI_L3_OMTO3e.html \
 	doc/html/ingestions/OSIRIS_L2_Aerosol_MART.html \
@@ -1448,6 +1451,12 @@ doc/html/ingestions/OMI_L2_OMTO3.html:
 doc/html/ingestions/OMI_L2_OMUVB.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L3_OMDOAO3e.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OMI_L3_OMHCHOd.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OMI_L3_OMNO2d.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/OMI_L3_OMSO2e.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/OMI_L3_OMTO3d.html:
 	$(MAKE) harp_doc

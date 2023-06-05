@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OMI_L3_OMTO3e &mdash; HARP 1.17 documentation</title>
+  <title>OMI_L3_OMHCHOd &mdash; HARP 1.17 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -65,7 +65,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">OMI_L3_OMTO3e</li>
+      <li class="breadcrumb-item active">OMI_L3_OMHCHOd</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -74,11 +74,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="omi-l3-omto3e">
-<h1>OMI_L3_OMTO3e</h1>
+  <section id="omi-l3-omhchod">
+<h1>OMI_L3_OMHCHOd</h1>
 <section id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">OMI_L3_OMTO3e</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">OMI_L3_OMHCHOd</span></code> data.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25%" />
@@ -102,35 +102,35 @@
 <td><p>[seconds since 2000-01-01]</p></td>
 <td><p>start time of the grid</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>datetime_length</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime_stop</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[days]</p></td>
-<td><p>length of the grid</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
+<td><p>end time of the grid</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>longitude</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>longitude</em>}</p></td>
-<td><p>[degree_east]</p></td>
-<td><p>longitude of the grid cell mid-point (WGS84)</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<tr class="row-even"><td><p><strong>latitude</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>latitude</em>}</p></td>
 <td><p>[degree_north]</p></td>
 <td><p>latitude of the grid cell mid-point (WGS84)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
 <td><p>double</p></td>
-<td><p>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</p></td>
-<td><p>[DU]</p></td>
-<td><p>O3 column number density</p></td>
+<td><p>{<em>longitude</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>longitude of the grid cell mid-point (WGS84)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-even"><td><p><strong>HCHO_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>Cloud fraction.</p></td>
+<td><p>[molecules/cm^2]</p></td>
+<td><p>HCHO column number density</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>HCHO_column_number_density_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</p></td>
+<td><p>[molecules/cm^2]</p></td>
+<td><p>Uncertainty of the HCHO column number density.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -151,38 +151,35 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td rowspan="2"><p><strong>datetime_start</strong></p></td>
+<tr class="row-even"><td><p><strong>datetime_start</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES&#64;TAI93At0zOfGranule</strong></p></td>
+<td><p><strong>/&#64;RangeBeginningDate</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>datetime_stop</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/&#64;RangeEndingDate</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/&#64;RangeEndingDate</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>the time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>datetime_length</strong></p></td>
-<td><p><em>description</em></p></td>
-<td><p>set to fixed value of 1</p></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><p><strong>longitude</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;GridSpacing, /HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;NumberOfLongitudesInGrid</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>a uniformly increasing sequence on the interval (-180, 180)</p></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><p><strong>latitude</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;GridSpacing, /HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;NumberOfLatitudesInGrid</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>a uniformly increasing sequence on the interval (-90, 90)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-even"><td rowspan="2"><p><strong>longitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/ColumnAmountO3[]</strong></p></td>
+<td><p><strong>/&#64;RangeEndingDate</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>a uniformly increasing sequence on the interval (-180, 180)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>HCHO_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/RadiativeCloudFraction[]</strong></p></td>
+<td><p><strong>/key_science_data/column_amount[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>HCHO_column_number_density_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/key_science_data/column_uncertainty[]</strong></p></td>
 </tr>
 </tbody>
 </table>

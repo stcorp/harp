@@ -96,43 +96,49 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<tr class="row-even"><td><p><strong>datetime_start</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[seconds since 2000-01-01]</p></td>
-<td><p>time of the measurement</p></td>
+<td><p>start time of the grid</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime_length</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[days]</p></td>
+<td><p>length of the grid</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>longitude</em>}</p></td>
 <td><p>[degree_east]</p></td>
 <td><p>longitude of the grid cell mid-point (WGS84)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>latitude</strong></p></td>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>latitude</em>}</p></td>
 <td><p>[degree_north]</p></td>
 <td><p>latitude of the grid cell mid-point (WGS84)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</p></td>
 <td><p>[DU]</p></td>
 <td><p>O3 column number density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud fraction</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>uv_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>uv_aerosol_index</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>latitude</em>, <em>longitude</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>UV aerosol index</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -151,36 +157,40 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td rowspan="2"><p><strong>datetime</strong></p></td>
+<tr class="row-even"><td rowspan="2"><p><strong>datetime_start</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES&#64;TAI93At0zOfGranule</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>the time of the measurement converted from TAI93 to seconds since 2000-01-01T00:00:00</p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>longitude</strong></p></td>
+<tr class="row-even"><td><p><strong>datetime_length</strong></p></td>
+<td><p><em>description</em></p></td>
+<td><p>set to fixed value of 1</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>longitude</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;GridSpacing, /HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;NumberOfLongitudesInGrid</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>a uniformly increasing sequence on the interval (-180, 180)</p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>latitude</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>latitude</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;GridSpacing, /HDFEOS/GRIDS/OMI_Column_Amount_O3&#64;NumberOfLatitudesInGrid</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>a uniformly increasing sequence on the interval (-90, 90)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/ColumnAmountO3[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/RadiativeCloudFraction[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>uv_aerosol_index</strong></p></td>
+<tr class="row-odd"><td><p><strong>uv_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/HDFEOS/GRIDS/OMI_Column_Amount_O3/Data_Fields/UVAerosolIndex[]</strong></p></td>
 </tr>
