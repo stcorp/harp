@@ -14,6 +14,7 @@ Current versions used for generating the documentation are:
 - sphinx-autobuild 2021.3.14
 - sphinx-rtd-theme 1.2.0
 - breathe 4.35.0
+- docutils 0.18.1
 - doxygen 1.9.6
 A conda-forge environment file can be found in `doc/environment.yml`
 

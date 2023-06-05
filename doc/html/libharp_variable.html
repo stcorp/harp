@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Variable &mdash; HARP 1.17 documentation</title>
@@ -115,13 +115,13 @@
 <dd><p>Perform unit conversion on a variable</p>
 <p>Apply an automatic conversion on the variable to arrive at the new given unit. If there is no conversion available from the current unit to the new unit then an error will be raised. The data type of the variable will be changed to ‘double’ as part of the conversion. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable on which the apply unit conversion. </p></li>
 <li><p><strong>target_unit</strong> – Unit to which the variable should be converted (use udunits2 compliant units). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -136,7 +136,7 @@
 <span id="_CPPv317harp_variable_newPKc14harp_data_typeiPK19harp_dimension_typePKlPP13harp_variable"></span><span id="_CPPv217harp_variable_newPKc14harp_data_typeiPK19harp_dimension_typePKlPP13harp_variable"></span><span id="harp_variable_new__cCP.harp_data_type.i.harp_dimension_typeCP.lCP.harp_variablePP"></span><span class="target" id="group__harp__variable_1ga924d80d19cc952ad713a7a187d9296fa"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_new</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span>, <a class="reference internal" href="libharp_general.html#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">data_type</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_dimensions</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="libharp_general.html#_CPPv419harp_dimension_type" title="harp_dimension_type"><span class="n"><span class="pre">harp_dimension_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dimension_type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dimension</span></span>, <a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">new_variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create new variable. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> – Name of the variable. </p></li>
 <li><p><strong>data_type</strong> – Storage type of the variable data. </p></li>
@@ -146,7 +146,7 @@
 <li><p><strong>new_variable</strong> – Pointer to the C variable where the new HARP variable will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -161,7 +161,7 @@
 <span id="_CPPv320harp_variable_deleteP13harp_variable"></span><span id="_CPPv220harp_variable_deleteP13harp_variable"></span><span id="harp_variable_delete__harp_variableP"></span><span class="target" id="group__harp__variable_1ga835b6de52fb02a28773ae01d8014fcb0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_delete</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Delete variable. Remove variable and all attached attributes. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>variable</strong> – HARP variable </p>
 </dd>
 </dl>
@@ -172,13 +172,13 @@
 <span id="_CPPv318harp_variable_copyPK13harp_variablePP13harp_variable"></span><span id="_CPPv218harp_variable_copyPK13harp_variablePP13harp_variable"></span><span id="harp_variable_copy__harp_variableCP.harp_variablePP"></span><span class="target" id="group__harp__variable_1ga746112ee46c5f00aca3bb3a2bec0782f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_copy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">other_variable</span></span>, <a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">new_variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create a copy of a variable. The function will create a deep-copy of the given HARP variable, also creating copyies of all attributes. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other_variable</strong> – Variable that should be copied. </p></li>
 <li><p><strong>new_variable</strong> – Pointer to the C variable where the new HARP variable will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -193,13 +193,13 @@
 <span id="_CPPv329harp_variable_copy_attributesPK13harp_variableP13harp_variable"></span><span id="_CPPv229harp_variable_copy_attributesPK13harp_variableP13harp_variable"></span><span id="harp_variable_copy_attributes__harp_variableCP.harp_variableP"></span><span class="target" id="group__harp__variable_1ga7c2ef8399a4df61045d7caaf59ef8b66"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_copy_attributes</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">target_variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Copy all attributes of a variable to a target variable. This will copy all attribute information of a variable that is not available as a parameter of <em>harp_variable_new</em>. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable from which the attributes should be copied. </p></li>
 <li><p><strong>target_variable</strong> – Variable into which the attributes will be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -214,13 +214,13 @@
 <span id="_CPPv320harp_variable_appendP13harp_variablePK13harp_variable"></span><span id="_CPPv220harp_variable_appendP13harp_variablePK13harp_variable"></span><span id="harp_variable_append__harp_variableP.harp_variableCP"></span><span class="target" id="group__harp__variable_1gae2f3e63db847f4bcddd25f1a06c2267a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_append</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">other_variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Append one variable to another. Both variables need to have the ‘time’ dimension as first dimension. And all non-time dimensions need to be the same for both variables. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable to which data should be appended. </p></li>
 <li><p><strong>other_variable</strong> – Variable that should be appended. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -235,13 +235,13 @@
 <span id="_CPPv320harp_variable_renameP13harp_variablePKc"></span><span id="_CPPv220harp_variable_renameP13harp_variablePKc"></span><span id="harp_variable_rename__harp_variableP.cCP"></span><span class="target" id="group__harp__variable_1ga392b44a53ce8ec7bee03ba5d826ee77e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_rename</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Change the name of a variable. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – The variable for which the name should be changed. </p></li>
 <li><p><strong>name</strong> – The new name of the variable. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -256,13 +256,13 @@
 <span id="_CPPv322harp_variable_set_unitP13harp_variablePKc"></span><span id="_CPPv222harp_variable_set_unitP13harp_variablePKc"></span><span id="harp_variable_set_unit__harp_variableP.cCP"></span><span class="target" id="group__harp__variable_1ga71f52dea2713943cc29cee353afe457e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_set_unit</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">unit</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the unit attribute of the specified variable. Store a copy of <em>unit</em> as the value of the unit attribute of the specified variable. The previous value (if any) will be freed. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable for which to set the unit attribute. </p></li>
 <li><p><strong>unit</strong> – New value for the unit attribute. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -277,13 +277,13 @@
 <span id="_CPPv329harp_variable_set_descriptionP13harp_variablePKc"></span><span id="_CPPv229harp_variable_set_descriptionP13harp_variablePKc"></span><span id="harp_variable_set_description__harp_variableP.cCP"></span><span class="target" id="group__harp__variable_1ga16ffb681cdd99a9bc96a03b11b404afe"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_set_description</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">description</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the description attribute of the specified variable. Store a copy of <em>description</em> as the value of the description attribute of the specified variable. The previous value (if any) will be freed. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable for which to set the description attribute. </p></li>
 <li><p><strong>description</strong> – New value for the description attribute. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -298,14 +298,14 @@
 <span id="_CPPv336harp_variable_set_enumeration_valuesP13harp_variableiPPKc"></span><span id="_CPPv236harp_variable_set_enumeration_valuesP13harp_variableiPPKc"></span><span id="harp_variable_set_enumeration_values__harp_variableP.i.cCPP"></span><span class="target" id="group__harp__variable_1ga9ce68c378f834c4178f8d0e95bb3c5d0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_set_enumeration_values</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_enum_values</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">enum_name</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the enumeration values for a variable with integer values. This will assign enumeration labels to each integer value from 0 to num_enum_values-1. The enumeration label for a value is found by using the value as index in the enum_name array. This function will also set valid_min to 0 and valid_max to num_enum_values - 1 (i.e. any variable value that lies outside the index range is considered invalid). You can pass num_enum_values = 0 to clear any previous enumeration values that were set for the variable. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable for which to set the enumeration values. </p></li>
 <li><p><strong>num_enum_values</strong> – Number of enumeration values </p></li>
 <li><p><strong>enum_name</strong> – Array with the names for each of the enumeration values </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -324,14 +324,14 @@
 <p>No boundary checks are performed on <em>index</em>. </p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable of type string. </p></li>
 <li><p><strong>index</strong> – Index into the flattened array of strings associated with the variable. </p></li>
 <li><p><strong>str</strong> – The string of which a copy should be stored. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -346,13 +346,13 @@
 <span id="_CPPv331harp_variable_convert_data_typeP13harp_variable14harp_data_type"></span><span id="_CPPv231harp_variable_convert_data_typeP13harp_variable14harp_data_type"></span><span id="harp_variable_convert_data_type__harp_variableP.harp_data_type"></span><span class="target" id="group__harp__variable_1ga36ccb73140dc74215a886b49a8949363"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_convert_data_type</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <a class="reference internal" href="libharp_general.html#_CPPv414harp_data_type" title="harp_data_type"><span class="n"><span class="pre">harp_data_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">target_data_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Convert the data for the variable such that it matches the given data type. The memory for the block holding the data for the attribute will be resized to match the new data type if needed. You cannot convert string data to numeric data or vice-versa. Conversion from floating point to integer data (or vice versa) is allowed though. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable whose data should be aligned with the given data type. </p></li>
 <li><p><strong>target_data_type</strong> – Data type to which the data for the variable should be converted. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -367,13 +367,13 @@
 <span id="_CPPv332harp_variable_has_dimension_typePK13harp_variable19harp_dimension_type"></span><span id="_CPPv232harp_variable_has_dimension_typePK13harp_variable19harp_dimension_type"></span><span id="harp_variable_has_dimension_type__harp_variableCP.harp_dimension_type"></span><span class="target" id="group__harp__variable_1ga4dea9367f9781a38269c286d3173b77b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_has_dimension_type</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <a class="reference internal" href="libharp_general.html#_CPPv419harp_dimension_type" title="harp_dimension_type"><span class="n"><span class="pre">harp_dimension_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">dimension_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if variable contains at least one dimension equal to the specified dimension type. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable to check. </p></li>
 <li><p><strong>dimension_type</strong> – Requested dimension type </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Variable does not contain a dimension of the given dimension type </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Variable contains at least one dimension of the given dimension type </p></li>
@@ -388,14 +388,14 @@
 <span id="_CPPv333harp_variable_has_dimension_typesPK13harp_variableiPK19harp_dimension_type"></span><span id="_CPPv233harp_variable_has_dimension_typesPK13harp_variableiPK19harp_dimension_type"></span><span id="harp_variable_has_dimension_types__harp_variableCP.i.harp_dimension_typeCP"></span><span class="target" id="group__harp__variable_1ga53a34b30f7afc8d9bcbb546c21884488"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_has_dimension_types</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_dimensions</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="libharp_general.html#_CPPv419harp_dimension_type" title="harp_dimension_type"><span class="n"><span class="pre">harp_dimension_type</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dimension_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if variable has dimensions equal to the specified list of dimension types. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable to check. </p></li>
 <li><p><strong>num_dimensions</strong> – Number of dimensions the variable should have. </p></li>
 <li><p><strong>dimension_type</strong> – Requested dimension type for each of the dimensions of the variable </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Variable does not match the dimension types </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, Variable matches number of dimensions and specified type for each dimension. </p></li>
@@ -410,13 +410,13 @@
 <span id="_CPPv322harp_variable_has_unitPK13harp_variablePKc"></span><span id="_CPPv222harp_variable_has_unitPK13harp_variablePKc"></span><span id="harp_variable_has_unit__harp_variableCP.cCP"></span><span class="target" id="group__harp__variable_1ga568017c653f870b2dadbc8eee84da6d8"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_has_unit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">unit</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Test if variable has a unit equal to the specified unit. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable to check. </p></li>
 <li><p><strong>unit</strong> – Number of dimensions the variable should have. </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, The unit of the variable does not equal the given unit </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, The unit of the variable equals the given unit </p></li>
@@ -431,10 +431,10 @@
 <span id="_CPPv320harp_variable_verifyPK13harp_variable"></span><span id="_CPPv220harp_variable_verifyPK13harp_variable"></span><span id="harp_variable_verify__harp_variableCP"></span><span class="target" id="group__harp__variable_1gafb42d5c88f062c40b4739f75a360c080"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_verify</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Verify that a variable is internally consistent and complies with conventions. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>variable</strong> – Variable to verify. </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Variable verified successfully. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
@@ -449,7 +449,7 @@
 <span id="_CPPv319harp_variable_printP13harp_variableiPFiPKczE"></span><span id="_CPPv219harp_variable_printP13harp_variableiPFiPKczE"></span><span class="target" id="group__harp__variable_1gae4abc939c7c57e2c8b9a5f381520ae9f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_print</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">show_attributes</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">print</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print a harp_variable struct using the specified print function. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable to print. </p></li>
 <li><p><strong>show_attributes</strong> – Whether or not to print the attributes. </p></li>
@@ -464,7 +464,7 @@
 <span id="_CPPv324harp_variable_print_dataP13harp_variablePFiPKczE"></span><span id="_CPPv224harp_variable_print_dataP13harp_variablePFiPKczE"></span><span class="target" id="group__harp__variable_1gacd1233a90389ac7bd85e9f80b2cb6d48"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_print_data</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">print</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Print the data of a harp_variable using the specified print function. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable whose data to print. </p></li>
 <li><p><strong>print</strong> – Print function to use </p></li>
@@ -478,7 +478,7 @@
 <span id="_CPPv329harp_variable_smooth_verticalP13harp_variableP13harp_variableP13harp_variableP13harp_variable"></span><span id="_CPPv229harp_variable_smooth_verticalP13harp_variableP13harp_variableP13harp_variableP13harp_variable"></span><span id="harp_variable_smooth_vertical__harp_variableP.harp_variableP.harp_variableP.harp_variableP"></span><span class="target" id="group__harp__variable_1ga2a8bc0e62c08f776dca1b4b74cdec637"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_variable_smooth_vertical</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">variable</span></span>, <a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vertical_axis</span></span>, <a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">averaging_kernel</span></span>, <a class="reference internal" href="#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">apriori</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Vertically smooth the variable using the given averaging kernel and a apriori. The variable already needs to be on the same vertical grid as that of the averaging kernel (and a priori). The apriori is optional. If provided, the apriori is first subtracted from the variable, then the smoothing is performed, and finally the apriori is added again. The averaging kernel needs to have dimensions {time,vertical,vertical} and the apriori {time,vertical}. The variable to be smoothed needs to have dimensions {time, …, vertical} (i.e. first dimension must be time and the last the vertical dimension; number of dimensions needs to be 2 or higher). The vertical axis variable is optional and, if provided, needs to have dimensions {time,vertical}. The vertical axis variable will be used to determine the valid number of vertical elements per profile. All inputs need to be provided as ‘double’ data. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>variable</strong> – Variable to which the averaging kernel (and apriori) should be applied. </p></li>
 <li><p><strong>vertical_axis</strong> – The variable containing the time dependent vertical grid (optional). </p></li>
@@ -486,7 +486,7 @@
 <li><p><strong>apriori</strong> – The variable containing the apriori (optional). </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>

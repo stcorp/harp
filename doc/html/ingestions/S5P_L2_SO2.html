@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>S5P_L2_SO2 &mdash; HARP 1.17 documentation</title>
@@ -79,7 +79,7 @@
 <section id="variables">
 <h2>Variables</h2>
 <p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">S5P_L2_SO2</span></code> data.</p>
-<table class="colwidths-given docutils align-default">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 5%" />
@@ -264,115 +264,133 @@
 <td></td>
 <td><p>type of SO2 detected; enumeration values: no_detection (0), so2_detected (1), volcanic_detection (2), detection_near_anthropogenic_source (3), detection_at_high_sza (4)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>SO2_layer_height</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>SO2 layer height</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>SO2_layer_height_uncertainty</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>SO2 layer height uncertainty</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SO2_layer_pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>SO2 layer pressure</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>O3 vertical column density</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_column_number_density_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_column_number_density_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>random component of the uncertainty of the O3 vertical column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>aerosol index</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud albedo</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the cloud albedo</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud fraction</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the cloud fraction</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[km]</p></td>
 <td><p>cloud height</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_height_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_height_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[km]</p></td>
 <td><p>uncertainty of the cloud height</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>cloud pressure</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>uncertainty of the cloud pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>surface albedo</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>surface altitude</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>surface altitude precision</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>surface pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_meridional_wind_velocity</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_meridional_wind_velocity</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m/s]</p></td>
 <td><p>northward wind</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_zonal_wind_velocity</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_zonal_wind_velocity</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m/s]</p></td>
 <td><p>eastward wind</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropopause_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>tropopause_pressure</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>tropopause pressure</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -384,7 +402,7 @@
 <section id="ingestion-options">
 <h2>Ingestion options</h2>
 <p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L2_SO2</span></code> products.</p>
-<table class="colwidths-given docutils align-default">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 15%" />
 <col style="width: 25%" />
@@ -398,8 +416,8 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>so2_column</p></td>
-<td><p>1km, 7km, 15km</p></td>
-<td><p>whether to ingest the SO2 column derived from the TM5 profile (default), from the 1km box profile (so2_column=1km), from the 7km box profile (so2_column=7km), or from the 15km box profile (so2_column=15km); providing this option will only work for NRTI data or for OFFL data with processor version &gt;= 01.01.01 (otherwise an empty product is returned)</p></td>
+<td><p>1km, 7km, 15km, lh</p></td>
+<td><p>whether to ingest the anothropogenic SO2 column at the PBL (default), the SO2 column from the 1km box profile (so2_column=1km), from the 7km box profile (so2_column=7km), from the 15km box profile (so2_column=15km), or the SO2 column consistent with the SO2 layer height (so2_column=lh); providing this option will only work for NRTI data or for OFFL data with processor version &gt;= 01.01.01 (otherwise an empty product is returned); layer height data is only available for processor version &gt;= 02.05.00</p></td>
 </tr>
 <tr class="row-odd"><td><p>cloud_fraction</p></td>
 <td><p>radiance</p></td>
@@ -412,11 +430,6 @@
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 5%" />
-<col style="width: 78%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>field name</p></th>
 <th class="head" colspan="2"><p>mapping description</p></th>
@@ -512,7 +525,7 @@
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>pressure in Pa at layer k is derived from surface pressure in Pa as: tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]</p></td>
 </tr>
-<tr class="row-even"><td rowspan="8"><p><strong>SO2_column_number_density</strong></p></td>
+<tr class="row-even"><td rowspan="10"><p><strong>SO2_column_number_density</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>so2_column unset</p></td>
 </tr>
@@ -537,7 +550,13 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="8"><p><strong>SO2_column_number_density_uncertainty_random</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh and processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_total_vertical_column_layer_height[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="10"><p><strong>SO2_column_number_density_uncertainty_random</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>so2_column unset</p></td>
 </tr>
@@ -562,7 +581,13 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="9"><p><strong>SO2_column_number_density_uncertainty_systematic</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh and processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_total_vertical_column_layer_height_precision[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="11"><p><strong>SO2_column_number_density_uncertainty_systematic</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -590,118 +615,160 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_vertical_column_15km_trueness[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>SO2_column_number_density_validity</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh and processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_total_vertical_column_layer_height_trueness[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>SO2_column_number_density_validity</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>so2_column!=lh</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="8"><p><strong>SO2_column_number_density_amf</strong></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/qa_value_layer_height</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="10"><p><strong>SO2_column_number_density_amf</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>so2_column unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=1km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=7km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=15km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="9"><p><strong>SO2_column_number_density_amf_uncertainty_random</strong></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh and processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_total_air_mass_factor_layer_height[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="11"><p><strong>SO2_column_number_density_amf_uncertainty_random</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>so2_column unset and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>so2_column=1km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>so2_column=7km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>so2_column=15km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="9"><p><strong>SO2_column_number_density_amf_uncertainty_systematic</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh and processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_total_air_mass_factor_layer_height_precision[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="11"><p><strong>SO2_column_number_density_amf_uncertainty_systematic</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column unset and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_polluted_trueness[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=1km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_1km_trueness[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=7km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_7km_trueness[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=15km and (NRTI or processor version &gt;= 01.01.01)</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_trueness[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="10"><p><strong>SO2_column_number_density_avk</strong></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh and processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_total_air_mass_factor_layer_height_trueness[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="13"><p><strong>SO2_column_number_density_avk</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>so2_column=1km</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_1km[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>the averaging kernel is multiplied by the scaling factor</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>so2_column=7km</p></td>
-</tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_7km[]</strong></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_1km[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the averaging kernel is multiplied by the scaling factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>so2_column=15km</p></td>
+<td><p>so2_column=7km</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_7km[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the averaging kernel is multiplied by the scaling factor</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=15km</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_15km[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the averaging kernel is multiplied by the scaling factor</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>so2_column=lh and processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_averaging_kernel_scaling_box_layer_height[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>the averaging kernel is multiplied by the scaling factor</p></td>
@@ -724,104 +791,124 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_detection_flag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>SO2_layer_height</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_layer_height[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>SO2_layer_height_uncertainty</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_layer_height_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p><strong>SO2_layer_pressure</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.05.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_layer_pressure[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_column_number_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-even"><td rowspan="3"><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>OFFL</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_albedo</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_crb_precision</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>cloud_fraction unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>cloud_fraction=radiance</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_intensity_weighted[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>cloud_fraction_uncertainty</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_fraction_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>cloud_fraction unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>cloud_fraction=radiance</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_intensity_weighted_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_crb_precision</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb_precision</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>surface_albedo</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>surface_albedo</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_328nm, /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_376nm, /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>if selected_fitting_window_flag is 1 or 2 then use surface_albedo_328, if selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="3"><p><strong>surface_meridional_wind_velocity</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>processor version &gt;= 02.00.00</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><p><strong>surface_zonal_wind_velocity</strong></p></td>
+<tr class="row-even"><td rowspan="3"><p><strong>surface_meridional_wind_velocity</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -829,9 +916,9 @@
 <td><p>processor version &gt;= 02.00.00</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>tropopause_pressure</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>surface_zonal_wind_velocity</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -839,9 +926,19 @@
 <td><p>processor version &gt;= 02.00.00</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><p><strong>tropopause_pressure</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.00.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_a[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_constant_b[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/tm5_tropopause_layer_index[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)</p></td>
 </tr>
 </tbody>

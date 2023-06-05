@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Python interface &mdash; HARP 1.17 documentation</title>
@@ -178,10 +178,6 @@ relation between types in the C domain and types in the Python domain.</p>
 <p>The table below shows the type map that is used to convert the high level
 concepts product and variable.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 45%" />
-<col style="width: 55%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>C type</p></th>
 <th class="head"><p>Python type</p></th>
@@ -210,12 +206,6 @@ type map.</p>
 Python. See section <a class="reference internal" href="#unicode-details"><span class="std std-ref">Unicode</span></a> for details on unicode
 decoding in Python 3.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 28%" />
-<col style="width: 25%" />
-<col style="width: 20%" />
-<col style="width: 28%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>HARP data type</p></th>
 <th class="head"><p>NumPy dtype</p></th>
@@ -277,15 +267,6 @@ be made to determine the minimal HARP data type that it, or its elements, can be
 safely cast to (according to the function <code class="docutils literal notranslate"><span class="pre">numpy.can_cast()</span></code> using the
 <code class="docutils literal notranslate"><span class="pre">'safe'</span></code> casting option). See the type map for details.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 13%" />
-<col style="width: 12%" />
-<col style="width: 14%" />
-<col style="width: 15%" />
-<col style="width: 19%" />
-<col style="width: 14%" />
-<col style="width: 14%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Python type</p></th>
 <th class="head"><p>NumPy dtype</p></th>
@@ -523,7 +504,7 @@ syntax, or the item access <code class="docutils literal notranslate"><span clas
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source_product</strong> (<em>str</em>) – Name of the original product this product is
 derived from.</p></li>
@@ -543,7 +524,7 @@ dimension types that describe the dimensions of the data, and a number of
 optional attributes: physical unit, minimum valid value, maximum valid value,
 human-readable description, and enumeration name list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – Value(s) associated with the variable; can be either a scalar or
 a NumPy array.</p></li>
@@ -579,7 +560,7 @@ pattern, or a list of globbing patterns then the harp.import_product() function
 will be called on each individual matching file. All imported products will then
 be appended into a single merged product and that merged product will be returned.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em><em>,</em><em>list</em>) – Filename, file pattern, or list of filenames/patterns
 of the product(s) to import</p></li>
@@ -603,10 +584,10 @@ these operations will only be applied if the filename argument is
 a file pattern or a list of filenames/patterns.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Imported product.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
 </dd>
 </dl>
@@ -628,7 +609,7 @@ a file pattern or a list of filenames/patterns.</p></li>
 <p>If the file is not stored using the HARP format then it will try to import
 the metadata using one of the available ingestion modules.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em>) – Filename of the product from which to extract the metadata</p></li>
 <li><p><strong>options</strong> (<em>str</em>) – Ingestion module specific options; should be specified as
@@ -636,10 +617,10 @@ a semi-colon separated string of key=value pairs; only
 used if a file is not in HARP format.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Imported metadata.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>collections.OrderedDict</p>
 </dd>
 </dl>
@@ -650,7 +631,7 @@ used if a file is not in HARP format.</p></li>
 <span class="sig-prename descclassname"><span class="pre">harp.</span></span><span class="sig-name descname"><span class="pre">export_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'netcdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf5_compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Export a HARP compliant product.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product</strong> (<em>str</em>) – Product to export.</p></li>
 <li><p><strong>filename</strong> (<em>str</em>) – Filename of the exported product.</p></li>
@@ -677,13 +658,13 @@ will result in an error.</p>
 <p>The resulting product will not have a ‘source_product’ or ‘history’ global
 attribute set.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>productlist</strong> (<em>list</em>) – List of harp.Product objects.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Single product containing concatenated content.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
 </dd>
 </dl>
@@ -709,7 +690,7 @@ pass a ‘harp.Product()’ instance that contains the minimal set of variables 
 are needed to execute the operations.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>productlist</strong> (<em>list</em>) – List of harp.Product objects or single harp.Product object.</p></li>
 <li><p><strong>operations</strong> (<em>str</em>) – Actions to apply on the product(s); should be
@@ -722,10 +703,10 @@ these operations will only be applied if the productlist parameter
 is a list of harp.Product objects.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Single product containing concatenated content with operations being performed.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#harp.Product" title="harp.Product">harp.Product</a></p>
 </dd>
 </dl>
@@ -739,7 +720,7 @@ The list of values will be converted to an array of double values after which th
 HARP C library is used to convert the values from ‘from_unit’ to ‘to_unit’.
 The function will return a copy of the values with converted units.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_unit</strong> (<em>str</em>) – Existing unit of the data that should be converted
 (use udunits2 compliant units)</p></li>
@@ -748,7 +729,7 @@ The function will return a copy of the values with converted units.</p>
 <li><p><strong>values</strong> – an array with values on which unit conversion needs to be applied</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Numpy array of unit converted values</p>
 </dd>
 </dl>
@@ -790,13 +771,13 @@ information.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>product</strong> (<a class="reference internal" href="#harp.Product" title="harp.Product"><em>harp.Product</em></a>) – Product to convert.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Converted product.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>collections.OrderedDict</p>
 </dd>
 </dl>
@@ -808,10 +789,10 @@ information.</p>
 <dd><p>Return the encoding used to convert between unicode strings and C strings
 (only relevant when using Python 3).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Encoding currently in use.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
@@ -823,7 +804,7 @@ information.</p>
 <dd><p>Set the encoding used to convert between unicode strings and C strings
 (only relevant when using Python 3).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>encoding</strong> (<em>str</em>) – Encoding to use.</p>
 </dd>
 </dl>
@@ -834,10 +815,10 @@ information.</p>
 <span class="sig-prename descclassname"><span class="pre">harp.</span></span><span class="sig-name descname"><span class="pre">version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Return the version of the HARP C library.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>HARP C library version.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
@@ -852,7 +833,7 @@ information.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">harp.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Exception base class for all HARP Python interface errors.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
 single string containing an error message.</p>
 </dd>
@@ -864,7 +845,7 @@ single string containing an error message.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">harp.</span></span><span class="sig-name descname"><span class="pre">CLibraryError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errno</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strerror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Exception raised when an error occurs inside the HARP C library.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>errno</strong> (<em>str</em>) – error code; if None, the error code will be retrieved from
 the HARP C library.</p></li>
@@ -881,7 +862,7 @@ retrieved from the HARP C library.</p></li>
 <dd><p>Exception raised when unsupported types are encountered, either on the Python
 or on the C side of the interface.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
 single string containing an error message.</p>
 </dd>
@@ -894,7 +875,7 @@ single string containing an error message.</p>
 <dd><p>Exception raised when unsupported dimensions are encountered, either on the
 Python or on the C side of the interface.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple of arguments passed to the constructor; usually a
 single string containing an error message.</p>
 </dd>
