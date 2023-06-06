@@ -4357,22 +4357,18 @@ static int read_so2_layer_pressure(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_so2_qa_value(void *user_data, harp_array data)
+static int read_so2_layer_height_qa_value(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     int result;
 
-    if (info->so2_column_type == 4)
-    {
-        /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
-        coda_set_option_perform_conversions(0);
-        result = read_dataset(info->so2_lh_cursor, "qa_value_layer_height", harp_type_int8,
-                              info->num_scanlines * info->num_pixels, data);
-        coda_set_option_perform_conversions(1);
-        return result;
-    }
+    /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
+    coda_set_option_perform_conversions(0);
+    result = read_dataset(info->so2_lh_cursor, "qa_value_layer_height", harp_type_int8,
+                          info->num_scanlines * info->num_pixels, data);
+    coda_set_option_perform_conversions(1);
 
-    return read_product_qa_value(user_data, data);
+    return result;
 }
 
 static int read_so2_surface_albedo(void *user_data, harp_array data)
@@ -4870,6 +4866,11 @@ static int include_so2_offl_010101(void *user_data)
 {
     /* include if NRTI or if OFFL and processor version >= 1.1.1 */
     return ((ingest_info *)user_data)->is_nrti || ((ingest_info *)user_data)->processor_version >= 10101;
+}
+
+static int include_so2_no_lh(void *user_data)
+{
+    return ((ingest_info *)user_data)->so2_column_type != 4;
 }
 
 static int include_from_010000(void *user_data)
@@ -7303,11 +7304,9 @@ static void register_so2_product(void)
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_validity",
-                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
-                                                   read_so2_qa_value);
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL,
+                                                   include_so2_no_lh, read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, "so2_column!=lh", NULL, "/PRODUCT/qa_value", NULL);
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=lh", NULL,
-                                         "/PRODUCT/SO2_LAYER_HEIGHT/qa_value_layer_height", NULL);
 
     /* SO2_column_number_density_amf */
     description = "total air mass factor";
@@ -7444,6 +7443,15 @@ static void register_so2_product(void)
                                                    1, dimension_type, NULL, description, "m", include_from_020500,
                                                    read_so2_layer_height_precision);
     path = "/PRODUCT/SO2_LAYER_HEIGHT/sulfurdioxide_layer_height_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.05.00", path, NULL);
+
+    /* SO2_layer_height_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_layer_height_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, include_from_020500,
+                                                   read_so2_layer_height_qa_value);
+    path = "/PRODUCT/SO2_LAYER_HEIGHT/qa_value_layer_height";
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.05.00", path, NULL);
 
     /* SO2_layer_pressure */
