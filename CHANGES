@@ -1,3 +1,6 @@
+1.18 2023-06-08
+~~~~~~~~~~~~~~~
+
 * Rename all uses of 'water vapour' to 'water vapor'.
 
 * Added =| bitfield operater to allow filtering for the case where only some
@@ -9,11 +12,13 @@
   approach and it is propagated using no correlation for the simple binning
   based on center points.
 
-* Add derivation for 'area {latitude,longitude}'.
+* Added derivation for 'area {latitude,longitude}' and fixed area calculation
+  where South Pole was an edge point.
 
 * Fixed reading of string arrays in HARP Python interface.
 
 * Updates to product ingestions:
+  - ECMWF GRIB: added support for new masterTablesVersion=29 data
   - S5P L2 CLOUD: fixed qa_value ingestion for CRB (now use qa_value_crb)
   - S5P L2 SO2: added support for SO2 layer height
   - OMI L3: added support for OMHCHOd, OMNO2d, and OMSO2e
