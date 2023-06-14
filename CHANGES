@@ -1,3 +1,6 @@
+* Updates to product ingestions:
+  - ECMWF GRIB: added support for new masterTablesVersion=30 data
+
 1.18 2023-06-08
 ~~~~~~~~~~~~~~~
 
