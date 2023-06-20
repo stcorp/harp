@@ -81,7 +81,7 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
 
-    int so2_column_type;    /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
+    int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
     int use_sif_735;    /* 0: sif_743 (default), 1: sif_735 */
 
     int use_radiance_cloud_fraction;
@@ -2211,9 +2211,9 @@ static void register_common_variables(harp_product_definition *product_definitio
         /* sensor_latitude */
         description = "latitude of the geodetic sub-satellite point (WGS84)";
         variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "degree_north", NULL,
-                                                   read_geolocation_satellite_latitude);
+            harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude", harp_type_float, 1,
+                                                       dimension_type, NULL, description, "degree_north", NULL,
+                                                       read_geolocation_satellite_latitude);
         harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
         path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
         description = "the satellite latitude associated with a scanline is repeated for each pixel in the scanline";
@@ -2222,9 +2222,9 @@ static void register_common_variables(harp_product_definition *product_definitio
         /* sensor_longitude */
         description = "longitude of the goedetic sub-satellite point (WGS84)";
         variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "degree_east", NULL,
-                                                   read_geolocation_satellite_longitude);
+            harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude", harp_type_float, 1,
+                                                       dimension_type, NULL, description, "degree_east", NULL,
+                                                       read_geolocation_satellite_longitude);
         harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
         path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
         description = "the satellite longitude associated with a scanline is repeated for each pixel in the scanline";
@@ -2233,9 +2233,9 @@ static void register_common_variables(harp_product_definition *product_definitio
         /* sensor_altitude */
         description = "altitude of the satellite with respect to the geodetic sub-satellite point (WGS84)";
         variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL,
-                                                   read_geolocation_satellite_altitude);
+            harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_float, 1,
+                                                       dimension_type, NULL, description, "m", NULL,
+                                                       read_geolocation_satellite_altitude);
         harp_variable_definition_set_valid_range_float(variable_definition, 700000.0f, 900000.0f);
         path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
         description = "the satellite altitude associated with a scanline is repeated for each pixel in the scanline";
@@ -2264,7 +2264,7 @@ static void register_common_variables(harp_product_definition *product_definitio
 
     /* sensor_zenith_angle */
     description =
-    "zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the vertical";
+        "zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the vertical";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
@@ -2627,36 +2627,36 @@ static void register_chocho_product(void)
     /* cloud_fraction */
     description = "Retrieved effective radiometric cloud fraction derived in NO2 fitting window";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_input_cloud_fraction_crb);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_cloud_fraction_crb);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure */
     description = "cloud pressure";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
-                                               dimension_type, NULL, description, "Pa", NULL,
-                                               read_input_cloud_pressure_crb);
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_cloud_pressure_crb);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_altitude */
     description = "surface altitude";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
-                                               dimension_type, NULL, description, "m", NULL,
-                                               read_input_surface_altitude);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_input_surface_altitude);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_pressure */
     description = "surface air pressure";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
-                                               dimension_type, NULL, description, "Pa", NULL,
-                                               read_input_surface_pressure);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_surface_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2665,36 +2665,36 @@ static void register_chocho_product(void)
     /* absorbing_aerosol_index */
     description = "Aerosol index from 388 and 354 nm";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_input_aerosol_index_354_388);
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index_354_388);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo */
     description = "surface albedo";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
-                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                               read_input_surface_albedo);
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* C2H2O2_column_number_density */
     description = "vertical column of glyoxal";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "C2H2O2_column_number_density", harp_type_float,
-                                               1, dimension_type, NULL, description, NULL, NULL,
-                                               read_product_glyoxal_tropospheric_vertical_column);
+        harp_ingestion_register_variable_full_read(product_definition, "C2H2O2_column_number_density", harp_type_float,
+                                                   1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_glyoxal_tropospheric_vertical_column);
     path = "/PRODUCT/glyoxal_tropospheric_vertical_column";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* C2H2O2_column_number_density_uncertainty */
     description = "random error of vertical column density";
     variable_definition =
-    harp_ingestion_register_variable_full_read(product_definition, "C2H2O2_column_number_density_uncertainty",
-                                               harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
-                                               read_product_glyoxal_tropospheric_vertical_column_precision);
+        harp_ingestion_register_variable_full_read(product_definition, "C2H2O2_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_glyoxal_tropospheric_vertical_column_precision);
     path = "/PRODUCT/glyoxal_tropospheric_vertical_column_precision";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2779,10 +2779,12 @@ static void register_so2cbr_product(void)
     const char *description;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
-    const char *so2cbr_type_values[] = { "no_detection", "so2_detected", "volcanic_detection",
-                                         "detection_near_anthropogenic_source", "detection_at_high_sza"};
+    const char *so2cbr_type_values[] = {
+        "no_detection", "so2_detected", "volcanic_detection",
+        "detection_near_anthropogenic_source", "detection_at_high_sza"
+    };
 
-    module = harp_ingestion_register_module("S5P_L2_SO2CBR",  "Sentinel-5P", "S5P_PAL", "L2__SO2CBR",
+    module = harp_ingestion_register_module("S5P_L2_SO2CBR", "Sentinel-5P", "S5P_PAL", "L2__SO2CBR",
                                             "Sentinel-5P L2 SO2 COBRA product", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "so2_column", "whether to ingest the anothropogenic SO2 column at the PBL "

@@ -862,8 +862,7 @@ static void register_datetime_variables(harp_product_definition *product_definit
     description = "length of the grid";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime_length",
                                                                      harp_type_double, 1, dimension_type, NULL,
-                                                                     description, "days", NULL,
-                                                                     read_datetime_length);
+                                                                     description, "days", NULL, read_datetime_length);
     description = "set to fixed value of 1";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
 }
@@ -1075,11 +1074,9 @@ static void register_omno2d_product(void)
     register_datetime_variables(product_definition);
 
     /* longitude and latitude */
-    path = "/HDFEOS/GRIDS/ColumnAmountNO2@GridSpacing, "
-        "/HDFEOS/GRIDS/ColumnAmountNO2@NumberOfLongitudesInGrid";
+    path = "/HDFEOS/GRIDS/ColumnAmountNO2@GridSpacing, " "/HDFEOS/GRIDS/ColumnAmountNO2@NumberOfLongitudesInGrid";
     register_longitude_variable(product_definition, path);
-    path = "/HDFEOS/GRIDS/ColumnAmountNO2@GridSpacing, "
-        "/HDFEOS/GRIDS/ColumnAmountNO2@NumberOfLatitudesInGrid";
+    path = "/HDFEOS/GRIDS/ColumnAmountNO2@GridSpacing, " "/HDFEOS/GRIDS/ColumnAmountNO2@NumberOfLatitudesInGrid";
     register_latitude_variable(product_definition, path);
 
     /* NO2_column_number_density */
