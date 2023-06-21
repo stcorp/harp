@@ -2336,11 +2336,11 @@ static void register_aer_ot_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_spectral };
 
-    module = harp_ingestion_register_module("S5P_L2_AER_OT", "Sentinel-5P", "S5P_PAL", "L2__AER_OT",
+    module = harp_ingestion_register_module("S5P_PAL_L2_AER_OT", "Sentinel-5P PAL", "S5P_PAL", "L2__AER_OT",
                                             "Sentinel-5P L2 Aerosol Optical Thickness product", ingestion_init,
                                             ingestion_done);
 
-    product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_OT", NULL, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_AER_OT", NULL, read_dimensions);
 
     register_common_variables(product_definition, 1);
 
@@ -2428,10 +2428,10 @@ static void register_bro_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    module = harp_ingestion_register_module("S5P_L2_BRO", "Sentinel-5P", "S5P_PAL", "L2__BRO___",
+    module = harp_ingestion_register_module("S5P_PAL_L2_BRO", "Sentinel-5P PAL", "S5P_PAL", "L2__BRO___",
                                             "Sentinel-5P L2 BrO product", ingestion_init, ingestion_done);
 
-    product_definition = harp_ingestion_register_product(module, "S5P_L2_BRO", NULL, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_BRO", NULL, read_dimensions);
 
     register_common_variables(product_definition, 1);
 
@@ -2617,10 +2617,10 @@ static void register_chocho_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    module = harp_ingestion_register_module("S5P_L2_CHOCHO", "Sentinel-5P", "S5P_PAL", "L2__CHOCHO",
+    module = harp_ingestion_register_module("S5P_PAL_L2_CHOCHO", "Sentinel-5P PAL", "S5P_PAL", "L2__CHOCHO",
                                             "Sentinel-5P L2 Glyoxal (CHOCHO) product", ingestion_init, ingestion_done);
 
-    product_definition = harp_ingestion_register_product(module, "S5P_L2_CHOCHO", NULL, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_CHOCHO", NULL, read_dimensions);
 
     register_common_variables(product_definition, 0);
 
@@ -2678,7 +2678,7 @@ static void register_chocho_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* C2H2O2_column_number_density */
     description = "vertical column of glyoxal";
@@ -2717,13 +2717,13 @@ static void register_sif_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    module = harp_ingestion_register_module("S5P_L2_SIF", "Sentinel-5P", "S5P_PAL", "L2__SIF___",
+    module = harp_ingestion_register_module("S5P_PAL_L2_SIF", "Sentinel-5P PAL", "S5P_PAL", "L2__SIF___",
                                             "Sentinel-5P L2 Solar Induced Fluorescence product", ingestion_init,
                                             ingestion_done);
 
-    harp_ingestion_register_option(module, "sif", "whether to ingest the SIF_743 (default) or the "
-                                   "SIF_735 (sif=735) for the SIF data", 1, sif_options);
-    product_definition = harp_ingestion_register_product(module, "S5P_L2_SIF", NULL, read_dimensions);
+    harp_ingestion_register_option(module, "sif", "whether to ingest the SIF retrieved at 743nm (default) or at "
+                                   "735nm (sif=735)", 1, sif_options);
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_SIF", NULL, read_dimensions);
 
     register_common_variables(product_definition, 1);
 
@@ -2784,7 +2784,7 @@ static void register_so2cbr_product(void)
         "detection_near_anthropogenic_source", "detection_at_high_sza"
     };
 
-    module = harp_ingestion_register_module("S5P_L2_SO2CBR", "Sentinel-5P", "S5P_PAL", "L2__SO2CBR",
+    module = harp_ingestion_register_module("S5P_PAL_L2_SO2CBR", "Sentinel-5P PAL", "S5P_PAL", "L2__SO2CBR",
                                             "Sentinel-5P L2 SO2 COBRA product", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "so2_column", "whether to ingest the anothropogenic SO2 column at the PBL "
@@ -2795,7 +2795,7 @@ static void register_so2cbr_product(void)
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
 
-    product_definition = harp_ingestion_register_product(module, "S5P_L2_SO2CBR", NULL, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_SO2CBR", NULL, read_dimensions);
 
     register_common_variables(product_definition, 1);
 
@@ -2951,7 +2951,7 @@ static void register_so2cbr_product(void)
         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag";
     description = "if selected_fitting_window_flag is 1 or 2 then use surface_albedo_328, if "
         "selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* O3_column_number_density */
     description = "total ozone column";
@@ -2970,6 +2970,7 @@ static void register_so2cbr_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_input_ozone_total_vertical_column_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* tropopause_pressure */
     description = "tropopause pressure";
@@ -3098,13 +3099,13 @@ static void register_so2cbr_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_1km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=1km", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_7km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], "
         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_15km[]";
-    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
 
     /* SO2_volume_mixing_ratio_dry_air_apriori */
     description = "volume mixing ratio profile of sulfur dioxide";
@@ -3147,11 +3148,11 @@ static void register_tcwv_product(void)
         { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
     long dimension[3] = { -1, -1, 2 };
 
-    module = harp_ingestion_register_module("S5P_L2_TCWV", "Sentinel-5P", "S5P_PAL", "L2__TCWV__",
+    module = harp_ingestion_register_module("S5P_PAL_L2_TCWV", "Sentinel-5P PAL", "S5P_PAL", "L2__TCWV__",
                                             "Sentinel-5P L2 Total Column Water Vapor product", ingestion_init,
                                             ingestion_done);
 
-    product_definition = harp_ingestion_register_product(module, "S5P_L2_TCWV", NULL, read_dimensions);
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_TCWV", NULL, read_dimensions);
 
     register_common_variables(product_definition, 1);
 
@@ -3178,7 +3179,7 @@ static void register_tcwv_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_cloud_fraction);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_pressure */
     description = "Retrieved atmospheric pressure at the level of cloud using the OCRA/ROCINN CRB model";
@@ -3214,7 +3215,7 @@ static void register_tcwv_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* water_vapor_column_number_density */
     description = "total vertical column of water vapor";

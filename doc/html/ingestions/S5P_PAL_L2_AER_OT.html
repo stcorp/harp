@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>S5P_L2_SIF &mdash; HARP 1.18 documentation</title>
+  <title>S5P_PAL_L2_AER_OT &mdash; HARP 1.18 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -65,7 +65,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">S5P_L2_SIF</li>
+      <li class="breadcrumb-item active">S5P_PAL_L2_AER_OT</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -74,11 +74,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="s5p-l2-sif">
-<h1>S5P_L2_SIF</h1>
+  <section id="s5p-pal-l2-aer-ot">
+<h1>S5P_PAL_L2_AER_OT</h1>
 <section id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">S5P_L2_SIF</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">S5P_PAL_L2_AER_OT</span></code> data.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25%" />
@@ -190,54 +190,67 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Coregistered effective radiometric cloud fraction using the OCRA/ROCINN CAL model.</p></td>
+<td><p>Geometrical cloud fraction from NPP-VIIRS regridded observations. Geometrical cloud fraction is defined as (probably+confidently cloudy)/(total) for nominal footprint.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>solar_induced_fluorescence</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[mW/m2/sr/nm]</p></td>
-<td><p>retrieved SIF</p></td>
+<td><p>[Pa]</p></td>
+<td><p>surface air pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>solar_induced_fluorescence_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[mW/m2/sr/nm]</p></td>
-<td><p>retrieved SIF</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>solar_induced_fluorescence_validity</strong></p></td>
+<tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
+<td><p>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sea_ice_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>sea-ice concentration (as a fraction)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>Absorbing aerosol index at 340 and 380 nm.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>wind_speed</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m/s]</p></td>
+<td><p>absolute wind speed computed from the wind vector at 10 meter height level</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>total aerosol optical thickness of the atmospheric column</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth_validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td></td>
 <td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>single_scattering_albedo</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>Single scattering albedo; fraction of the aerosol scattering and absorption, according to the selected aerosol type.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_type</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>selected aerosol type</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>zero-based index of the sample within the source product</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="ingestion-options">
-<h2>Ingestion options</h2>
-<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L2_SIF</span></code> products.</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 15%" />
-<col style="width: 25%" />
-<col style="width: 60%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>option name</p></th>
-<th class="head"><p>legal values</p></th>
-<th class="head"><p>description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>sif</p></td>
-<td><p>735</p></td>
-<td><p>whether to ingest the SIF_743 (default) or the SIF_735 (sif=735) for the SIF data</p></td>
 </tr>
 </tbody>
 </table>
@@ -329,46 +342,49 @@
 </tr>
 <tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_L2[]</strong></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>solar_induced_fluorescence</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>sif unset</p></td>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SIF_743</strong></p></td>
+<tr class="row-even"><td rowspan="2"><p><strong>snow_ice_type</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>sif=735</p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SIF_735</strong></p></td>
+<tr class="row-even"><td rowspan="2"><p><strong>sea_ice_fraction</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>solar_induced_fluorescence_uncertainty</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>sif unset</p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SIF_ERROR_743</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/absorbing_aerosol_index[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>sif=735</p></td>
+<tr class="row-odd"><td><p><strong>wind_speed</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/wind_speed[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SIF_ERROR_735</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/aerosol_optical_thickness</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>solar_induced_fluorescence_validity</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>sif unset</p></td>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth_validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/QA_value_743</strong></p></td>
+<tr class="row-even"><td><p><strong>single_scattering_albedo</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/single_scattering_albedo</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>sif=735</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/QA_value_735</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_type</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/aerosol_type</strong></p></td>
 </tr>
 </tbody>
 </table>

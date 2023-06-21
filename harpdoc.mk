@@ -480,10 +480,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L1B_RA_BD8.html \
 	doc/html/ingestions/S5P_L2_AER_AI.html \
 	doc/html/ingestions/S5P_L2_AER_LH.html \
-	doc/html/ingestions/S5P_L2_AER_OT.html \
-	doc/html/ingestions/S5P_L2_BRO.html \
 	doc/html/ingestions/S5P_L2_CH4.html \
-	doc/html/ingestions/S5P_L2_CHOCHO.html \
 	doc/html/ingestions/S5P_L2_CLOUD_CAL.html \
 	doc/html/ingestions/S5P_L2_CLOUD_CRB.html \
 	doc/html/ingestions/S5P_L2_CO.html \
@@ -494,10 +491,13 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_L2_O3.html \
 	doc/html/ingestions/S5P_L2_O3_PR.html \
 	doc/html/ingestions/S5P_L2_O3_TCL.html \
-	doc/html/ingestions/S5P_L2_SIF.html \
 	doc/html/ingestions/S5P_L2_SO2.html \
-	doc/html/ingestions/S5P_L2_SO2CBR.html \
-	doc/html/ingestions/S5P_L2_TCWV.html \
+	doc/html/ingestions/S5P_PAL_L2_AER_OT.html \
+	doc/html/ingestions/S5P_PAL_L2_BRO.html \
+	doc/html/ingestions/S5P_PAL_L2_CHOCHO.html \
+	doc/html/ingestions/S5P_PAL_L2_SIF.html \
+	doc/html/ingestions/S5P_PAL_L2_SO2CBR.html \
+	doc/html/ingestions/S5P_PAL_L2_TCWV.html \
 	doc/html/ingestions/SCIAMACHY_L1c.html \
 	doc/html/ingestions/SCIAMACHY_L1c_sun_reference.html \
 	doc/html/ingestions/SCIAMACHY_L2_CLOUDS_AEROSOL.html \
@@ -1518,13 +1518,7 @@ doc/html/ingestions/S5P_L2_AER_AI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_AER_LH.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_AER_OT.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_BRO.html:
-	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_CH4.html:
-	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_CHOCHO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_CLOUD_CAL.html:
 	$(MAKE) harp_doc
@@ -1546,13 +1540,19 @@ doc/html/ingestions/S5P_L2_O3_PR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_O3_TCL.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_SIF.html:
-	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L2_SO2.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_SO2CBR.html:
+doc/html/ingestions/S5P_PAL_L2_AER_OT.html:
 	$(MAKE) harp_doc
-doc/html/ingestions/S5P_L2_TCWV.html:
+doc/html/ingestions/S5P_PAL_L2_BRO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_PAL_L2_CHOCHO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_PAL_L2_SIF.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_PAL_L2_SO2CBR.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_PAL_L2_TCWV.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/SCIAMACHY_L1c.html:
 	$(MAKE) harp_doc

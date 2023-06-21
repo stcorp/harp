@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>S5P_L2_SO2CBR &mdash; HARP 1.18 documentation</title>
+  <title>S5P_PAL_L2_SO2CBR &mdash; HARP 1.18 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -65,7 +65,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">S5P_L2_SO2CBR</li>
+      <li class="breadcrumb-item active">S5P_PAL_L2_SO2CBR</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -74,11 +74,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="s5p-l2-so2cbr">
-<h1>S5P_L2_SO2CBR</h1>
+  <section id="s5p-pal-l2-so2cbr">
+<h1>S5P_PAL_L2_SO2CBR</h1>
 <section id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">S5P_L2_SO2CBR</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">S5P_PAL_L2_SO2CBR</span></code> data.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25%" />
@@ -377,7 +377,7 @@
 </section>
 <section id="ingestion-options">
 <h2>Ingestion options</h2>
-<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_L2_SO2CBR</span></code> products.</p>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S5P_PAL_L2_SO2CBR</span></code> products.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15%" />
@@ -568,16 +568,17 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>surface_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_328nm, /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_376nm, /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/selected_fitting_window_flag</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>if selected_fitting_window_flag is 1 or 2 then use surface_albedo_328, if selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>O3_column_number_density_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_vertical_column_precision[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><p><strong>tropopause_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -740,7 +741,7 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_total_air_mass_factor_15km_trueness[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="10"><p><strong>SO2_column_number_density_avk</strong></p></td>
+<tr class="row-even"><td rowspan="7"><p><strong>SO2_column_number_density_avk</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></p></td>
 </tr>
@@ -750,17 +751,11 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_1km[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>averaging kernel</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=7km</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_7km[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>averaging kernel</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>so2_column=15km</p></td>
@@ -768,24 +763,21 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[], /PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_averaging_kernel_scaling_box_15km[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>averaging kernel</p></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><p><strong>SO2_volume_mixing_ratio_dry_air_apriori</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>SO2_volume_mixing_ratio_dry_air_apriori</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>so2_column unset</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_profile_apriori[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>SO2_slant_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>SO2_slant_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_slant_column_corrected[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>SO2_type</strong></p></td>
+<tr class="row-odd"><td><p><strong>SO2_type</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfurdioxide_detection_flag[]</strong></p></td>
 </tr>
