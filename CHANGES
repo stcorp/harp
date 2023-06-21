@@ -1,3 +1,6 @@
+* The python harp.import_product() function now allows HARP .pth files to be
+  provided as input.
+
 * Updates to product ingestions:
   - ECMWF GRIB: added support for new masterTablesVersion=30 data
   - S5P PAL L2: added support for AER_OT, CHOCHO, SIF, SO2 COBRA, and TCWV

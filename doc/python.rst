@@ -356,8 +356,8 @@ This section describes the functions defined by the HARP Python library.
    will be called on each individual matching file. All imported products will then
    be appended into a single merged product and that merged product will be returned.
 
-   :param str,list filename: Filename, file pattern, or list of filenames/patterns
-                       of the product(s) to import
+   :param str,list filename: Filename, file pattern, .pth file, or list of
+                       filenames/patterns/.pths of the product(s) to import
    :param str operations: Actions to apply as part of the import; should be
                        specified as a semi-colon separated string of operations;
                        in case a list of products is ingested these operations will be

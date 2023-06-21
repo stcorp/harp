@@ -30,6 +30,7 @@
 from __future__ import print_function
 
 from collections import OrderedDict
+import csv
 import datetime
 import glob
 import numpy
@@ -1192,8 +1193,8 @@ def import_product(filename, operations="", options="", reduce_operations="", po
     be appended into a single merged product and that merged product will be returned.
 
     Arguments:
-    filename -- Filename, file pattern, or list of filenames/patterns of the product(s)
-                to import
+    filename -- Filename, file pattern, .pth file, or list of filenames/patterns/.pths of
+                the product(s) to import
     operations -- Actions to apply as part of the import; should be specified as a
                   semi-colon separated string of operations;
                   in case a list of products is ingested these operations will be
@@ -1226,8 +1227,22 @@ def import_product(filename, operations="", options="", reduce_operations="", po
     elif '*' in filename or '?' in filename:
         # This is a globbing pattern
         filenames = sorted(glob.glob(filename))
+    elif filename.endswith('.pth'):
+        filenames = [filename]
 
     if filenames is not None:
+        expanded_filenames = []
+        for filename in filenames:
+            if filename.endswith('.pth'):
+                with open(filename, newline='') as csvfile:
+                    pathreader = csv.reader(csvfile)
+                    next(pathreader)  # skip header
+                    for row in pathreader:
+                        expanded_filenames.append(row[0])
+            else:
+                expanded_filenames.append(filename)
+        filenames = expanded_filenames
+
         if len(filenames) == 0:
             raise Error("no files matching '%s'" % (filename))
         # Return the merged concatenation of all products
