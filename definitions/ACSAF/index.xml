@@ -121,4 +121,40 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+  <cd:ProductType name="O3MARP">
+    <cd:Description>GOME offline absorbing aerosol index product</cd:Description>
+    <cd:ProductDefinition id="O3MARP_v4" format="hdf5" version="1">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/METADATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessingLevel[0]) == "02"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductType[0]) == "O3MARP"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductFormatVersion[0], 1) == "4"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="O3MNAP">
+    <cd:Description>GOME near-real-time absorbing aerosol index product</cd:Description>
+    <cd:ProductDefinition id="O3MNAP_v4" format="hdf5" version="1">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/METADATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessingLevel[0]) == "02"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductType[0]) == "O3MNAP"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductFormatVersion[0], 1) == "4"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="O3MARS">
+    <cd:Description>GOME offline absorbing aerosol height product</cd:Description>
+    <cd:ProductDefinition id="O3MARS_v4" format="hdf5" version="1">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/METADATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProcessingLevel[0]) == "02"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductType[0]) == "O3MARS"</cd:MatchExpression>
+        <cd:MatchExpression>str(.@ProductFormatVersion[0], 1) == "4"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
 </cd:ProductClass>
