@@ -2,6 +2,7 @@
   provided as input.
 
 * Updates to product ingestions:
+  - ACE-FTS: fix ingestion of ASCII formatted products
   - ECMWF GRIB: added support for new masterTablesVersion=30 data
   - S5P PAL L2: added support for AER_OT, CHOCHO, SIF, SO2 COBRA, and TCWV
 

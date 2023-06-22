@@ -207,17 +207,17 @@ static int read_string_from_header(ingest_info *info, char *name, char *expected
 
 static int read_datetime(void *user_data, harp_array data)
 {
-    return read_string_from_header((ingest_info *)user_data, "date", "yyyy-MM-dd HH:mm:ss.SS+00", data);
+    return read_string_from_header((ingest_info *)user_data, "date", "yyyy-MM-dd HH:mm:ss.SS+00|yyyy-MM-dd HH:mm:ss.SSSSSS+00:00", data);
 }
 
 static int read_datetime_start(void *user_data, harp_array data)
 {
-    return read_string_from_header((ingest_info *)user_data, "start_time", "yyyy-MM-dd HH:mm:ss+00", data);
+    return read_string_from_header((ingest_info *)user_data, "start_time", "yyyy-MM-dd HH:mm:ss+00|yyyy-MM-dd HH:mm:ss+00:00", data);
 }
 
 static int read_datetime_stop(void *user_data, harp_array data)
 {
-    return read_string_from_header((ingest_info *)user_data, "end_time", "yyyy-MM-dd HH:mm:ss+00", data);
+    return read_string_from_header((ingest_info *)user_data, "end_time", "yyyy-MM-dd HH:mm:ss+00|yyyy-MM-dd HH:mm:ss+00:00", data);
 }
 
 static int read_latitude(void *user_data, harp_array data)
@@ -668,25 +668,39 @@ static int read_field_values(ingest_info *info, coda_cursor *cursor)
 {
     char *cp;
     double value;
-    long line_nr, length, offset;
+    long line_nr, length;
     int bytes_read, field_nr;
     char line[2048];
 
-    CHECKED_MALLOC(info->field_values, info->num_altitudes * info->num_data_fields * sizeof(double));
-    if (coda_cursor_get_string_length(cursor, &length) != 0)
+    if (coda_cursor_goto_first_array_element(cursor) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    offset = 0;
+    CHECKED_MALLOC(info->field_values, info->num_altitudes * info->num_data_fields * sizeof(double));
     for (line_nr = 0; line_nr < info->num_altitudes; line_nr++)
     {
-        if (coda_cursor_read_bytes(cursor, (unsigned char *)line, offset, length + 1) != 0)
+        if (coda_cursor_goto_record_field_by_index(cursor, 0) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
         }
-        offset += (length + 1);
+        if (coda_cursor_get_string_length(cursor, &length) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (length >= 2047)
+        {
+            harp_set_error(HARP_ERROR_INGESTION, "line too long (%ld)", length);
+            return -1;
+        }
+        if (coda_cursor_read_string(cursor, line, length + 1) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        coda_cursor_goto_parent(cursor);
 
         cp = line;
         field_nr = 0;
@@ -695,6 +709,15 @@ static int read_field_values(ingest_info *info, coda_cursor *cursor)
             cp += bytes_read;
             info->field_values[line_nr * info->num_data_fields + field_nr] = value;
             field_nr++;
+        }
+        if (line_nr < info->num_altitudes - 1)
+        {
+            if (coda_cursor_goto_next_array_element(cursor) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+
         }
     }
     return 0;
@@ -705,7 +728,7 @@ static int get_dimensions(ingest_info *info)
     coda_cursor cursor;
     long coda_dimension[CODA_MAX_NUM_DIMS];
     int num_coda_dimensions;
-    char line[1024];
+    char line[2048];
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -919,7 +942,7 @@ static void register_ace_fts_main(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("ACE_FTS_L2_main", "ACE", "ACE_FTS", "L2_ASCII_main",
-                                            "ACE_FTS_L2_ASCII_main_v2", ingestion_init, ingestion_done);
+                                            "ACE_FTS_L2_ASCII_main", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "ACE_FTS_L2_main", NULL, read_dimensions);
     register_general_fields(product_definition);
@@ -959,7 +982,7 @@ static void register_ace_fts_iso(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("ACE_FTS_L2_iso", "ACE", "ACE_FTS", "L2_ASCII_iso",
-                                            "ACE_FTS_L2_ASCII_iso_v2", ingestion_init, ingestion_done);
+                                            "ACE_FTS_L2_ASCII_iso", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "ACE_FTS_L2_iso", NULL, read_dimensions);
     register_general_fields(product_definition);
