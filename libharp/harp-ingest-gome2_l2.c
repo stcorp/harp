@@ -53,6 +53,9 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int product_version;
+    long num_main;
+
+    /* trace gas specific */
     int window_for_species[7];
     int detailed_results_type;
     int corrected_column;
@@ -63,41 +66,30 @@ typedef struct ingest_info_struct
     harp_array esc_error_buffer;
     harp_array index_in_scan_buffer;
     harp_array quality_flags_buffer;
-    long num_main;
-    long num_windows;
     long num_vertical;
+    long num_windows;
     int revision;
 } ingest_info;
 
 static int init_num_main(ingest_info *info)
 {
     coda_cursor cursor;
-    long dim[CODA_MAX_NUM_DIMS];
-    int num_dims;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_goto(&cursor, "/GEOLOCATION/LatitudeCentre") != 0)
+    if (coda_cursor_goto(&cursor, "/GEOLOCATION/IndexInScan") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_get_array_dim(&cursor, &num_dims, dim) != 0)
+    if (coda_cursor_get_num_elements(&cursor, &info->num_main) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (num_dims != 1)
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "dataset '/GEOLOCATION/LatitudeCentre' has %d dimensions, expected 1)",
-                       num_dims);
-        return -1;
-    }
-
-    info->num_main = dim[0];
 
     return 0;
 }
@@ -705,7 +697,7 @@ static int init_quality_flags(ingest_info *info)
     return 0;
 }
 
-static int read_datetime_range(void *user_data, double *datetime_start, double *datetime_stop)
+static int read_datetime_range_compound(void *user_data, double *datetime_start, double *datetime_stop)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
@@ -802,6 +794,71 @@ static int read_datetime_range(void *user_data, double *datetime_start, double *
     {
         *datetime_stop = (Day - DAYS_FROM_1950_TO_2000) + MillisecondOfDay / 8.64e7;
     }
+
+    return 0;
+}
+
+static int read_datetime_range_string(void *user_data, double *datetime_start, double *datetime_stop)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char string_value[24];
+    coda_cursor cursor;
+    long num_elements;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "GEOLOCATION/Time") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    /* datetime_start */
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, string_value, 24) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+    if (coda_time_string_to_double("yyyy-MM-dd'T'HH:mm:ss.SSS", string_value, datetime_start) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    /* datetime_stop */
+    if (coda_cursor_goto_array_element_by_index(&cursor, num_elements - 1) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, string_value, 24) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    coda_cursor_goto_parent(&cursor);
+    if (coda_time_string_to_double("yyyy-MM-dd'T'HH:mm:ss.SSS", string_value, datetime_stop) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    *datetime_start /= 86400;
+    *datetime_stop /= 86400;
 
     return 0;
 }
@@ -924,7 +981,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
-static int read_time(void *user_data, harp_array data)
+static int read_time_compound(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     coda_cursor cursor;
@@ -1010,21 +1067,102 @@ static int read_time(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_longitude(void *user_data, harp_array data)
+static int read_time_string(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    long num_elements;
+    long i;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "GEOLOCATION/Time") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (num_elements != info->num_main)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "dataset '/GEOLOCATION/Time' has %ld elements, expected %ld", num_elements,
+                       info->num_main);
+        return -1;
+    }
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    for (i = 0; i < info->num_main; i++)
+    {
+        char string_value[24];
+
+        if (coda_cursor_read_string(&cursor, string_value, 24) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (strcmp(string_value, "                       ") == 0)
+        {
+            data.double_data[i] = coda_NaN();
+        }
+        else
+        {
+            if (coda_time_string_to_double("yyyy-MM-dd'T'HH:mm:ss.SSS", string_value, &data.double_data[i]) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+        }
+        if (i < info->num_main - 1)
+        {
+            if (coda_cursor_goto_next_array_element(&cursor) != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+static int read_longitude_center(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/LongitudeCenter", harp_type_double, info->num_main, data);
+}
+
+static int read_longitude_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "GEOLOCATION/LongitudeCentre", harp_type_double, info->num_main, data);
 }
 
-static int read_latitude(void *user_data, harp_array data)
+static int read_latitude_center(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/LatitudeCenter", harp_type_double, info->num_main, data);
+}
+
+static int read_latitude_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "GEOLOCATION/LatitudeCentre", harp_type_double, info->num_main, data);
 }
 
-static int read_longitude_bounds(void *user_data, harp_array data)
+static int read_longitude_bounds_abcd(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[2];
@@ -1063,7 +1201,7 @@ static int read_longitude_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_latitude_bounds(void *user_data, harp_array data)
+static int read_latitude_bounds_abcd(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[2];
@@ -1102,28 +1240,122 @@ static int read_latitude_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_solar_zenith_angle_sensor(void *user_data, harp_array data)
+static int read_longitude_corner(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+    long i;
+
+    dimension[0] = 4;
+    dimension[1] = info->num_main;
+
+    if (read_dataset(info, "GEOLOCATION/LongitudeCorner", harp_type_double, 4 * info->num_main, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
+    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        double tmp;
+
+        tmp = data.double_data[i * 4];
+        data.double_data[i * 4] = data.double_data[i * 4 + 1];
+        data.double_data[i * 4 + 1] = data.double_data[i * 4 + 3];
+        data.double_data[i * 4 + 3] = tmp;
+    }
+
+    return 0;
+}
+
+static int read_latitude_corner(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+    long i;
+
+    dimension[0] = 4;
+    dimension[1] = info->num_main;
+
+    if (read_dataset(info, "GEOLOCATION/LatitudeCorner", harp_type_double, 4 * info->num_main, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
+    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        double tmp;
+
+        tmp = data.double_data[i * 4];
+        data.double_data[i * 4] = data.double_data[i * 4 + 1];
+        data.double_data[i * 4 + 1] = data.double_data[i * 4 + 3];
+        data.double_data[i * 4 + 3] = tmp;
+    }
+
+    return 0;
+}
+
+static int read_solar_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/SolarZenithAngleSatCentre", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/SolarAzimuthAngle", harp_type_double, info->num_main, data);
 }
 
 static int read_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    return read_dataset(info, "GEOLOCATION/SolarZenithAngle", harp_type_double, info->num_main, data);
+}
+
+static int read_solar_zenith_angle_centre(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
     return read_dataset(info, "GEOLOCATION/SolarZenithAngleCentre", harp_type_double, info->num_main, data);
+}
+
+static int read_solar_zenith_angle_sensor_centre(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/SolarZenithAngleSatCentre", harp_type_double, info->num_main, data);
+}
+
+static int read_viewing_azimuth_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/LineOfSightAzimuthAngle", harp_type_double, info->num_main, data);
 }
 
 static int read_viewing_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngle", harp_type_double, info->num_main, data);
+}
+
+static int read_viewing_zenith_angle_centre(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
     return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngleCentre", harp_type_double, info->num_main, data);
 }
 
-static int read_relative_azimuth_angle(void *user_data, harp_array data)
+static int read_relative_azimuth_angle_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1646,7 +1878,7 @@ static int read_quality_flags_h2o(void *user_data, harp_array data)
     if (flags.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
         return -1;
     }
 
@@ -2144,7 +2376,14 @@ static int read_cloud_optical_thickness_error(void *user_data, harp_array data)
                                      "CLOUD_PROPERTIES/CloudOpticalThickness_Error", info->num_main, data);
 }
 
-static int read_absorbing_aerosol_index(void *user_data, harp_array data)
+static int read_absorbing_aerosol_index_data(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/AAI", harp_type_double, info->num_main, data);
+}
+
+static int read_absorbing_aerosol_index_detailed_results(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -2163,6 +2402,20 @@ static int read_surface_pressure(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info, "DETAILED_RESULTS/SurfacePressure", harp_type_double, info->num_main, data);
+}
+
+static int read_sun_glint_flag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/SunGlintFlag", harp_type_int32, info->num_main, data);
+}
+
+static int read_pmd_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/PMD_CloudFraction", harp_type_double, info->num_main, data);
 }
 
 static int read_index_in_scan(void *user_data, harp_array data)
@@ -2225,6 +2478,39 @@ static int read_sub_pixel_in_scan(void *user_data, harp_array data)
     }
 
     free(buffer.ptr);
+
+    return 0;
+}
+
+static int read_scan_direction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array scanflag;
+    long i;
+
+    scanflag.ptr = malloc(info->num_main * sizeof(int32_t));
+    if (scanflag.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_main * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "GEOLOCATION/ScanDirection", harp_type_int32, info->num_main, scanflag) != 0)
+    {
+        free(scanflag.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        data.int8_data[i] = scanflag.int32_data[i] - 1;
+        if (data.int8_data[i] < 0)
+        {
+            data.int8_data[i] = -1;
+        }
+    }
+    free(scanflag.ptr);
 
     return 0;
 }
@@ -2434,7 +2720,17 @@ static int parse_options(ingest_info *info, const harp_ingestion_options *option
     return 0;
 }
 
-static void ingestion_done(void *user_data)
+static void ingestion_done_aerosol(void *user_data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info != NULL)
+    {
+        free(info);
+    }
+}
+
+static void ingestion_done_trace_gases(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -2474,8 +2770,46 @@ static void ingestion_done(void *user_data)
     }
 }
 
-static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
-                          const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
+static int ingestion_init_aerosol(const harp_ingestion_module *module, coda_product *product,
+                                  const harp_ingestion_options *options, harp_product_definition **definition,
+                                  void **user_data)
+{
+    ingest_info *info;
+
+    (void)options;
+
+    info = malloc(sizeof(ingest_info));
+    if (info == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(ingest_info), __FILE__, __LINE__);
+        return -1;
+    }
+    info->product = product;
+    info->product_version = -1;
+
+    if (coda_get_product_version(info->product, &info->product_version) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        ingestion_done_aerosol(info);
+        return -1;
+    }
+
+    if (init_num_main(info) != 0)
+    {
+        ingestion_done_aerosol(info);
+        return -1;
+    }
+
+    *definition = *module->product_definition;
+    *user_data = info;
+
+    return 0;
+}
+
+static int ingestion_init_trace_gases(const harp_ingestion_module *module, coda_product *product,
+                                      const harp_ingestion_options *options, harp_product_definition **definition,
+                                      void **user_data)
 {
     ingest_info *info;
 
@@ -2502,33 +2836,33 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (coda_get_product_version(info->product, &info->product_version) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
-        ingestion_done(info);
+        ingestion_done_trace_gases(info);
         return -1;
     }
 
     if (init_num_main(info) != 0)
     {
-        ingestion_done(info);
+        ingestion_done_trace_gases(info);
         return -1;
     }
     if (init_window_info(info) != 0)
     {
-        ingestion_done(info);
+        ingestion_done_trace_gases(info);
         return -1;
     }
     if (init_revision(info) != 0)
     {
-        ingestion_done(info);
+        ingestion_done_trace_gases(info);
         return -1;
     }
     if (parse_options(info, options) != 0)
     {
-        ingestion_done(info);
+        ingestion_done_trace_gases(info);
         return -1;
     }
     if (init_num_vertical(info) != 0)
     {
-        ingestion_done(info);
+        ingestion_done_trace_gases(info);
         return -1;
     }
 
@@ -2755,7 +3089,7 @@ static int include_surface_albedo(void *user_data)
     return info->product_version >= 3 && info->detailed_results_type >= 0;
 }
 
-static void register_common_variables(harp_product_definition *product_definition)
+static void register_common_trace_gases_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
@@ -2767,7 +3101,8 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL, read_time);
+                                                   NULL, description, "seconds since 2000-01-01", NULL,
+                                                   read_time_compound);
     path = "/GEOLOCATION/Time[]/Day, /GEOLOCATION/Time[]/MillisecondOfDay";
     description = "the time values are converted to seconds since 2000-01-01 00:00:00 using time = (Day - 1577836800) "
         "* 86400 + MillisecondOfDay / 1000";
@@ -2777,7 +3112,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "longitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude);
+                                                   NULL, description, "degree_east", NULL, read_longitude_centre);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/LongitudeCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2786,7 +3121,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     description = "latitude of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude);
+                                                   NULL, description, "degree_north", NULL, read_latitude_centre);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/GEOLOCATION/LatitudeCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2796,7 +3131,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
                                                    dimension_type, dimension_bounds, description, "degree_east", NULL,
-                                                   read_longitude_bounds);
+                                                   read_longitude_bounds_abcd);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/LongitudeA[], /GEOLOCATION/LongitudeB[], /GEOLOCATION/LongitudeC[], /GEOLOCATION/LongitudeD[]";
     description = "the corner coordinates are re-arranged in the order B-D-C-A";
@@ -2807,7 +3142,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
                                                    dimension_type, dimension_bounds, description, "degree_north", NULL,
-                                                   read_latitude_bounds);
+                                                   read_latitude_bounds_abcd);
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/GEOLOCATION/LatitudeA[], /GEOLOCATION/LatitudeB[], /GEOLOCATION/LatitudeC[], /GEOLOCATION/LatitudeD[]";
     description = "the corner coordinates are re-arranged in the order B-D-C-A";
@@ -2818,7 +3153,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_solar_zenith_angle",
                                                    harp_type_double, 1, dimension_type, NULL, description, "degree",
-                                                   NULL, read_solar_zenith_angle_sensor);
+                                                   NULL, read_solar_zenith_angle_sensor_centre);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngleSatCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2828,7 +3163,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
-                                                   read_solar_zenith_angle);
+                                                   read_solar_zenith_angle_centre);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngleCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2838,7 +3173,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
-                                                   read_viewing_zenith_angle);
+                                                   read_viewing_zenith_angle_centre);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/LineOfSightZenithAngleCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2848,7 +3183,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "relative_azimuth_angle", harp_type_double,
                                                    1, dimension_type, NULL, description, "degree", NULL,
-                                                   read_relative_azimuth_angle);
+                                                   read_relative_azimuth_angle_centre);
     harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
     path = "/GEOLOCATION/RelativeAzimuthCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -3779,7 +4114,7 @@ static void register_common_variables(harp_product_definition *product_definitio
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_absorbing_aerosol_index);
+                                                   read_absorbing_aerosol_index_detailed_results);
     path = "/DETAILED_RESULTS/AAI[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -3846,7 +4181,7 @@ static void register_scan_variables(harp_product_definition *product_definition,
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
-static void register_common_options(harp_ingestion_module *module)
+static void register_common_trace_gases_options(harp_ingestion_module *module)
 {
     const char *detailed_results_option_values[7] = { "BrO", "H2O", "HCHO", "NO2", "O3", "OClO", "SO2" };
     const char *so2_column_option_values[4] = { "15km", "6km", "2.5km", "1km" };
@@ -3870,20 +4205,164 @@ static void register_common_options(harp_ingestion_module *module)
     harp_ingestion_register_option(module, "so2_column", description, 4, so2_column_option_values);
 }
 
+static void register_o3marp_product(void)
+{
+    const char *scan_direction_type_values[] = { "forward", "backward" };
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    long dimension_bounds[2] = { -1, 4 };
+    const char *description;
+    const char *path;
+
+    module = harp_ingestion_register_module("GOME2_L2_O3MARP", "GOME-2", "ACSAF", "O3MARP",
+                                            "GOME2 offline absorbing aerosol index product", ingestion_init_aerosol,
+                                            ingestion_done_aerosol);
+
+    product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MARP", NULL, read_dimensions);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range_string);
+
+    /* datetime */
+    description = "time of the measurement";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                               NULL, description, "seconds since 2000-01-01", NULL,
+                                               read_time_string);
+    path = "/GEOLOCATION/Time[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude */
+    description = "longitude of the measurement";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                               NULL, description, "degree_east", NULL, read_longitude_center);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/LongitudeCenter[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* latitude */
+    description = "latitude of the measurement";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                               NULL, description, "degree_north", NULL, read_latitude_center);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    path = "/GEOLOCATION/LatitudeCenter[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude_bounds */
+    description = "corner longitudes of the measurement";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
+                                               dimension_type, dimension_bounds, description, "degree_east", NULL,
+                                               read_longitude_corner);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/LongitudeCorner[]";
+    description = "the corner coordinates are re-arranged in the order 2-4-3-1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* latitude_bounds */
+    description = "corner latitudes of the measurement";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
+                                               dimension_type, dimension_bounds, description, "degree_north", NULL,
+                                               read_latitude_corner);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    path = "/GEOLOCATION/LatitudeCorner[]";
+    description = "the corner coordinates are re-arranged in the order 2-4-3-1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* solar_azimuth_angle */
+    description = "solar azimuth angle";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                               dimension_type, NULL, description, "degree", NULL,
+                                               read_solar_azimuth_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/SolarAzimuthAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_zenith_angle */
+    description = "solar zenith angle";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+                                               dimension_type, NULL, description, "degree", NULL,
+                                               read_solar_zenith_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    path = "/GEOLOCATION/SolarZenithAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* viewing_azimuth_angle */
+    description = "viewing azimuth angle at top of atmosphere";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
+                                               dimension_type, NULL, description, "degree", NULL,
+                                               read_viewing_azimuth_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, -360.0, 360.0);
+    path = "/GEOLOCATION/LineOfSightAzimuthAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* viewing_zenith_angle */
+    description = "viewing zenith angle at top of atmosphere";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
+                                               dimension_type, NULL, description, "degree", NULL,
+                                               read_viewing_zenith_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    path = "/GEOLOCATION/LineOfSightZenithAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* absorbing_aerosol_index */
+    description = "absorbing aerosol index";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
+                                               dimension_type, NULL, description, "degree", NULL,
+                                               read_absorbing_aerosol_index_data);
+    path = "/DATA/AAI[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction */
+    description = "cloud fraction";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
+                                               dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                               read_pmd_cloud_fraction);
+    path = "/DATA/PMD_CloudFraction[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scan_direction_type */
+    description = "scan direction for each measurement";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "scan_direction_type", harp_type_int8, 1,
+                                               dimension_type, NULL, description, NULL, NULL, read_scan_direction);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
+    path = "/GEOLOCATION/ScanDirection[]";
+    description = "subtract 1 to turn values 1,2 into 0,1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* scene_type */
+    description = "sun glint condition";
+    variable_definition =
+    harp_ingestion_register_variable_full_read(product_definition, "scene_type", harp_type_int32, 1,
+                                               dimension_type, NULL, description, NULL, NULL, read_sun_glint_flag);
+    path = "/DATA/SunGlintFlag[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
 static void register_o3mnto_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME2_L2_O3MNTO", "GOME-2", "ACSAF", "O3MNTO",
-                                            "GOME2 near-real-time total column trace gas product", ingestion_init,
-                                            ingestion_done);
-    register_common_options(module);
+                                            "GOME2 near-real-time total column trace gas product",
+                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+    register_common_trace_gases_options(module);
 
     /* O3MNTO product */
     product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MNTO", NULL, read_dimensions);
-    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
-    register_common_variables(product_definition);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range_compound);
+    register_common_trace_gases_variables(product_definition);
     register_scan_variables(product_definition, 0);
 }
 
@@ -3893,14 +4372,14 @@ static void register_o3moto_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME2_L2_O3MOTO", "GOME-2", "ACSAF", "O3MOTO",
-                                            "GOME2 offline total column trace gas product", ingestion_init,
-                                            ingestion_done);
-    register_common_options(module);
+                                            "GOME2 offline total column trace gas product",
+                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+    register_common_trace_gases_options(module);
 
     /* O3MOTO product */
     product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MOTO", NULL, read_dimensions);
-    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
-    register_common_variables(product_definition);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range_compound);
+    register_common_trace_gases_variables(product_definition);
     register_scan_variables(product_definition, 0);
 }
 
@@ -3910,14 +4389,14 @@ static void register_ersnto_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME_L2_ERSNTO", "GOME", "ACSAF", "ERSNTO",
-                                            "GOME near-real-time total column trace gas product", ingestion_init,
-                                            ingestion_done);
-    register_common_options(module);
+                                            "GOME near-real-time total column trace gas product",
+                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+    register_common_trace_gases_options(module);
 
     /* ERSNTO product */
     product_definition = harp_ingestion_register_product(module, "GOME_L2_ERSNTO", NULL, read_dimensions);
-    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
-    register_common_variables(product_definition);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range_compound);
+    register_common_trace_gases_variables(product_definition);
     register_scan_variables(product_definition, 1);
 }
 
@@ -3927,20 +4406,21 @@ static void register_ersoto_product(void)
     harp_product_definition *product_definition;
 
     module = harp_ingestion_register_module("GOME_L2_ERSOTO", "GOME", "ACSAF", "ERSOTO",
-                                            "GOME offline total column trace gas product", ingestion_init,
-                                            ingestion_done);
-    register_common_options(module);
+                                            "GOME offline total column trace gas product",
+                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+    register_common_trace_gases_options(module);
 
     /* ERSOTO product */
     product_definition = harp_ingestion_register_product(module, "GOME_L2_ERSOTO", NULL, read_dimensions);
-    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range);
-    register_common_variables(product_definition);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range_compound);
+    register_common_trace_gases_variables(product_definition);
     register_scan_variables(product_definition, 1);
 }
 
 
 int harp_ingestion_module_gome2_l2_init(void)
 {
+    register_o3marp_product();
     register_o3mnto_product();
     register_o3moto_product();
     register_ersnto_product();

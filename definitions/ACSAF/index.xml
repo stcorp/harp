@@ -123,7 +123,7 @@
   </cd:ProductType>
   <cd:ProductType name="O3MARP">
     <cd:Description>GOME offline absorbing aerosol index product</cd:Description>
-    <cd:ProductDefinition id="O3MARP_v4" format="hdf5" version="1">
+    <cd:ProductDefinition id="O3MARP_v4" format="hdf5" version="4">
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/METADATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
@@ -135,7 +135,7 @@
   </cd:ProductType>
   <cd:ProductType name="O3MNAP">
     <cd:Description>GOME near-real-time absorbing aerosol index product</cd:Description>
-    <cd:ProductDefinition id="O3MNAP_v4" format="hdf5" version="1">
+    <cd:ProductDefinition id="O3MNAP_v4" format="hdf5" version="4">
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/METADATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>
@@ -147,7 +147,7 @@
   </cd:ProductType>
   <cd:ProductType name="O3MARS">
     <cd:Description>GOME offline absorbing aerosol height product</cd:Description>
-    <cd:ProductDefinition id="O3MARS_v4" format="hdf5" version="1">
+    <cd:ProductDefinition id="O3MARS_v4" format="hdf5" version="4">
       <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression path="/METADATA">str(.@InstrumentID[0]) == "GOME"</cd:MatchExpression>

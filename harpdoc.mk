@@ -371,6 +371,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GOME2_L1_radiance.html \
 	doc/html/ingestions/GOME2_L1_sun_reference.html \
 	doc/html/ingestions/GOME2_L1_transmission.html \
+	doc/html/ingestions/GOME2_L2_O3MARP.html \
 	doc/html/ingestions/GOME2_L2_O3MNTO.html \
 	doc/html/ingestions/GOME2_L2_O3MOTO.html \
 	doc/html/ingestions/GOME_L1_EXTRACTED.html \
@@ -1299,6 +1300,8 @@ doc/html/ingestions/GOME2_L1_radiance.html:
 doc/html/ingestions/GOME2_L1_sun_reference.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L1_transmission.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GOME2_L2_O3MARP.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L2_O3MNTO.html:
 	$(MAKE) harp_doc
