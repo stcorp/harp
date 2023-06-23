@@ -207,17 +207,20 @@ static int read_string_from_header(ingest_info *info, char *name, char *expected
 
 static int read_datetime(void *user_data, harp_array data)
 {
-    return read_string_from_header((ingest_info *)user_data, "date", "yyyy-MM-dd HH:mm:ss.SS+00|yyyy-MM-dd HH:mm:ss.SSSSSS+00:00", data);
+    return read_string_from_header((ingest_info *)user_data, "date",
+                                   "yyyy-MM-dd HH:mm:ss.SS+00|yyyy-MM-dd HH:mm:ss.SSSSSS+00:00", data);
 }
 
 static int read_datetime_start(void *user_data, harp_array data)
 {
-    return read_string_from_header((ingest_info *)user_data, "start_time", "yyyy-MM-dd HH:mm:ss+00|yyyy-MM-dd HH:mm:ss+00:00", data);
+    return read_string_from_header((ingest_info *)user_data, "start_time",
+                                   "yyyy-MM-dd HH:mm:ss+00|yyyy-MM-dd HH:mm:ss+00:00", data);
 }
 
 static int read_datetime_stop(void *user_data, harp_array data)
 {
-    return read_string_from_header((ingest_info *)user_data, "end_time", "yyyy-MM-dd HH:mm:ss+00|yyyy-MM-dd HH:mm:ss+00:00", data);
+    return read_string_from_header((ingest_info *)user_data, "end_time",
+                                   "yyyy-MM-dd HH:mm:ss+00|yyyy-MM-dd HH:mm:ss+00:00", data);
 }
 
 static int read_latitude(void *user_data, harp_array data)
