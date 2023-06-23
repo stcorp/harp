@@ -606,14 +606,12 @@ static int read_orbit_index(void *user_data, harp_array data)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    return read_array(cursor, "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber", harp_type_int32, 1,
-                      data);
-    if (coda_cursor_goto(&cursor, "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber") != 0)
+    if (coda_cursor_goto(&cursor, "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber[0]") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_int32(&cursor, data.int32_data) != 0)
+    if (coda_cursor_read_uint32(&cursor, (uint32_t *)data.int32_data) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
