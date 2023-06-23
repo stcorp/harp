@@ -435,11 +435,9 @@ void harp_get_grid_corner_coordinates(long num_x, long num_y, const double *long
                 }
             }
 
-            harp_geographic_intersection(center_latitude[0], center_longitude[0],
-                                         center_latitude[2], center_longitude[2],
-                                         center_latitude[1], center_longitude[1],
-                                         center_latitude[3], center_longitude[3],
-                                         &latitude_edge[i * (num_y + 1) + j], &longitude_edge[i * (num_y + 1) + j]);
+            harp_geographic_center_from_bounds(4, center_latitude, center_longitude,
+                                               &latitude_edge[i * (num_y + 1) + j],
+                                               &longitude_edge[i * (num_y + 1) + j]);
         }
     }
 }

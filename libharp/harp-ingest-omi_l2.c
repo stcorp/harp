@@ -797,6 +797,19 @@ static int read_longitude_bounds(void *user_data, long index, harp_array data)
     data.double_data[2] = info->longitude_grid[(i + 1) * (num_xtrack + 1) + j + 1];
     data.double_data[3] = info->longitude_grid[(i + 1) * (num_xtrack + 1) + j];
 
+    /* wrap longitude to [-180,180] */
+    for (i = 0; i < 4; i++)
+    {
+        if (data.double_data[i] > 180)
+        {
+            data.double_data[i] -= 360;
+        }
+        if (data.double_data[i] < -180)
+        {
+            data.double_data[i] += 360;
+        }
+    }
+
     return 0;
 }
 
