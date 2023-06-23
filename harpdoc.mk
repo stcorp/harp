@@ -145,6 +145,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ECA_ATL_EBD_2A.html \
 	doc/html/ingestions/ECA_ATL_ICE_2A.html \
 	doc/html/ingestions/ECA_CPR_CLD_2A.html \
+	doc/html/ingestions/ECA_MSI_CM__2A.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html \
@@ -848,6 +849,8 @@ doc/html/ingestions/ECA_ATL_EBD_2A.html:
 doc/html/ingestions/ECA_ATL_ICE_2A.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_CPR_CLD_2A.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECA_MSI_CM__2A.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc

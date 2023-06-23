@@ -31,10 +31,10 @@
 
 #include "coda.h"
 #include "harp-ingestion.h"
+#include "harp-geometry.h"
 
 #include <assert.h>
 #include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -45,8 +45,14 @@ typedef struct ingest_info_struct
     coda_product *product;
     long num_time;
     long num_vertical;
+    long num_along_track;
+    long num_across_track;
     coda_cursor science_data_cursor;
     int resolution;     /* 0: default, 1: medium, 2: low */
+
+    /* geolocation buffers */
+    double *latitude_edge;
+    double *longitude_edge;
 } ingest_info;
 
 
@@ -118,9 +124,11 @@ static int read_array(coda_cursor cursor, const char *path, harp_data_type data_
     return 0;
 }
 
-static int init_cursors(ingest_info *info)
+static int init_cursors_and_dimensions(ingest_info *info)
 {
     coda_cursor cursor;
+    long dim[CODA_MAX_NUM_DIMS];
+    int num_dims;
     long index;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
@@ -135,15 +143,24 @@ static int init_cursors(ingest_info *info)
     }
     info->science_data_cursor = cursor;
 
-    if (coda_cursor_goto_record_field_by_name(&cursor, "time") != 0)
+    if (coda_cursor_goto_record_field_by_name(&cursor, "latitude") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_get_num_elements(&cursor, &info->num_time) != 0)
+    if (coda_cursor_get_array_dim(&cursor, &num_dims, dim) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
+    }
+    assert(num_dims > 0);
+    info->num_along_track = dim[0];
+    info->num_time = info->num_along_track;
+    if (num_dims > 1)
+    {
+        assert(num_dims == 2);
+        info->num_across_track = dim[1];
+        info->num_time *= info->num_across_track;
     }
     coda_cursor_goto_parent(&cursor);
 
@@ -174,6 +191,70 @@ static int init_cursors(ingest_info *info)
             return -1;
         }
     }
+
+    return 0;
+}
+
+static int init_geolocation_edge_grid(ingest_info *info)
+{
+    harp_array longitude;
+    harp_array latitude;
+
+    /* read latitude information */
+    latitude.ptr = malloc(info->num_time * sizeof(double));
+    if (latitude.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_array(info->science_data_cursor, "latitude", harp_type_double, info->num_time, latitude) != 0)
+    {
+        free(latitude.ptr);
+        return -1;
+    }
+
+    /* read longitude information */
+    longitude.ptr = malloc(info->num_time * sizeof(double));
+    if (longitude.ptr == NULL)
+    {
+        free(latitude.ptr);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_array(info->science_data_cursor, "longitude", harp_type_double, info->num_time, longitude) != 0)
+    {
+        free(latitude.ptr);
+        free(longitude.ptr);
+        return -1;
+    }
+
+    /* calculate corner coordinates */
+    info->longitude_edge = malloc((info->num_across_track + 1) * (info->num_along_track + 1) * sizeof(double));
+    if (info->longitude_edge == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_across_track + 1) * (info->num_along_track + 1) * sizeof(double), __FILE__, __LINE__);
+        free(latitude.ptr);
+        free(longitude.ptr);
+        return -1;
+    }
+    info->latitude_edge = malloc((info->num_across_track + 1) * (info->num_along_track + 1) * sizeof(double));
+    if (info->latitude_edge == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (info->num_across_track + 1) * (info->num_along_track + 1) * sizeof(double), __FILE__, __LINE__);
+        free(latitude.ptr);
+        free(longitude.ptr);
+        return -1;
+    }
+
+    harp_get_grid_corner_coordinates(info->num_along_track, info->num_across_track, longitude.double_data,
+                                     latitude.double_data, info->longitude_edge, info->latitude_edge);
+
+    free(latitude.ptr);
+    free(longitude.ptr);
 
     return 0;
 }
@@ -354,6 +435,63 @@ static int read_classification(void *user_data, harp_array data)
                       data);
 }
 
+static int read_cloud_mask(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_mask", harp_type_int8, info->num_time, data);
+}
+
+static int read_cloud_phase(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_array(info->science_data_cursor, "cloud_phase", harp_type_int8, info->num_time, data) != 0)
+    {
+        return -1;
+    }
+
+    /* change values 1-4 to 0-3 */
+    for (i = 0; i < info->num_time; i++)
+    {
+        if (data.int8_data[i] > 0)
+        {
+            data.int8_data[i]--;
+        }
+    }
+
+    return 0;
+}
+
+static int read_cloud_phase_quality_status(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_phase_quality_status", harp_type_int8, info->num_time, data);
+}
+
+static int read_cloud_mask_quality_status(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_mask_quality_status", harp_type_int8, info->num_time, data);
+}
+
+static int read_cloud_type(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_type", harp_type_int8, info->num_time, data);
+}
+
+static int read_cloud_type_quality_status(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_type_quality_status", harp_type_int8, info->num_time, data);
+}
+
 static int read_data_quality_flag(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -442,6 +580,31 @@ static int read_latitude(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "latitude", harp_type_double, info->num_time, data);
+}
+
+static int read_latitude_bounds(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long num_xtrack = info->num_across_track;
+    long i, j;
+
+    if (info->latitude_edge == NULL)
+    {
+        if (init_geolocation_edge_grid(info) != 0)
+        {
+            return -1;
+        }
+    }
+
+    i = index / num_xtrack;     /* 0 <= i < num_along_track */
+    j = index - i * num_xtrack; /* 0 <= j < num_across_track */
+
+    data.double_data[0] = info->latitude_edge[i * (num_xtrack + 1) + j];
+    data.double_data[1] = info->latitude_edge[i * (num_xtrack + 1) + j + 1];
+    data.double_data[2] = info->latitude_edge[(i + 1) * (num_xtrack + 1) + j + 1];
+    data.double_data[3] = info->latitude_edge[(i + 1) * (num_xtrack + 1) + j];
+
+    return 0;
 }
 
 static int read_lidar_ratio_355nm(void *user_data, harp_array data)
@@ -594,6 +757,44 @@ static int read_longitude(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "longitude", harp_type_double, info->num_time, data);
+}
+
+static int read_longitude_bounds(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long num_xtrack = info->num_across_track;
+    long i, j;
+
+    if (info->longitude_edge == NULL)
+    {
+        if (init_geolocation_edge_grid(info) != 0)
+        {
+            return -1;
+        }
+    }
+
+    i = index / num_xtrack;     /* 0 <= i < num_along_track */
+    j = index - i * num_xtrack; /* 0 <= j < num_across_track */
+
+    data.double_data[0] = info->longitude_edge[i * (num_xtrack + 1) + j];
+    data.double_data[1] = info->longitude_edge[i * (num_xtrack + 1) + j + 1];
+    data.double_data[2] = info->longitude_edge[(i + 1) * (num_xtrack + 1) + j + 1];
+    data.double_data[3] = info->longitude_edge[(i + 1) * (num_xtrack + 1) + j];
+
+    /* wrap longitude to [-180,180] */
+    for (i = 0; i < 4; i++)
+    {
+        if (data.double_data[i] > 180)
+        {
+            data.double_data[i] -= 360;
+        }
+        if (data.double_data[i] < -180)
+        {
+            data.double_data[i] += 360;
+        }
+    }
+
+    return 0;
 }
 
 static int read_orbit_index(void *user_data, harp_array data)
@@ -869,7 +1070,28 @@ static int read_time(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "time", harp_type_double, info->num_time, data);
+    if (read_array(info->science_data_cursor, "time", harp_type_double, info->num_along_track, data) != 0)
+    {
+        return -1;
+    }
+
+    /* replicate time value for all across elements */
+    if (info->num_across_track > 1)
+    {
+        long i, j;
+
+        for (i = info->num_along_track - 1; i >= 0; i--)
+        {
+            long offset = i * info->num_across_track;
+
+            for (j = 0; j < info->num_across_track; j++)
+            {
+                data.double_data[offset + j] = data.double_data[i];
+            }
+        }
+    }
+
+    return 0;
 }
 
 static int read_tropopause_height(void *user_data, harp_array data)
@@ -890,7 +1112,18 @@ static void ingestion_done(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    free(info);
+    if (info != NULL)
+    {
+        if (info->latitude_edge != NULL)
+        {
+            free(info->latitude_edge);
+        }
+        if (info->longitude_edge != NULL)
+        {
+            free(info->longitude_edge);
+        }
+        free(info);
+    }
 }
 
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
@@ -907,7 +1140,13 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
     info->product = product;
+    info->num_time = 0;
+    info->num_vertical = 0;
+    info->num_along_track = 0;
+    info->num_across_track = 0;
     info->resolution = 0;
+    info->latitude_edge = NULL;
+    info->longitude_edge = NULL;
     *definition = module->product_definition[0];
 
     if (harp_ingestion_options_has_option(options, "resolution"))
@@ -928,7 +1167,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         }
     }
 
-    if (init_cursors(info) != 0)
+    if (init_cursors_and_dimensions(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -939,19 +1178,20 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static void register_common_variables(harp_product_definition *product_definition)
+static void register_common_variables(harp_product_definition *product_definition, int is_2d)
 {
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[2];
-
-    dimension_type[0] = harp_dimension_time;
-    dimension_type[1] = harp_dimension_vertical;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    long dimension[2] = { -1, 4 };
+    const char *mapping_description;
+    const char *description;
 
     /* datetime */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double,
                                                                      1, dimension_type, NULL, "UTC time",
                                                                      "seconds since 2000-01-01", NULL, read_time);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/time", NULL);
+    description = is_2d ? "time is replicated in the across track dimension" : NULL;
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/time", description);
 
     /* latitude */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
@@ -964,6 +1204,29 @@ static void register_common_variables(harp_product_definition *product_definitio
                                                                      1, dimension_type, NULL, "Geodetic longitude",
                                                                      "degree_east", NULL, read_longitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/longitude", NULL);
+
+    if (is_2d)
+    {
+        /* latitude_bounds */
+        description = "latitudes of the ground pixel corners (WGS84)";
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "latitude_bounds",
+                                                                          harp_type_double, 2, dimension_type,
+                                                                          dimension, description, "degree_north", NULL,
+                                                                          read_latitude_bounds);
+        harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+        mapping_description = "interpolated from the center coordinates for each of the ground pixels";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, mapping_description);
+
+        /* longitude_bounds */
+        description = "longitudes of the ground pixel corners (WGS84)";
+        variable_definition = harp_ingestion_register_variable_block_read(product_definition, "longitude_bounds",
+                                                                          harp_type_double, 2, dimension_type,
+                                                                          dimension, description, "degree_east", NULL,
+                                                                          read_longitude_bounds);
+        harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, mapping_description);
+
+    }
 
     /* orbit_index */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32,
@@ -991,7 +1254,7 @@ static void register_ac__tc__2b_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_AC__TC__2B", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1037,7 +1300,7 @@ static void register_acm_cap_2b_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_ACM_CAP_2B", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1164,7 +1427,7 @@ static void register_atl_aer_2a_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_ATL_AER_2A", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1300,7 +1563,7 @@ static void register_atl_ald_2a_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_ATL_ALD_2A", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1443,7 +1706,7 @@ static void register_atl_cth_2a_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_ATL_CTH_2A", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
 
@@ -1496,7 +1759,7 @@ static void register_atl_ebd_2a_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_ATL_EBD_2A", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1725,7 +1988,7 @@ static void register_atl_ice_2a_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_ATL_ICE_2A", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1811,7 +2074,7 @@ static void register_cpr_cld_2a_product(void)
 
     product_definition = harp_ingestion_register_product(module, "ECA_CPR_CLD_2A", NULL, read_dimensions);
 
-    register_common_variables(product_definition);
+    register_common_variables(product_definition, 0);
 
     dimension_type[0] = harp_dimension_time;
     dimension_type[1] = harp_dimension_vertical;
@@ -1923,6 +2186,83 @@ static void register_cpr_cld_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/retrieval_status", NULL);
 }
 
+static void register_msi_cm__2a_product(void)
+{
+    const char *cloud_type_values[] = {
+        "clear", "cumulus", "altocumulus", "cirrus", "stratocumulus", "altostratus", "cirrostratus", "stratus",
+        "nimbostratus", "deep_convection"
+    };
+    const char *cloud_phase_type_values[] = { "water", "ice", "supercooled", "overlap" };
+    const char *cloud_mask_values[] = { "confident_clear", "probably_clear", "probably_cloudy", "confident_cloudy" };
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2];
+    const char *description;
+
+    description = "MSI cloud mask, type and phase";
+    module = harp_ingestion_register_module("ECA_MSI_CM__2A", "EarthCARE", "EARTHCARE", "MSI_CM__2A", description,
+                                            ingestion_init, ingestion_done);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_MSI_CM__2A", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 1);
+
+    dimension_type[0] = harp_dimension_time;
+    dimension_type[1] = harp_dimension_vertical;
+
+    /* cloud_type */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_type",
+                                                                     harp_type_int8, 1, dimension_type, NULL,
+                                                                     "cloud type", NULL, NULL, read_cloud_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 10, cloud_type_values);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_type", NULL);
+
+    /* cloud_type_validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_type_validity",
+                                                                     harp_type_int8, 1, dimension_type, NULL,
+                                                                     "cloud type quality status", NULL, NULL,
+                                                                     read_cloud_type_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_type_quality_status",
+                                         NULL);
+
+    /* cloud_phase_type */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_phase_type",
+                                                                     harp_type_int8, 1, dimension_type, NULL,
+                                                                     "cloud phase", NULL, NULL, read_cloud_phase);
+    harp_variable_definition_set_enumeration_values(variable_definition, 4, cloud_phase_type_values);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_phase", NULL);
+
+    /* cloud_phase_validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_phase_type_validity",
+                                                                     harp_type_int8, 1, dimension_type, NULL,
+                                                                     "cloud phase quality status", NULL, NULL,
+                                                                     read_cloud_phase_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_phase_quality_status",
+                                         NULL);
+
+    /* scene_type */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "scene_type",
+                                                                     harp_type_int8, 1, dimension_type, NULL,
+                                                                     "cloud mask", NULL, NULL, read_cloud_mask);
+    harp_variable_definition_set_enumeration_values(variable_definition, 4, cloud_mask_values);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_mask", NULL);
+
+    /* scene_type_validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "scene_type_validity",
+                                                                     harp_type_int8, 1, dimension_type, NULL,
+                                                                     "cloud mask quality status", NULL, NULL,
+                                                                     read_cloud_mask_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_mask_quality_status",
+                                         NULL);
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL,
+                                                                     NULL, read_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
+}
+
 int harp_ingestion_module_earthcare_l2_init(void)
 {
     register_ac__tc__2b_product();
@@ -1933,6 +2273,7 @@ int harp_ingestion_module_earthcare_l2_init(void)
     register_atl_ebd_2a_product();
     register_atl_ice_2a_product();
     register_cpr_cld_2a_product();
+    register_msi_cm__2a_product();
 
     return 0;
 }

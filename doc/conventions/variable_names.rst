@@ -61,6 +61,7 @@ cloud_base_temperature                                                         X
 cloud_fraction                                                                 X            X             []
 cloud_height                                                                   X            X             [m]
 cloud_optical_depth                                                            X            X             []                   this is equal to 'cloud optical thickness'
+cloud_phase_type                                                               X            X
 cloud_pressure                                                                 X            X             [Pa]
 cloud_temperature                                                              X            X             [K]
 cloud_top_albedo                                                               X            X             []
