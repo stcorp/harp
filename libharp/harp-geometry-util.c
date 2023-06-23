@@ -308,3 +308,138 @@ int harp_geographic_center_from_bounds(long num_vertices, const double *latitude
 
     return 0;
 }
+
+/** Calculate grid cell corner coordinates from a grid of center coordinates
+ *
+ * This routine will calculate grid cell corner coordinates from center points through interpolation and extrapolation (at the boundaries).
+ * The result is again a regular grid of points (`num_x+1`, `num_y+1`)
+ * To turn this into corner coordinates per cell, a second step needs to be performed:
+ * ```
+ * latitude_bounds[i,j,0] = latitude_edge[i * (num_y + 1) + j]
+ * latitude_bounds[i,j,1] = latitude_edge[i * (num_y + 1) + i]
+ * latitude_bounds[i,j,2] = latitude_edge[(i + 1) * (num_y + 1) + j + 1]
+ * latitude_bounds[i,j,3] = latitude_edge[(i + 1) * (num_y + 1) + j]
+ * ```
+ * and similar for longitude
+ *
+ * \param num_x Dimension length of x-axis
+ * \param num_y Dimension lenght of y-axis
+ * \param longitude 2D array of longitudes of center positions  [num_x, num_y]
+ * \param latitude 2D array of latitudes of center positions  [num_x, num_y]
+ * \param longitude_edge 2D grid [num_x + 1, num_y + 1] where grid cell corner longitudes will be stored
+ * \param latitude_edge 2D grid [num_x + 1, num_y + 1] where grid cell corner latitudes will be stored
+ */
+void harp_get_grid_corner_coordinates(long num_x, long num_y, const double *longitude, const double *latitude,
+                                      double *longitude_edge, double *latitude_edge)
+{
+    double center_longitude[4]; /* the four center coordinates needed to calculate a corner coordinate */
+    double center_latitude[4];
+    long i;
+    long j;
+
+    /* corner coordinates lying at the outer edges are calculated by means of extrapolation. */
+
+    /* enumerate all corner coordinates (num_x + 1) x (num_y + 1) and calculate the coordinates */
+    for (i = 0; i < num_x + 1; i++)
+    {
+        for (j = 0; j < num_y + 1; j++)
+        {
+            long id1;   /* id of first center coordinate for extrapolation */
+            long id2;   /* id of second center coordinate for extrapolation */
+
+            if (i == 0)
+            {
+                /* extrapolate */
+                id1 = i * num_y + j - 1 + (j == 0);
+                id2 = id1 + num_y + (j == 0);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[0], &center_longitude[0]);
+
+                id1 = i * num_y + j - (j == num_y);
+                id2 = id1 + num_y - (j == num_y);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[1], &center_longitude[1]);
+            }
+            else
+            {
+                if (j == 0)
+                {
+                    /* extrapolate */
+                    id1 = (i - 1) * num_y + j;
+                    id2 = id1 + 1;
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[0], &center_longitude[0]);
+                }
+                else
+                {
+                    center_longitude[0] = longitude[(i - 1) * num_y + j - 1];
+                    center_latitude[0] = latitude[(i - 1) * num_y + j - 1];
+                }
+
+                if (j == num_y)
+                {
+                    /* extrapolate */
+                    id1 = (i - 1) * num_y + j - 1;
+                    id2 = id1 - 1;
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[1], &center_longitude[1]);
+                }
+                else
+                {
+                    center_longitude[1] = longitude[(i - 1) * num_y + j];
+                    center_latitude[1] = latitude[(i - 1) * num_y + j];
+                }
+            }
+
+            if (i == num_x)
+            {
+                /* extrapolate */
+                id1 = (i - 1) * num_y + j - (j == num_y);
+                id2 = id1 - num_y - (j == num_y);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[2], &center_longitude[2]);
+
+                id1 = (i - 1) * num_y + j - 1 + (j == 0);
+                id2 = id1 - num_y + (j == 0);
+                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                              &center_latitude[3], &center_longitude[3]);
+            }
+            else
+            {
+                if (j == num_y)
+                {
+                    /* extrapolate */
+                    id1 = i * num_y + j - 1;
+                    id2 = id1 - 1;
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[2], &center_longitude[2]);
+                }
+                else
+                {
+                    center_longitude[2] = longitude[i * num_y + j];
+                    center_latitude[2] = latitude[i * num_y + j];
+                }
+
+                if (j == 0)
+                {
+                    /* extrapolate */
+                    id1 = i * num_y + j;
+                    id2 = id1 + 1;
+                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
+                                                  &center_latitude[3], &center_longitude[3]);
+                }
+                else
+                {
+                    center_longitude[3] = longitude[i * num_y + j - 1];
+                    center_latitude[3] = latitude[i * num_y + j - 1];
+                }
+            }
+
+            harp_geographic_intersection(center_latitude[0], center_longitude[0],
+                                         center_latitude[2], center_longitude[2],
+                                         center_latitude[1], center_longitude[1],
+                                         center_latitude[3], center_longitude[3],
+                                         &latitude_edge[i * (num_y + 1) + j], &longitude_edge[i * (num_y + 1) + j]);
+        }
+    }
+}

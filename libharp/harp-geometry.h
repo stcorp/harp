@@ -239,4 +239,7 @@ int harp_geographic_center_from_bounds(long num_vertices, const double *latitude
                                        const double *longitude_bounds, double *center_latitude,
                                        double *center_longitude);
 
+void harp_get_grid_corner_coordinates(long num_x, long num_y, const double *longitude, const double *latitude,
+                                      double *longitude_edge, double *latitude_edge);
+
 #endif

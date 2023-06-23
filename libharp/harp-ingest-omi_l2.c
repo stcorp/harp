@@ -94,122 +94,6 @@ typedef struct ingest_info_struct
     variable_descriptor omaeruv_aaod;
 } ingest_info;
 
-static void calculate_corner_coordinates(long num_time, long num_xtrack, const double *longitude,
-                                         const double *latitude, double *longitude_grid, double *latitude_grid)
-{
-    double center_longitude[4]; /* the four center coordinates needed to calculate a corner coordinate */
-    double center_latitude[4];
-    long i;
-    long j;
-
-    /* corner coordinates lying at the outer edges are calculated by means of extrapolation. */
-
-    /* enumerate all corner coordinates (num_xtrack + 1) x (num_time + 1) and calculate the coordinates */
-    for (i = 0; i < num_time + 1; i++)
-    {
-        for (j = 0; j < num_xtrack + 1; j++)
-        {
-            long id1;   /* id of first center coordinate for extrapolation */
-            long id2;   /* id of second center coordinate for extrapolation */
-
-            if (i == 0)
-            {
-                /* extrapolate */
-                id1 = i * num_xtrack + j - 1 + (j == 0);
-                id2 = id1 + num_xtrack + (j == 0);
-                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                              &center_latitude[0], &center_longitude[0]);
-
-                id1 = i * num_xtrack + j - (j == num_xtrack);
-                id2 = id1 + num_xtrack - (j == num_xtrack);
-                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                              &center_latitude[1], &center_longitude[1]);
-            }
-            else
-            {
-                if (j == 0)
-                {
-                    /* extrapolate */
-                    id1 = (i - 1) * num_xtrack + j;
-                    id2 = id1 + 1;
-                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                                  &center_latitude[0], &center_longitude[0]);
-                }
-                else
-                {
-                    center_longitude[0] = longitude[(i - 1) * num_xtrack + j - 1];
-                    center_latitude[0] = latitude[(i - 1) * num_xtrack + j - 1];
-                }
-
-                if (j == num_xtrack)
-                {
-                    /* extrapolate */
-                    id1 = (i - 1) * num_xtrack + j - 1;
-                    id2 = id1 - 1;
-                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                                  &center_latitude[1], &center_longitude[1]);
-                }
-                else
-                {
-                    center_longitude[1] = longitude[(i - 1) * num_xtrack + j];
-                    center_latitude[1] = latitude[(i - 1) * num_xtrack + j];
-                }
-            }
-
-            if (i == num_time)
-            {
-                /* extrapolate */
-                id1 = (i - 1) * num_xtrack + j - (j == num_xtrack);
-                id2 = id1 - num_xtrack - (j == num_xtrack);
-                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                              &center_latitude[2], &center_longitude[2]);
-
-                id1 = (i - 1) * num_xtrack + j - 1 + (j == 0);
-                id2 = id1 - num_xtrack + (j == 0);
-                harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                              &center_latitude[3], &center_longitude[3]);
-            }
-            else
-            {
-                if (j == num_xtrack)
-                {
-                    /* extrapolate */
-                    id1 = i * num_xtrack + j - 1;
-                    id2 = id1 - 1;
-                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                                  &center_latitude[2], &center_longitude[2]);
-                }
-                else
-                {
-                    center_longitude[2] = longitude[i * num_xtrack + j];
-                    center_latitude[2] = latitude[i * num_xtrack + j];
-                }
-
-                if (j == 0)
-                {
-                    /* extrapolate */
-                    id1 = i * num_xtrack + j;
-                    id2 = id1 + 1;
-                    harp_geographic_extrapolation(latitude[id1], longitude[id1], latitude[id2], longitude[id2],
-                                                  &center_latitude[3], &center_longitude[3]);
-                }
-                else
-                {
-                    center_longitude[3] = longitude[i * num_xtrack + j - 1];
-                    center_latitude[3] = latitude[i * num_xtrack + j - 1];
-                }
-            }
-
-            harp_geographic_intersection(center_latitude[0], center_longitude[0],
-                                         center_latitude[2], center_longitude[2],
-                                         center_latitude[1], center_longitude[1],
-                                         center_latitude[3], center_longitude[3],
-                                         &latitude_grid[i * (num_xtrack + 1) + j],
-                                         &longitude_grid[i * (num_xtrack + 1) + j]);
-        }
-    }
-}
-
 static void transform_array_double(long num_elements, double *data, double missing_value, double scale_factor,
                                    double offset)
 {
@@ -786,8 +670,8 @@ static int init_geolocation(ingest_info *info)
         return -1;
     }
 
-    calculate_corner_coordinates(num_time, num_xtrack, longitude.double_data, latitude.double_data,
-                                 info->longitude_grid, info->latitude_grid);
+    harp_get_grid_corner_coordinates(num_time, num_xtrack, longitude.double_data, latitude.double_data,
+                                     info->longitude_grid, info->latitude_grid);
 
     free(latitude.ptr);
     free(longitude.ptr);
