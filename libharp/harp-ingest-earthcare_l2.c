@@ -855,7 +855,7 @@ static int read_synergetic_target_classification(void *user_data, harp_array dat
 
     if (info->resolution == 1)
     {
-        name = "synergetic_target_classification_medium_resolution";
+        name = "synergetic_target_classification_med_resolution";
     }
     else if (info->resolution == 2)
     {
@@ -1017,7 +1017,7 @@ static void register_ac__tc__2b_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/synergetic_target_classification", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/synergetic_target_classification_medium_resolution", NULL);
+                                         "/ScienceData/synergetic_target_classification_med_resolution", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/synergetic_target_classification_low_resolution", NULL);
 
