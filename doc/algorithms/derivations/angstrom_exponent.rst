@@ -8,7 +8,7 @@ angstrom exponent derivations
    ================== ===================== ========== ====================================
    symbol             description           unit       variable name
    ================== ===================== ========== ====================================
-   :math:`\alpha`     angstrom exponent     :math:`-`  `angstrom exponent {:}`
+   :math:`\alpha`     angstrom exponent     :math:`-`  `angstrom_exponent {:}`
    :math:`\lambda(i)` wavelength            :math:`nm` `wavelength {:,spectral}`
    :math:`\tau(i)`    aerosol optical depth :math:`-`  `aerosol_optical_depth {:,spectral}`
    ================== ===================== ========== ====================================
