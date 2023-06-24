@@ -4,7 +4,8 @@
 * Updates to product ingestions:
   - ACE-FTS: fix ingestion of ASCII formatted products
   - GOME-2 L2: added support for offline absorbing aerosol index (O3MARP)
-  - EarthCARE: added support for AM__ACD_2B and MSI_CM__2A
+  - EarthCARE: added support for AM__ACD_2B, AM__CTH_2B, MSI_AOT_2A,
+    MSI_CM__2A, and MSI_COP_2A
   - ECMWF GRIB: added support for new masterTablesVersion=30 data
   - S5P PAL L2: added support for AER_OT, CHOCHO, SIF, SO2 COBRA, and TCWV
 

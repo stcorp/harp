@@ -131,7 +131,7 @@ pressure                                       surface                         X
 pressure_bounds                                                                X       X    X             [Pa]
 radiance                                                                       X                    X     [W/sr/m2]
 rain_rate                                                                      X            X             [mm/h]
-reflectance                                                                    X                    X     []
+reflectance                                    surface                         X                    X     []
 relative_azimuth_angle                                                         X                          [degree]             absolute difference between sensor and solar azimuth angles
 relative_humidity                              surface                         X       X    X             []
 relative_vorticity                                                             X       X    X             []

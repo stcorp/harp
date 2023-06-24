@@ -51,7 +51,9 @@ typedef struct ingest_info_struct
     long num_spectral;
     coda_cursor science_data_cursor;
     int resolution;     /* 0: default, 1: medium, 2: low */
-    int angstrom_variant;   /* 0: 355/670, 1: 670/865 */
+    int angstrom_variant;       /* 0: 355/670, 1: 670/865 */
+    int aot_variant;    /* 0: 670, 1: 865 */
+    int am_source;      /* 0: atlid, 1: msi */
 
     /* geolocation buffers */
     double *latitude_edge;
@@ -318,7 +320,7 @@ static int read_aerosol_angstrom_exponent(void *user_data, harp_array data)
         free(angstrom.ptr);
         return -1;
     }
-    
+
     for (i = 0; i < info->num_time; i++)
     {
         data.float_data[i] = angstrom.float_data[i * 2 + info->angstrom_variant];
@@ -348,7 +350,7 @@ static int read_aerosol_angstrom_exponent_error(void *user_data, harp_array data
         free(angstrom.ptr);
         return -1;
     }
-    
+
     for (i = 0; i < info->num_time; i++)
     {
         data.float_data[i] = angstrom.float_data[i * 2 + info->angstrom_variant];
@@ -519,11 +521,53 @@ static int read_aerosol_optical_thickness_spectral_error(void *user_data, harp_a
                       info->num_time * info->num_spectral, data);
 }
 
+static int read_aerosol_optical_thickness_MSI(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->aot_variant == 1)
+    {
+        return read_array(info->science_data_cursor, "aerosol_optical_thickness_865nm", harp_type_float, info->num_time,
+                          data);
+    }
+
+    return read_array(info->science_data_cursor, "aerosol_optical_thickness_670nm", harp_type_float, info->num_time,
+                      data);
+}
+
+static int read_aerosol_optical_thickness_error_MSI(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->aot_variant == 1)
+    {
+        return read_array(info->science_data_cursor, "aerosol_optical_thickness_865nm_error", harp_type_float,
+                          info->num_time, data);
+    }
+
+    return read_array(info->science_data_cursor, "aerosol_optical_thickness_670nm_error", harp_type_float,
+                      info->num_time, data);
+}
+
 static int read_aerosol_type(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "aerosol_type", harp_type_int8, info->num_time, data);
+}
+
+static int read_angstrom_parameter_MSI(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->angstrom_variant == 1)
+    {
+        return read_array(info->science_data_cursor, "angstrom_parameter_670nm_865nm", harp_type_float, info->num_time,
+                          data);
+    }
+
+    return read_array(info->science_data_cursor, "angstrom_parameter_355nm_670nm", harp_type_float, info->num_time,
+                      data);
 }
 
 static int read_atlid_cloud_top_height(void *user_data, harp_array data)
@@ -549,11 +593,47 @@ static int read_classification(void *user_data, harp_array data)
                       data);
 }
 
+static int read_cloud_effective_radius(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_effective_radius", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_effective_radius_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_effective_radius_error", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_fraction", harp_type_float, info->num_time, data);
+}
+
 static int read_cloud_mask(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "cloud_mask", harp_type_int8, info->num_time, data);
+}
+
+static int read_cloud_optical_thickness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_optical_thickness", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_optical_thickness_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_optical_thickness_error", harp_type_float, info->num_time,
+                      data);
 }
 
 static int read_cloud_phase(void *user_data, harp_array data)
@@ -592,6 +672,87 @@ static int read_cloud_mask_quality_status(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "cloud_mask_quality_status", harp_type_int8, info->num_time, data);
 }
 
+static int read_cloud_top_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_top_height", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_top_height_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_top_height_error", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_top_height_AM(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (read_array(info->science_data_cursor, "cloud_top_height_MSI", harp_type_float, info->num_time, data) != 0)
+    {
+        return -1;
+    }
+
+    if (info->am_source == 0)
+    {
+        harp_array buffer;
+        long i;
+
+        buffer.ptr = malloc(info->num_time * sizeof(float));
+        if (buffer.ptr == NULL)
+        {
+            harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                           info->num_time * sizeof(float), __FILE__, __LINE__);
+            return -1;
+        }
+        if (read_array(info->science_data_cursor, "cloud_top_height_difference_ATLID_MSI", harp_type_float,
+                       info->num_time, buffer) != 0)
+        {
+            free(buffer.ptr);
+            return -1;
+        }
+
+        for (i = 0; i < info->num_time; i++)
+        {
+            data.float_data[i] += buffer.float_data[i];
+        }
+
+        free(buffer.ptr);
+    }
+
+    return 0;
+}
+
+static int read_cloud_top_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_top_pressure", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_top_pressure_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_top_pressure_error", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_top_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_top_temperature", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_top_temperature_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_top_temperature_error", harp_type_float, info->num_time, data);
+}
+
 static int read_cloud_type(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -604,6 +765,20 @@ static int read_cloud_type_quality_status(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "cloud_type_quality_status", harp_type_int8, info->num_time, data);
+}
+
+static int read_cloud_water_path(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_water_path", harp_type_float, info->num_time, data);
+}
+
+static int read_cloud_water_path_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "cloud_water_path_error", harp_type_float, info->num_time, data);
 }
 
 static int read_data_quality_flag(void *user_data, harp_array data)
@@ -848,7 +1023,6 @@ static int read_liquid_water_content_relative_error(void *user_data, harp_array 
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        info->num_time * info->num_vertical * sizeof(float), __FILE__, __LINE__);
         return -1;
-
     }
     if (read_liquid_water_content(user_data, buffer) != 0)
     {
@@ -1163,6 +1337,21 @@ static int read_surface_elevation(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "surface_elevation", harp_type_float, info->num_time, data);
 }
 
+static int read_surface_reflectance_670(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "surface_reflectance_670nm", harp_type_float, info->num_time, data);
+}
+
+static int read_surface_reflectance_670_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "surface_reflectance_670nm_error", harp_type_float, info->num_time,
+                      data);
+}
+
 static int read_synergetic_target_classification(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1222,6 +1411,11 @@ static int read_viewing_elevation_angle(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "viewing_elevation_angle", harp_type_float, info->num_time, data);
 }
 
+static int include_aot_670(void *user_data)
+{
+    return ((ingest_info *)user_data)->aot_variant == 0;
+}
+
 static void ingestion_done(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1261,6 +1455,8 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->num_spectral = 0;
     info->resolution = 0;
     info->angstrom_variant = 0;
+    info->aot_variant = 0;
+    info->am_source = 1;
     info->latitude_edge = NULL;
     info->longitude_edge = NULL;
     *definition = module->product_definition[0];
@@ -1285,6 +1481,16 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "angstrom"))
     {
         info->angstrom_variant = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "aot"))
+    {
+        info->aot_variant = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "source"))
+    {
+        /* currently only applicable for ECA_AM products */
+        /* note that the ingestion option value is the inverted value of am_source */
+        info->am_source = 0;
     }
 
     if (init_cursors_and_dimensions(info) != 0)
@@ -1538,7 +1744,7 @@ static void register_am__acd_2b_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[3];
+    harp_dimension_type dimension_type[2];
     const char *angstrom_option_values[1] = { "670/865" };
     const char *description;
 
@@ -1614,6 +1820,54 @@ static void register_am__acd_2b_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL,
                                          "set to fixed values of 355nm, 670nm, and 865nm");
 
+}
+
+static void register_am__cth_2b_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1];
+    const char *source_option_values[1] = { "atlid" };
+    const char *description;
+    const char *path;
+
+    description = "ATLID-MSI cloud top height";
+    module = harp_ingestion_register_module("ECA_AM__CTH_2B", "EarthCARE", "EARTHCARE", "AM__CTH_2B", description,
+                                            ingestion_init, ingestion_done);
+
+    description = "whether to ingest the cloud top height from MSI (default) or ATLID (data=atlid)";
+    harp_ingestion_register_option(module, "source", description, 1, source_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_AM__CTH_2B", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 1);
+
+    dimension_type[0] = harp_dimension_time;
+
+    /* cloud_fraction */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, "cloud fraction", HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_cloud_fraction);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_fraction", NULL);
+
+    /* cloud_top_height */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
+                                                   dimension_type, NULL, "cloud top height", "m", NULL,
+                                                   read_cloud_top_height_AM);
+    path = "/ScienceData/cloud_top_height_MSI";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "source unset", path, NULL);
+    path = "/ScienceData/cloud_top_height_MSI, /ScienceData/cloud_top_height_difference_ATLID_MSI";
+    description = "cloud_top_height_MSI + cloud_top_height_difference_ATLID_MSI";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "source=atlid", path, description);
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL, NULL,
+                                                                     read_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
 }
 
 static void register_atl_aer_2a_product(void)
@@ -2389,6 +2643,91 @@ static void register_cpr_cld_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/retrieval_status", NULL);
 }
 
+static void register_msi_aot_2a_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1];
+    const char *aot_option_values[1] = { "865" };
+    const char *angstrom_option_values[1] = { "670/865" };
+    const char *description;
+    const char *path;
+
+    description = "MSI aerosol optical thickness";
+    module = harp_ingestion_register_module("ECA_MSI_AOT_2A", "EarthCARE", "EARTHCARE", "MSI_AOT_2A", description,
+                                            ingestion_init, ingestion_done);
+
+    description = "wavelength combination for which the angstrom exponent is extracted: 355/670 (default), or 670/865 "
+        "(angstrom=670/865)";
+    harp_ingestion_register_option(module, "angstrom", description, 1, angstrom_option_values);
+
+    description = "wavelength for which to ingest the aerosol optical thickness: 670nm (default) or 865nm (aot=865)";
+    harp_ingestion_register_option(module, "aot", description, 1, aot_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_MSI_AOT_2A", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 1);
+
+    dimension_type[0] = harp_dimension_time;
+
+    /* aorosol_optical_depth */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aorosol_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, "aorosol optical thickness",
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_aerosol_optical_thickness_MSI);
+    path = "/ScienceData/aerosol_optical_thickness_670nm";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "aot unset", path, NULL);
+    path = "/ScienceData/aerosol_optical_thickness_865nm";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "aot=865", path, NULL);
+
+    /* aorosol_optical_depth_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aorosol_optical_depth_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL,
+                                                   "aorosol optical thickness error", HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_aerosol_optical_thickness_error_MSI);
+    path = "/ScienceData/aerosol_optical_thickness_670nm_error";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "aot unset", path, NULL);
+    path = "/ScienceData/aerosol_optical_thickness_865nm_error";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "aot=865", path, NULL);
+
+    /* angstrom_exponent */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "angstrom_exponent", harp_type_float, 1,
+                                                   dimension_type, NULL, "angstrom parameter", HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_angstrom_parameter_MSI);
+    path = "/ScienceData/angstrom_parameter_355nm_670nm";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "angstrom unset", path, NULL);
+    path = "/ScienceData/angstrom_parameter_670nm_865nm";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "angstrom=670/865", path, NULL);
+
+    /* surface_reflectance */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_reflectance", harp_type_float, 1,
+                                                   dimension_type, NULL, "surface reflectance",
+                                                   HARP_UNIT_DIMENSIONLESS, include_aot_670,
+                                                   read_surface_reflectance_670);
+    path = "/ScienceData/surface_reflectance_670nm";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "aot unset", path, NULL);
+
+    /* surface_reflectance_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_reflectance_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL,
+                                                   "surface reflectance error", HARP_UNIT_DIMENSIONLESS,
+                                                   include_aot_670, read_surface_reflectance_670_error);
+    path = "/ScienceData/surface_reflectance_670nm_error";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "aot unset", path, NULL);
+
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL,
+                                                                     NULL, read_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
+}
+
 static void register_msi_cm__2a_product(void)
 {
     const char *cloud_type_values[] = {
@@ -2466,18 +2805,139 @@ static void register_msi_cm__2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
 }
 
+static void register_msi_cop_2a_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1];
+    const char *description;
+
+    description = "MSI cloud optical thickness, cloud effective radius, ice crystal diameter, cloud water path, "
+        "and cloud top temperature, pressure and height";
+    module = harp_ingestion_register_module("ECA_MSI_COP_2A", "EarthCARE", "EARTHCARE", "MSI_COP_2A", description,
+                                            ingestion_init, ingestion_done);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_MSI_COP_2A", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 1);
+
+    dimension_type[0] = harp_dimension_time;
+
+    /* cloud_particle_effective_radius */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_particle_effective_radius",
+                                                   harp_type_float, 1, dimension_type, NULL, "cloud effective radius",
+                                                   "m", NULL, read_cloud_effective_radius);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_effective_radius", NULL);
+
+    /* cloud_particle_effective_radius_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_particle_effective_radius_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL,
+                                                   "cloud effective radius error", "m", NULL,
+                                                   read_cloud_effective_radius_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_effective_radius_error",
+                                         NULL);
+
+    /* cloud_optical_depth */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, "cloud optical thickness",
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_optical_thickness);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_optical_thickness", NULL);
+
+    /* cloud_optical_depth_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL,
+                                                   "cloud optical thickness error", HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_optical_thickness_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_optical_thickness_error",
+                                         NULL);
+
+    /* cloud_top_height */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
+                                                   dimension_type, NULL, "cloud top height", "m", NULL,
+                                                   read_cloud_top_height);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_top_height", NULL);
+
+    /* cloud_top_height_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, "cloud top height error", "m", NULL,
+                                                   read_cloud_top_height_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_top_height_error", NULL);
+
+    /* cloud_top_pressure */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, "cloud top pressure", "Pa", NULL,
+                                                   read_cloud_top_pressure);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_top_pressure", NULL);
+
+    /* cloud_top_pressure_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL,
+                                                   "cloud top pressure error", "Pa", NULL,
+                                                   read_cloud_top_pressure_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_top_pressure_error",
+                                         NULL);
+
+    /* cloud_top_temperature */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_float, 1,
+                                                   dimension_type, NULL, "cloud top temperature", "K", NULL,
+                                                   read_cloud_top_temperature);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_top_temperature", NULL);
+
+    /* cloud_top_temperature_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL,
+                                                   "cloud top temperature error", "K", NULL,
+                                                   read_cloud_top_temperature_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_top_temperature_error",
+                                         NULL);
+
+    /* liquid_water_column_density */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "liquid_water_column_density", harp_type_float,
+                                                   1, dimension_type, NULL, "cloud water path", "kg/m2", NULL,
+                                                   read_cloud_water_path);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_water_path", NULL);
+
+    /* liquid_water_column_density_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "liquid_water_column_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, "cloud water path error",
+                                                   "kg/m2", NULL, read_cloud_water_path_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_water_path_error", NULL);
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL,
+                                                                     NULL, read_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
+}
+
 int harp_ingestion_module_earthcare_l2_init(void)
 {
     register_ac__tc__2b_product();
     register_acm_cap_2b_product();
     register_am__acd_2b_product();
+    register_am__cth_2b_product();
     register_atl_aer_2a_product();
     register_atl_ald_2a_product();
     register_atl_cth_2a_product();
     register_atl_ebd_2a_product();
     register_atl_ice_2a_product();
     register_cpr_cld_2a_product();
+    register_msi_aot_2a_product();
     register_msi_cm__2a_product();
+    register_msi_cop_2a_product();
 
     return 0;
 }
