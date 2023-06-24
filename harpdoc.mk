@@ -139,6 +139,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/EARLINET.html \
 	doc/html/ingestions/ECA_ACM_CAP_2B.html \
 	doc/html/ingestions/ECA_AC__TC__2B.html \
+	doc/html/ingestions/ECA_AM__ACD_2B.html \
 	doc/html/ingestions/ECA_ATL_AER_2A.html \
 	doc/html/ingestions/ECA_ATL_ALD_2A.html \
 	doc/html/ingestions/ECA_ATL_CTH_2A.html \
@@ -837,6 +838,8 @@ doc/html/ingestions/EARLINET.html:
 doc/html/ingestions/ECA_ACM_CAP_2B.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_AC__TC__2B.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECA_AM__ACD_2B.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_ATL_AER_2A.html:
 	$(MAKE) harp_doc

@@ -37,6 +37,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define MAX_PATH_LENGTH 256
 
@@ -47,8 +48,10 @@ typedef struct ingest_info_struct
     long num_vertical;
     long num_along_track;
     long num_across_track;
+    long num_spectral;
     coda_cursor science_data_cursor;
     int resolution;     /* 0: default, 1: medium, 2: low */
+    int angstrom_variant;   /* 0: 355/670, 1: 670/865 */
 
     /* geolocation buffers */
     double *latitude_edge;
@@ -60,6 +63,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     dimension[harp_dimension_time] = ((ingest_info *)user_data)->num_time;
     dimension[harp_dimension_vertical] = ((ingest_info *)user_data)->num_vertical;
+    dimension[harp_dimension_spectral] = ((ingest_info *)user_data)->num_spectral;
     return 0;
 }
 
@@ -164,6 +168,7 @@ static int init_cursors_and_dimensions(ingest_info *info)
     }
     coda_cursor_goto_parent(&cursor);
 
+    /* num_vertical */
     if (coda_cursor_get_record_field_index_from_name(&cursor, "height", &index) == 0)
     {
         if (coda_cursor_goto_record_field_by_name(&cursor, "height") != 0)
@@ -186,6 +191,21 @@ static int init_cursors_and_dimensions(ingest_info *info)
             return -1;
         }
         if (coda_cursor_get_num_elements(&cursor, &info->num_vertical) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+    }
+
+    /* num_spectral */
+    if (coda_cursor_get_record_field_index_from_name(&cursor, "aerosol_optical_thickness_dimension", &index) == 0)
+    {
+        if (coda_cursor_goto_record_field_by_name(&cursor, "aerosol_optical_thickness_dimension") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_get_num_elements(&cursor, &info->num_spectral) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
@@ -264,6 +284,77 @@ static int read_355nm(void *user_data, harp_array data)
     (void)user_data;
 
     *data.float_data = 355;
+
+    return 0;
+}
+
+static int read_355_670_865nm(void *user_data, harp_array data)
+{
+    (void)user_data;
+
+    data.float_data[0] = 355;
+    data.float_data[1] = 670;
+    data.float_data[2] = 865;
+
+    return 0;
+}
+
+static int read_aerosol_angstrom_exponent(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array angstrom;
+    long i;
+
+    angstrom.ptr = malloc(info->num_time * 2 * sizeof(double));
+    if (angstrom.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * 2 * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_array(info->science_data_cursor, "aerosol_angstrom_exponent", harp_type_float, info->num_time * 2,
+                   angstrom) != 0)
+    {
+        free(angstrom.ptr);
+        return -1;
+    }
+    
+    for (i = 0; i < info->num_time; i++)
+    {
+        data.float_data[i] = angstrom.float_data[i * 2 + info->angstrom_variant];
+    }
+
+    free(angstrom.ptr);
+
+    return 0;
+}
+
+static int read_aerosol_angstrom_exponent_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array angstrom;
+    long i;
+
+    angstrom.ptr = malloc(info->num_time * 2 * sizeof(double));
+    if (angstrom.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * 2 * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_array(info->science_data_cursor, "aerosol_angstrom_exponent_error", harp_type_float, info->num_time * 2,
+                   angstrom) != 0)
+    {
+        free(angstrom.ptr);
+        return -1;
+    }
+    
+    for (i = 0; i < info->num_time; i++)
+    {
+        data.float_data[i] = angstrom.float_data[i * 2 + info->angstrom_variant];
+    }
+
+    free(angstrom.ptr);
 
     return 0;
 }
@@ -410,6 +501,29 @@ static int read_aerosol_optical_depth(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "aerosol_optical_depth", harp_type_float, info->num_time, data);
+}
+
+static int read_aerosol_optical_thickness_spectral(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_optical_thickness_spectral", harp_type_float,
+                      info->num_time * info->num_spectral, data);
+}
+
+static int read_aerosol_optical_thickness_spectral_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_optical_thickness_spectral_error", harp_type_float,
+                      info->num_time * info->num_spectral, data);
+}
+
+static int read_aerosol_type(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "aerosol_type", harp_type_int8, info->num_time, data);
 }
 
 static int read_atlid_cloud_top_height(void *user_data, harp_array data)
@@ -1144,7 +1258,9 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->num_vertical = 0;
     info->num_along_track = 0;
     info->num_across_track = 0;
+    info->num_spectral = 0;
     info->resolution = 0;
+    info->angstrom_variant = 0;
     info->latitude_edge = NULL;
     info->longitude_edge = NULL;
     *definition = module->product_definition[0];
@@ -1165,6 +1281,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             /* option_value == "low" */
             info->resolution = 2;
         }
+    }
+    if (harp_ingestion_options_has_option(options, "angstrom"))
+    {
+        info->angstrom_variant = 1;
     }
 
     if (init_cursors_and_dimensions(info) != 0)
@@ -1242,7 +1362,7 @@ static void register_ac__tc__2b_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2];
-    const char *resolution_option_values[3] = { "medium", "low" };
+    const char *resolution_option_values[2] = { "medium", "low" };
     const char *description;
 
     description = "ATLID/CPR synergetic lidar/radar classification";
@@ -1411,6 +1531,89 @@ static void register_acm_cap_2b_product(void)
                                                                      dimension_type, NULL, "quality status", NULL, NULL,
                                                                      read_quality_status);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
+}
+
+static void register_am__acd_2b_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[3];
+    const char *angstrom_option_values[1] = { "670/865" };
+    const char *description;
+
+    description = "ATLID-MSI aerosol column descriptor";
+    module = harp_ingestion_register_module("ECA_AM__ACD_2B", "EarthCARE", "EARTHCARE", "AM__ACD_2B", description,
+                                            ingestion_init, ingestion_done);
+
+    description = "wavelength combination for which the angstrom exponent is extracted: 355/670 (default), or 670/865 "
+        "(angstrom=670/865)";
+    harp_ingestion_register_option(module, "angstrom", description, 1, angstrom_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_AM__ACD_2B", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 1);
+
+    dimension_type[0] = harp_dimension_time;
+    dimension_type[1] = harp_dimension_spectral;
+
+    /* aerosol_optical_depth */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 2,
+                                                   dimension_type, NULL, "aerosol layer optical thickness 355nm",
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_aerosol_optical_thickness_spectral);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/aerosol_optical_thickness_spectral", NULL);
+
+    /* aerosol_optical_depth_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
+                                                   harp_type_float, 2, dimension_type, NULL,
+                                                   "aerosol layer optical thickness error", HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_aerosol_optical_thickness_spectral_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/aerosol_optical_thickness_spectral_error", NULL);
+
+    /* angstrom_exponent */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "angstrom_exponent", harp_type_float, 1,
+                                                   dimension_type, NULL, "angstrom exponent", HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_aerosol_angstrom_exponent);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "angstrom unset",
+                                         "/ScienceData/aerosol_angstrom_exponent[*,*,0]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "angstrom=670/865",
+                                         "/ScienceData/aerosol_angstrom_exponent[*,*,1]", NULL);
+
+    /* angstrom_exponent_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "angstrom_exponent_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, "angstrom exponent error",
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_aerosol_angstrom_exponent_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "angstrom unset",
+                                         "/ScienceData/aerosol_angstrom_exponent_error[*,*,0]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "angstrom=670/865",
+                                         "/ScienceData/aerosol_angstrom_exponent_error[*,*,1]", NULL);
+
+    /* aerosol_type */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "aerosol_type", harp_type_int8,
+                                                                     1, dimension_type, NULL, "aerosol type", NULL,
+                                                                     NULL, read_aerosol_type);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_type", NULL);
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL, NULL,
+                                                                     read_quality_status);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
+
+    /* wavelength */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_float,
+                                                                     1, &dimension_type[1], NULL, "wavelength", "nm",
+                                                                     NULL, read_355_670_865nm);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL,
+                                         "set to fixed values of 355nm, 670nm, and 865nm");
+
 }
 
 static void register_atl_aer_2a_product(void)
@@ -2267,6 +2470,7 @@ int harp_ingestion_module_earthcare_l2_init(void)
 {
     register_ac__tc__2b_product();
     register_acm_cap_2b_product();
+    register_am__acd_2b_product();
     register_atl_aer_2a_product();
     register_atl_ald_2a_product();
     register_atl_cth_2a_product();
