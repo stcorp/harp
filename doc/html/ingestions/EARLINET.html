@@ -96,45 +96,45 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<tr class="row-even"><td><p><strong>datetime_start</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[seconds since 2000-01-01]</p></td>
-<td><p>time of measurement</p></td>
+<td><p>[seconds since 1970-01-01]</p></td>
+<td><p>start time of measurement</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>datetime_length</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime_stop</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[s]</p></td>
-<td><p>length of the measurement</p></td>
+<td><p>[seconds since 1970-01-01]</p></td>
+<td><p>stop time of measurement</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>latitude</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td></td>
 <td><p>[degrees]</p></td>
 <td><p>latitude</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>longitude</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td></td>
 <td><p>[degrees]</p></td>
 <td><p>longitude</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_altitude</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td></td>
 <td><p>[m]</p></td>
 <td><p>sensor altitude</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>viewing_zenith_angle</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td></td>
 <td><p>[degrees]</p></td>
 <td><p>viewing zenith angle</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>wavelength</strong></p></td>
-<td><p>double</p></td>
-<td></td>
+<td><p>float</p></td>
+<td><p>{<em>spectral</em>}</p></td>
 <td><p>[nm]</p></td>
 <td><p>wavelength</p></td>
 </tr>
@@ -144,49 +144,31 @@
 <td><p>[m]</p></td>
 <td><p>altitude</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>dust_aerosol_top_height</strong></p></td>
+<tr class="row-even"><td><p><strong>backscatter_coefficient</strong></p></td>
 <td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>dust layer top height</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>backscatter_coefficient</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</p></td>
 <td><p>[1/(m*sr)]</p></td>
 <td><p>backscatter coefficient</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>backscatter_coefficient_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>backscatter_coefficient_uncertainty</strong></p></td>
 <td><p>double</p></td>
-<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</p></td>
 <td><p>[1/(m*sr)]</p></td>
 <td><p>backscatter coefficient uncertainty</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>extinction_coefficient</strong></p></td>
+<tr class="row-even"><td><p><strong>extinction_coefficient</strong></p></td>
 <td><p>double</p></td>
-<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[1/m]</p></td>
 <td><p>extinction coefficient</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>extinction_coefficient_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>extinction_coefficient_uncertainty</strong></p></td>
 <td><p>double</p></td>
-<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>, <em>vertical</em>}</p></td>
 <td><p>[1/m]</p></td>
 <td><p>extinction coefficient uncertainty</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>H2O_mass_mixing_ratio</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
-<td><p>[g/kg]</p></td>
-<td><p>water mass mixing ratio</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>H2O_mass_mixing_ratio_uncertainty</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
-<td><p>[g/kg]</p></td>
-<td><p>water mass mixing ratio uncertainty</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -205,110 +187,65 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td rowspan="6"><p><strong>datetime</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>variable ‘Time’ available</p></td>
+<tr class="row-even"><td><p><strong>datetime_start</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/time_bounds[:,0]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/Time</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>converted from seconds sinds 1970 to seconds since 2000</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>variable ‘Time’ unavailable</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/&#64;StartDate, /&#64;StartTime_UT, /&#64;StopTime_UT</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>convert yymmdd encoded integer value for StartDate to seconds since 2000; convert hhmmss encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; use: date + (start_time + stop_time) / 2</p></td>
-</tr>
-<tr class="row-even"><td rowspan="4"><p><strong>datetime_length</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>variable ‘Time’ unavailable</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/&#64;StartTime_UT, /&#64;StopTime_UT</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>convert ‘hhmmss’ encoded integer values for StartTime_UT and StopTime_UT to time-of-day values; use: stop_time - start_time</p></td>
+<tr class="row-odd"><td><p><strong>datetime_stop</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/time_bounds[:,1]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>latitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/&#64;Latitude_degrees_north</strong></p></td>
+<td><p><strong>/latitude</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>longitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/&#64;Longitude_degrees_east</strong></p></td>
+<td><p><strong>/longitude</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_altitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/&#64;Altitude_meter_asl</strong></p></td>
+<td><p><strong>/station_altitude</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>viewing_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/&#64;ZenithAngle_degrees</strong></p></td>
+<td><p><strong>/zenith_angle</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>wavelength</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/&#64;DetectionWavelength_nm</strong></p></td>
+<td><p><strong>/wavelength</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>altitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/Altitude</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>dust_aerosol_top_height</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/DustLayerHeight</strong></p></td>
+<td><p><strong>/altitude</strong></p></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><p><strong>backscatter_coefficient</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/Backscatter</strong></p></td>
+<td><p><strong>/backscatter</strong></p></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><p><strong>backscatter_coefficient_uncertainty</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/ErrorBackscatter</strong></p></td>
+<td><p><strong>/error_backscatter</strong></p></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><p><strong>extinction_coefficient</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/Extinction</strong></p></td>
+<td><p><strong>/extinction</strong></p></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><p><strong>extinction_coefficient_uncertainty</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/ErrorExtinction</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>H2O_mass_mixing_ratio</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/WaterVaporMixingRatio</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>H2O_mass_mixing_ratio_uncertainty</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/ErrorWaterVapor</strong></p></td>
+<td><p><strong>/error_extinction</strong></p></td>
 </tr>
 </tbody>
 </table>

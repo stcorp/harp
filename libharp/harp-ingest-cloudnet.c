@@ -475,7 +475,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-int harp_ingestion_module_actris_clouds_l2_aerosol_init(void)
+int harp_ingestion_module_cloudnet_init(void)
 {
     const char *cloud_type_values[] = {
         "clear_sky", "cloud_droplets", "drizzle_rain", "drizzle_rain_cloud_droplets", "ice", "ice_supercooled_droplets",

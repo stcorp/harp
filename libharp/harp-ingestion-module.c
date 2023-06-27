@@ -42,7 +42,6 @@ static harp_ingestion_module_register *module_register = NULL;
 
 /* Module initialization functions (forward declarations). */
 int harp_ingestion_module_ace_fts_l2_init(void);
-int harp_ingestion_module_actris_clouds_l2_aerosol_init(void);
 int harp_ingestion_module_aeolus_l1b_init(void);
 int harp_ingestion_module_aeolus_l2a_init(void);
 int harp_ingestion_module_aeolus_l2b_init(void);
@@ -61,7 +60,8 @@ int harp_ingestion_module_cci_l3_o3_np_init(void);
 int harp_ingestion_module_cci_l3_o3_tc_init(void);
 int harp_ingestion_module_cci_l3_o3_ttoc_init(void);
 int harp_ingestion_module_cci_l4_o3_np_init(void);
-int harp_ingestion_module_earlinet_l2_aerosol_init(void);
+int harp_ingestion_module_cloudnet_init(void);
+int harp_ingestion_module_earlinet_init(void);
 int harp_ingestion_module_earthcare_l2_init(void);
 int harp_ingestion_module_ecmwf_grib_init(void);
 int harp_ingestion_module_geoms_ftir_init(void);
@@ -112,7 +112,6 @@ typedef int (module_init_func_t) (void);
 
 static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_ace_fts_l2_init,
-    harp_ingestion_module_actris_clouds_l2_aerosol_init,
     harp_ingestion_module_aeolus_l1b_init,
     harp_ingestion_module_aeolus_l2a_init,
     harp_ingestion_module_aeolus_l2b_init,
@@ -131,7 +130,8 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_cci_l3_o3_tc_init,
     harp_ingestion_module_cci_l3_o3_ttoc_init,
     harp_ingestion_module_cci_l4_o3_np_init,
-    harp_ingestion_module_earlinet_l2_aerosol_init,
+    harp_ingestion_module_cloudnet_init,
+    harp_ingestion_module_earlinet_init,
     harp_ingestion_module_earthcare_l2_init,
     harp_ingestion_module_ecmwf_grib_init,
     harp_ingestion_module_geoms_ftir_init,
