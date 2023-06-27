@@ -1,14 +1,11 @@
 <?xml version="1.0"?>
-<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="EARLINET" last-modified="2017-06-30">
-  <cd:Description>EARLINET aerosol target classification products</cd:Description>
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="EARLINET" last-modified="2023-06-27">
+  <cd:Description>EARLINET products</cd:Description>
   <cd:ProductType name="EARLINET">
-    <cd:ProductDefinition id="EARLINET" format="netcdf" version="3">
-      <cd:Description>The format definition for this product is taken from the netcdf file itself.</cd:Description>
+    <cd:ProductDefinition id="EARLINET" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the hdf5 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>regex("[a-z]{2}[0-9]{10}\\.b[0-9]+", filename())</cd:MatchExpression>
-      </cd:DetectionRule>
-      <cd:DetectionRule>
-        <cd:MatchExpression>regex("[a-z]{2}[0-9]{10}\\.e[0-9]+", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex("EARLINET_AerRemSen_.{3}_Lev.{2}_.{5}_.{12}_.{12}_v.{2}_qc.{2}\\.nc", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
