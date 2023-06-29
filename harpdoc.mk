@@ -146,6 +146,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ECA_ATL_CTH_2A.html \
 	doc/html/ingestions/ECA_ATL_EBD_2A.html \
 	doc/html/ingestions/ECA_ATL_ICE_2A.html \
+	doc/html/ingestions/ECA_BM__RAD_2B.html \
 	doc/html/ingestions/ECA_CPR_CLD_2A.html \
 	doc/html/ingestions/ECA_MSI_AOT_2A.html \
 	doc/html/ingestions/ECA_MSI_CM__2A.html \
@@ -855,6 +856,8 @@ doc/html/ingestions/ECA_ATL_CTH_2A.html:
 doc/html/ingestions/ECA_ATL_EBD_2A.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_ATL_ICE_2A.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECA_BM__RAD_2B.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_CPR_CLD_2A.html:
 	$(MAKE) harp_doc

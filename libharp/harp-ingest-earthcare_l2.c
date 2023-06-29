@@ -41,6 +41,8 @@
 
 #define MAX_PATH_LENGTH 256
 
+const char *BBR_DATASET_NAME[4] = { "Standard", "Small", "Full", "Assessment" };
+
 typedef struct ingest_info_struct
 {
     coda_product *product;
@@ -50,10 +52,14 @@ typedef struct ingest_info_struct
     long num_across_track;
     long num_spectral;
     coda_cursor science_data_cursor;
-    int resolution;     /* 0: default, 1: medium, 2: low */
+    int am_source;      /* 0: atlid, 1: msi */
     int angstrom_variant;       /* 0: 355/670, 1: 670/865 */
     int aot_variant;    /* 0: 670, 1: 865 */
-    int am_source;      /* 0: atlid, 1: msi */
+    int atlid_resolution;       /* 0: default, 1: medium, 2: low */
+    int bbr_direction;  /* 0: nadir, 1: fore, 2: aft */
+    int bbr_edge_coordinate;    /* 0: zero weight, 1: one weight */
+    int bbr_radiance;   /* 0: SW, 1: SW MSI, 2: SW filtered, 3: LW, 4: LW filtered */
+    int bbr_resolution; /* 0: standard, 1: small, 2: full, 3: assessment */
 
     /* geolocation buffers */
     double *latitude_edge;
@@ -130,12 +136,62 @@ static int read_array(coda_cursor cursor, const char *path, harp_data_type data_
     return 0;
 }
 
+static int read_array_bbr(ingest_info *info, const char *path, harp_data_type data_type, harp_array data)
+{
+    coda_cursor cursor;
+    harp_array array;
+    long i;
+
+    cursor = info->science_data_cursor;
+    if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+    {
+        return -1;
+    }
+
+    array.ptr = malloc(info->num_time * 3 * sizeof(double));
+    if (array.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * 3 * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+    if (read_array(cursor, path, data_type, info->num_time * 3, array) != 0)
+    {
+        free(array.ptr);
+        return -1;
+    }
+
+    switch (data_type)
+    {
+        case harp_type_int8:
+            for (i = 0; i < info->num_time; i++)
+            {
+                data.int8_data[i] = array.int8_data[i * 3 + info->bbr_direction];
+            }
+            break;
+        case harp_type_double:
+            for (i = 0; i < info->num_time; i++)
+            {
+                data.double_data[i] = array.double_data[i * 3 + info->bbr_direction];
+            }
+            break;
+        default:
+            assert(0);
+            exit(1);
+    }
+
+    free(array.ptr);
+
+    return 0;
+}
+
 static int init_cursors_and_dimensions(ingest_info *info)
 {
     coda_cursor cursor;
     long dim[CODA_MAX_NUM_DIMS];
     int num_dims;
     long index;
+    int is_bbr = 0;
 
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
@@ -148,6 +204,16 @@ static int init_cursors_and_dimensions(ingest_info *info)
         return -1;
     }
     info->science_data_cursor = cursor;
+
+    if (coda_cursor_get_record_field_index_from_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution], &index) == 0)
+    {
+        if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        is_bbr = 1;
+    }
 
     if (coda_cursor_goto_record_field_by_name(&cursor, "latitude") != 0)
     {
@@ -162,7 +228,7 @@ static int init_cursors_and_dimensions(ingest_info *info)
     assert(num_dims > 0);
     info->num_along_track = dim[0];
     info->num_time = info->num_along_track;
-    if (num_dims > 1)
+    if (num_dims > 1 && !is_bbr)
     {
         assert(num_dims == 2);
         info->num_across_track = dim[1];
@@ -871,6 +937,11 @@ static int read_latitude(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "latitude", harp_type_double, info->num_time, data);
 }
 
+static int read_latitude_bbr(void *user_data, harp_array data)
+{
+    return read_array_bbr((ingest_info *)user_data, "latitude", harp_type_double, data);
+}
+
 static int read_latitude_bounds(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -896,16 +967,72 @@ static int read_latitude_bounds(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_latitude_bounds_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    const char *variable_name;
+    long coda_num_elements;
+    long dimension[2] = { 4, info->num_time };
+
+    if (info->bbr_edge_coordinate == 0)
+    {
+        variable_name = info->bbr_edge_coordinate == 0 ? "zero_weight_edge_coordinate_nadir" :
+            "one_weight_edge_coordinate_nadir";
+    }
+    else if (info->bbr_edge_coordinate == 1)
+    {
+        variable_name = info->bbr_edge_coordinate == 0 ? "zero_weight_edge_coordinate_fore" :
+            "one_weight_edge_coordinate_fore";
+    }
+    else
+    {
+        variable_name = info->bbr_edge_coordinate == 0 ? "zero_weight_edge_coordinate_aft" :
+            "one_weight_edge_coordinate_aft";
+    }
+
+    cursor = info->science_data_cursor;
+    if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, variable_name) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &coda_num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_num_elements != info->num_time * 8)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "variable has %ld elements; expected %ld", coda_num_elements,
+                       info->num_time * 8);
+        harp_add_coda_cursor_path_to_error_message(&cursor);
+        return -1;
+    }
+    if (coda_cursor_read_double_partial_array(&cursor, 0, info->num_time * 4, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return harp_array_transpose(harp_type_double, 2, dimension, NULL, data);
+}
+
 static int read_lidar_ratio_355nm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "lidar_ratio_355nm";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "lidar_ratio_355nm_med_resolution";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "lidar_ratio_355nm_low_resolution";
     }
@@ -918,11 +1045,11 @@ static int read_lidar_ratio_355nm_error(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "lidar_ratio_355nm_error";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "lidar_ratio_355nm_med_resolution_error";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "lidar_ratio_355nm_low_resolution_error";
     }
@@ -1047,6 +1174,11 @@ static int read_longitude(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "longitude", harp_type_double, info->num_time, data);
 }
 
+static int read_longitude_bbr(void *user_data, harp_array data)
+{
+    return read_array_bbr((ingest_info *)user_data, "longitude", harp_type_double, data);
+}
+
 static int read_longitude_bounds(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1085,6 +1217,62 @@ static int read_longitude_bounds(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_longitude_bounds_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+    const char *variable_name;
+    long coda_num_elements;
+    long dimension[2] = { 4, info->num_time };
+
+    if (info->bbr_edge_coordinate == 0)
+    {
+        variable_name = info->bbr_edge_coordinate == 0 ? "zero_weight_edge_coordinate_nadir" :
+            "one_weight_edge_coordinate_nadir";
+    }
+    else if (info->bbr_edge_coordinate == 1)
+    {
+        variable_name = info->bbr_edge_coordinate == 0 ? "zero_weight_edge_coordinate_fore" :
+            "one_weight_edge_coordinate_fore";
+    }
+    else
+    {
+        variable_name = info->bbr_edge_coordinate == 0 ? "zero_weight_edge_coordinate_aft" :
+            "one_weight_edge_coordinate_aft";
+    }
+
+    cursor = info->science_data_cursor;
+    if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, variable_name) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &coda_num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_num_elements != info->num_time * 8)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "variable has %ld elements; expected %ld", coda_num_elements,
+                       info->num_time * 8);
+        harp_add_coda_cursor_path_to_error_message(&cursor);
+        return -1;
+    }
+    if (coda_cursor_read_double_partial_array(&cursor, info->num_time * 4, info->num_time * 4, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return harp_array_transpose(harp_type_double, 2, dimension, NULL, data);
+}
+
 static int read_orbit_index(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1114,11 +1302,11 @@ static int read_particle_backscatter_coefficient_355nm(void *user_data, harp_arr
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_backscatter_coefficient_355nm";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_backscatter_coefficient_355nm_med_resolution";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_backscatter_coefficient_355nm_low_resolution";
     }
@@ -1131,11 +1319,11 @@ static int read_particle_backscatter_coefficient_355nm_error(void *user_data, ha
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_backscatter_coefficient_355nm_error";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_backscatter_coefficient_355nm_med_resolution_error";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_backscatter_coefficient_355nm_low_resolution_error";
     }
@@ -1164,11 +1352,11 @@ static int read_particle_extinction_coefficient_355nm(void *user_data, harp_arra
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_extinction_coefficient_355nm";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_extinction_coefficient_355nm_med_resolution";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_extinction_coefficient_355nm_low_resolution";
     }
@@ -1181,11 +1369,11 @@ static int read_particle_extinction_coefficient_355nm_error(void *user_data, har
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_extinction_coefficient_355nm_error";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_extinction_coefficient_355nm_med_resolution_error";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_extinction_coefficient_355nm_low_resolution_error";
     }
@@ -1198,11 +1386,11 @@ static int read_particle_linear_depolarization_ratio_355nm(void *user_data, harp
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_linear_depolarization_ratio_355nm";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_linear_depolarization_ratio_355nm_med_resolution";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_linear_depolarization_ratio_355nm_low_resolution";
     }
@@ -1215,11 +1403,11 @@ static int read_particle_linear_depolarization_ratio_355nm_error(void *user_data
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_linear_depolarization_ratio_355nm_error";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_linear_depolarization_ratio_355nm_med_resolution_error";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_linear_depolarization_ratio_355nm_low_resolution_error";
     }
@@ -1232,11 +1420,11 @@ static int read_particle_optical_depth_355nm(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_optical_depth_355nm";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_optical_depth_355nm_med_resolution";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_optical_depth_355nm_low_resolution";
     }
@@ -1249,11 +1437,11 @@ static int read_particle_optical_depth_355nm_error(void *user_data, harp_array d
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "particle_optical_depth_355nm_error";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "particle_optical_depth_355nm_med_resolution_error";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "particle_optical_depth_355nm_low_resolution_error";
     }
@@ -1274,6 +1462,89 @@ static int read_quality_status_2d(void *user_data, harp_array data)
 
     return read_array(info->science_data_cursor, "quality_status", harp_type_int8, info->num_time * info->num_vertical,
                       data);
+}
+
+static int read_quality_status_bbr(void *user_data, harp_array data)
+{
+    return read_array_bbr((ingest_info *)user_data, "quality_status", harp_type_int8, data);
+}
+
+static int read_radiance_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name;
+
+    switch (info->bbr_radiance)
+    {
+        case 0:
+            variable_name = "solar_radiance";
+            break;
+        case 1:
+            variable_name = "solar_radiance_MSI";
+            break;
+        case 2:
+            variable_name = "shortwave_filtered_radiance";
+            break;
+        case 3:
+            variable_name = "thermal_radiance";
+            break;
+        case 4:
+            variable_name = "longwave_filtered_radiance";
+            break;
+        default:
+            assert(0);
+            exit(1);
+    }
+
+    return read_array_bbr(info, variable_name, harp_type_double, data);
+}
+
+static int read_radiance_error_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name;
+
+    switch (info->bbr_radiance)
+    {
+        case 0:
+            variable_name = "solar_radiance_error";
+            break;
+        case 1:
+            variable_name = "solar_radiance_MSI_error";
+            break;
+        case 3:
+            variable_name = "thermal_radiance_error";
+            break;
+        default:
+            assert(0);
+            exit(1);
+    }
+
+    return read_array_bbr(info, variable_name, harp_type_double, data);
+}
+
+static int read_radiance_quality_status_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name;
+
+    switch (info->bbr_radiance)
+    {
+        case 0:
+            variable_name = "solar_radiance_quality_status";
+            break;
+        case 1:
+            variable_name = "solar_radiance_MSI_quality_status";
+            break;
+        case 3:
+            variable_name = "thermal_radiance_quality_status";
+            break;
+        default:
+            assert(0);
+            exit(1);
+    }
+
+    return read_array_bbr(info, variable_name, harp_type_int8, data);
 }
 
 static int read_rain_rate(void *user_data, harp_array data)
@@ -1314,6 +1585,16 @@ static int read_retrieval_status(void *user_data, harp_array data)
                       info->num_time * info->num_vertical, data);
 }
 
+static int read_solar_azimuth_angle_bbr(void *user_data, harp_array data)
+{
+    return read_array_bbr((ingest_info *)user_data, "solar_azimuth_angle", harp_type_double, data);
+}
+
+static int read_solar_zenith_angle_bbr(void *user_data, harp_array data)
+{
+    return read_array_bbr((ingest_info *)user_data, "solar_zenith_angle", harp_type_double, data);
+}
+
 static int read_simple_classification(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1337,6 +1618,13 @@ static int read_surface_elevation(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "surface_elevation", harp_type_float, info->num_time, data);
 }
 
+static int read_surface_elevation_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_bbr(info, "surface_elevation", harp_type_double, data);
+}
+
 static int read_surface_reflectance_670(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1357,11 +1645,11 @@ static int read_synergetic_target_classification(void *user_data, harp_array dat
     ingest_info *info = (ingest_info *)user_data;
     const char *name = "synergetic_target_classification";
 
-    if (info->resolution == 1)
+    if (info->atlid_resolution == 1)
     {
         name = "synergetic_target_classification_med_resolution";
     }
-    else if (info->resolution == 2)
+    else if (info->atlid_resolution == 2)
     {
         name = "synergetic_target_classification_low_resolution";
     }
@@ -1397,11 +1685,32 @@ static int read_time(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_time_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_bbr(info, "time", harp_type_double, data);
+}
+
 static int read_tropopause_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "tropopause_height", harp_type_float, info->num_time, data);
+}
+
+static int read_viewing_azimuth_angle_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_bbr(info, "viewing_azimuth_angle", harp_type_double, data);
+}
+
+static int read_viewing_zenith_angle_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_bbr(info, "viewing_zenith_angle", harp_type_double, data);
 }
 
 static int read_viewing_elevation_angle(void *user_data, harp_array data)
@@ -1414,6 +1723,11 @@ static int read_viewing_elevation_angle(void *user_data, harp_array data)
 static int include_aot_670(void *user_data)
 {
     return ((ingest_info *)user_data)->aot_variant == 0;
+}
+
+static int include_bbr_unfiltered_radiance(void *user_data)
+{
+    return ((ingest_info *)user_data)->bbr_radiance != 2 && ((ingest_info *)user_data)->bbr_radiance != 4;
 }
 
 static void ingestion_done(void *user_data)
@@ -1453,31 +1767,18 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->num_along_track = 0;
     info->num_across_track = 0;
     info->num_spectral = 0;
-    info->resolution = 0;
+    info->am_source = 1;
     info->angstrom_variant = 0;
     info->aot_variant = 0;
-    info->am_source = 1;
+    info->atlid_resolution = 0;
+    info->bbr_direction = 0;
+    info->bbr_edge_coordinate = 0;
+    info->bbr_radiance = 0;
+    info->bbr_resolution = 0;
     info->latitude_edge = NULL;
     info->longitude_edge = NULL;
     *definition = module->product_definition[0];
 
-    if (harp_ingestion_options_has_option(options, "resolution"))
-    {
-        if (harp_ingestion_options_get_option(options, "resolution", &option_value) != 0)
-        {
-            ingestion_done(info);
-            return -1;
-        }
-        if (strcmp(option_value, "medium") == 0)
-        {
-            info->resolution = 1;
-        }
-        else
-        {
-            /* option_value == "low" */
-            info->resolution = 2;
-        }
-    }
     if (harp_ingestion_options_has_option(options, "angstrom"))
     {
         info->angstrom_variant = 1;
@@ -1485,6 +1786,82 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "aot"))
     {
         info->aot_variant = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "direction"))
+    {
+        if (strcmp(option_value, "fore") == 0)
+        {
+            info->bbr_direction = 1;
+        }
+        else
+        {
+            /* option_value == "aft" */
+            info->bbr_direction = 2;
+        }
+    }
+    if (harp_ingestion_options_has_option(options, "edge_coordinate"))
+    {
+        /* option_value == "aft" */
+        info->bbr_resolution = 2;
+    }
+    if (harp_ingestion_options_has_option(options, "radiance"))
+    {
+        if (strcmp(option_value, "SW_MSI") == 0)
+        {
+            info->bbr_radiance = 1;
+        }
+        else if (strcmp(option_value, "SW_filtered") == 0)
+        {
+            info->bbr_radiance = 2;
+        }
+        else if (strcmp(option_value, "LW") == 0)
+        {
+            info->bbr_radiance = 3;
+        }
+        else
+        {
+            /* option_value == "LW_filtered" */
+            info->bbr_radiance = 4;
+        }
+    }
+    if (harp_ingestion_options_has_option(options, "resolution"))
+    {
+        if (harp_ingestion_options_get_option(options, "resolution", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strncmp((*definition)->name, "ECA_A", 5) == 0)
+        {
+            /* atlid */
+            if (strcmp(option_value, "medium") == 0)
+            {
+                info->atlid_resolution = 1;
+            }
+            else
+            {
+                /* option_value == "low" */
+                info->atlid_resolution = 2;
+            }
+        }
+        else
+        {
+            /* bbr */
+            assert(strncmp((*definition)->name, "ECA_B", 5) == 0);
+            if (strcmp(option_value, "small") == 0)
+            {
+                info->bbr_resolution = 1;
+            }
+            if (strcmp(option_value, "full") == 0)
+            {
+                info->bbr_resolution = 2;
+            }
+            else
+            {
+                /* option_value == "assessment" */
+                info->bbr_resolution = 3;
+            }
+        }
     }
     if (harp_ingestion_options_has_option(options, "source"))
     {
@@ -2457,10 +2834,10 @@ static void register_atl_ice_2a_product(void)
                                                                      read_height);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
 
-    /* surface_height */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_height",
+    /* surface_altitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     "elevation ", "m", NULL, read_elevation);
+                                                                     "surface altitude ", "m", NULL, read_elevation);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/elevation", NULL);
 
     /* viewing_elevation_angle */
@@ -2517,6 +2894,216 @@ static void register_atl_ice_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/quality_status", NULL);
 }
 
+static void register_bm__rad_2b_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    long dimension[2] = { -1, 4 };
+    const char *direction_option_values[2] = { "fore", "aft" };
+    const char *edge_coordinate_option_values[1] = { "one_weight" };
+    const char *radiance_option_values[4] = { "SW_MSI", "SW_filtered", "LW", "LW_filtered" };
+    const char *resolution_option_values[3] = { "small", "full", "assessment" };
+    const char *resolution_description;
+    const char *resdir_description;
+    const char *description;
+    const char *options;
+    const char *path;
+
+    description = "BBR TOA radiances";
+    module = harp_ingestion_register_module("ECA_BM__RAD_2B", "EarthCARE", "EARTHCARE", "BM__RAD_2B", description,
+                                            ingestion_init, ingestion_done);
+
+    description = "viewing direction: nadir (default), fore (direction=fore), aft (direction=aft)";
+    harp_ingestion_register_option(module, "direction", description, 2, direction_option_values);
+
+    description = "edge coordinate: zero weight (default), one weight (edge_coordinate=one_weight)";
+    harp_ingestion_register_option(module, "edge_coordinate", description, 1, edge_coordinate_option_values);
+
+    description = "radiance: SW (default), SW from MSI (radiance=SW_MSI), SW filtered (radiance=SW_filtered), "
+        "LW (radiance=LW), LW filtered (radiance=LW_filtered)";
+    harp_ingestion_register_option(module, "radiance", description, 4, radiance_option_values);
+
+    description = "resolution: standard (default), small (resolution=small), full (resolution=full), or assessment "
+        "(resolution=assessment)";
+    harp_ingestion_register_option(module, "resolution", description, 3, resolution_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_BM__RAD_2B", NULL, read_dimensions);
+
+    /* predefined mapping descriptions */
+    resolution_description = "<resolution> is Standard, Small, Full, or Assessment based on resolution option value";
+    resdir_description = "<resolution> is Standard, Small, Full, or Assessment based on resolution option; "
+        "<direction> is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option";
+
+    /* datetime */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double,
+                                                                     1, dimension_type, NULL, "UTC time",
+                                                                     "seconds since 2000-01-01", NULL, read_time_bbr);
+    path = "/ScienceData/<resolution>/time";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
+
+    /* latitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
+                                                                     1, dimension_type, NULL, "Geodetic latitude",
+                                                                     "degree_north", NULL, read_latitude_bbr);
+    path = "/ScienceData/<resolution>/latitude";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
+
+    /* longitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double,
+                                                                     1, dimension_type, NULL, "Geodetic longitude",
+                                                                     "degree_east", NULL, read_longitude_bbr);
+    path = "/ScienceData/<resolution>/longitude";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
+
+    /* latitude_bounds */
+    description = "latitudes of the ground pixel corners (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds",
+                                                                     harp_type_double, 2, dimension_type,
+                                                                     dimension, description, "degree_north", NULL,
+                                                                     read_latitude_bounds_bbr);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    path = "/ScienceData/<resolution>/zero_weight_coordinate_nadir[0,*,*]";
+    options = "direction unset, edge_coordinate unset";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/one_weight_coordinate_nadir[0,*,*]";
+    options = "direction unset, edge_coordinate=one_weigth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/zero_weight_coordinate_fore[0,*,*]";
+    options = "direction=fore, edge_coordinate unset";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/one_weight_coordinate_fore[0,*,*]";
+    options = "direction=fore, edge_coordinate=one_weigth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/zero_weight_coordinate_aft[0,*,*]";
+    options = "direction=aft, edge_coordinate unset";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/one_weight_coordinate_aft[0,*,*]";
+    options = "direction=aft, edge_coordinate=one_weigth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+
+    /* longitude_bounds */
+    description = "longitudes of the ground pixel corners (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds",
+                                                                     harp_type_double, 2, dimension_type,
+                                                                     dimension, description, "degree_east", NULL,
+                                                                     read_longitude_bounds_bbr);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    path = "/ScienceData/<resolution>/zero_weight_coordinate_nadir[1,*,*]";
+    options = "direction unset, edge_coordinate unset";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/one_weight_coordinate_nadir[1,*,*]";
+    options = "direction unset, edge_coordinate=one_weigth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/zero_weight_coordinate_fore[1,*,*]";
+    options = "direction=fore, edge_coordinate unset";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/one_weight_coordinate_fore[1,*,*]";
+    options = "direction=fore, edge_coordinate=one_weigth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/zero_weight_coordinate_aft[1,*,*]";
+    options = "direction=aft, edge_coordinate unset";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+    path = "/ScienceData/<resolution>/one_weight_coordinate_aft[1,*,*]";
+    options = "direction=aft, edge_coordinate=one_weigth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, options, path, resolution_description);
+
+    /* orbit_index */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32,
+                                                                     0, NULL, NULL, "absolute orbit number", NULL, NULL,
+                                                                     read_orbit_index);
+    path = "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_altitude */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_double, 1,
+                                                   dimension_type, NULL, "altitude of the surface", "m", NULL,
+                                                   read_surface_elevation_bbr);
+    path = "/ScienceData/<resolution>/surface_elevation[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resdir_description);
+
+    /* solar_azimuth_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "solar azimuth angle", "degree", NULL,
+                                                   read_solar_azimuth_angle_bbr);
+    path = "/ScienceData/<resolution>/solar_azimuth_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resdir_description);
+
+    /* solar_zenith_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "solar zenith angle", "degree", NULL,
+                                                   read_solar_zenith_angle_bbr);
+    path = "/ScienceData/<resolution>/solar_zenith_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resdir_description);
+
+    /* viewing_azimuth_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "viewing azimuth angle", "degree", NULL,
+                                                   read_viewing_azimuth_angle_bbr);
+    path = "/ScienceData/<resolution>/viewing_azimuth_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resdir_description);
+
+    /* viewing_zenith_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "viewing zenith angle", "degree", NULL,
+                                                   read_viewing_zenith_angle_bbr);
+    path = "/ScienceData/<resolution>/viewing_zenith_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resdir_description);
+
+    /* radiance */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "radiance", harp_type_double, 1,
+                                                   dimension_type, NULL, "TOA radiance", "W/m2/sr", NULL,
+                                                   read_radiance_bbr);
+    path = "/ScienceData/<resolution>/solar_radiance[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance unset", path, resdir_description);
+    path = "/ScienceData/<resolution>/solar_radiance_MSI[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=SW_MSI", path, resdir_description);
+    path = "/ScienceData/<resolution>/shortwave_filtered_radiance[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=SW_filtered", path, resdir_description);
+    path = "/ScienceData/<resolution>/thermal_radiance[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=LW", path, resdir_description);
+    path = "/ScienceData/<resolution>/longwave_filtered_radiance[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=LW_filtered", path, resdir_description);
+
+    /* radiance_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "radiance_uncertainty", harp_type_double, 1,
+                                                   dimension_type, NULL, "TOA radiance error", "W/m2/sr",
+                                                   include_bbr_unfiltered_radiance, read_radiance_error_bbr);
+    path = "/ScienceData/<resolution>/solar_radiance_error[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance unset", path, resdir_description);
+    path = "/ScienceData/<resolution>/solar_radiance_MSI_error[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=SW_MSI", path, resdir_description);
+    path = "/ScienceData/<resolution>/thermal_radiance_error[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=LW", path, resdir_description);
+
+    /* radiance_validity */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "radiance_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, "radiance quality status", NULL,
+                                                   include_bbr_unfiltered_radiance, read_radiance_quality_status_bbr);
+    path = "/ScienceData/<resolution>/solar_radiance_quality_status[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance unset", path, resdir_description);
+    path = "/ScienceData/<resolution>/solar_radiance_MSI_quality_status[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=SW_MSI", path, resdir_description);
+    path = "/ScienceData/<resolution>/thermal_radiance_quality_status[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "radiance=LW", path, resdir_description);
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL, NULL,
+                                                                     read_quality_status_bbr);
+    path = "/ScienceData/<resolution>/quality_status[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resdir_description);
+}
+
 static void register_cpr_cld_2a_product(void)
 {
     harp_ingestion_module *module;
@@ -2543,10 +3130,10 @@ static void register_cpr_cld_2a_product(void)
                                                                      read_height);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
 
-    /* surface_height */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_height",
+    /* surface_altitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     "surface elevation ", "m", NULL,
+                                                                     "surface altitude ", "m", NULL,
                                                                      read_surface_elevation);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/surface_elevation", NULL);
 
@@ -2934,6 +3521,7 @@ int harp_ingestion_module_earthcare_l2_init(void)
     register_atl_cth_2a_product();
     register_atl_ebd_2a_product();
     register_atl_ice_2a_product();
+    register_bm__rad_2b_product();
     register_cpr_cld_2a_product();
     register_msi_aot_2a_product();
     register_msi_cm__2a_product();
