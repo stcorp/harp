@@ -741,7 +741,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             {
                 goto error;
             }
-            grid_num_time_elements = product->dimension[harp_dimension_time];
             source_grid_num_dims = 2;
         }
         source_grid_max_dim_elements = source_grid->dimension[source_grid->num_dimensions - 1];
@@ -849,7 +848,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     }
 
     /* regrid each variable */
-    for (i = product->num_variables - 1; i >= 0; i--)
+    for (i = 0; i < product->num_variables; i++)
     {
         resample_type type;
         long source_time_index;
