@@ -613,11 +613,11 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                                                        harp_variable *target_bounds)
 {
     harp_dimension_type dimension_type;
-    long source_max_dim_elements;       /* actual elems + NaN padding */
-    long source_grid_max_dim_elements;
-    long source_grid_num_dim_elements;
-    long target_grid_max_dim_elements;
-    long target_grid_num_dim_elements;
+    long max_dim_elements;  /* max(source_grid_max_dim_elements, target_grid_max_dim_elements) */
+    long source_grid_max_dim_elements;  /* actual elems + NaN padding */
+    long source_grid_num_dim_elements;  /* actual elems */
+    long target_grid_max_dim_elements;  /* actual elems + NaN padding */
+    long target_grid_num_dim_elements;  /* actual elems */
     long grid_num_time_elements = 1;
     int source_grid_num_dims = 1;
     int target_grid_num_dims;
@@ -722,7 +722,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             goto error;
         }
         source_grid_max_dim_elements = source_grid->dimension[0];
-        source_max_dim_elements = source_grid_max_dim_elements;
+        max_dim_elements = source_grid_max_dim_elements;
     }
     else
     {
@@ -746,7 +746,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             source_grid_num_dims = 2;
         }
         source_grid_max_dim_elements = source_grid->dimension[source_grid->num_dimensions - 1];
-        source_max_dim_elements = source_grid_max_dim_elements;
+        max_dim_elements = source_grid_max_dim_elements;
 
         if (target_grid->num_dimensions == 2 || source_grid->num_dimensions == 2)
         {
@@ -824,21 +824,21 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     }
 
     /* Resize the dimension in the target product to make room for the resampled data */
-    if (target_grid_max_dim_elements > source_max_dim_elements)
+    if (target_grid_max_dim_elements > max_dim_elements)
     {
         if (resize_dimension(product, dimension_type, target_grid_max_dim_elements) != 0)
         {
             goto error;
         }
-        source_max_dim_elements = target_grid_max_dim_elements;
+        max_dim_elements = target_grid_max_dim_elements;
     }
 
     /* allocate the buffers for the interpolation */
-    source_buffer = (double *)malloc(source_max_dim_elements * (size_t)sizeof(double));
+    source_buffer = (double *)malloc(max_dim_elements * (size_t)sizeof(double));
     if (source_buffer == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       source_max_dim_elements * sizeof(double), __FILE__, __LINE__);
+                       max_dim_elements * sizeof(double), __FILE__, __LINE__);
         goto error;
     }
     target_buffer = (double *)malloc(target_grid_max_dim_elements * (size_t)sizeof(double));
@@ -888,7 +888,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             }
         }
 
-        /* treat variable as a [num_blocks, source_max_dim_elements, num_elements] array with indices [j,k,l] */
+        /* treat variable as a [num_blocks, max_dim_elements, num_elements] array with indices [j,k,l] */
         num_blocks = 1;
         num_elements = 1;
         j = 0;
@@ -949,7 +949,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 /* we need to regrid by taking a slice for each sub element 'l' */
                 for (k = 0; k < source_grid_num_dim_elements; k++)
                 {
-                    source_buffer[k] = variable->data.double_data[(j * source_max_dim_elements + k) * num_elements + l];
+                    source_buffer[k] = variable->data.double_data[(j * max_dim_elements + k) * num_elements + l];
                 }
                 if (type == resample_linear)
                 {
@@ -987,18 +987,18 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
 
                 for (k = 0; k < target_grid_num_dim_elements; k++)
                 {
-                    variable->data.double_data[(j * source_max_dim_elements + k) * num_elements + l] = target_buffer[k];
+                    variable->data.double_data[(j * max_dim_elements + k) * num_elements + l] = target_buffer[k];
                 }
                 for (k = target_grid_num_dim_elements; k < target_grid_max_dim_elements; k++)
                 {
-                    variable->data.double_data[(j * source_max_dim_elements + k) * num_elements + l] = harp_nan();
+                    variable->data.double_data[(j * max_dim_elements + k) * num_elements + l] = harp_nan();
                 }
             }
         }
     }
 
     /* Resize the dimension in the target product to minimal size */
-    if (target_grid_max_dim_elements < source_max_dim_elements)
+    if (target_grid_max_dim_elements < max_dim_elements)
     {
         if (resize_dimension(product, dimension_type, target_grid_max_dim_elements) != 0)
         {
