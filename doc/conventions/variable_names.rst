@@ -102,6 +102,7 @@ integration_time                                                                
                                                                                                                                only use if integration time differs from datetime_length;
                                                                                                                                integration_time longer than datetime_length that covers multiple
                                                                                                                                datetime values means replication of measured value in time dimension
+irradiance                                                                     X                    X     [W/m2]
 land_type                                                                      X            X
 latitude                                       sensor                          X            (lat)         [degree_north]
 latitude_bounds                                                                             (lat)         [degree_north]
