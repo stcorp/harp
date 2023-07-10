@@ -722,7 +722,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             goto error;
         }
         source_grid_max_dim_elements = source_grid->dimension[0];
-        max_dim_elements = source_grid_max_dim_elements;
     }
     else
     {
@@ -746,7 +745,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             source_grid_num_dims = 2;
         }
         source_grid_max_dim_elements = source_grid->dimension[source_grid->num_dimensions - 1];
-        max_dim_elements = source_grid_max_dim_elements;
 
         if (target_grid->num_dimensions == 2 || source_grid->num_dimensions == 2)
         {
@@ -824,21 +822,22 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     }
 
     /* Resize the dimension in the target product to make room for the resampled data */
+    max_dim_elements = source_grid_max_dim_elements;
     if (target_grid_max_dim_elements > max_dim_elements)
     {
-        if (resize_dimension(product, dimension_type, target_grid_max_dim_elements) != 0)
+        max_dim_elements = target_grid_max_dim_elements;
+        if (resize_dimension(product, dimension_type, max_dim_elements) != 0)
         {
             goto error;
         }
-        max_dim_elements = target_grid_max_dim_elements;
     }
 
     /* allocate the buffers for the interpolation */
-    source_buffer = (double *)malloc(max_dim_elements * (size_t)sizeof(double));
+    source_buffer = (double *)malloc(source_grid_max_dim_elements * (size_t)sizeof(double));
     if (source_buffer == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       max_dim_elements * sizeof(double), __FILE__, __LINE__);
+                       source_grid_max_dim_elements * sizeof(double), __FILE__, __LINE__);
         goto error;
     }
     target_buffer = (double *)malloc(target_grid_max_dim_elements * (size_t)sizeof(double));
