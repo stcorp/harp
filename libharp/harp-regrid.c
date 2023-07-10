@@ -667,12 +667,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     }
     target_grid_max_dim_elements = target_grid->dimension[target_grid_num_dims - 1];
 
-    /* we create a local copy so we can modify it for logarithmic interpolation */
-    if (harp_variable_copy(target_grid, &local_target_grid) != 0)
-    {
-        goto error;
-    }
-
     if (target_bounds != NULL)
     {
         if (target_bounds->data_type != harp_type_double)
@@ -749,6 +743,12 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         {
             grid_num_time_elements = product->dimension[harp_dimension_time];
         }
+    }
+
+    /* we create a local copy so we can modify it for logarithmic interpolation */
+    if (harp_variable_copy(target_grid, &local_target_grid) != 0)
+    {
+        goto error;
     }
 
     /* derive bounds variables if necessary for resampling */
