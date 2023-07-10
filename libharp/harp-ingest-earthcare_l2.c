@@ -41,7 +41,10 @@
 
 #define MAX_PATH_LENGTH 256
 
-const char *BBR_DATASET_NAME[4] = { "Standard", "Small", "Full", "Assessment" };
+const char *BBR_DATASET_NAME_BM__RAD_2B[4] = { "Standard", "Small", "Full", "Assessment" };
+const char *BBR_DATASET_NAME_BMA_FLX_2B[4] = {
+    "StandardResolution", "SmallResolution", "FullResolution", "AssessmentResolution"
+};
 
 typedef struct ingest_info_struct
 {
@@ -56,10 +59,15 @@ typedef struct ingest_info_struct
     int angstrom_variant;       /* 0: 355/670, 1: 670/865 */
     int aot_variant;    /* 0: 670, 1: 865 */
     int atlid_resolution;       /* 0: default, 1: medium, 2: low */
+    int bbr_combined_flux;      /* 0: false, 1: true */
     int bbr_direction;  /* 0: nadir, 1: fore, 2: aft */
     int bbr_edge_coordinate;    /* 0: zero weight, 1: one weight */
+    int bbr_irradiance; /* 0: solar, 1: thermal */
     int bbr_radiance;   /* 0: SW, 1: SW MSI, 2: SW filtered, 3: LW, 4: LW filtered */
     int bbr_resolution; /* 0: standard, 1: small, 2: full, 3: assessment */
+
+    /* dynamic choice of BBR dataset names */
+    const char **bbr_dataset_name;
 
     /* geolocation buffers */
     double *latitude_edge;
@@ -139,11 +147,24 @@ static int read_array(coda_cursor cursor, const char *path, harp_data_type data_
 static int read_array_bbr(ingest_info *info, const char *path, harp_data_type data_type, harp_array data)
 {
     coda_cursor cursor;
+
+    cursor = info->science_data_cursor;
+    if (coda_cursor_goto_record_field_by_name(&cursor, info->bbr_dataset_name[info->bbr_resolution]) != 0)
+    {
+        return -1;
+    }
+
+    return read_array(cursor, path, data_type, info->num_time, data);
+}
+
+static int read_array_bbr_directional(ingest_info *info, const char *path, harp_data_type data_type, harp_array data)
+{
+    coda_cursor cursor;
     harp_array array;
     long i;
 
     cursor = info->science_data_cursor;
-    if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+    if (coda_cursor_goto_record_field_by_name(&cursor, info->bbr_dataset_name[info->bbr_resolution]) != 0)
     {
         return -1;
     }
@@ -205,9 +226,10 @@ static int init_cursors_and_dimensions(ingest_info *info)
     }
     info->science_data_cursor = cursor;
 
-    if (coda_cursor_get_record_field_index_from_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution], &index) == 0)
+    if (coda_cursor_get_record_field_index_from_name(&cursor, info->bbr_dataset_name[info->bbr_resolution], &index) ==
+        0)
     {
-        if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+        if (coda_cursor_goto_record_field_by_name(&cursor, info->bbr_dataset_name[info->bbr_resolution]) != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
             return -1;
@@ -923,6 +945,78 @@ static int read_ice_water_path_error(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "ice_water_path_error", harp_type_float, info->num_time, data);
 }
 
+static int read_irradiance_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->bbr_irradiance == 0)
+    {
+        /* solar */
+        if (info->bbr_combined_flux)
+        {
+            return read_array_bbr(info, "solar_combined_top_of_atmosphere_flux", harp_type_double, data);
+        }
+        return read_array_bbr_directional(info, "solar_top_of_atmosphere_flux", harp_type_double, data);
+    }
+    else
+    {
+        /* thermal */
+        if (info->bbr_combined_flux)
+        {
+            return read_array_bbr(info, "thermal_combined_top_of_atmosphere_flux", harp_type_double, data);
+        }
+        return read_array_bbr_directional(info, "thermal_top_of_atmosphere_flux", harp_type_double, data);
+    }
+}
+
+static int read_irradiance_error_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->bbr_irradiance == 0)
+    {
+        /* solar */
+        if (info->bbr_combined_flux)
+        {
+            return read_array_bbr(info, "solar_combined_top_of_atmosphere_flux_error", harp_type_double, data);
+        }
+        return read_array_bbr_directional(info, "solar_top_of_atmosphere_flux_error", harp_type_double, data);
+    }
+    else
+    {
+        /* thermal */
+        if (info->bbr_combined_flux)
+        {
+            return read_array_bbr(info, "thermal_combined_top_of_atmosphere_flux_error", harp_type_double, data);
+        }
+        return read_array_bbr_directional(info, "thermal_top_of_atmosphere_flux_error", harp_type_double, data);
+    }
+}
+
+static int read_irradiance_quality_status_bbr(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->bbr_irradiance == 0)
+    {
+        /* solar */
+        if (info->bbr_combined_flux)
+        {
+            return read_array_bbr(info, "solar_combined_top_of_atmosphere_flux_quality_status", harp_type_int8, data);
+        }
+        return read_array_bbr_directional(info, "solar_top_of_atmosphere_flux_quality_status", harp_type_int8, data);
+    }
+    else
+    {
+        /* thermal */
+        if (info->bbr_combined_flux)
+        {
+            return read_array_bbr(info, "thermal_combined_top_of_atmosphere_flux_quality_status", harp_type_int8, data);
+        }
+        return read_array_bbr_directional(info, "thermal_top_of_atmosphere_flux_quality_status", harp_type_int8, data);
+    }
+}
+
 static int read_land_flag(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -940,6 +1034,11 @@ static int read_latitude(void *user_data, harp_array data)
 static int read_latitude_bbr(void *user_data, harp_array data)
 {
     return read_array_bbr((ingest_info *)user_data, "latitude", harp_type_double, data);
+}
+
+static int read_latitude_bbr_directional(void *user_data, harp_array data)
+{
+    return read_array_bbr_directional((ingest_info *)user_data, "latitude", harp_type_double, data);
 }
 
 static int read_latitude_bounds(void *user_data, long index, harp_array data)
@@ -992,7 +1091,7 @@ static int read_latitude_bounds_bbr(void *user_data, harp_array data)
     }
 
     cursor = info->science_data_cursor;
-    if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+    if (coda_cursor_goto_record_field_by_name(&cursor, info->bbr_dataset_name[info->bbr_resolution]) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -1179,6 +1278,11 @@ static int read_longitude_bbr(void *user_data, harp_array data)
     return read_array_bbr((ingest_info *)user_data, "longitude", harp_type_double, data);
 }
 
+static int read_longitude_bbr_directional(void *user_data, harp_array data)
+{
+    return read_array_bbr_directional((ingest_info *)user_data, "longitude", harp_type_double, data);
+}
+
 static int read_longitude_bounds(void *user_data, long index, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1242,7 +1346,7 @@ static int read_longitude_bounds_bbr(void *user_data, harp_array data)
     }
 
     cursor = info->science_data_cursor;
-    if (coda_cursor_goto_record_field_by_name(&cursor, BBR_DATASET_NAME[info->bbr_resolution]) != 0)
+    if (coda_cursor_goto_record_field_by_name(&cursor, info->bbr_dataset_name[info->bbr_resolution]) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -1469,6 +1573,11 @@ static int read_quality_status_bbr(void *user_data, harp_array data)
     return read_array_bbr((ingest_info *)user_data, "quality_status", harp_type_int8, data);
 }
 
+static int read_quality_status_bbr_directional(void *user_data, harp_array data)
+{
+    return read_array_bbr_directional((ingest_info *)user_data, "quality_status", harp_type_int8, data);
+}
+
 static int read_radiance_bbr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1496,7 +1605,7 @@ static int read_radiance_bbr(void *user_data, harp_array data)
             exit(1);
     }
 
-    return read_array_bbr(info, variable_name, harp_type_double, data);
+    return read_array_bbr_directional(info, variable_name, harp_type_double, data);
 }
 
 static int read_radiance_error_bbr(void *user_data, harp_array data)
@@ -1520,7 +1629,7 @@ static int read_radiance_error_bbr(void *user_data, harp_array data)
             exit(1);
     }
 
-    return read_array_bbr(info, variable_name, harp_type_double, data);
+    return read_array_bbr_directional(info, variable_name, harp_type_double, data);
 }
 
 static int read_radiance_quality_status_bbr(void *user_data, harp_array data)
@@ -1544,7 +1653,7 @@ static int read_radiance_quality_status_bbr(void *user_data, harp_array data)
             exit(1);
     }
 
-    return read_array_bbr(info, variable_name, harp_type_int8, data);
+    return read_array_bbr_directional(info, variable_name, harp_type_int8, data);
 }
 
 static int read_rain_rate(void *user_data, harp_array data)
@@ -1587,12 +1696,12 @@ static int read_retrieval_status(void *user_data, harp_array data)
 
 static int read_solar_azimuth_angle_bbr(void *user_data, harp_array data)
 {
-    return read_array_bbr((ingest_info *)user_data, "solar_azimuth_angle", harp_type_double, data);
+    return read_array_bbr_directional((ingest_info *)user_data, "solar_azimuth_angle", harp_type_double, data);
 }
 
 static int read_solar_zenith_angle_bbr(void *user_data, harp_array data)
 {
-    return read_array_bbr((ingest_info *)user_data, "solar_zenith_angle", harp_type_double, data);
+    return read_array_bbr_directional((ingest_info *)user_data, "solar_zenith_angle", harp_type_double, data);
 }
 
 static int read_simple_classification(void *user_data, harp_array data)
@@ -1622,7 +1731,7 @@ static int read_surface_elevation_bbr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array_bbr(info, "surface_elevation", harp_type_double, data);
+    return read_array_bbr_directional(info, "surface_elevation", harp_type_double, data);
 }
 
 static int read_surface_reflectance_670(void *user_data, harp_array data)
@@ -1692,6 +1801,13 @@ static int read_time_bbr(void *user_data, harp_array data)
     return read_array_bbr(info, "time", harp_type_double, data);
 }
 
+static int read_time_bbr_directional(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array_bbr_directional(info, "time", harp_type_double, data);
+}
+
 static int read_tropopause_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1703,14 +1819,14 @@ static int read_viewing_azimuth_angle_bbr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array_bbr(info, "viewing_azimuth_angle", harp_type_double, data);
+    return read_array_bbr_directional(info, "viewing_azimuth_angle", harp_type_double, data);
 }
 
 static int read_viewing_zenith_angle_bbr(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array_bbr(info, "viewing_zenith_angle", harp_type_double, data);
+    return read_array_bbr_directional(info, "viewing_zenith_angle", harp_type_double, data);
 }
 
 static int read_viewing_elevation_angle(void *user_data, harp_array data)
@@ -1723,6 +1839,11 @@ static int read_viewing_elevation_angle(void *user_data, harp_array data)
 static int include_aot_670(void *user_data)
 {
     return ((ingest_info *)user_data)->aot_variant == 0;
+}
+
+static int include_bbr_not_combined(void *user_data)
+{
+    return !((ingest_info *)user_data)->bbr_combined_flux;
 }
 
 static int include_bbr_unfiltered_radiance(void *user_data)
@@ -1771,10 +1892,13 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->angstrom_variant = 0;
     info->aot_variant = 0;
     info->atlid_resolution = 0;
+    info->bbr_combined_flux = 1;
     info->bbr_direction = 0;
     info->bbr_edge_coordinate = 0;
+    info->bbr_irradiance = 0;
     info->bbr_radiance = 0;
     info->bbr_resolution = 0;
+    info->bbr_dataset_name = BBR_DATASET_NAME_BM__RAD_2B;
     info->latitude_edge = NULL;
     info->longitude_edge = NULL;
     *definition = module->product_definition[0];
@@ -1793,16 +1917,25 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         {
             info->bbr_direction = 1;
         }
-        else
+        else if (strcmp(option_value, "aft") == 0)
         {
-            /* option_value == "aft" */
             info->bbr_direction = 2;
+        }
+        if (strncmp((*definition)->name, "ECA_BMA_FLX_2B", 13) == 0)
+        {
+            /* just leave bbr_direction = 0 when value option is "nadir" for BMA_FLX_2B */
+            /* but disable the ingestion of the combined flux if a direction option was provided */
+            info->bbr_combined_flux = 0;
         }
     }
     if (harp_ingestion_options_has_option(options, "edge_coordinate"))
     {
         /* option_value == "aft" */
         info->bbr_resolution = 2;
+    }
+    if (harp_ingestion_options_has_option(options, "irradiance"))
+    {
+        info->bbr_irradiance = 1;
     }
     if (harp_ingestion_options_has_option(options, "radiance"))
     {
@@ -1868,6 +2001,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         /* currently only applicable for ECA_AM products */
         /* note that the ingestion option value is the inverted value of am_source */
         info->am_source = 0;
+    }
+
+    if (strncmp((*definition)->name, "ECA_BMA_FLX_2B", 13) == 0)
+    {
+        info->bbr_dataset_name = BBR_DATASET_NAME_BMA_FLX_2B;
     }
 
     if (init_cursors_and_dimensions(info) != 0)
@@ -2939,21 +3077,24 @@ static void register_bm__rad_2b_product(void)
     /* datetime */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double,
                                                                      1, dimension_type, NULL, "UTC time",
-                                                                     "seconds since 2000-01-01", NULL, read_time_bbr);
+                                                                     "seconds since 2000-01-01", NULL,
+                                                                     read_time_bbr_directional);
     path = "/ScienceData/<resolution>/time";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
 
     /* latitude */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
                                                                      1, dimension_type, NULL, "Geodetic latitude",
-                                                                     "degree_north", NULL, read_latitude_bbr);
+                                                                     "degree_north", NULL,
+                                                                     read_latitude_bbr_directional);
     path = "/ScienceData/<resolution>/latitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
 
     /* longitude */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double,
                                                                      1, dimension_type, NULL, "Geodetic longitude",
-                                                                     "degree_east", NULL, read_longitude_bbr);
+                                                                     "degree_east", NULL,
+                                                                     read_longitude_bbr_directional);
     path = "/ScienceData/<resolution>/longitude";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
 
@@ -3099,9 +3240,168 @@ static void register_bm__rad_2b_product(void)
     /* validity */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
                                                                      dimension_type, NULL, "quality status", NULL, NULL,
-                                                                     read_quality_status_bbr);
+                                                                     read_quality_status_bbr_directional);
     path = "/ScienceData/<resolution>/quality_status[*,<direction>]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resdir_description);
+}
+
+static void register_bma_flx_2b_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    const char *direction_option_values[3] = { "nadir", "fore", "aft" };
+    const char *irradiance_option_values[1] = { "thermal" };
+    const char *resolution_option_values[3] = { "small", "full", "assessment" };
+    const char *resolution_description;
+    const char *resdir_description;
+    const char *description;
+    const char *path;
+
+    description = "BBR TOA solar and thermal fluxes";
+    module = harp_ingestion_register_module("ECA_BMA_FLX_2B", "EarthCARE", "EARTHCARE", "BMA_FLX_2B", description,
+                                            ingestion_init, ingestion_done);
+
+    description = "viewing direction: combined (default), nadir (direction=nadir), fore (direction=fore), "
+        "aft (direction=aft)";
+    harp_ingestion_register_option(module, "direction", description, 3, direction_option_values);
+
+    description = "irradiance: solar (default), thermal (irradiance=thermal)";
+    harp_ingestion_register_option(module, "irradiance", description, 1, irradiance_option_values);
+
+    description = "resolution: standard (default), small (resolution=small), full (resolution=full), or assessment "
+        "(resolution=assessment)";
+    harp_ingestion_register_option(module, "resolution", description, 3, resolution_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "ECA_BMA_FLX_2B", NULL, read_dimensions);
+
+    /* predefined mapping descriptions */
+    resolution_description = "<resolution> is StandardResolution, SmallResolution, FullResolution, or "
+        "AssessmentResolution based on resolution option value";
+    resdir_description = "<resolution> is StandardResolution, SmallResolution, FullResolution, or "
+        "AssessmentResolution based on resolution option; "
+        "<direction> is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option";
+
+    /* datetime */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double,
+                                                                     1, dimension_type, NULL, "UTC time",
+                                                                     "seconds since 2000-01-01", NULL, read_time_bbr);
+    path = "/ScienceData/<resolution>/time";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
+
+    /* latitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double,
+                                                                     1, dimension_type, NULL, "Geodetic latitude",
+                                                                     "degree_north", NULL, read_latitude_bbr);
+    path = "/ScienceData/<resolution>/latitude";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
+
+    /* longitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double,
+                                                                     1, dimension_type, NULL, "Geodetic longitude",
+                                                                     "degree_east", NULL, read_longitude_bbr);
+    path = "/ScienceData/<resolution>/longitude";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
+
+    /* orbit_index */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32,
+                                                                     0, NULL, NULL, "absolute orbit number", NULL, NULL,
+                                                                     read_orbit_index);
+    path = "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_azimuth_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "solar azimuth angle", "degree",
+                                                   include_bbr_not_combined, read_solar_azimuth_angle_bbr);
+    path = "/ScienceData/<resolution>/solar_azimuth_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "direction set", path, resdir_description);
+
+    /* solar_zenith_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "solar zenith angle", "degree",
+                                                   include_bbr_not_combined, read_solar_zenith_angle_bbr);
+    path = "/ScienceData/<resolution>/solar_zenith_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "direction set", path, resdir_description);
+
+    /* viewing_azimuth_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "viewing azimuth angle", "degree",
+                                                   include_bbr_not_combined, read_viewing_azimuth_angle_bbr);
+    path = "/ScienceData/<resolution>/viewing_azimuth_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "direction set", path, resdir_description);
+
+    /* viewing_zenith_angle */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, "viewing zenith angle", "degree",
+                                                   include_bbr_not_combined, read_viewing_zenith_angle_bbr);
+    path = "/ScienceData/<resolution>/viewing_zenith_angle[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "direction set", path, resdir_description);
+
+    /* irradiance */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "irradiance", harp_type_double, 1,
+                                                   dimension_type, NULL, "TOA flux", "W/m2", NULL, read_irradiance_bbr);
+    path = "/ScienceData/<resolution>/solar_combined_top_of_atmosphere_flux[*]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance unset, direction unset", path,
+                                         resolution_description);
+    path = "/ScienceData/<resolution>/solar_top_of_atmosphere_flux[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance unset, direction set", path,
+                                         resdir_description);
+    path = "/ScienceData/<resolution>/thermal_combined_top_of_atmosphere_flux[*]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance=thermal, direction unset", path,
+                                         resolution_description);
+    path = "/ScienceData/<resolution>/thermal_top_of_atmosphere_flux[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance=thermal, direction set", path,
+                                         resdir_description);
+
+    /* irradiance_uncertainty */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "irradiance_uncertainty", harp_type_double, 1,
+                                                   dimension_type, NULL, "TOA flux error", "W/m2", NULL,
+                                                   read_irradiance_error_bbr);
+    path = "/ScienceData/<resolution>/solar_combined_top_of_atmosphere_flux_error[*]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance unset, direction unset", path,
+                                         resolution_description);
+    path = "/ScienceData/<resolution>/solar_top_of_atmosphere_flux_error[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance unset, direction set", path,
+                                         resdir_description);
+    path = "/ScienceData/<resolution>/thermal_combined_top_of_atmosphere_flux_error[*]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance=thermal, direction unset", path,
+                                         resolution_description);
+    path = "/ScienceData/<resolution>/thermal_top_of_atmosphere_flux_error[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance=thermal, direction set", path,
+                                         resdir_description);
+
+    /* irradiance_validity */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "irradiance_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, "TOA flux quality status", NULL, NULL,
+                                                   read_irradiance_quality_status_bbr);
+    path = "/ScienceData/<resolution>/solar_combined_top_of_atmosphere_flux_quality_status[*]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance unset, direction unset", path,
+                                         resolution_description);
+    path = "/ScienceData/<resolution>/solar_top_of_atmosphere_flux_quality_status[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance unset, direction set", path,
+                                         resdir_description);
+    path = "/ScienceData/<resolution>/thermal_combined_top_of_atmosphere_flux_quality_status[*]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance=thermal, direction unset", path,
+                                         resolution_description);
+    path = "/ScienceData/<resolution>/thermal_top_of_atmosphere_flux_quality_status[*,<direction>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "irradiance=thermal, direction set", path,
+                                         resdir_description);
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                                     dimension_type, NULL, "quality status", NULL, NULL,
+                                                                     read_quality_status_bbr);
+    path = "/ScienceData/<resolution>/quality_status[*>]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, resolution_description);
 }
 
 static void register_cpr_cld_2a_product(void)
@@ -3522,6 +3822,7 @@ int harp_ingestion_module_earthcare_l2_init(void)
     register_atl_ebd_2a_product();
     register_atl_ice_2a_product();
     register_bm__rad_2b_product();
+    register_bma_flx_2b_product();
     register_cpr_cld_2a_product();
     register_msi_aot_2a_product();
     register_msi_cm__2a_product();

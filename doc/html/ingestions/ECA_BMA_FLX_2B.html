@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ECA_BMA_FLX_2B &mdash; HARP 1.19 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            HARP
+          </a>
+              <div class="version">
+                1.19
+              </div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions/index.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">R interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ECA_BMA_FLX_2B</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="eca-bma-flx-2b">
+<h1>ECA_BMA_FLX_2B</h1>
+<section id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">ECA_BMA_FLX_2B</span></code> data.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 5%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
+<td><p>UTC time</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>Geodetic latitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>Geodetic longitude</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>orbit_index</strong></p></td>
+<td><p>int32</p></td>
+<td></td>
+<td></td>
+<td><p>absolute orbit number</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar azimuth angle</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar zenith angle</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>viewing_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>viewing azimuth angle</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>viewing_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>viewing zenith angle</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>irradiance</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[W/m2]</p></td>
+<td><p>TOA flux</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>irradiance_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[W/m2]</p></td>
+<td><p>TOA flux error</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>irradiance_validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>TOA flux quality status</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>quality status</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">ECA_BMA_FLX_2B</span></code> products.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 25%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>option name</p></th>
+<th class="head"><p>legal values</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>direction</p></td>
+<td><p>nadir, fore, aft</p></td>
+<td><p>viewing direction: combined (default), nadir (direction=nadir), fore (direction=fore), aft (direction=aft)</p></td>
+</tr>
+<tr class="row-odd"><td><p>irradiance</p></td>
+<td><p>thermal</p></td>
+<td><p>irradiance: solar (default), thermal (irradiance=thermal)</p></td>
+</tr>
+<tr class="row-even"><td><p>resolution</p></td>
+<td><p>small, full, assessment</p></td>
+<td><p>resolution: standard (default), small (resolution=small), full (resolution=full), or assessment (resolution=assessment)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td rowspan="2"><p><strong>datetime</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/time</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/latitude</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/longitude</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>orbit_index</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_azimuth_angle[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>solar_zenith_angle</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_zenith_angle[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>viewing_azimuth_angle</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/viewing_azimuth_angle[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>viewing_zenith_angle</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/viewing_zenith_angle[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="12"><p><strong>irradiance</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>irradiance unset, direction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_combined_top_of_atmosphere_flux[*]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>irradiance unset, direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_top_of_atmosphere_flux[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>irradiance=thermal, direction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/thermal_combined_top_of_atmosphere_flux[*]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>irradiance=thermal, direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/thermal_top_of_atmosphere_flux[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="12"><p><strong>irradiance_uncertainty</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>irradiance unset, direction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_combined_top_of_atmosphere_flux_error[*]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>irradiance unset, direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_top_of_atmosphere_flux_error[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>irradiance=thermal, direction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/thermal_combined_top_of_atmosphere_flux_error[*]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>irradiance=thermal, direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/thermal_top_of_atmosphere_flux_error[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="12"><p><strong>irradiance_validity</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>irradiance unset, direction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_combined_top_of_atmosphere_flux_quality_status[*]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>irradiance unset, direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/solar_top_of_atmosphere_flux_quality_status[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>irradiance=thermal, direction unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/thermal_combined_top_of_atmosphere_flux_quality_status[*]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>irradiance=thermal, direction set</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/thermal_top_of_atmosphere_flux_quality_status[*,&lt;direction&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option; &lt;direction&gt; is 0 (Fore), 1 (Nadir), or 2 (Aft) based on direction option</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/&lt;resolution&gt;/quality_status[*&gt;]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>&lt;resolution&gt; is StandardResolution, SmallResolution, FullResolution, or AssessmentResolution based on resolution option value</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023 S[&amp;]T, The Netherlands.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
