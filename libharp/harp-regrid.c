@@ -887,15 +887,6 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 }
             }
         }
-        /* Also make variable time dependent if the grid dimension is time and the variable does not depend on time */
-        if (dimension_type == harp_dimension_time &&
-            (variable->num_dimensions == 0 || variable->dimension_type[0] != harp_dimension_time))
-        {
-            if (harp_variable_add_dimension(variable, 0, harp_dimension_time, source_grid_max_dim_elements) != 0)
-            {
-                goto error;
-            }
-        }
 
         /* treat variable as a [num_blocks, source_max_dim_elements, num_elements] array with indices [j,k,l] */
         num_blocks = 1;
