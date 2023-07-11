@@ -578,6 +578,260 @@ int harp_product_clamp_dimension(harp_product *product, harp_dimension_type dime
     return 0;
 }
 
+/* this is a support function of harp_product_regrid_with_axis_variable */
+static int regrid_with_multi_dim_source_axis(harp_product *product, harp_variable *target_grid,
+                                             harp_variable *target_bounds)
+{
+    harp_dimension_type axis_dimension_type[HARP_NUM_DIM_TYPES];
+    harp_dimension_type dimension_type;
+    harp_product *virtual_product;
+    harp_variable *deepest_variable = NULL;
+    harp_variable *source_grid = NULL;
+    long flattened_dim_length;
+    int axis_num_dimensions = -1;
+    int dim_index = -1;
+    long i;
+    int j;
+
+    /* note: we already checked target_grid and target_bounds validity in harp_product_regrid_with_axis_variable */
+
+    dimension_type = target_grid->dimension_type[target_grid->num_dimensions - 1];
+
+    /* find the variable with the most amount of dimensions in front of dimension_type
+     * any axis variable should have a subset of those dimensions to be able to regrid the product
+     */
+    for (i = 0; i < product->num_variables; i++)
+    {
+        harp_variable *variable = product->variable[i];
+
+        for (j = 0; j < variable->num_dimensions; j++)
+        {
+            if (variable->dimension_type[j] == dimension_type)
+            {
+                if (deepest_variable == NULL || j > dim_index)
+                {
+                    deepest_variable = variable;
+                    dim_index = j;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (deepest_variable == NULL)
+    {
+        /* we have no variables that depend on the requested dimension -> return the existing product as-is */
+        return 0;
+    }
+
+    for (j = 0; j <= dim_index; j++)
+    {
+        axis_dimension_type[j] = dimension_type;
+        if (harp_product_get_derived_variable(product, target_grid->name, &target_grid->data_type, target_grid->unit,
+                                              j + 1, axis_dimension_type, &source_grid) == 0)
+        {
+            /* we found it */
+            break;
+        }
+        if (j < dim_index)
+        {
+            axis_dimension_type[j] = deepest_variable->dimension_type[j];
+        }
+    }
+    if (j > dim_index)
+    {
+        /* no axis variables found -> return with last error from harp_product_get_derived_variable */
+        return -1;
+    }
+    axis_num_dimensions = j + 1;
+
+    for (j = 1; j < axis_num_dimensions - 1; j++)
+    {
+        /* we don't allow any but the first dimension to be the time dimension (because of our flattening approach) */
+        if (axis_dimension_type[j] == harp_dimension_time)
+        {
+            harp_set_error(HARP_ERROR_INVALID_ARGUMENT,
+                           "regridding not supported when time axis is not the first dimension");
+            return -1;
+        }
+    }
+
+    if (harp_product_new(&virtual_product) != 0)
+    {
+        harp_variable_delete(source_grid);
+        return -1;
+    }
+    if (harp_product_has_variable(product, source_grid->name))
+    {
+        if (harp_product_remove_variable_by_name(product, source_grid->name) != 0)
+        {
+            harp_variable_delete(source_grid);
+            goto error;
+        }
+    }
+    if (harp_product_add_variable(virtual_product, source_grid) != 0)
+    {
+        harp_variable_delete(source_grid);
+        goto error;
+    }
+
+    /* check whether all variables can be resampled and add them to the virtual product */
+    for (i = product->num_variables - 1; i >= 0; i--)
+    {
+        resample_type type;
+
+        /* Check if we can resample this kind of variable */
+        type = get_resample_type(product->variable[i], dimension_type);
+        if (type == resample_remove)
+        {
+            /* remove variables from the base product that can't be regridded */
+            if (harp_product_remove_variable(product, product->variable[i]) != 0)
+            {
+                goto error;
+            }
+        }
+        else if (type != resample_skip)
+        {
+            int same_grid = 1;
+
+            /* if the variable does not start with the same dimensions as the source grid then remove the variable */
+            for (j = 0; j < axis_num_dimensions; j++)
+            {
+                if (j >= product->variable[i]->num_dimensions ||
+                    product->variable[i]->dimension_type[j] != axis_dimension_type[j])
+                {
+                    same_grid = 0;
+                    break;
+                }
+            }
+            if (same_grid)
+            {
+                /* also check that remaining dimensions do not depend on the time dimension */
+                for (j = axis_num_dimensions + 1; j < product->variable[i]->num_dimensions; j++)
+                {
+                    if (product->variable[i]->dimension_type[j] == harp_dimension_time)
+                    {
+                        /* set same_grid to false so this variable will get deleted */
+                        same_grid = 0;
+                        break;
+                    }
+                }
+            }
+            if (same_grid)
+            {
+                if (harp_product_add_variable(virtual_product, product->variable[i]) != 0)
+                {
+                    goto error;
+                }
+            }
+            else
+            {
+                if (harp_product_remove_variable(product, product->variable[i]) != 0)
+                {
+                    goto error;
+                }
+            }
+        }
+    }
+
+    /* flatten dimensions */
+    flattened_dim_length = 1;
+    for (i = 0; i < axis_num_dimensions - 1; i++)
+    {
+        flattened_dim_length *= product->dimension[axis_dimension_type[i]];
+    }
+    for (i = 0; i < virtual_product->num_variables; i++)
+    {
+        harp_variable *variable = virtual_product->variable[i];
+        int num_removed_dimensions = axis_num_dimensions - 2;
+
+        variable->dimension_type[0] = harp_dimension_time;
+        variable->dimension[0] = flattened_dim_length;
+        for (j = 1; j < variable->num_dimensions - num_removed_dimensions; j++)
+        {
+            variable->dimension_type[j] = variable->dimension_type[j + num_removed_dimensions];
+            variable->dimension[j] = variable->dimension[j + num_removed_dimensions];
+        }
+        variable->num_dimensions -= num_removed_dimensions;
+    }
+    virtual_product->dimension[harp_dimension_time] = flattened_dim_length;
+
+    /* regrid the virtual product using the original approach */
+    if (harp_product_regrid_with_axis_variable(virtual_product, target_grid, target_bounds) != 0)
+    {
+        goto error;
+    }
+
+    /* unflatten dimensions */
+    for (i = 0; i < virtual_product->num_variables; i++)
+    {
+        harp_variable *variable = virtual_product->variable[i];
+        int num_removed_dimensions = axis_num_dimensions - 2;
+
+        if (variable->dimension_type[0] != harp_dimension_time)
+        {
+            /* this is an axis variable that got added -> don't unflatten */
+            continue;
+        }
+
+        variable->num_dimensions += num_removed_dimensions;
+        for (j = variable->num_dimensions - num_removed_dimensions - 1; j >= 1; j--)
+        {
+            variable->dimension_type[j + num_removed_dimensions] = variable->dimension_type[j];
+            variable->dimension[j + num_removed_dimensions] = variable->dimension[j];
+        }
+        for (j = 0; j < axis_num_dimensions - 1; j++)
+        {
+            variable->dimension_type[j] = axis_dimension_type[j];
+            variable->dimension[j] = product->dimension[axis_dimension_type[j]];
+        }
+    }
+    virtual_product->dimension[harp_dimension_time] = product->dimension[harp_dimension_time];
+
+    /* update target dimension in original product */
+    product->dimension[dimension_type] = target_grid->dimension[target_grid->num_dimensions - 1];
+
+    /* transfer all new variables from the virtual product back to the original product */
+    for (i = virtual_product->num_variables - 1; i >= 0; i--)
+    {
+        if (!harp_product_has_variable(product, virtual_product->variable[i]->name))
+        {
+            if (harp_product_add_variable(product, virtual_product->variable[i]) != 0)
+            {
+                goto error;
+            }
+            if (harp_product_detach_variable(virtual_product, virtual_product->variable[i]) != 0)
+            {
+                /* return directly if we can't detach, since cleanup will then not work either */
+                return -1;
+            }
+        }
+    }
+
+    /* remove virtual product */
+    virtual_product->num_variables = 0;
+    harp_product_delete(virtual_product);
+
+    return 0;
+
+  error:
+    /* we need to remove all variables from the virtual product that are not in the original product (anymore) */
+    for (i = virtual_product->num_variables - 1; i >= 0; i--)
+    {
+        if (!harp_product_has_variable(product, virtual_product->variable[i]->name))
+        {
+            if (harp_product_remove_variable(virtual_product, virtual_product->variable[i]) != 0)
+            {
+                return -1;
+            }
+        }
+    }
+    virtual_product->num_variables = 0;
+    harp_product_delete(virtual_product);
+
+    return -1;
+}
+
 /** \addtogroup harp_product
  * @{
  */
@@ -638,31 +892,31 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
     if (target_grid->data_type != harp_type_double)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid data type for axis variable");
-        goto error;
+        return -1;
     }
     target_grid_num_dims = target_grid->num_dimensions;
     if (target_grid_num_dims != 1 && target_grid_num_dims != 2)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
-        goto error;
+        return -1;
     }
     dimension_type = target_grid->dimension_type[target_grid->num_dimensions - 1];
     if (dimension_type == harp_dimension_independent)
     {
         harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
-        goto error;
+        return -1;
     }
     if (target_grid_num_dims == 2)
     {
         if (target_grid->dimension_type[0] != harp_dimension_time || dimension_type == harp_dimension_time)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid dimensions for axis variable");
-            goto error;
+            return -1;
         }
         if (target_grid->dimension[0] != product->dimension[harp_dimension_time])
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "time dimension of axis variable does not match product");
-            goto error;
+            return -1;
         }
     }
     target_grid_max_dim_elements = target_grid->dimension[target_grid_num_dims - 1];
@@ -672,18 +926,18 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         if (target_bounds->data_type != harp_type_double)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid data type for axis bounds variable");
-            goto error;
+            return -1;
         }
         if (target_bounds->num_dimensions != target_grid_num_dims + 1)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent dimensions for axis bounds variable");
-            goto error;
+            return -1;
         }
         if ((target_bounds->dimension_type[0] != target_grid->dimension_type[0]) ||
             (target_bounds->dimension[0] != target_grid->dimension[0]))
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent dimensions for axis bounds variable");
-            goto error;
+            return -1;
         }
         if (target_grid_num_dims == 2)
         {
@@ -691,19 +945,14 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                 (target_bounds->dimension[1] != target_grid->dimension[1]))
             {
                 harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "inconsistent dimensions for axis bounds variable");
-                goto error;
+                return -1;
             }
         }
         if (target_bounds->dimension_type[target_grid_num_dims] != harp_dimension_independent ||
             target_bounds->dimension[target_grid_num_dims] != 2)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "invalid independent dimension for axis bounds variable");
-            goto error;
-        }
-
-        if (harp_variable_copy(target_bounds, &local_target_bounds) != 0)
-        {
-            goto error;
+            return -1;
         }
     }
 
@@ -713,7 +962,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         if (harp_product_get_derived_variable(product, target_grid->name, &target_grid->data_type, target_grid->unit, 1,
                                               target_grid->dimension_type, &source_grid) != 0)
         {
-            goto error;
+            return -1;
         }
         source_grid_max_dim_elements = source_grid->dimension[0];
     }
@@ -733,7 +982,8 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
             if (harp_product_get_derived_variable(product, target_grid->name, &target_grid->data_type,
                                                   target_grid->unit, 2, grid_dim_type, &source_grid) != 0)
             {
-                goto error;
+                /* No source axis with {(time,) <dim>} exists -> try to find {(time,) ..., <dim>} variant */
+                return regrid_with_multi_dim_source_axis(product, target_grid, target_bounds);
             }
             source_grid_num_dims = 2;
         }
@@ -745,10 +995,19 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
         }
     }
 
+    /* from here on we use the 'goto error' approach for cleanup */
+
     /* we create a local copy so we can modify it for logarithmic interpolation */
     if (harp_variable_copy(target_grid, &local_target_grid) != 0)
     {
         goto error;
+    }
+    if (target_bounds != NULL)
+    {
+        if (harp_variable_copy(target_bounds, &local_target_bounds) != 0)
+        {
+            goto error;
+        }
     }
 
     /* derive bounds variables if necessary for resampling */
