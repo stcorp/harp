@@ -1,6 +1,10 @@
 * The python harp.import_product() function now allows HARP .pth files to be
   provided as input.
 
+* Allow regridding using a multi-dimensional source axis-variable as input.
+  e.g. convert from an 'altitude {latitude,longitude,vertical}' grid to
+  a fixed 'altitude {vertical}` grid.
+
 * Updates to product ingestions:
   - ACE-FTS: fix ingestion of ASCII formatted products
   - GOME-2 L2: added support for offline absorbing aerosol index (O3MARP)
