@@ -2315,12 +2315,6 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
     {
         bintype[k] = get_spatial_binning_type(product->variable[k]);
 
-        if (bintype[k] == binning_uncertainty && area_binning)
-        {
-            /* we can't perform uncorrelated uncertainty propagation when using area binning */
-            bintype[k] = binning_remove;
-        }
-
         /* determine the maximum number of elements (as size for the 'weight' array) */
         if (bintype[k] != binning_remove && bintype[k] != binning_skip)
         {
@@ -2594,8 +2588,16 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                 for (l = 0; l < num_latlon_index[i]; l++)
                 {
                     long target_index = index_offset + latlon_cell_index[cumsum_index];
-                    double sample_weight = area_binning ? latlon_weight[cumsum_index] : 1;
+                    double sample_weight = 1;
 
+                    if (area_binning)
+                    {
+                        sample_weight = latlon_weight[cumsum_index];
+                        if (bintype[k] == binning_uncertainty)
+                        {
+                            sample_weight *= sample_weight;
+                        }
+                    }
                     if (bintype[k] == binning_angle)
                     {
                         /* for angle variables we use one weight element per vector pair */

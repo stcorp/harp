@@ -1,6 +1,9 @@
 * The python harp.import_product() function now allows HARP .pth files to be
   provided as input.
 
+* Reintroduced propagation of *_uncertainty_random variables when performing
+  spatial binning with area weighted averaging.
+
 * Allow regridding using a multi-dimensional source axis-variable as input.
   e.g. convert from an 'altitude {latitude,longitude,vertical}' grid to
   a fixed 'altitude {vertical}` grid.
