@@ -49,6 +49,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Regridding operations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#regridding">Regridding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rebinning">Rebinning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#binning">Binning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spatial-binning">Spatial binning</a></li>
 </ul>
@@ -94,10 +95,14 @@
 <h1>Regridding operations</h1>
 <section id="introduction">
 <h2>Introduction</h2>
-<p>HARP makes a distinction between ‘regridding’ and ‘binning’. With regridding you use interpolation to find values at new
-grid points by using a weighted average based on distance between the values at neighbouring grid points.
-With binning you consider intervals and assign each interval a value based on the (weighted) average of all values that intersect with that interval.</p>
-<p>Note that regridding and binning is closely linked to the <a class="reference internal" href="../conventions/axis_variables.html"><span class="doc">HARP convention regarding axis variables</span></a>.</p>
+<p>HARP makes a distinction between ‘regridding’ and ‘rebinning’. With regridding you use interpolation to find values at
+new grid points by using a weighted average based on distance between the values at neighbouring grid points.
+With rebinning you consider intervals and assign each interval a value based on the (weighted) average of all values that intersect with that interval.</p>
+<p>Note that regridding and rebinning is closely linked to the <a class="reference internal" href="../conventions/axis_variables.html"><span class="doc">HARP convention regarding axis variables</span></a>.</p>
+<p>There are also special operations called ‘binning’ and ‘spatial binning’.
+With ‘binning’ all values in the time dimension are averaged together based on a time-dependent reference variable that defines the bin values.
+With ‘spatial binning’ a product that does not depend on the ‘latitude’ and ‘longitude’ dimensions is gridded to a
+specified lat/lon grid.</p>
 </section>
 <section id="regridding">
 <h2>Regridding</h2>
@@ -114,20 +119,20 @@ follows:</p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
 \begin{eqnarray}
-   y_{t}(j) &amp; = &amp; \begin{cases}
-     y_{s}(0) + \frac{x_{t}(j) - x_{s}(0)}{x_{s}(0) - x_{s}(1)}\left(y_{s}(0) - y_{s}(1)\right), &amp;
-       x_{t}(j) &lt; x_{s}(0) \wedge \textrm{regrid_out_of_bounds=extrapolate} \\
-     y_{s}(0), &amp; x_{t}(j) &lt; x_{s}(0) \wedge \textrm{regrid_out_of_bounds=edge} \\
-     \mathit{nan}, &amp; x_{t}(j) &lt; x_{s}(0) \wedge \textrm{regrid_out_of_bounds=nan} \\
-     \left(1 - \frac{x_{t}(j) - x_{s}(i)}{x_{s}(i+1) - x_{s}(i)}\right)y_{s}(i) +
-       \frac{x_{t}(j) - x_{s}(i)}{x_{s}(i+1) - x_{s}(i)}y_{s}(i+1) , &amp;
-        x_{s}(i) &lt; x_{t}(j) &lt; x_{s}(i+1) \\
-     y_{s}(i), &amp; x_{t}(j) = x_{s}(i) \\
-     y_{s}(N) + \frac{x_{t}(j) - x_{s}(N)}{x_{s}(N) - x_{s}(N-1)}\left(y_{s}(N) - y_{s}(N-1)\right), &amp;
-       x_{t}(j) &gt; x_{s}(N) \wedge \textrm{regrid_out_of_bounds=extrapolate} \\
-     y_{s}(N), &amp; x_{t}(j) &gt; x_{s}(N) \wedge \textrm{regrid_out_of_bounds=edge} \\
-     \mathit{nan}, &amp; x_{t}(j) &gt; x_{s}(N) \wedge \textrm{regrid_out_of_bounds=nan}
-   \end{cases} \\
+  y_{t}(j) &amp; = &amp; \begin{cases}
+    y_{s}(0) + \frac{x_{t}(j) - x_{s}(0)}{x_{s}(0) - x_{s}(1)}\left(y_{s}(0) - y_{s}(1)\right), &amp;
+      x_{t}(j) &lt; x_{s}(0) \wedge \textrm{regrid_out_of_bounds=extrapolate} \\
+    y_{s}(0), &amp; x_{t}(j) &lt; x_{s}(0) \wedge \textrm{regrid_out_of_bounds=edge} \\
+    \mathit{nan}, &amp; x_{t}(j) &lt; x_{s}(0) \wedge \textrm{regrid_out_of_bounds=nan} \\
+    \left(1 - \frac{x_{t}(j) - x_{s}(i)}{x_{s}(i+1) - x_{s}(i)}\right)y_{s}(i) +
+      \frac{x_{t}(j) - x_{s}(i)}{x_{s}(i+1) - x_{s}(i)}y_{s}(i+1) , &amp;
+       x_{s}(i) &lt; x_{t}(j) &lt; x_{s}(i+1) \\
+    y_{s}(i), &amp; x_{t}(j) = x_{s}(i) \\
+    y_{s}(N) + \frac{x_{t}(j) - x_{s}(N)}{x_{s}(N) - x_{s}(N-1)}\left(y_{s}(N) - y_{s}(N-1)\right), &amp;
+      x_{t}(j) &gt; x_{s}(N) \wedge \textrm{regrid_out_of_bounds=extrapolate} \\
+    y_{s}(N), &amp; x_{t}(j) &gt; x_{s}(N) \wedge \textrm{regrid_out_of_bounds=edge} \\
+    \mathit{nan}, &amp; x_{t}(j) &gt; x_{s}(N) \wedge \textrm{regrid_out_of_bounds=nan}
+  \end{cases} \\
 \end{eqnarray}</div></div></blockquote>
 <p>Variables will be left unmodified if they do not depend on the to be regridded dimension.</p>
 <p>Variables will be removed if they:</p>
@@ -153,27 +158,67 @@ of the axis variable and the logarithm of the to be regridded variable is used f
 </ul>
 </div></blockquote>
 <p>A special version of interpolation, called interval interpolation is used for variables that provide an integrated
-quantity in the given dimension. These are, for example, partial column density profiles for the vertical dimension.
-Other such vertical variables are column averaging kernels and degree-of-freedom profiles. Interval interpolation
-requires boundary values for the source and target grid: <span class="math notranslate nohighlight">\(x^{B}_{s}(i,l)\)</span> and <span class="math notranslate nohighlight">\(x^{B}_{t}(j,l)\)</span> with
-<span class="math notranslate nohighlight">\(l=1..2\)</span>. The interval interpolation is then performed as follows:</p>
+quantity in the given dimension. The algorithm for this is the same algorithm as for rebinning of integrated quantities as described in the next section.</p>
+</section>
+<section id="rebinning">
+<h2>Rebinning</h2>
+<p>Rebinning uses a weighted average of the overlapping intervals of the source grid with the interval of the target grid.
+Each interval is defined by its upper and lower boundary. We define the source interval grid as <span class="math notranslate nohighlight">\(x^{B}_{s}(i,l)\)</span>
+with <span class="math notranslate nohighlight">\(i=1..N\)</span> and <span class="math notranslate nohighlight">\(l=1..2\)</span>, and the target interval grid as <span class="math notranslate nohighlight">\(x^{B}_{t}(j,l)\)</span> with <span class="math notranslate nohighlight">\(j=1..M\)</span> and
+<span class="math notranslate nohighlight">\(l=1..2\)</span>.</p>
+<p>The rebinning is then performed as follows:</p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
 \begin{eqnarray}
-   x^{min}_{s}(i) &amp; = &amp; \min_{l}{x^{B}_{s}(i,l)} \\
-   x^{max}_{s}(i) &amp; = &amp; \max_{l}{x^{B}_{s}(i,l)} \\
-   x^{min}_{t}(j) &amp; = &amp; \min_{l}{x^{B}_{t}(j,l)} \\
-   x^{max}_{t}(j) &amp; = &amp; \max_{l}{x^{B}_{t}(j,l)} \\
-   w(i,j) &amp; = &amp; \frac{\max(\min(x^{max}_{s}(i), x^{max}_{t}(j)) - \max(x^{min}_{s}(i), x^{min}_{t}(j)), 0)}
-                     {x^{max}_{s}(i) - x^{min}_{s}(i)} \\
-   y_{t}(j) &amp; = &amp; \begin{cases}
-     \sum_{i}{w(i,j)y_{s}(i)}, &amp; \sum_{i}{w(i,j)} &gt; 0 \\
-     \mathit{nan}, &amp; \sum_{i}{w(i,j)} = 0
-   \end{cases} \\
+  x^{min}_{s}(i) &amp; = &amp; \min_{l}{x^{B}_{s}(i,l)} \\
+  x^{max}_{s}(i) &amp; = &amp; \max_{l}{x^{B}_{s}(i,l)} \\
+  x^{min}_{t}(j) &amp; = &amp; \min_{l}{x^{B}_{t}(j,l)} \\
+  x^{max}_{t}(j) &amp; = &amp; \max_{l}{x^{B}_{t}(j,l)} \\
+  w(i,j) &amp; = &amp; \frac{\max(\min(x^{max}_{s}(i), x^{max}_{t}(j)) - \max(x^{min}_{s}(i), x^{min}_{t}(j)), 0)}
+                    {x^{max}_{s}(i) - x^{min}_{s}(i)} \\
+  y_{t}(j) &amp; = &amp; \begin{cases}
+    \frac{\sum_{i}{w(i,j)y_{s}(i)}}{\sum_{i}{w(i,j)}}, &amp; \sum_{i}{w(i,j)} &gt; 0 \\
+    \mathit{nan}, &amp; \sum_{i}{w(i,j)} = 0
+  \end{cases} \\
+\end{eqnarray}</div></div></blockquote>
+<p>For variables that provide an integrated quantity in the given dimension, the end result is the sum of the weighted
+contributions instead of the average. Such variables are, for example, partial column density profiles for the vertical dimension. Other such vertical variables are column averaging kernels and degree-of-freedom profiles.</p>
+<p>The rebinning operation for integrated variables uses the following revised calculation of <span class="math notranslate nohighlight">\(y_{t}(j)\)</span>:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\begin{eqnarray}
+  y_{t}(j) &amp; = &amp; \begin{cases}
+    \sum_{i}{w(i,j)y_{s}(i)}, &amp; \sum_{i}{w(i,j)} &gt; 0 \\
+    \mathit{nan}, &amp; \sum_{i}{w(i,j)} = 0
+  \end{cases} \\
 \end{eqnarray}</div></div></blockquote>
 </section>
 <section id="binning">
 <h2>Binning</h2>
+<p>Binning uses a variable that depends on the time dimension to define the bins. For each variable, all elements that
+have the same value for the associated element in the binning variable are then averaged into a final value for the bin.</p>
+<p>Even though the bins will be represented by the time dimension, this resulting time dimension may not end up in any
+chronological order. This all depends on the variable that is used for the bins.</p>
+<p>The algorithm for binning is somewhat similar to that of rebinning, except that each interval is represented by a
+single value. The binning variable is defined as <span class="math notranslate nohighlight">\(x_{s}(i)\)</span> with <span class="math notranslate nohighlight">\(i=1..N\)</span> and the target bins as
+<span class="math notranslate nohighlight">\(x_{t}(j)\)</span> with <span class="math notranslate nohighlight">\(j=1..M\)</span>. The value <span class="math notranslate nohighlight">\(M\)</span> represents the number of unique values in <span class="math notranslate nohighlight">\(x_{s}(i)\)</span>.</p>
+<p>The value <span class="math notranslate nohighlight">\(y_{t}(j)\)</span> for each bin <span class="math notranslate nohighlight">\(j\)</span> is then determined using:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\begin{eqnarray}
+  x_{t}(j) &amp; = &amp; x_{s}(\arg \min_{i}{x_{s}(i) \ne x_{t}(k) \forall k &lt; j}) \\
+  y_{t}(j) &amp; = &amp; \frac{
+    \sum_{i}{\begin{cases}
+      y_{s}(i), &amp; x_{s}(i) = x_{s}(j) \\
+      0, &amp; x_{s}(i) \ne x_{s}(j) \\
+    \end{cases}}
+  }{
+    \sum_{i}{\begin{cases}
+      1, &amp; x_{s}(i) = x_{s}(j) \\
+      0, &amp; x_{s}(i) \ne x_{s}(j) \\
+    \end{cases}}
+  }
+\end{eqnarray}</div></div></blockquote>
 </section>
 <section id="spatial-binning">
 <h2>Spatial binning</h2>
