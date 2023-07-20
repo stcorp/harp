@@ -58,6 +58,8 @@ Function call
 
 Supported functions:
 
+    .. _operation_area_covers_area:
+
     ``area_covers_area((lat, ...) [unit], (lon, ...) [unit])``
         Exclude measurements whose area does not fully cover the given polygon.
         Example:
@@ -72,11 +74,15 @@ Supported functions:
 
             | ``area_covers_area("areas.csv")``
 
+    .. _operation_area_covers_point:
+
     ``area_covers_point(latitude [unit], longitude [unit])``
         Exclude measurements whose area does not cover the given point.
         Example:
 
             | ``area_covers_point(52.012, 4.357)``
+
+    .. _operation_area_inside_area:
 
     ``area_inside_area((lat, ...) [unit], (lon, ...) [unit])``
         Exclude measurements whose area is not inside the given polygon.
@@ -87,6 +93,8 @@ Supported functions:
     ``area_inside_area(area-mask-file)``
         Exclude measurements whose area is not inside one of the areas of
         the area mask file.
+
+    .. _operation_area_intersects_area:
 
     ``area_intersects_area((lat, ...) [unit], (lon, ...) [unit], minimum-overlap-fraction)``
         Exclude measurements whose area does not overlap at least the
@@ -104,6 +112,8 @@ Supported functions:
     ``area_intersects_area(area-mask-file)``
         Exclude measurements whose area does not overlap with one of the
         areas of the area mask file.
+
+    .. _operation_bin:
 
     ``bin()``
         For all variables in a product perform an averaging in the time
@@ -137,6 +147,8 @@ Supported functions:
             | (the product is part of dataset A and the collocated
               sample that defines the bin is part of dataset B)
 
+    .. _operation_bin_spatial:
+
     ``bin_spatial((lat_edge, lat_edge, ...), (lon_edge, lon_edge, ...))``
         For all variables in a product map all time samples onto a
         spatial latitude/longitude grid. The latitude/longitude grid is
@@ -156,6 +168,8 @@ Supported functions:
             | ``bin_spatial(7, -90, 30, 3, -180, 180)``
             | (this is the same as ``bin_spatial((-90,-60,-30,0,30,60,90),(-180,0,180))``)
 
+    .. _operation_clamp:
+
     ``clamp(dimension, axis-variable unit, (lower_bound, upper_bound))``
         Reduce the given dimension such that values of the given axis-variable
         and associated <axis-variable>_bounds fall within the given lower and
@@ -173,6 +187,8 @@ Supported functions:
             | ``clamp(vertical, altitude [km], (-inf, 60)``
             | ``clamp(vertical, pressure [hPa], (+inf, 200)``
 
+    .. _operation_collocate_left:
+
     ``collocate_left(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset A.
@@ -185,6 +201,8 @@ Supported functions:
         Same as regular ``collocation_left`` operation but only include
         collocations where min_collocation_index <= collocation_index <= max_collocation_index
 
+    .. _operation_collocate_right:
+
     ``collocate_right(collocation-result-file)``
         Apply the specified collocation result file as an index
         filter assuming the product is part of dataset B.
@@ -196,6 +214,8 @@ Supported functions:
     ``collocate_right(collocation-result-file, min_collocation_index, max_collocation_index)``
         Same as regular ``collocate_right`` operation but only include
         collocations where min_collocation_index <= collocation_index <= max_collocation_index
+
+    .. _operation_derive:
 
     ``derive(variable [datatype] [unit])``
         The derive operation *without* a dimension specification can be
@@ -230,6 +250,8 @@ Supported functions:
             | ``derive(number_density {time,vertical} [molec/m3])``
             | ``derive(latitude float {time})``
 
+    .. _operation_derive_smoothed_column:
+
     ``derive_smoothed_column(variable {dimension-type, ...} [unit], axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Derive the given integrated column value by first deriving
         a partial column profile variant of the variable and then
@@ -262,6 +284,8 @@ Supported functions:
 
             ``derive_smoothed_column(O3_column_number_density {time} [molec/cm2], altitude [km], "./collocated_file.nc")``
 
+    .. _operation_exclude:
+
     ``exclude(variable, ...)``
         Mark the specified variable(s) for exclusion from the ingested product.
         All variables marked for exclusion will be excluded from the ingested
@@ -272,6 +296,8 @@ Supported functions:
         Example:
 
             ``exclude(datetime, *uncertainty*)``
+
+    .. _operation_flatten:
 
     ``flatten(dimension)``
         Flatten a product for a certain dimension by collapsing the
@@ -291,6 +317,8 @@ Supported functions:
             | ``regrid(vertical, altitude [km], (20));flatten(vertical)``
             | (vertically slice the product at 20 km altitude)
 
+    .. _operation_keep:
+
     ``keep(variable, ...)``
         Mark the specified variable(s) for inclusion in the ingested product.
         All variables marked for inclusion will be kept in the ingested
@@ -302,6 +330,8 @@ Supported functions:
         Example:
 
             ``keep(datetime*, latitude, longitude)``
+
+    .. _operation_longitude_range:
 
     ``longitude_range(minimum [unit], maximum [unit])``
         Exclude measurements of which the longitude of the
@@ -315,12 +345,16 @@ Supported functions:
             | ``longitude_range(-181.0, -179.0)``
             | (gives exact same result as the first example)
 
+    .. _operation_point_distance:
+
     ``point_distance(latitude [unit], longitude [unit], distance [unit])``
         Exclude measurements whose point location is situated further than
         the specified distance from the given location.
         Example:
 
             ``point_distance(52.012, 4.357, 3 [km])``
+
+    .. _operation_point_in_area:
 
     ``point_in_area((lat, ...) [unit], (lon, ...) [unit])``
         Exclude measurements whose point location does not fall inside the
@@ -332,6 +366,8 @@ Supported functions:
     ``point_in_area(area-mask-file)``
         Exclude measurements whose point location does not fall inside one of
         the areas from the area mask file.
+
+    .. _operation_rebin:
 
     ``rebin(dimension, axis-bounds-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using
@@ -358,6 +394,8 @@ Supported functions:
 
             | ``rebin(longitude, longitude_bounds [degree_east], 5, -180, 90)``
             | ``rebin(vertical, altitude [km], 11, 0, 1.0)``
+
+    .. _operation_regrid:
 
     ``regrid(dimension, axis-variable unit, (value, ...))``
         Regrid all variables in the product for the given dimension using
@@ -414,6 +452,8 @@ Supported functions:
 
             ``regrid(vertical, altitude [km], "./collocated_file.nc")``
 
+    .. _operation_rename:
+
     ``rename(variable, new_name)``
         Rename the variable to the new name.
         Note that this operation should be used with care since it will
@@ -429,6 +469,8 @@ Supported functions:
         Example:
 
             ``rename(surface_temperature, temperature)``
+
+    .. _operation_set:
 
     ``set(option, value)``
         Set a specific option in HARP.
@@ -481,6 +523,8 @@ Supported functions:
             | ``set("afgl86", "enabled")``
             | ``set("regrid_out_of_bounds", "extrapolate")``
 
+    .. _operation_smooth:
+
     ``smooth(variable, dimension, axis-variable unit, collocation-result-file, a|b, dataset-dir)``
         Smooth the given variable in the product for the given dimension
         using the avaraging kernel (and a-priori profile, if available)
@@ -517,6 +561,8 @@ Supported functions:
         (and associated a-priori, if applicable) needs to be present in
         the merged collocated file.
 
+    .. _operation_sort:
+
     ``sort(variable)``
         Reorder a dimension for all variables in the product such that the
     	variable provided as parameter ends up being sorted. The variable
@@ -525,6 +571,8 @@ Supported functions:
 
     ``sort((variable, ...))``
         Same as above, but use a list of variables for sorting.
+
+    .. _operation_squash:
 
     ``squash(dimension, variable)``
         Remove the given dimension for the variable, assuming that the
@@ -535,11 +583,15 @@ Supported functions:
         Same as above, but then providing a list of variables that need
         to be squashed.
 
+    .. _operation_valid:
+
     ``valid(variable)``
         Filter a dimension for all variables in the product such that
         invalid values for the variable provided as parameter get excluded
         (values outside the valid range of the variable, or NaN).
         This operation is executed similar to a comparison filter.
+
+    .. _operation_wrap:
 
     ``wrap(variable [unit], minimum, maximum)``
         Wrap the values of the variable to the range given by minimum
