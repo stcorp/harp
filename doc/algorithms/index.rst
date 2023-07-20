@@ -10,6 +10,7 @@ Note that all algorithms here are defined in their discretized form (to reflect 
 
    definitions
    formula
+   regridding
 
 
 Variable Conversions

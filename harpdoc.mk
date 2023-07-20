@@ -98,6 +98,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/wind_velocity.html \
 	doc/html/algorithms/formula.html \
 	doc/html/algorithms/index.html \
+	doc/html/algorithms/regridding.html \
 	doc/html/conventions/axis_variables.html \
 	doc/html/conventions/categorical_variables.html \
 	doc/html/conventions/collocation_result.html \
@@ -761,6 +762,8 @@ doc/html/algorithms/derivations/wind_velocity.html:
 doc/html/algorithms/formula.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/index.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/regridding.html:
 	$(MAKE) harp_doc
 doc/html/conventions/axis_variables.html:
 	$(MAKE) harp_doc
