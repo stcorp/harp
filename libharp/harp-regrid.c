@@ -44,7 +44,6 @@ typedef enum resample_type_enum
     resample_skip,
     resample_remove,
     resample_linear,
-    resample_log,       /* interpolate linear using coordinates [x,log(y)] */
     resample_loglog,    /* interpolate linear using coordinates [log(x),log(y)] */
     resample_interval
 } resample_type;
