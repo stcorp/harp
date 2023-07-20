@@ -866,7 +866,7 @@ LIBHARP_API int harp_product_regrid_with_axis_variable(harp_product *product, ha
                                                        harp_variable *target_bounds)
 {
     harp_dimension_type dimension_type;
-    long max_dim_elements;  /* max(source_grid_max_dim_elements, target_grid_max_dim_elements) */
+    long max_dim_elements;      /* max(source_grid_max_dim_elements, target_grid_max_dim_elements) */
     long source_grid_max_dim_elements;  /* actual elems + NaN padding */
     long source_grid_num_dim_elements;  /* actual elems */
     long target_grid_max_dim_elements;  /* actual elems + NaN padding */
