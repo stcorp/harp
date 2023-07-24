@@ -15,6 +15,9 @@ With 'binning' all values in the time dimension are averaged together based on a
 With 'spatial binning' a product that does not depend on the 'latitude' and 'longitude' dimensions is gridded to a
 specified lat/lon grid.
 
+
+.. _regridding:
+
 Regridding
 ----------
 
@@ -27,7 +30,7 @@ If a target grid point lies outside the source grid then the behaviour depends o
 that can be set using the :ref:`set() operation <operation_set>`.
 
 Both the source and target grid variables need to be strict monotic (either ascending or descending) for the
-regridding to work. 
+regridding to work.
 
 Variables :math:`y_{s}(i)` that depend on the grid dimension are regridded to a target version :math:`y_{t}(j)` as
 follows:
@@ -60,11 +63,11 @@ Variables will be removed if they:
 
   - do not have a unit attribute (note that variables with an empty unit or unit=1 are considered to have a unit
     attribute).
-    
+
   - have a 'string' data type.
-  
+
   - are an uncertainty variable.
-  
+
   - are a bounds axis variable for the given dimension
 
 In most cases the axis variable is directly mapped to :math:`x` and the variables that will be regridded to :math:`y`.
@@ -72,7 +75,7 @@ The special cases are:
 
   - when regridding in the vertical dimension and the axis variable is `pressure` then :math:`x` is set to the
     logarithm of the pressure.
- 
+
   - when regridding in the spectral dimension and the variable to be regridded is an `aerosol_optical_depth` or
     `aerosol_extinction_coefficient` variable then a log/log interpolation is performed. This means that the logarithm
     of the axis variable and the logarithm of the to be regridded variable is used for the interpolation.
@@ -80,6 +83,8 @@ The special cases are:
 A special version of interpolation, called interval interpolation is used for variables that provide an integrated
 quantity in the given dimension. The algorithm for this is the same algorithm as for rebinning of integrated quantities as described in the next section.
 
+
+.. _rebinning:
 
 Rebinning
 ---------
@@ -124,6 +129,8 @@ The rebinning operation for integrated variables uses the following revised calc
       \end{eqnarray}
 
 
+.. _binning:
+
 Binning
 -------
 
@@ -144,20 +151,128 @@ The value :math:`y_{t}(j)` for each bin :math:`j` is then determined using:
 
       \begin{eqnarray}
         x_{t}(j) & = & x_{s}(\arg \min_{i}{x_{s}(i) \ne x_{t}(k) \forall k < j}) \\
+        N_{j} & = & \sum_{i}{\begin{cases}
+            1, & x_{s}(i) = x_{s}(j) \\
+            0, & x_{s}(i) \ne x_{s}(j) \\
+          \end{cases}} \\
         y_{t}(j) & = & \frac{
           \sum_{i}{\begin{cases}
             y_{s}(i), & x_{s}(i) = x_{s}(j) \\
             0, & x_{s}(i) \ne x_{s}(j) \\
           \end{cases}}
-        }{
-          \sum_{i}{\begin{cases}
-            1, & x_{s}(i) = x_{s}(j) \\
-            0, & x_{s}(i) \ne x_{s}(j) \\
-          \end{cases}}
-        }
+        }{N_{j}}
       \end{eqnarray}
 
+In most cases, each variable is directly mapped to :math:`y`. The special cases are:
+
+  - random uncertainty variables are averaged using the square of each value. The final value is given by:
+    :math:`y_{t}(j) = \frac{\sqrt{\sum_{i,x_{s}(i) = x_{s}(j)}{y_{s}(i)^{2}}}}{N_{j}}`.
+
+  - total uncertainty variables are averaged based on the `propagate_uncertainty` option that can be set using the
+    :ref:`set() operation <operation_set>`. If it is set to `uncorrelated` then the variable is averaged as a random
+    uncertainty variable (using its square), otherwise a regular average is taken.
+
+  - variables that define an angle (such as `latitude`, `longitude`, `angle` and `direction`) are averaged using their
+    unit vector representation (:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))`. The final average
+    is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`. The norm :math:`\|\textbf{y}_{t}\|`
+    is stored as a weight variable.
+
+.. _spatial_binning:
 
 Spatial binning
 ---------------
 
+Spatial binning grids the data to a rectilinear lat/lon grid. Depending on what latitude/longitude variables are
+available the gridding either uses a point average or an area weighted average.
+
+If the product contains `latitude_bounds` and `longitude_bounds` variables (that only depend on the `time` dimension)
+then an area weighted average is performed. Otherwise, if the product contains `latitude` and `longitude` variables
+(that only depend on the `time` dimension) then a point average is performed.
+
+Spatial binning can only be performed on a product that does not already depend on the `latitude` and `longitude`
+dimensions. Regridding an existing lat/lon grid can be done by individually :ref:`rebinning <rebinning>` the
+existing `latitude` and `longitude` dimensions.
+
+The target grid is defined by the lat/lon positions of the cell edge corners. This edge grid is represented as
+:math:`\phi^{E}_{t}(j)` with :math:`j=1..(M_{\phi}+1)` for latitude and :math:`\lambda^{E}_{t}(k)` with
+:math:`j=k..(M_{\lambda}+1)` for longitude.
+
+In the resulting HARP product the edge grid is stored as `latitude_bounds` and `longitude_bounds` variables
+:math:`\phi^{B}_{t}(j,l)` and :math:`\lambda^{B}_{t}(k,l)` with :math:`j=1..M_{\phi}`, :math:`k=1..M_{\lambda}`, and
+:math:`l=1..2` using the relation:
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+        \phi^{B}_{t}(j,1) & = & \phi^{E}_{t}(j) \\
+        \phi^{B}_{t}(j,2) & = & \phi^{E}_{t}(j + 1) \\
+        \lambda^{B}_{t}(k,1) & = & \lambda^{E}_{t}(k) \\
+        \lambda^{B}_{t}(k,2) & = & \lambda^{E}_{t}(k + 1) \\
+      \end{eqnarray}
+
+The spatial binning maps each source variable :math:`y_{s}(i)` with :math:`i=1..N_{t}` to a gridded target variable
+:math:`y_{t}(j,k)`. Each target grid cell is represented by :math:`(j,k)` with :math:`j=1..M_{\phi}` and :math:`k=1..M_{\lambda}` providing the latitude and longitude indices within the spatial grid.
+
+The source coordinates can be :math:`\phi_{s}(i)` and :math:`\lambda_{s}(i)` for latitude and longitude in case of
+points, and :math:`\phi^{B}_{s}(i,l)` and :math:`\lambda^{B}_{s}(i,l)` for the latitude and longitude boundaries in
+case of areas (with :math:`l=1..N_{V}` being the number of vertices for the area polygon).
+
+The weight :math:`w(i,j,k)` determines the contribution of the point/polygon :math:`i` to the target grid cell
+:math:`(j,k)`.
+
+In case of point averages each weight is determined by:
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+        w(i,j,k) & = & \sum_{i}{\begin{cases}
+          1, & \left( \phi^{E}_{t}(j) \le \phi_{s}(i) < \phi^{E}_{t}(j+1) \vee
+              \phi_{s}(i) = \phi^{E}_{t}(M_{\phi}+1) \right) \wedge
+            \left( \lambda^{E}_{t}(k) \le \lambda_{s}(i) < \lambda^{E}_{t}(k+1) \vee
+              \lambda_{s}(i) = \lambda^{E}_{t}(M_{\lambda}+1) \right) \wedge
+            x_{s}(i) \ne \mathit{nan} \\
+          0, \textrm{otherwise} \\
+        \end{cases}}
+      \end{eqnarray}
+
+
+In case of area weighted averages we consider :math:`\textbf{P}_{t}(j,k)` as the polygon that represents the target
+grid cell at position :math:`(j,k)`, and :math:`\textbf{P}_{s}(i)` as the polygon that is defined by the boundary
+coordinates :math:`\phi^{B}_{s}(i,l)` and :math:`\lambda^{B}_{s}(i,l)`. The weights are then determined using:
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+        w(i,j,k) & = & \sum_{i}{\begin{cases}
+          \frac{\textrm{area}(\textbf{P}_{t}(j,k) \wedge \textbf{P}_{s}(i))}{\textrm{area}(\textbf{P}_{t}(j,k))}, &
+            x_{s}(i) \ne \mathit{nan} \\
+          0, & x_{s}(i) = \mathit{nan} \\
+        \end{cases}}
+      \end{eqnarray}
+
+The algorithms for the polygon area calculation :math:`\textrm{area}(\textbf{P})` and polygon intersection :math:`\textbf{P}_{a} \wedge \textbf{P}_{b}` are those for polygons in a 2D Cartesian plane (i.e. these calculations
+are not performed using polygons on a sphere).
+
+With the calculated weights each variable is then regridded using:
+
+   .. math::
+      :nowrap:
+
+      \begin{eqnarray}
+        y_{t}(j,k) & = & \frac{\sum_{i}{w(i,j,k)y_{s}(i)}}{\sum_{i}{w(i,j,k)}}
+      \end{eqnarray}
+
+In most cases, each variable is directly mapped to :math:`y`. The special cases are:
+
+  - random uncertainty variables are averaged using the square of each value. The final value is given by:
+    :math:`y_{t}(j,k) = \frac{\sqrt{\sum_{i}{\left(w(i,j,k)y_{s}(i)\right)^{2}}}}{\sum_{i}{w(i,j,k)}}`.
+
+  - total uncertainty variables are always averaged as correlated (i.e. using a regular average).
+
+  - variables that define an angle (such as `latitude`, `longitude`, `angle` and `direction`) are averaged using their
+    unit vector representation (:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))`. The final average
+    is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`. The norm :math:`\|\textbf{y}_{t}\|`
+    is stored as the weight for this variable.

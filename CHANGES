@@ -8,6 +8,8 @@
   e.g. convert from an 'altitude {latitude,longitude,vertical}' grid to
   a fixed 'altitude {vertical}` grid.
 
+* Added documentation for regridding/binning algorithms.
+
 * Updates to product ingestions:
   - ACE-FTS: fix ingestion of ASCII formatted products
   - GOME-2 L2: added support for offline absorbing aerosol index (O3MARP)

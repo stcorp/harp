@@ -105,7 +105,7 @@ With ‘spatial binning’ a product that does not depend on the ‘latitude’ 
 specified lat/lon grid.</p>
 </section>
 <section id="regridding">
-<h2>Regridding</h2>
+<span id="id1"></span><h2>Regridding</h2>
 <p>For regridding we define the source grid as <span class="math notranslate nohighlight">\(x_{s}(i)\)</span> with <span class="math notranslate nohighlight">\(i=1..N\)</span> and the target grid as
 <span class="math notranslate nohighlight">\(x_{t}(j)\)</span> with <span class="math notranslate nohighlight">\(j=1..M\)</span>.
 For each target grid point <span class="math notranslate nohighlight">\(x_{t}(j)\)</span> the nearest points below and above that point in the source grid are
@@ -161,7 +161,7 @@ of the axis variable and the logarithm of the to be regridded variable is used f
 quantity in the given dimension. The algorithm for this is the same algorithm as for rebinning of integrated quantities as described in the next section.</p>
 </section>
 <section id="rebinning">
-<h2>Rebinning</h2>
+<span id="id2"></span><h2>Rebinning</h2>
 <p>Rebinning uses a weighted average of the overlapping intervals of the source grid with the interval of the target grid.
 Each interval is defined by its upper and lower boundary. We define the source interval grid as <span class="math notranslate nohighlight">\(x^{B}_{s}(i,l)\)</span>
 with <span class="math notranslate nohighlight">\(i=1..N\)</span> and <span class="math notranslate nohighlight">\(l=1..2\)</span>, and the target interval grid as <span class="math notranslate nohighlight">\(x^{B}_{t}(j,l)\)</span> with <span class="math notranslate nohighlight">\(j=1..M\)</span> and
@@ -194,7 +194,7 @@ contributions instead of the average. Such variables are, for example, partial c
 \end{eqnarray}</div></div></blockquote>
 </section>
 <section id="binning">
-<h2>Binning</h2>
+<span id="id3"></span><h2>Binning</h2>
 <p>Binning uses a variable that depends on the time dimension to define the bins. For each variable, all elements that
 have the same value for the associated element in the binning variable are then averaged into a final value for the bin.</p>
 <p>Even though the bins will be represented by the time dimension, this resulting time dimension may not end up in any
@@ -207,21 +207,108 @@ single value. The binning variable is defined as <span class="math notranslate n
 <div><div class="math notranslate nohighlight">
 \begin{eqnarray}
   x_{t}(j) &amp; = &amp; x_{s}(\arg \min_{i}{x_{s}(i) \ne x_{t}(k) \forall k &lt; j}) \\
+  N_{j} &amp; = &amp; \sum_{i}{\begin{cases}
+      1, &amp; x_{s}(i) = x_{s}(j) \\
+      0, &amp; x_{s}(i) \ne x_{s}(j) \\
+    \end{cases}} \\
   y_{t}(j) &amp; = &amp; \frac{
     \sum_{i}{\begin{cases}
       y_{s}(i), &amp; x_{s}(i) = x_{s}(j) \\
       0, &amp; x_{s}(i) \ne x_{s}(j) \\
     \end{cases}}
-  }{
-    \sum_{i}{\begin{cases}
-      1, &amp; x_{s}(i) = x_{s}(j) \\
-      0, &amp; x_{s}(i) \ne x_{s}(j) \\
-    \end{cases}}
-  }
+  }{N_{j}}
 \end{eqnarray}</div></div></blockquote>
+<p>In most cases, each variable is directly mapped to <span class="math notranslate nohighlight">\(y\)</span>. The special cases are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>random uncertainty variables are averaged using the square of each value. The final value is given by:
+<span class="math notranslate nohighlight">\(y_{t}(j) = \frac{\sqrt{\sum_{i,x_{s}(i) = x_{s}(j)}{y_{s}(i)^{2}}}}{N_{j}}\)</span>.</p></li>
+<li><p>total uncertainty variables are averaged based on the <cite>propagate_uncertainty</cite> option that can be set using the
+<a class="reference internal" href="../operations.html#operation-set"><span class="std std-ref">set() operation</span></a>. If it is set to <cite>uncorrelated</cite> then the variable is averaged as a random
+uncertainty variable (using its square), otherwise a regular average is taken.</p></li>
+<li><p>variables that define an angle (such as <cite>latitude</cite>, <cite>longitude</cite>, <cite>angle</cite> and <cite>direction</cite>) are averaged using their
+unit vector representation (<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))\)</span>. The final average
+is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>. The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span>
+is stored as a weight variable.</p></li>
+</ul>
+</div></blockquote>
 </section>
 <section id="spatial-binning">
-<h2>Spatial binning</h2>
+<span id="id4"></span><h2>Spatial binning</h2>
+<p>Spatial binning grids the data to a rectilinear lat/lon grid. Depending on what latitude/longitude variables are
+available the gridding either uses a point average or an area weighted average.</p>
+<p>If the product contains <cite>latitude_bounds</cite> and <cite>longitude_bounds</cite> variables (that only depend on the <cite>time</cite> dimension)
+then an area weighted average is performed. Otherwise, if the product contains <cite>latitude</cite> and <cite>longitude</cite> variables
+(that only depend on the <cite>time</cite> dimension) then a point average is performed.</p>
+<p>Spatial binning can only be performed on a product that does not already depend on the <cite>latitude</cite> and <cite>longitude</cite>
+dimensions. Regridding an existing lat/lon grid can be done by individually <a class="reference internal" href="#rebinning"><span class="std std-ref">rebinning</span></a> the
+existing <cite>latitude</cite> and <cite>longitude</cite> dimensions.</p>
+<p>The target grid is defined by the lat/lon positions of the cell edge corners. This edge grid is represented as
+<span class="math notranslate nohighlight">\(\phi^{E}_{t}(j)\)</span> with <span class="math notranslate nohighlight">\(j=1..(M_{\phi}+1)\)</span> for latitude and <span class="math notranslate nohighlight">\(\lambda^{E}_{t}(k)\)</span> with
+<span class="math notranslate nohighlight">\(j=k..(M_{\lambda}+1)\)</span> for longitude.</p>
+<p>In the resulting HARP product the edge grid is stored as <cite>latitude_bounds</cite> and <cite>longitude_bounds</cite> variables
+<span class="math notranslate nohighlight">\(\phi^{B}_{t}(j,l)\)</span> and <span class="math notranslate nohighlight">\(\lambda^{B}_{t}(k,l)\)</span> with <span class="math notranslate nohighlight">\(j=1..M_{\phi}\)</span>, <span class="math notranslate nohighlight">\(k=1..M_{\lambda}\)</span>, and
+<span class="math notranslate nohighlight">\(l=1..2\)</span> using the relation:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\begin{eqnarray}
+  \phi^{B}_{t}(j,1) &amp; = &amp; \phi^{E}_{t}(j) \\
+  \phi^{B}_{t}(j,2) &amp; = &amp; \phi^{E}_{t}(j + 1) \\
+  \lambda^{B}_{t}(k,1) &amp; = &amp; \lambda^{E}_{t}(k) \\
+  \lambda^{B}_{t}(k,2) &amp; = &amp; \lambda^{E}_{t}(k + 1) \\
+\end{eqnarray}</div></div></blockquote>
+<p>The spatial binning maps each source variable <span class="math notranslate nohighlight">\(y_{s}(i)\)</span> with <span class="math notranslate nohighlight">\(i=1..N_{t}\)</span> to a gridded target variable
+<span class="math notranslate nohighlight">\(y_{t}(j,k)\)</span>. Each target grid cell is represented by <span class="math notranslate nohighlight">\((j,k)\)</span> with <span class="math notranslate nohighlight">\(j=1..M_{\phi}\)</span> and <span class="math notranslate nohighlight">\(k=1..M_{\lambda}\)</span> providing the latitude and longitude indices within the spatial grid.</p>
+<p>The source coordinates can be <span class="math notranslate nohighlight">\(\phi_{s}(i)\)</span> and <span class="math notranslate nohighlight">\(\lambda_{s}(i)\)</span> for latitude and longitude in case of
+points, and <span class="math notranslate nohighlight">\(\phi^{B}_{s}(i,l)\)</span> and <span class="math notranslate nohighlight">\(\lambda^{B}_{s}(i,l)\)</span> for the latitude and longitude boundaries in
+case of areas (with <span class="math notranslate nohighlight">\(l=1..N_{V}\)</span> being the number of vertices for the area polygon).</p>
+<p>The weight <span class="math notranslate nohighlight">\(w(i,j,k)\)</span> determines the contribution of the point/polygon <span class="math notranslate nohighlight">\(i\)</span> to the target grid cell
+<span class="math notranslate nohighlight">\((j,k)\)</span>.</p>
+<p>In case of point averages each weight is determined by:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\begin{eqnarray}
+  w(i,j,k) &amp; = &amp; \sum_{i}{\begin{cases}
+    1, &amp; \left( \phi^{E}_{t}(j) \le \phi_{s}(i) &lt; \phi^{E}_{t}(j+1) \vee
+        \phi_{s}(i) = \phi^{E}_{t}(M_{\phi}+1) \right) \wedge
+      \left( \lambda^{E}_{t}(k) \le \lambda_{s}(i) &lt; \lambda^{E}_{t}(k+1) \vee
+        \lambda_{s}(i) = \lambda^{E}_{t}(M_{\lambda}+1) \right) \wedge
+      x_{s}(i) \ne \mathit{nan} \\
+    0, \textrm{otherwise} \\
+  \end{cases}}
+\end{eqnarray}</div></div></blockquote>
+<p>In case of area weighted averages we consider <span class="math notranslate nohighlight">\(\textbf{P}_{t}(j,k)\)</span> as the polygon that represents the target
+grid cell at position <span class="math notranslate nohighlight">\((j,k)\)</span>, and <span class="math notranslate nohighlight">\(\textbf{P}_{s}(i)\)</span> as the polygon that is defined by the boundary
+coordinates <span class="math notranslate nohighlight">\(\phi^{B}_{s}(i,l)\)</span> and <span class="math notranslate nohighlight">\(\lambda^{B}_{s}(i,l)\)</span>. The weights are then determined using:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\begin{eqnarray}
+  w(i,j,k) &amp; = &amp; \sum_{i}{\begin{cases}
+    \frac{\textrm{area}(\textbf{P}_{t}(j,k) \wedge \textbf{P}_{s}(i))}{\textrm{area}(\textbf{P}_{t}(j,k))}, &amp;
+      x_{s}(i) \ne \mathit{nan} \\
+    0, &amp; x_{s}(i) = \mathit{nan} \\
+  \end{cases}}
+\end{eqnarray}</div></div></blockquote>
+<p>The algorithms for the polygon area calculation <span class="math notranslate nohighlight">\(\textrm{area}(\textbf{P})\)</span> and polygon intersection <span class="math notranslate nohighlight">\(\textbf{P}_{a} \wedge \textbf{P}_{b}\)</span> are those for polygons in a 2D Cartesian plane (i.e. these calculations
+are not performed using polygons on a sphere).</p>
+<p>With the calculated weights each variable is then regridded using:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\begin{eqnarray}
+  y_{t}(j,k) &amp; = &amp; \frac{\sum_{i}{w(i,j,k)y_{s}(i)}}{\sum_{i}{w(i,j,k)}}
+\end{eqnarray}</div></div></blockquote>
+<p>In most cases, each variable is directly mapped to <span class="math notranslate nohighlight">\(y\)</span>. The special cases are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>random uncertainty variables are averaged using the square of each value. The final value is given by:
+<span class="math notranslate nohighlight">\(y_{t}(j,k) = \frac{\sqrt{\sum_{i}{\left(w(i,j,k)y_{s}(i)\right)^{2}}}}{\sum_{i}{w(i,j,k)}}\)</span>.</p></li>
+<li><p>total uncertainty variables are always averaged as correlated (i.e. using a regular average).</p></li>
+<li><p>variables that define an angle (such as <cite>latitude</cite>, <cite>longitude</cite>, <cite>angle</cite> and <cite>direction</cite>) are averaged using their
+unit vector representation (<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))\)</span>. The final average
+is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>. The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span>
+is stored as the weight for this variable.</p></li>
+</ul>
+</div></blockquote>
 </section>
 </section>
 
