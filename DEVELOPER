@@ -10,7 +10,7 @@ get regenerated (all using the autotools build system):
 
 Run 'make doc' to regenerate the documentation.
 Current versions used for generating the documentation are:
-- Sphinx 5.3.0
+- Sphinx 6.2.1
 - sphinx-autobuild 2021.3.14
 - sphinx-rtd-theme 1.2.2
 - breathe 4.35.0

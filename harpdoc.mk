@@ -26,7 +26,6 @@ HARP_DOCFILES = \
 	doc/html/_static/doctools.js \
 	doc/html/_static/documentation_options.js \
 	doc/html/_static/file.png \
-	doc/html/_static/jquery-3.6.0.js \
 	doc/html/_static/jquery.js \
 	doc/html/_static/js/badge_only.js \
 	doc/html/_static/js/html5shiv-printshiv.min.js \
@@ -38,8 +37,6 @@ HARP_DOCFILES = \
 	doc/html/_static/pygments.css \
 	doc/html/_static/searchtools.js \
 	doc/html/_static/sphinx_highlight.js \
-	doc/html/_static/underscore-1.13.1.js \
-	doc/html/_static/underscore.js \
 	doc/html/algorithms/common.html \
 	doc/html/algorithms/definitions.html \
 	doc/html/algorithms/derivations/aerosol_extinction_coefficient.html \
@@ -619,8 +616,6 @@ doc/html/_static/documentation_options.js:
 	$(MAKE) harp_doc
 doc/html/_static/file.png:
 	$(MAKE) harp_doc
-doc/html/_static/jquery-3.6.0.js:
-	$(MAKE) harp_doc
 doc/html/_static/jquery.js:
 	$(MAKE) harp_doc
 doc/html/_static/js/badge_only.js:
@@ -642,10 +637,6 @@ doc/html/_static/pygments.css:
 doc/html/_static/searchtools.js:
 	$(MAKE) harp_doc
 doc/html/_static/sphinx_highlight.js:
-	$(MAKE) harp_doc
-doc/html/_static/underscore-1.13.1.js:
-	$(MAKE) harp_doc
-doc/html/_static/underscore.js:
 	$(MAKE) harp_doc
 doc/html/algorithms/common.html:
 	$(MAKE) harp_doc
