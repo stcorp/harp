@@ -816,7 +816,7 @@ static int read_aot_qa_value(void *user_data, harp_array data)
     }
     /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
     coda_set_option_perform_conversions(0);
-    result = read_dataset(info->product_cursor, "qa_value", harp_type_float, num_elements, data);
+    result = read_dataset(info->product_cursor, "qa_value", harp_type_float, num_elements, qa_value);
     coda_set_option_perform_conversions(1);
     if (result != 0)
     {
