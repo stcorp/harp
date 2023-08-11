@@ -1617,6 +1617,7 @@ static int read_so2cbr_tropopause_pressure(void *user_data, harp_array data)
     harp_array layer_index;
     long num_profiles = info->num_scanlines * info->num_pixels;
     long num_layers = info->num_layers;
+    long i;
 
     layer_index.ptr = malloc(num_profiles * sizeof(int32_t));
     if (layer_index.ptr == NULL)
@@ -1681,7 +1682,7 @@ static int read_so2cbr_tropopause_pressure(void *user_data, harp_array data)
         return -1;
     }
 
-    for (long i = 0; i < num_profiles; i++)
+    for (i = 0; i < num_profiles; i++)
     {
         long index = layer_index.int32_data[i];
 
@@ -1843,6 +1844,7 @@ static int read_so2cbr_sulfurdioxide_detection_flag(void *user_data, harp_array 
     ingest_info *info = (ingest_info *)user_data;
     harp_array sulfurdioxide_detection_flag;
     long num_elements = info->num_scanlines * info->num_pixels;
+    long i;
 
     sulfurdioxide_detection_flag.ptr = malloc(num_elements * sizeof(int32_t));
     if (sulfurdioxide_detection_flag.ptr == NULL)
@@ -1859,7 +1861,7 @@ static int read_so2cbr_sulfurdioxide_detection_flag(void *user_data, harp_array 
         return -1;
     }
 
-    for (long i = 0; i < num_elements; i++)
+    for (i = 0; i < num_elements; i++)
     {
         data.int8_data[i] = sulfurdioxide_detection_flag.int32_data[i];
     }
