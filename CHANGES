@@ -1,4 +1,5 @@
 * Updates to product ingestions:
+  - S5P L2 ALH: add support for revised surface_albedo variable.
   - S5P PAL L2: fixed memory issue when reading aerosol_optical_depth_validity
     of AER_OT product.
 

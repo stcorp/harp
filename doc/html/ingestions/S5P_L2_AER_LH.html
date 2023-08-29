@@ -322,6 +322,10 @@
 <td><p>unclipped</p></td>
 <td><p>ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) or the unclipped variant (aerosol_pressure=unclipped)</p></td>
 </tr>
+<tr class="row-odd"><td><p>surface_albedo</p></td>
+<td><p>772</p></td>
+<td><p>whether to ingest the surface albedo at 758nm (default) or the surface alebedo at 772nm (surface_albedo=772); this option only has an effect for processor version &gt;= 02.06.00 (for older products always the albedo at 758nm is ingested)</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -489,15 +493,27 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><p><strong>surface_albedo</strong></p></td>
+<tr class="row-even"><td rowspan="7"><p><strong>surface_albedo</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>processor version &gt;= 01.03.00</p></td>
+<td><p>processor version &gt;= 01.03.00 and processor version &lt; 02.06.00</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>surface_albedo unset and processor version &gt;= 02.06.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>surface_albedo=772 and processor version &gt;= 02.06.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,1]</strong></p></td>
 </tr>
 <tr class="row-odd"><td rowspan="3"><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>available</em></p></td>

@@ -95,6 +95,7 @@ typedef struct ingest_info_struct
     int use_aerosol_pressure_not_clipped;
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
+    int use_aer_lh_surface_albedo_772;
     int use_ch4_bias_corrected;
     int use_co_corrected;
     int use_co_nd_avk;
@@ -596,6 +597,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_aerosol_pressure_not_clipped = 0;
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
+    info->use_aer_lh_surface_albedo_772 = 0;
     info->use_ch4_bias_corrected = 0;
     info->use_co_corrected = 0;
     info->use_co_nd_avk = 0;
@@ -734,6 +736,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             info->so2_column_type = 4;
         }
     }
+    if (harp_ingestion_options_has_option(options, "surface_albedo"))
+    {
+        info->use_aer_lh_surface_albedo_772 = 1;
+    }
 
     if (init_cursors(info) != 0)
     {
@@ -772,6 +778,38 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             *definition = module->product_definition[1];
         }
     }
+
+    /* check this option for aer_ai at the end, since it can set num_times to 0 */
+    if (harp_ingestion_options_has_option(options, "wavelength_ratio"))
+    {
+        if (harp_ingestion_options_get_option(options, "wavelength_ratio", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "335_367nm") == 0)
+        {
+            info->wavelength_ratio = 335;
+            if (info->processor_version < 20400)
+            {
+                /* 335/367 is only available with processor version >= 02.04.00 */
+                /* return an empty product if the wavelength pair is not available */
+                info->num_times = 0;
+            }
+
+        }
+        else if (strcmp(option_value, "354_388nm") == 0)
+        {
+            info->wavelength_ratio = 354;
+        }
+        else
+        {
+            /* Option values are guaranteed to be legal if present. */
+            assert(strcmp(option_value, "340_380nm") == 0);
+            info->wavelength_ratio = 340;
+        }
+    }
+
     *user_data = info;
 
     return 0;
@@ -3003,14 +3041,6 @@ static int read_results_sulfurdioxide_slant_column_corrected(void *user_data, ha
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_results_surface_albedo(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "surface_albedo", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
 static int read_results_surface_albedo_fitted(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3087,6 +3117,44 @@ static int read_aer_lh_aerosol_mid_pressure(void *user_data, harp_array data)
 
     return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_aer_lh_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array surface_albedo;
+    int wavelength_index = info->use_aer_lh_surface_albedo_772;
+    long i;
+
+    if (info->processor_version < 20600)
+    {
+        return read_dataset(info->detailed_results_cursor, "surface_albedo", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
+    surface_albedo.ptr = malloc(info->num_scanlines * info->num_pixels * 2 * sizeof(float));
+    if (surface_albedo.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * 2 * sizeof(float), __FILE__, __LINE__);
+        return -1;
+
+    }
+    if (read_dataset(info->detailed_results_cursor, "surface_albedo", harp_type_float,
+                     info->num_scanlines * info->num_pixels * 2, surface_albedo) != 0)
+    {
+        free(surface_albedo.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        data.float_data[i] = surface_albedo.float_data[i * 2 + wavelength_index];
+    }
+
+    free(surface_albedo.ptr);
+
+    return 0;
 }
 
 static int read_co_column_number_density_avk(void *user_data, harp_array data)
@@ -4745,48 +4813,6 @@ static int read_sea_ice_fraction_nise(void *user_data, harp_array data)
     return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag_nise", data);
 }
 
-static int ingestion_init_aer_ai(const harp_ingestion_module *module, coda_product *product,
-                                 const harp_ingestion_options *options, harp_product_definition **definition,
-                                 void **user_data)
-{
-    const char *option_value;
-    ingest_info *info;
-
-    if (ingestion_init(module, product, options, definition, (void **)&info) != 0)
-    {
-        return -1;
-    }
-
-    if (harp_ingestion_options_get_option(options, "wavelength_ratio", &option_value) == 0)
-    {
-        if (strcmp(option_value, "335_367nm") == 0)
-        {
-            info->wavelength_ratio = 335;
-            if (info->processor_version < 20400)
-            {
-                /* 335/367 is only available with processor version >= 02.04.00 */
-                /* return an empty product if the wavelength pair is not available */
-                info->num_times = 0;
-            }
-
-        }
-        else if (strcmp(option_value, "354_388nm") == 0)
-        {
-            info->wavelength_ratio = 354;
-        }
-        else
-        {
-            /* Option values are guaranteed to be legal if present. */
-            assert(strcmp(option_value, "340_380nm") == 0);
-            info->wavelength_ratio = 340;
-        }
-    }
-
-    *user_data = (void *)info;
-
-    return 0;
-}
-
 static int include_nrti(void *user_data)
 {
     return ((ingest_info *)user_data)->is_nrti;
@@ -5299,7 +5325,7 @@ static void register_aer_ai_product(void)
     const char *description;
 
     module = harp_ingestion_register_module("S5P_L2_AER_AI", "Sentinel-5P", "Sentinel5P", "L2__AER_AI",
-                                            "Sentinel-5P L2 aerosol index", ingestion_init_aer_ai, ingestion_done);
+                                            "Sentinel-5P L2 aerosol index", ingestion_init, ingestion_done);
 
     description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm";
     harp_ingestion_register_option(module, "wavelength_ratio", description, 3, wavelength_ratio_option_values);
@@ -5354,6 +5380,7 @@ static void register_aer_lh_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     const char *aerosol_pressure_option_values[1] = { "unclipped" };
+    const char *surface_albedo_option_values[1] = { "772" };
 
     module = harp_ingestion_register_module("S5P_L2_AER_LH", "Sentinel-5P", "Sentinel5P", "L2__AER_LH",
                                             "Sentinel-5P L2 aerosol layer height", ingestion_init, ingestion_done);
@@ -5361,6 +5388,11 @@ static void register_aer_lh_product(void)
     description = "ingest the aerosol_mid_pressure that is clipped to the surface pressure (default) "
         "or the unclipped variant (aerosol_pressure=unclipped)";
     harp_ingestion_register_option(module, "aerosol_pressure", description, 1, aerosol_pressure_option_values);
+
+    description = "whether to ingest the surface albedo at 758nm (default) or the surface alebedo at 772nm "
+        "(surface_albedo=772); this option only has an effect for processor version >= 02.06.00 (for older products "
+        "always the albedo at 758nm is ingested)";
+    harp_ingestion_register_option(module, "surface_albedo", description, 1, surface_albedo_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_LH", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh]);
@@ -5439,9 +5471,16 @@ static void register_aer_lh_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   include_from_010300, read_results_surface_albedo);
+                                                   include_from_010300, read_aer_lh_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.03.00", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL,
+                                         "processor version >= 01.03.00 and processor version < 02.06.00", path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,0]";
+    harp_variable_definition_add_mapping(variable_definition, "surface_albedo unset", "processor version >= 02.06.00",
+                                         path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,1]";
+    harp_variable_definition_add_mapping(variable_definition, "surface_albedo=772", "processor version >= 02.06.00",
+                                         path, NULL);
 
     /* cloud_fraction */
     description = "cloud fraction from the cloud product";
