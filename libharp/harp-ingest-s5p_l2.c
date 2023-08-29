@@ -776,6 +776,12 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         {
             /* use the second product definition, which is the one for O22CLD */
             *definition = module->product_definition[1];
+
+            /* return an empty product if the processor version is too old to produce O22CLD */
+            if (info->processor_version < 20200)
+            {
+                info->num_times = 0;
+            }
         }
     }
 
@@ -6866,7 +6872,8 @@ static void register_o22cloud_subproduct(harp_ingestion_module *module)
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O22CLD", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "data=o22cld");
+    description = "If processor version < 02.02.00 then an empty product is returned.";
+    harp_product_definition_add_mapping(product_definition, description, "data=o22cld");
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2]);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
