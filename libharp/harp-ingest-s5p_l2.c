@@ -3163,6 +3163,38 @@ static int read_aer_lh_surface_albedo(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_aer_lh_surface_albedo_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array precision;
+    int wavelength_index = info->use_aer_lh_surface_albedo_772;
+    long i;
+
+    precision.ptr = malloc(info->num_scanlines * info->num_pixels * 2 * sizeof(float));
+    if (precision.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_scanlines * info->num_pixels * 2 * sizeof(float), __FILE__, __LINE__);
+        return -1;
+
+    }
+    if (read_dataset(info->detailed_results_cursor, "surface_albedo_precision", harp_type_float,
+                     info->num_scanlines * info->num_pixels * 2, precision) != 0)
+    {
+        free(precision.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
+    {
+        data.float_data[i] = precision.float_data[i * 2 + wavelength_index];
+    }
+
+    free(precision.ptr);
+
+    return 0;
+}
+
 static int read_co_column_number_density_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -4925,6 +4957,11 @@ static int include_from_020500(void *user_data)
     return ((ingest_info *)user_data)->processor_version >= 20500;
 }
 
+static int include_from_020600(void *user_data)
+{
+    return ((ingest_info *)user_data)->processor_version >= 20600;
+}
+
 static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims)
 {
     const char *path;
@@ -5485,6 +5522,19 @@ static void register_aer_lh_product(void)
     harp_variable_definition_add_mapping(variable_definition, "surface_albedo unset", "processor version >= 02.06.00",
                                          path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,1]";
+    harp_variable_definition_add_mapping(variable_definition, "surface_albedo=772", "processor version >= 02.06.00",
+                                         path, NULL);
+
+    /* surface_albedo_uncertainty */
+    description = "uncertainty of the surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   include_from_020600, read_aer_lh_surface_albedo_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[..,0]";
+    harp_variable_definition_add_mapping(variable_definition, "surface_albedo unset", "processor version >= 02.06.00",
+                                         path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[..,1]";
     harp_variable_definition_add_mapping(variable_definition, "surface_albedo=772", "processor version >= 02.06.00",
                                          path, NULL);
 
