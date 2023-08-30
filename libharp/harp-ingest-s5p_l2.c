@@ -2464,10 +2464,15 @@ static int apply_custom_qa_filter_o3_v1(ingest_info *info, harp_array qa_value)
     long i;
 
     /* For processor V1 generated products the following samples should be omitted (-> qa_value:=0)
+     * For OFFL:
      * - ozone_total_vertical_column out of [0 to 0.45]
      * - ozone_effective_temperature out of [180 to 260]
      * - ring_scale_factor out of [0 to 0.15]
      * - effective_albedo out of [-0.5 to 1.5]
+     * For NRTI:
+     * - ozone_total_vertical_column out of [0 to 0.45]
+     * - ozone_effective_temperature out of [180 to 280]
+     * - fitted_root_mean_square > 0.01
      */
 
     data.ptr = malloc(num_elements * sizeof(float));
@@ -2504,35 +2509,56 @@ static int apply_custom_qa_filter_o3_v1(ingest_info *info, harp_array qa_value)
     }
     for (i = 0; i < num_elements; i++)
     {
-        if (data.float_data[i] < 180 || data.float_data[i] > 260 || harp_isnan(data.float_data[i]))
+        float upper_bound = info->is_nrti ? 280 : 260;
+
+        if (data.float_data[i] < 180 || data.float_data[i] > upper_bound || harp_isnan(data.float_data[i]))
         {
             qa_value.int8_data[i] = 0;
         }
     }
 
-    if (read_dataset(info->detailed_results_cursor, "ring_scale_factor", harp_type_float, num_elements, data) != 0)
+    if (info->is_nrti)
     {
-        free(data.ptr);
-        return -1;
-    }
-    for (i = 0; i < num_elements; i++)
-    {
-        if (data.float_data[i] < 0 || data.float_data[i] > 0.15 || harp_isnan(data.float_data[i]))
+        if (read_dataset(info->detailed_results_cursor, "fitted_root_mean_square", harp_type_float, num_elements, data)
+            != 0)
         {
-            qa_value.int8_data[i] = 0;
+            free(data.ptr);
+            return -1;
+        }
+        for (i = 0; i < num_elements; i++)
+        {
+            if (data.float_data[i] > 0.01)
+            {
+                qa_value.int8_data[i] = 0;
+            }
         }
     }
-
-    if (read_dataset(info->detailed_results_cursor, "effective_albedo", harp_type_float, num_elements, data) != 0)
+    else
     {
-        free(data.ptr);
-        return -1;
-    }
-    for (i = 0; i < num_elements; i++)
-    {
-        if (data.float_data[i] < -0.5 || data.float_data[i] > 1.5 || harp_isnan(data.float_data[i]))
+        if (read_dataset(info->detailed_results_cursor, "ring_scale_factor", harp_type_float, num_elements, data) != 0)
         {
-            qa_value.int8_data[i] = 0;
+            free(data.ptr);
+            return -1;
+        }
+        for (i = 0; i < num_elements; i++)
+        {
+            if (data.float_data[i] < 0 || data.float_data[i] > 0.15 || harp_isnan(data.float_data[i]))
+            {
+                qa_value.int8_data[i] = 0;
+            }
+        }
+
+        if (read_dataset(info->detailed_results_cursor, "effective_albedo", harp_type_float, num_elements, data) != 0)
+        {
+            free(data.ptr);
+            return -1;
+        }
+        for (i = 0; i < num_elements; i++)
+        {
+            if (data.float_data[i] < -0.5 || data.float_data[i] > 1.5 || harp_isnan(data.float_data[i]))
+            {
+                qa_value.int8_data[i] = 0;
+            }
         }
     }
 
