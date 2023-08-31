@@ -1,5 +1,5 @@
 
-These files are taken from Expat, Release 2.2.6.
+These files are taken from Expat, Release 2.5.0.
 
 The source files have been slightly modified in order to fit them into this
 build system. The changes that were made are:
@@ -7,10 +7,10 @@ build system. The changes that were made are:
  - Source files now only include config.h (instead of a choice of
    expat_config.h, winconfig.h, etc.).
 
- - expat_external.h includes harp_expat_mangle.h to name mangle all
+ - expat_external.h includes coda_expat_mangle.h to name mangle all
    public symbols.
 
  - Add '#undef' for uint8_t/uint32_t/uint64_t in siphash.h to prevent
    compilation problems on Windows.
 
- - internal.h includes windows.h (since it can't be included in config.h).
+ - internal.h includes windows.h

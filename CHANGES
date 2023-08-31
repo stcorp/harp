@@ -5,6 +5,8 @@
   - S5P PAL L2: fixed memory issue when reading aerosol_optical_depth_validity
     of AER_OT product.
 
+* Updated embedded expat library to version 2.5.0.
+
 * Fixed issue where jpeg dll was missing from windows binary installer.
 
 1.19 2023-07-24
