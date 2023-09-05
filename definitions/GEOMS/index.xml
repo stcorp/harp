@@ -17,6 +17,12 @@
         <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-FTIR-002"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
+    <cd:ProductDefinition id="FTIR_003_hdf4" format="hdf4" version="1003">
+      <cd:Description>The format definition for this product is taken from the HDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-FTIR-003"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
   </cd:ProductType>
   <cd:ProductType name="FTIR_TCCON">
     <cd:Description>GEOMS template for FTIR TCCON measurements</cd:Description>
