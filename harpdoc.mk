@@ -180,6 +180,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ESACCI_OZONE_L3_TTOC.html \
 	doc/html/ingestions/ESACCI_OZONE_L4_NP.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-C2H2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-001-C2H4.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-C2H6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-CCl2F2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-CCl3F.html \
@@ -203,8 +204,10 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-NO2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-O3.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-OCS.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-001-PAN.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-001-SF6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-C2H2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-002-C2H4.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-C2H6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-CCl2F2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-CCl3F.html \
@@ -228,7 +231,35 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-NO2.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-O3.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-OCS.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-002-PAN.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-002-SF6.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-C2H2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-C2H4.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-C2H6.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-CCl2F2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-CCl3F.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-CH3OH.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-CH4.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-CHF2Cl.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-CO.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-CO2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-COF2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-ClONO2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-H2CO.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-H2O.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-HCN.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-HCOOH.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-HCl.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-HF.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-HNO3.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-N2O.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-NH3.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-NO.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-NO2.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-O3.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-OCS.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-PAN.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-003-SF6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-TCCON-005.html \
 	doc/html/ingestions/GEOMS-TE-LIDAR-H2O-004.html \
 	doc/html/ingestions/GEOMS-TE-LIDAR-H2O-005.html \
@@ -924,6 +955,8 @@ doc/html/ingestions/ESACCI_OZONE_L4_NP.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-C2H2.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-001-C2H4.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-C2H6.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-CCl2F2.html:
@@ -970,9 +1003,13 @@ doc/html/ingestions/GEOMS-TE-FTIR-001-O3.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-OCS.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-001-PAN.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-001-SF6.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-002-C2H2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-002-C2H4.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-002-C2H6.html:
 	$(MAKE) harp_doc
@@ -1020,7 +1057,63 @@ doc/html/ingestions/GEOMS-TE-FTIR-002-O3.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-002-OCS.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-002-PAN.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-002-SF6.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-C2H2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-C2H4.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-C2H6.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-CCl2F2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-CCl3F.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-CH3OH.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-CH4.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-CHF2Cl.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-CO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-CO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-COF2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-ClONO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-H2CO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-H2O.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-HCN.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-HCOOH.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-HCl.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-HF.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-HNO3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-N2O.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-NH3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-NO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-NO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-O3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-OCS.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-PAN.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-003-SF6.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-TCCON-005.html:
 	$(MAKE) harp_doc
