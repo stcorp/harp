@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GEOMS-TE-FTIR-003-H2O &mdash; HARP 1.19 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            HARP
+          </a>
+              <div class="version">
+                1.19
+              </div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions/index.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">R interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GEOMS-TE-FTIR-003-H2O</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="geoms-te-ftir-003-h2o">
+<h1>GEOMS-TE-FTIR-003-H2O</h1>
+<section id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-FTIR-003-H2O</span></code> data.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 5%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>sensor_name</strong></p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+<td><p>name of the sensor</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>location_name</strong></p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+<td><p>name of the site at which the sensor is located</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>measurement_mode</strong></p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+<td><p>‘solar’ or ‘lunar’ measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_latitude</strong></p></td>
+<td><p>double</p></td>
+<td></td>
+<td><p>[degree_north]</p></td>
+<td><p>latitude of the sensor</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_longitude</strong></p></td>
+<td><p>double</p></td>
+<td></td>
+<td><p>[degree_east]</p></td>
+<td><p>longitude of the sensor</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
+<td><p>double</p></td>
+<td></td>
+<td><p>[km]</p></td>
+<td><p>altitude of the sensor</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[days since 2000-01-01]</p></td>
+<td><p>time of the measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>datetime_length</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[s]</p></td>
+<td><p>duration of the measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>H2O_column_number_density</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[molec/m2]</p></td>
+<td><p>total H2O vertical column</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>H2O_column_number_density_apriori</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[molec/m2]</p></td>
+<td><p>a priori total H2O vertical column</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>H2O_column_number_density_avk</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>averaging kernel for the total H2O vertical column</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>H2O_column_number_density_uncertainty_random</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[molec/m2]</p></td>
+<td><p>random uncertainty of the total H2O vertical column</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>H2O_column_number_density_uncertainty_systematic</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[molec/m2]</p></td>
+<td><p>systematic uncertainty of the total H2O vertical column</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>H2O_volume_mixing_ratio_dry_air</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[ppmv]</p></td>
+<td><p>H2O volume mixing ratio</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio_dry_air_apriori</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[ppmv]</p></td>
+<td><p>a priori H2O volume mixing ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>H2O_volume_mixing_ratio_dry_air_avk</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>averaging kernel for the H2O volume mixing ratio</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio_dry_air_covariance</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</p></td>
+<td><p>[(ppmv)2]</p></td>
+<td><p>covariance of the H2O volume mixing ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>H2O_volume_mixing_ratio_dry_air_uncertainty_random</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[ppmv]</p></td>
+<td><p>random uncertainty of the H2O volume mixing ratio</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio_dry_air_uncertainty_systematic</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[ppmv]</p></td>
+<td><p>systematic uncertainty of the H2O volume mixing ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>altitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[km]</p></td>
+<td><p>retrieval effective altitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>altitude_bounds</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>, 2}</p></td>
+<td><p>[km]</p></td>
+<td><p>lower and upper boundaries of the height layers</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>pressure</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[hPa]</p></td>
+<td><p>independent pressure profile</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>temperature</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>independent temperature profile</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[hPa]</p></td>
+<td><p>independent surface pressure</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_temperature</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>independent surface temperature</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar azimuth angle</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar zenith angle</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>sensor_name</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/&#64;DATA.SOURCE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>location_name</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/&#64;DATA.LOCATION</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>measurement_mode</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>determined from ‘variable mode’ part of variable names</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/LATITUDE.INSTRUMENT</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/LONGITUDE.INSTRUMENT</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ALTITUDE.INSTRUMENT</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/DATETIME</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>datetime_length</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/INTEGRATION.TIME</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><p><strong>H2O_column_number_density</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.SOLAR</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>unit is converted to molec/m2</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.LUNAR</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>unit is converted to molec/m2</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>H2O_column_number_density_apriori</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_APRIORI</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>unit is converted to molec/m2</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><p><strong>H2O_column_number_density_avk</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.SOLAR_AVK</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.LUNAR_AVK</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><p><strong>H2O_column_number_density_uncertainty_random</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>unit is converted to molec/m2</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.STANDARD</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>unit is converted to molec/m2</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><p><strong>H2O_column_number_density_uncertainty_systematic</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>unit is converted to molec/m2</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.COLUMN_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC.STANDARD</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>unit is converted to molec/m2</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><p><strong>H2O_volume_mixing_ratio_dry_air</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.LUNAR</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>H2O_volume_mixing_ratio_dry_air_apriori</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_APRIORI</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><p><strong>H2O_volume_mixing_ratio_dry_air_avk</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR_AVK</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.LUNAR_AVK</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-even"><td rowspan="7"><p><strong>H2O_volume_mixing_ratio_dry_air_covariance</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>unit is converted to (ppmv)2; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>unit is converted to (ppmv)2; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><p><strong>H2O_volume_mixing_ratio_dry_air_uncertainty_random</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.LUNAR_UNCERTAINTY.RANDOM.COVARIANCE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</p></td>
+</tr>
+<tr class="row-even"><td rowspan="7"><p><strong>H2O_volume_mixing_ratio_dry_air_uncertainty_systematic</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.SOLAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/H2O.MIXING.RATIO.VOLUME.DRY_ABSORPTION.LUNAR_UNCERTAINTY.SYSTEMATIC.COVARIANCE</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>altitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ALTITUDE</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>altitude_bounds</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ALTITUDE.BOUNDS</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>lower and upper boundaries of the height layers</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRESSURE_INDEPENDENT</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>independent pressure profile</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>temperature</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/TEMPERATURE_INDEPENDENT</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>independent temperature profile</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/SURFACE.PRESSURE_INDEPENDENT</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_temperature</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/SURFACE.TEMPERATURE_INDEPENDENT</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ANGLE.SOLAR_AZIMUTH</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ANGLE.LUNAR_AZIMUTH</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>solar_zenith_angle</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>solar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ANGLE.SOLAR_ZENITH.ASTRONOMICAL</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>lunar measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/ANGLE.LUNAR_ZENITH.ASTRONOMICAL</strong></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023 S[&amp;]T, The Netherlands.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
