@@ -2335,6 +2335,12 @@ int harp_operation_index_comparison_filter_new(harp_dimension_type dimension_typ
 {
     harp_operation_index_comparison_filter *operation;
 
+    if (dimension_type == harp_dimension_independent)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot perform index filter on dimension 'independent'");
+        return -1;
+    }
+
     operation = (harp_operation_index_comparison_filter *)malloc(sizeof(harp_operation_index_comparison_filter));
     if (operation == NULL)
     {
@@ -2357,6 +2363,12 @@ int harp_operation_index_membership_filter_new(harp_dimension_type dimension_typ
                                                int num_values, const int32_t *value, harp_operation **new_operation)
 {
     harp_operation_index_membership_filter *operation;
+
+    if (dimension_type == harp_dimension_independent)
+    {
+        harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "cannot perform index filter on 'independent' dimension");
+        return -1;
+    }
 
     assert(num_values == 0 || value != NULL);
 
