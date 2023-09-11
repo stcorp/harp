@@ -386,11 +386,6 @@ static int execute_index_filter(harp_product *product, harp_program *program)
     long dimension;
     long i;
 
-    if (harp_dimension_mask_set_new(&dimension_mask_set) != 0)
-    {
-        return -1;
-    }
-
     operation = (harp_operation_index_filter *)program->operation[program->current_index];
     dimension = product->dimension[operation->dimension_type];
     if (dimension <= 0)
