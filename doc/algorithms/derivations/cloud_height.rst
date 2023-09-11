@@ -9,8 +9,8 @@ cloud height derivations
    symbol         description              unit      variable name
    ============== ======================== ========= ==========================
    :math:`z_{c}`  cloud height (mid point) :math:`m` `cloud_height {:}`
-   :math:`z_{cb}` cloud base height        :math:`m` `cloud_base_height {time}`
-   :math:`z_{ct}` cloud top height         :math:`m` `cloud_top_height {time}`
+   :math:`z_{cb}` cloud base height        :math:`m` `cloud_base_height {:}`
+   :math:`z_{ct}` cloud top height         :math:`m` `cloud_top_height {:}`
    ============== ======================== ========= ==========================
 
    The pattern `:` for the dimensions can represent `{latitude,longitude}`, `{time}`, `{time,latitude,longitude}`,
