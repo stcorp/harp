@@ -33,7 +33,8 @@
   - EarthCARE: added support for AM__ACD_2B, AM__CTH_2B, BM__RAD_2B,
     BMA_FLX_2B, MSI_AOT_2A, MSI_CM__2A, and MSI_COP_2A
   - ECMWF GRIB: added support for new masterTablesVersion=30 data
-  - S5P PAL L2: added support for AER_OT, CHOCHO, SIF, SO2 COBRA, and TCWV
+  - S5P PAL L2: added support for AER_OT, BRO, CHOCHO, SIF, SO2 COBRA, and
+    TCWV
 
 1.18 2023-06-08
 ~~~~~~~~~~~~~~~
