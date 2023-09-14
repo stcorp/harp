@@ -508,6 +508,27 @@ static int read_ch4_avk(void *user_data, harp_array data)
     return read_variable_float(user_data, "CH4_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
+static int read_o2_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_float(user_data, "O2_MIXING_RATIO_VOLUME_APRIORI", info->num_time * info->num_vertical, data);
+}
+
+static int read_o2_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
+}
+
+static int read_o2_amf(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR_AMF", info->num_time, data);
+}
+
 static int read_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -717,6 +738,7 @@ static int init_product_definition(harp_ingestion_module *module, int version)
     char product_name[MAX_NAME_LENGTH];
     char product_description[MAX_DESCRIPTION_LENGTH];
     const char *description;
+    const char *unit;
 
     snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-FTIR-TCCON-%03d", version);
     snprintf(product_description, MAX_DESCRIPTION_LENGTH, "GEOMS template for FTIR TCCON v%03d", version);
@@ -947,9 +969,10 @@ static int init_product_definition(harp_ingestion_module *module, int version)
                                          "ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
 
     /* CH4_volume_mixing_ratio_apriori */
+    unit = version == 5 ? "ppbv" : "ppmv";
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, "CH4_volume_mixing_ratio_apriori", harp_type_float, 2, dimension_type, NULL,
-         "apriori profile of CH4 volume mixing ratios", "ppbv", NULL, read_ch4_apriori);
+         "apriori profile of CH4 volume mixing ratios", unit, NULL, read_ch4_apriori);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CH4.MIXING.RATIO.VOLUME_APRIORI", NULL);
 
     /* CH4_column_number_density_avk */
@@ -957,6 +980,28 @@ static int init_product_definition(harp_ingestion_module *module, int version)
         (product_definition, "CH4_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
          "averaging kernel matrix for the total CH4 vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_ch4_avk);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/CH4.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
+
+    if (version >= 6)
+    {
+        /* O2_volume_mixing_ratio_apriori */
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, "O2_volume_mixing_ratio_apriori", harp_type_float, 2, dimension_type, NULL,
+             "apriori profile of O2 volume mixing ratios", "ppv", NULL, read_o2_apriori);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.MIXING.RATIO.VOLUME_APRIORI", NULL);
+
+        /* O2_column_number_density_avk */
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, "O2_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+             "averaging kernel matrix for the total O2 vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_o2_avk);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
+
+        /* O2_column_number_density_amf */
+        variable_definition = harp_ingestion_register_variable_full_read
+            (product_definition, "O2_column_number_density_amf", harp_type_float, 1, dimension_type, NULL,
+             "airmass computed as the total vertical column of O2 divided by the total slant column of O2 retrieved "
+             "from the window centered at 7885 cm-1", HARP_UNIT_DIMENSIONLESS, NULL, read_o2_amf);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
+    }
 
     /* altitude */
     description = "a priori altitude profile";
@@ -1059,6 +1104,7 @@ int harp_ingestion_module_geoms_tccon_init(void)
                                             "GEOMS template for TCCON FTIR", ingestion_init, ingestion_done);
 
     init_product_definition(module, 5);
+    init_product_definition(module, 6);
 
     return 0;
 }

@@ -1,6 +1,7 @@
 * Updates to product ingestions:
-  - GEOMS FTIR: added suport for C2H3NO5/PAN and C2H4, added support for
+  - GEOMS FTIR: added support for C2H3NO5/PAN and C2H4, added support for
     template V3.
+  - GEOMS TCCON: added support for template V6.
   - S5P L2 ALH: add support for revised surface_albedo variable and added
     surface_albedo_uncertainty.
   - S5P L2 O3: fix custom V1 QA filter for NRTI products

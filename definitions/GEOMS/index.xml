@@ -35,6 +35,15 @@
         <cd:MatchExpression path="/@DATA_TEMPLATE">str(.,24) == "GEOMS-TE-FTIR-TCCON-005\000"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
+    <cd:ProductDefinition id="FTIR_TCCON_006_hdf5" format="hdf5" version="2006">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.) == "GEOMS-TE-FTIR-TCCON-006"</cd:MatchExpression>
+      </cd:DetectionRule>
+      <cd:DetectionRule>
+        <cd:MatchExpression path="/@DATA_TEMPLATE">str(.,24) == "GEOMS-TE-FTIR-TCCON-006\000"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
   </cd:ProductType>
   <cd:ProductType name="LIDAR_O3">
     <cd:Description>GEOMS template for LIDAR ozone measurements</cd:Description>
