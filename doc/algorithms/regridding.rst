@@ -114,7 +114,8 @@ The rebinning is then performed as follows:
 
 
 For variables that provide an integrated quantity in the given dimension, the end result is the sum of the weighted
-contributions instead of the average. Such variables are, for example, partial column density profiles for the vertical dimension. Other such vertical variables are column averaging kernels and degree-of-freedom profiles.
+contributions instead of the average. Such variables are, for example, partial column density profiles for the vertical
+dimension. Other such vertical variables are column averaging kernels and degree-of-freedom profiles.
 
 The rebinning operation for integrated variables uses the following revised calculation of :math:`y_{t}(j)`:
 
@@ -128,6 +129,7 @@ The rebinning operation for integrated variables uses the following revised calc
         \end{cases} \\
       \end{eqnarray}
 
+If the product already contained any `count` or `weight` variables, then these are removed before a rebinning is performed.
 
 .. _binning:
 
@@ -152,21 +154,27 @@ The value :math:`y_{t}(j)` for each bin :math:`j` is then determined using:
       \begin{eqnarray}
         x_{t}(j) & = & x_{s}(\arg \min_{i}{x_{s}(i) \ne x_{t}(k) \forall k < j}) \\
         N_{j} & = & \sum_{i}{\begin{cases}
-            1, & x_{s}(i) = x_{s}(j) \\
+            w(i), & x_{s}(i) = x_{s}(j) \\
             0, & x_{s}(i) \ne x_{s}(j) \\
           \end{cases}} \\
-        y_{t}(j) & = & \frac{
-          \sum_{i}{\begin{cases}
-            y_{s}(i), & x_{s}(i) = x_{s}(j) \\
-            0, & x_{s}(i) \ne x_{s}(j) \\
-          \end{cases}}
-        }{N_{j}}
+        y_{t}(j) & = & \begin{cases}
+          \frac{
+            \sum_{i}{\begin{cases}
+              w(i)y_{s}(i), & x_{s}(i) = x_{s}(j) \\
+              0, & x_{s}(i) \ne x_{s}(j) \\
+            \end{cases}}
+          }{N_{j}}, & N_{j} > 0 \\
+          \mathit{nan}, & N_{j} = 0
+        \end{cases}
       \end{eqnarray}
+
+The weight :math:`w(i)` is taken from an existing `weight` variable if it exists, otherwise from an existing `count`
+variable if it exists, and set to `1` if there was no existing `weight` or `count` variable.
 
 In most cases, each variable is directly mapped to :math:`y`. The special cases are:
 
   - random uncertainty variables are averaged using the square of each value. The final value is given by:
-    :math:`y_{t}(j) = \frac{\sqrt{\sum_{i,x_{s}(i) = x_{s}(j)}{y_{s}(i)^{2}}}}{N_{j}}`.
+    :math:`y_{t}(j) = \frac{\sqrt{\sum_{i,x_{s}(i) = x_{s}(j)}{w(i)^{2}y_{s}(i)^{2}}}}{N_{j}}`.
 
   - total uncertainty variables are averaged based on the `propagate_uncertainty` option that can be set using the
     :ref:`set() operation <operation_set>`. If it is set to `uncorrelated` then the variable is averaged as a random
@@ -192,6 +200,9 @@ then an area weighted average is performed. Otherwise, if the product contains `
 Spatial binning can only be performed on a product that does not already depend on the `latitude` and `longitude`
 dimensions. Regridding an existing lat/lon grid can be done by individually :ref:`rebinning <rebinning>` the
 existing `latitude` and `longitude` dimensions.
+
+If the product already contained `count` or `weight` variables, then these are removed before the spatial binning is
+performed.
 
 The target grid is defined by the lat/lon positions of the cell edge corners. This edge grid is represented as
 :math:`\phi^{E}_{t}(j)` with :math:`j=1..(M_{\phi}+1)` for latitude and :math:`\lambda^{E}_{t}(k)` with

@@ -181,7 +181,8 @@ with <span class="math notranslate nohighlight">\(i=1..N\)</span> and <span clas
   \end{cases} \\
 \end{eqnarray}</div></div></blockquote>
 <p>For variables that provide an integrated quantity in the given dimension, the end result is the sum of the weighted
-contributions instead of the average. Such variables are, for example, partial column density profiles for the vertical dimension. Other such vertical variables are column averaging kernels and degree-of-freedom profiles.</p>
+contributions instead of the average. Such variables are, for example, partial column density profiles for the vertical
+dimension. Other such vertical variables are column averaging kernels and degree-of-freedom profiles.</p>
 <p>The rebinning operation for integrated variables uses the following revised calculation of <span class="math notranslate nohighlight">\(y_{t}(j)\)</span>:</p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
@@ -191,6 +192,7 @@ contributions instead of the average. Such variables are, for example, partial c
     \mathit{nan}, &amp; \sum_{i}{w(i,j)} = 0
   \end{cases} \\
 \end{eqnarray}</div></div></blockquote>
+<p>If the product already contained any <cite>count</cite> or <cite>weight</cite> variables, then these are removed before a rebinning is performed.</p>
 </section>
 <section id="binning">
 <span id="id3"></span><h2>Binning</h2>
@@ -207,21 +209,26 @@ single value. The binning variable is defined as <span class="math notranslate n
 \begin{eqnarray}
   x_{t}(j) &amp; = &amp; x_{s}(\arg \min_{i}{x_{s}(i) \ne x_{t}(k) \forall k &lt; j}) \\
   N_{j} &amp; = &amp; \sum_{i}{\begin{cases}
-      1, &amp; x_{s}(i) = x_{s}(j) \\
+      w(i), &amp; x_{s}(i) = x_{s}(j) \\
       0, &amp; x_{s}(i) \ne x_{s}(j) \\
     \end{cases}} \\
-  y_{t}(j) &amp; = &amp; \frac{
-    \sum_{i}{\begin{cases}
-      y_{s}(i), &amp; x_{s}(i) = x_{s}(j) \\
-      0, &amp; x_{s}(i) \ne x_{s}(j) \\
-    \end{cases}}
-  }{N_{j}}
+  y_{t}(j) &amp; = &amp; \begin{cases}
+    \frac{
+      \sum_{i}{\begin{cases}
+        w(i)y_{s}(i), &amp; x_{s}(i) = x_{s}(j) \\
+        0, &amp; x_{s}(i) \ne x_{s}(j) \\
+      \end{cases}}
+    }{N_{j}}, &amp; N_{j} &gt; 0 \\
+    \mathit{nan}, &amp; N_{j} = 0
+  \end{cases}
 \end{eqnarray}</div></div></blockquote>
+<p>The weight <span class="math notranslate nohighlight">\(w(i)\)</span> is taken from an existing <cite>weight</cite> variable if it exists, otherwise from an existing <cite>count</cite>
+variable if it exists, and set to <cite>1</cite> if there was no existing <cite>weight</cite> or <cite>count</cite> variable.</p>
 <p>In most cases, each variable is directly mapped to <span class="math notranslate nohighlight">\(y\)</span>. The special cases are:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>random uncertainty variables are averaged using the square of each value. The final value is given by:
-<span class="math notranslate nohighlight">\(y_{t}(j) = \frac{\sqrt{\sum_{i,x_{s}(i) = x_{s}(j)}{y_{s}(i)^{2}}}}{N_{j}}\)</span>.</p></li>
+<span class="math notranslate nohighlight">\(y_{t}(j) = \frac{\sqrt{\sum_{i,x_{s}(i) = x_{s}(j)}{w(i)^{2}y_{s}(i)^{2}}}}{N_{j}}\)</span>.</p></li>
 <li><p>total uncertainty variables are averaged based on the <cite>propagate_uncertainty</cite> option that can be set using the
 <a class="reference internal" href="../operations.html#operation-set"><span class="std std-ref">set() operation</span></a>. If it is set to <cite>uncorrelated</cite> then the variable is averaged as a random
 uncertainty variable (using its square), otherwise a regular average is taken.</p></li>
@@ -242,6 +249,8 @@ then an area weighted average is performed. Otherwise, if the product contains <
 <p>Spatial binning can only be performed on a product that does not already depend on the <cite>latitude</cite> and <cite>longitude</cite>
 dimensions. Regridding an existing lat/lon grid can be done by individually <a class="reference internal" href="#rebinning"><span class="std std-ref">rebinning</span></a> the
 existing <cite>latitude</cite> and <cite>longitude</cite> dimensions.</p>
+<p>If the product already contained <cite>count</cite> or <cite>weight</cite> variables, then these are removed before the spatial binning is
+performed.</p>
 <p>The target grid is defined by the lat/lon positions of the cell edge corners. This edge grid is represented as
 <span class="math notranslate nohighlight">\(\phi^{E}_{t}(j)\)</span> with <span class="math notranslate nohighlight">\(j=1..(M_{\phi}+1)\)</span> for latitude and <span class="math notranslate nohighlight">\(\lambda^{E}_{t}(k)\)</span> with
 <span class="math notranslate nohighlight">\(j=k..(M_{\lambda}+1)\)</span> for longitude.</p>
