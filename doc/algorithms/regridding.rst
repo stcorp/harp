@@ -169,7 +169,7 @@ The value :math:`y_{t}(j)` for each bin :math:`j` is then determined using:
       \end{eqnarray}
 
 The weight :math:`w(i)` is taken from an existing `weight` variable if it exists, otherwise from an existing `count`
-variable if it exists, and set to `1` if there was no existing `weight` or `count` variable.
+variable if it exists, and set to 1 if there was no existing `weight` or `count` variable.
 
 In most cases, each variable is directly mapped to :math:`y`. The special cases are:
 
