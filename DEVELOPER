@@ -26,7 +26,7 @@ This should happen automatically using the Makefile dependencies.
 But, make sure to do this by performing an in-source build of HARP such that
 the _harpc.py file in the python subdirectory of the source tree gets replaced.
 Current versions of cffi and pycparser for generating the python interface are:
-- cffi 1.15.0
+- cffi 1.15.1
 - pycparser 2.21
 
 Run 'make indent' using GNU indent (2.2.11) to update the indentation of the C

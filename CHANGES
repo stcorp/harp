@@ -1,3 +1,6 @@
+1.20 2023-09-19
+~~~~~~~~~~~~~~~
+
 * Updates to product ingestions:
   - GEOMS FTIR: added support for C2H3NO5/PAN and C2H4, added support for
     template V3.
