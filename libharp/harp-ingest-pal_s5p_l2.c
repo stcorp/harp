@@ -2027,7 +2027,7 @@ static int read_tcwv_pressure_bounds(void *user_data, harp_array data)
                        num_layers * sizeof(double), __FILE__, __LINE__);
         free(surface_pressure.ptr);
         free(pressure_constant_a_top.ptr);
-        free(pressure_constant_b_bottom.ptr);
+        free(pressure_constant_a_bottom.ptr);
         return -1;
     }
 
