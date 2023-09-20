@@ -1385,7 +1385,7 @@ def export_product(product, filename, file_format="netcdf", operations="", hdf5_
         raise TypeError("product must be Product, not %r" % product.__class__.__name__)
 
     if operations:
-        # Update history (but only if the export modifies the product)
+        # Update history
         command = "harp.export_product('{0}', operations='{1}')".format(filename, operations)
         _update_history(product, command)
 
