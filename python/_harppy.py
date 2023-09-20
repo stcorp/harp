@@ -1403,6 +1403,10 @@ def export_product(product, filename, file_format="netcdf", operations="", hdf5_
             if _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
                 raise CLibraryError()
 
+        # Don't allow export of empty products
+        if _lib.harp_product_is_empty(c_product_ptr[0]) == 1:
+            raise NoDataError()
+
         # Export the C product to a file.
         if file_format == 'hdf5':
             _lib.harp_set_option_hdf5_compression(int(hdf5_compression))
