@@ -2686,7 +2686,7 @@ static void register_chocho_product(void)
     description = "vertical column of glyoxal";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "C2H2O2_column_number_density", harp_type_float,
-                                                   1, dimension_type, NULL, description, NULL, NULL,
+                                                   1, dimension_type, NULL, description, "mol/m^2", NULL,
                                                    read_product_glyoxal_tropospheric_vertical_column);
     path = "/PRODUCT/glyoxal_tropospheric_vertical_column";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2695,8 +2695,8 @@ static void register_chocho_product(void)
     description = "random error of vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "C2H2O2_column_number_density_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, NULL, NULL,
-                                                   read_product_glyoxal_tropospheric_vertical_column_precision);
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   NULL, read_product_glyoxal_tropospheric_vertical_column_precision);
     path = "/PRODUCT/glyoxal_tropospheric_vertical_column_precision";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
