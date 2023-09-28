@@ -1296,6 +1296,13 @@ static int read_product_total_column_water_vapor_precision(void *user_data, harp
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_product_wavelength(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "wavelength", harp_type_float, info->num_wavelengths, data);
+}
+
 static int read_results_air_mass_factor_total(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2418,6 +2425,15 @@ static void register_aer_ot_product(void)
                                                    dimension_type, NULL, description, NULL, NULL,
                                                    read_product_aerosol_type);
     path = "/PRODUCT/aerosol_type";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* wavelength */
+    description = "wavelength";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_float, 1,
+                                                   &dimension_type[1], NULL, description, "nm", NULL,
+                                                   read_product_wavelength);
+    path = "/PRODUCT/wavelength";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
