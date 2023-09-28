@@ -732,7 +732,7 @@ int harp_ingestion_module_iasi_l2_init(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sensor_zenith_angle */
-    description = "sensor angle at the surface";
+    description = "sensor zenith angle at the surface";
     variable_definition =
         harp_ingestion_register_variable_block_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
                                                     dimension_type, NULL, description, "degree", NULL,
