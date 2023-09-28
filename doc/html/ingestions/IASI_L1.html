@@ -119,6 +119,30 @@
 <td><p>[degree_east]</p></td>
 <td><p>center longitude of the measurement</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar azimuth angle at the surface</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar zenith angle at the surface</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>sensor azimuth angle</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>sensor zenith angle</p></td>
+</tr>
 <tr class="row-even"><td><p><strong>wavenumber_radiance</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
@@ -175,6 +199,22 @@
 <tr class="row-even"><td><p><strong>longitude</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/MDR[]/MDR/GGeoSondLoc[,,0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/MDR[]/MDR/GGeoSondAnglesSUN[,,1]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/MDR[]/MDR/GGeoSondAnglesSUN[,,0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/MDR[]/MDR/GGeoSondAnglesMETOP[,,1]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/MDR[]/MDR/GGeoSondAnglesMETOP[,,0]</strong></p></td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><p><strong>wavenumber_radiance</strong></p></td>
 <td><p><em>path</em></p></td>

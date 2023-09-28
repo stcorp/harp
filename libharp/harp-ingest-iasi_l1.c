@@ -338,6 +338,52 @@ static int read_longitude(void *user_data, harp_array data)
     return get_main_data((ingest_info *)user_data, "GGeoSondLoc", LONGITUDE, data.double_data);
 }
 
+static int get_angle_data(void *user_data, const char *field_name, long index, int angle_id, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor;
+
+    cursor = info->mdr_cursors[index / 120];
+    if (coda_cursor_goto_record_field_by_name(&cursor, field_name) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    /* flat index in [30,4,2] array */
+    if (coda_cursor_goto_array_element_by_index(&cursor, (index % 120) * 2 + angle_id) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, data.double_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_solar_azimuth_angle(void *user_data, long index, harp_array data)
+{
+    return get_angle_data(user_data, "GGeoSondAnglesSUN", index, 1, data);
+}
+
+static int read_solar_zenith_angle(void *user_data, long index, harp_array data)
+{
+    return get_angle_data(user_data, "GGeoSondAnglesSUN", index, 0, data);
+}
+
+static int read_sensor_azimuth_angle(void *user_data, long index, harp_array data)
+{
+    return get_angle_data(user_data, "GGeoSondAnglesMETOP", index, 1, data);
+}
+
+static int read_sensor_zenith_angle(void *user_data, long index, harp_array data)
+{
+    return get_angle_data(user_data, "GGeoSondAnglesMETOP", index, 0, data);
+}
+
 static int read_spectral_radiance_sample(void *user_data, long index, harp_array data)
 {
     return get_spectra_sample_data((ingest_info *)user_data, index, data.float_data);
@@ -614,6 +660,46 @@ int harp_ingestion_module_iasi_l1_init(void)
                                                    NULL, description, "degree_east", NULL, read_longitude);
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/MDR[]/MDR/GGeoSondLoc[,,0]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_azimuth_angle */
+    description = "solar azimuth angle at the surface";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_solar_azimuth_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
+    path = "/MDR[]/MDR/GGeoSondAnglesSUN[,,1]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_zenith_angle */
+    description = "solar zenith angle at the surface";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "solar_zenith_angle", harp_type_double,
+                                                    1, dimension_type, NULL, description, "degree", NULL,
+                                                    read_solar_zenith_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    path = "/MDR[]/MDR/GGeoSondAnglesSUN[,,0]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* sensor_azimuth_angle */
+    description = "sensor azimuth angle";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "sensor_azimuth_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_sensor_azimuth_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
+    path = "/MDR[]/MDR/GGeoSondAnglesMETOP[,,1]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* sensor_zenith_angle */
+    description = "sensor zenith angle";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "sensor_zenith_angle", harp_type_double, 1,
+                                                    dimension_type, NULL, description, "degree", NULL,
+                                                    read_sensor_zenith_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    path = "/MDR[]/MDR/GGeoSondAnglesMETOP[,,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* wavenumber_radiance */

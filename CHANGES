@@ -1,4 +1,5 @@
 * Updates to product ingestions:
+  - IASI L1C: add angle variables
   - S5P PAL L2 AER_OT: added missing wavelength variable.
   - S5P PAL L2 CHOCHO: fixed missing units for number density variables.
 
