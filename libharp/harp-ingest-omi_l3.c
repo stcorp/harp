@@ -987,8 +987,8 @@ static void register_omhchod_product(void)
     const char *description;
     const char *path;
 
-    module = harp_ingestion_register_module("OMI_L3_OMHCHOd", "OMI", "AURA_OMI", "OMHCHOd", "OMI L3 daily Formaldehyde "
-                                            "(HCHO) total column -- Weighted Mean Global 0.1deg Lat/Lon Grid",
+    module = harp_ingestion_register_module("OMI_L3_OMHCHOd", "OMI", "AURA_OMI", "OMHCHOd", "OMI L3 daily HCHO "
+                                            "total column on a global 0.1x0.1 degree grid",
                                             ingestion_init_omhcho, ingestion_done);
 
     /* OMI_L3_OMHCHOd product */
@@ -1061,8 +1061,8 @@ static void register_omno2d_product(void)
     const char *path;
 
     module = harp_ingestion_register_module("OMI_L3_OMNO2d", "OMI", "AURA_OMI", "OMNO2d", "OMI L3 daily NO2 "
-                                            "tropospheric, stratospheric and total columns MINDS on a global "
-                                            "0.25x0.25 degree grid", ingestion_init_omno2, ingestion_done);
+                                            "cloud-screened total and tropospheric column on a global 0.25x0.25 "
+                                            "degree grid", ingestion_init_omno2, ingestion_done);
 
     harp_ingestion_register_option(module, "no2", "whether to ingested the unfiltered NO2 (default) or cloud screened "
                                    "NO2 (no2=cloud_screened) data", 1, no2_filter_options);
