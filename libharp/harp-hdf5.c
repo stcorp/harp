@@ -1830,9 +1830,24 @@ static int write_variable(hid_t group_id, const char *name, harp_variable *varia
 
         if (set_compression(dcpl_id, variable) != 0)
         {
+            harp_set_error(HARP_ERROR_HDF5, NULL);
             H5Pclose(dcpl_id);
             H5Sclose(space_id);
             return -1;
+        }
+
+        if (variable->data_type == harp_type_float || variable->data_type == harp_type_double)
+        {
+            double nan = harp_nan();
+
+            /* set fill value to NaN */
+            if (H5Pset_fill_value(dcpl_id, H5T_NATIVE_DOUBLE, &nan) != 0)
+            {
+                harp_set_error(HARP_ERROR_HDF5, NULL);
+                H5Pclose(dcpl_id);
+                H5Sclose(space_id);
+                return -1;
+            }
         }
 
         dataset_id = H5Dcreate(group_id, name, get_hdf5_type(variable->data_type), space_id, dcpl_id);

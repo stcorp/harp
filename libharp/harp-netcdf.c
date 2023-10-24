@@ -1192,6 +1192,24 @@ static int write_variable_definition(int ncid, const harp_variable *variable, ne
         }
     }
 
+    if (variable->data_type == harp_type_float || variable->data_type == harp_type_double)
+    {
+        harp_scalar fill_value;
+
+        if (variable->data_type == harp_type_float)
+        {
+            fill_value.float_data = harp_nan();
+        }
+        else
+        {
+            fill_value.double_data = harp_nan();
+        }
+        if (write_numeric_attribute(ncid, *varid, "_FillValue", variable->data_type, fill_value) != 0)
+        {
+            return -1;
+        }
+    }
+
     if (variable->num_enum_values > 0 && variable->data_type == harp_type_int8)
     {
         char *attribute_value;
