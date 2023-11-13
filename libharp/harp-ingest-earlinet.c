@@ -358,6 +358,7 @@ static int get_dimensions_and_availability(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
+    coda_cursor_goto_parent(&cursor);
 
     if (coda_cursor_get_record_field_index_from_name(&cursor, "backscatter", &index) == 0)
     {
