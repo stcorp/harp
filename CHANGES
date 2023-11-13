@@ -1,3 +1,6 @@
+1.20.2 2023-11-13
+~~~~~~~~~~~~~~~~~
+
 * Fill values of floating point types are now explicitly set to NaN when
   exporting to a netcdf or hdf5 file.
 
