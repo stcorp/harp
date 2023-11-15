@@ -22,9 +22,9 @@
   - GEOMS FTIR: added support for C2H3NO5/PAN and C2H4, added support for
     template V3.
   - GEOMS TCCON: added support for template V6.
-  - S5P L2 ALH: add support for revised surface_albedo variable and added
+  - S5P L2 ALH: added support for revised surface_albedo variable and added
     surface_albedo_uncertainty.
-  - S5P L2 O3: fix custom V1 QA filter for NRTI products
+  - S5P L2 O3: fixed custom V1 QA filter for NRTI products
   - S5P PAL L2: fixed memory issue when reading aerosol_optical_depth_validity
     of AER_OT product.
 
@@ -43,7 +43,7 @@
 * Reintroduced propagation of *_uncertainty_random variables when performing
   spatial binning with area weighted averaging.
 
-* Allow regridding using a multi-dimensional source axis-variable as input.
+* Allowed regridding using a multi-dimensional source axis-variable as input.
   e.g. convert from an 'altitude {latitude,longitude,vertical}' grid to
   a fixed 'altitude {vertical}` grid.
 
@@ -62,7 +62,7 @@
 1.18 2023-06-08
 ~~~~~~~~~~~~~~~
 
-* Rename all uses of 'water vapour' to 'water vapor'.
+* Renamed all uses of 'water vapour' to 'water vapor'.
 
 * Added =| bitfield operater to allow filtering for the case where only some
   bits within the mask are set.
@@ -110,7 +110,7 @@
 * Improved algorithm to calculate center point from latitude/longitude bounds
   polygon.
 
-* Add derivation of time dependent from time indepent for datetime variables.
+* Added derivation of time dependent from time indepent for datetime variables.
 
 * Updates to product ingestions:
   - GEOMS PANDORA: added systematic/random uncertainty for effective
