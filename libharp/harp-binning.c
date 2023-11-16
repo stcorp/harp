@@ -2685,7 +2685,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                     {
                         variable->data.double_data[i] = nan_value;
                     }
-                    else if (bintype[k] == binning_average)
+                    else if (bintype[k] == binning_average || bintype[k] == binning_uncertainty)
                     {
                         /* divide by the sum of the weights */
                         variable->data.double_data[i] /= weight[i];

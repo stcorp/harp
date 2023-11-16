@@ -1,3 +1,5 @@
+* Fixed incorrect weight division for random uncertainties in spatial binning.
+
 1.20.2 2023-11-13
 ~~~~~~~~~~~~~~~~~
 
