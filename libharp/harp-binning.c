@@ -2588,14 +2588,16 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                 for (l = 0; l < num_latlon_index[i]; l++)
                 {
                     long target_index = index_offset + latlon_cell_index[cumsum_index];
+                    double multiplication_factor = 1;
                     double sample_weight = 1;
 
                     if (area_binning)
                     {
                         sample_weight = latlon_weight[cumsum_index];
+                        multiplication_factor = sample_weight;
                         if (bintype[k] == binning_uncertainty)
                         {
-                            sample_weight *= sample_weight;
+                            multiplication_factor *= sample_weight;
                         }
                     }
                     if (bintype[k] == binning_angle)
@@ -2607,9 +2609,9 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                             {
                                 weight[(target_index * num_sub_elements + j) / 2] += sample_weight;
                                 new_variable->data.double_data[target_index * num_sub_elements + j] +=
-                                    sample_weight * variable->data.double_data[i * num_sub_elements + j];
+                                    multiplication_factor * variable->data.double_data[i * num_sub_elements + j];
                                 new_variable->data.double_data[target_index * num_sub_elements + j + 1] +=
-                                    sample_weight * variable->data.double_data[i * num_sub_elements + j + 1];
+                                    multiplication_factor * variable->data.double_data[i * num_sub_elements + j + 1];
                             }
                         }
                     }
@@ -2621,7 +2623,7 @@ LIBHARP_API int harp_product_bin_spatial(harp_product *product, long num_time_bi
                             {
                                 weight[target_index * num_sub_elements + j] += sample_weight;
                                 new_variable->data.double_data[target_index * num_sub_elements + j] +=
-                                    sample_weight * variable->data.double_data[i * num_sub_elements + j];
+                                    multiplication_factor * variable->data.double_data[i * num_sub_elements + j];
                             }
                             else
                             {
