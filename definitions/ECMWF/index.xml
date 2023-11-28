@@ -7,8 +7,8 @@
       <cd:Description>The format definition for this product is taken from the GRIB file itself.</cd:Description>
       <cd:DetectionRule>
         <!-- GRIB1/GRIB2: centre 98 -> ECMWF -->
-        <!-- GRIB2: current supported master table versions are 5, 27-29 -->
-        <cd:MatchExpression><![CDATA[all(/, (exists(./grib1) && int(./grib1/centre) == 98) || (exists(./grib2) && int(./grib2/centre) == 98 && (int(./grib2/masterTablesVersion) == 5 || (int(./grib2/masterTablesVersion) >= 27 && int(./grib2/masterTablesVersion) <= 30))))]]></cd:MatchExpression>
+        <!-- GRIB2: current supported master table versions are 5, 27-31 -->
+        <cd:MatchExpression><![CDATA[all(/, (exists(./grib1) && int(./grib1/centre) == 98) || (exists(./grib2) && int(./grib2/centre) == 98 && (int(./grib2/masterTablesVersion) == 5 || (int(./grib2/masterTablesVersion) >= 27 && int(./grib2/masterTablesVersion) <= 31))))]]></cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>

@@ -1,5 +1,8 @@
 * Fixed incorrect weight division for random uncertainties in spatial binning.
 
+* Updates to product ingestions:
+  - ECMWF GRIB: added support for new masterTablesVersion=31 data
+
 1.20.2 2023-11-13
 ~~~~~~~~~~~~~~~~~
 
