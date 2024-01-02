@@ -2584,7 +2584,7 @@ static void register_bro_product(void)
     /* BrO_column_number_density */
     description = "vertical column of bromine monoxide";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "mol/m^2", NULL,
                                                    read_product_brominemonoxide_total_vertical_column);
     path = "/PRODUCT/brominemonoxide_total_vertical_column";
@@ -2594,7 +2594,7 @@ static void register_bro_product(void)
     description = "random error of vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_uncertainty_random",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_product_brominemonoxide_total_vertical_column_precision);
     path = "/PRODUCT/brominemonoxide_total_vertical_column_precision";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -2603,9 +2603,10 @@ static void register_bro_product(void)
     description = "systematic error of vertical column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
-                                                   "BrO_column_number_density_uncertainty_systematic", harp_type_double,
+                                                   "BrO_column_number_density_uncertainty_systematic", harp_type_float,
                                                    1, dimension_type, NULL, description, "mol/m^2", NULL,
                                                    read_results_brominemonoxide_total_vertical_column_trueness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/brominemonoxide_total_vertical_column_trueness";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* BrO_column_number_density_validity */
@@ -2620,7 +2621,7 @@ static void register_bro_product(void)
     description = "geometric air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "mol/m^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_results_brominemonoxide_geometric_air_mass_factor);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/brominemonoxide_geometric_air_mass_factor[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);

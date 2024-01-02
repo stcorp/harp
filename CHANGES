@@ -2,6 +2,8 @@
 
 * Updates to product ingestions:
   - ECMWF GRIB: added general support for new masterTablesVersion numbers
+  - S5P PAL L2 BRo: fixed memory issue with reading total column and
+    uncertainty variables
 
 1.20.2 2023-11-13
 ~~~~~~~~~~~~~~~~~
