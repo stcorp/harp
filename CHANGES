@@ -1,5 +1,7 @@
 * Fixed incorrect weight division for random uncertainties in spatial binning.
 
+* Added check for unit equality when appending variables.
+
 * Updates to product ingestions:
   - ECMWF GRIB: added general support for new masterTablesVersion numbers
   - S5P PAL L2 BRO: fixed memory issue with reading total column and
