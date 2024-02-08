@@ -544,8 +544,7 @@ int harp_ingestion_module_cloudnet_init(void)
     description = "cloud classification type";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_type", harp_type_int8, 2,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_cloud_type);
+                                                   dimension_type, NULL, description, NULL, NULL, read_cloud_type);
     harp_variable_definition_set_enumeration_values(variable_definition, 11, cloud_type_values);
     path = "/target_classification";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -554,7 +553,7 @@ int harp_ingestion_module_cloudnet_init(void)
     description = "detection status";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_type_validity", harp_type_int8, 2,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   dimension_type, NULL, description, NULL, NULL,
                                                    read_detection_status);
     path = "/detection_status";
     description = "radar and lidar detection status";
