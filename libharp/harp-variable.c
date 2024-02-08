@@ -1566,7 +1566,7 @@ LIBHARP_API int harp_variable_append(harp_variable *variable, const harp_variabl
     }
     if (variable->unit != NULL || other_variable->unit != NULL)
     {
-        if (variable->unit == NULL || other_variable->data_type == NULL ||
+        if (variable->unit == NULL || other_variable->unit == NULL ||
             harp_unit_compare(variable->unit, other_variable->unit) != 0)
         {
             harp_set_error(HARP_ERROR_INVALID_ARGUMENT, "variables don't have the same unit (%s)", variable->name);
