@@ -3101,11 +3101,19 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p><a class="reference internal" href="S5P_L2_CLOUD_CAL.html"><span class="doc">S5P_L2_CLOUD_CAL</span></a></p></td>
-<td><p>model=CAL or model unset</p></td>
+<td><p>model=CAL or model unset, band=UVVIS or band unset</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="S5P_L2_CLOUD_CRB.html"><span class="doc">S5P_L2_CLOUD_CRB</span></a></p></td>
-<td><p>model=CRB</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="S5P_L2_CLOUD_CAL_NIR.html"><span class="doc">S5P_L2_CLOUD_CAL_NIR</span></a></p></td>
+<td><p>model=CAL or model unset, band=NIR</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="S5P_L2_CLOUD_CRB.html"><span class="doc">S5P_L2_CLOUD_CRB</span></a></p></td>
+<td><p>model=CRB, band=UVVIS or band unset</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="S5P_L2_CLOUD_CRB_NIR.html"><span class="doc">S5P_L2_CLOUD_CRB_NIR</span></a></p></td>
+<td><p>model=CRB, band=NIR</p></td>
 <td></td>
 </tr>
 </tbody>
@@ -3127,6 +3135,10 @@
 <tr class="row-even"><td><p>model</p></td>
 <td><p>CAL, CRB</p></td>
 <td><p>whether to retrieve the cloud properties from the CAL model or the CRB model; option values are ‘CAL’ (default) and ‘CRB’</p></td>
+</tr>
+<tr class="row-odd"><td><p>band</p></td>
+<td><p>UVVIS, NIR</p></td>
+<td><p>whether to retrieve the cloud properties on the spatial grid of the TROPOMI UVVIS bands (default) or the spatial grid of the NIR band</p></td>
 </tr>
 </tbody>
 </table>

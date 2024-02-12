@@ -741,21 +741,21 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         info->use_aer_lh_surface_albedo_772 = 1;
     }
 
-    if (init_cursors(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
-    if (init_dimensions(info) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
     *definition = *module->product_definition;
     if (strcmp(module->name, "S5P_L2_CLOUD") == 0)
     {
+        int use_nir = 0;
+        int use_crb = 0;
+
+        if (harp_ingestion_options_has_option(options, "band"))
+        {
+            if (harp_ingestion_options_get_option(options, "band", &option_value) != 0)
+            {
+                ingestion_done(info);
+                return -1;
+            }
+            use_nir = strcmp(option_value, "NIR") == 0;
+        }
         if (harp_ingestion_options_has_option(options, "model"))
         {
             if (harp_ingestion_options_get_option(options, "model", &option_value) != 0)
@@ -763,11 +763,29 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
                 ingestion_done(info);
                 return -1;
             }
-            if (strcmp(option_value, "CRB") == 0)
+            use_crb = strcmp(option_value, "CRB") == 0;
+        }
+        if (use_crb)
+        {
+            if (use_nir)
             {
-                /* use the second product definition, which is the one for the CRB model */
-                *definition = module->product_definition[1];
+                *definition = module->product_definition[3];
             }
+            else
+            {
+                *definition = module->product_definition[2];
+            }
+        }
+        else if (use_nir)
+        {
+            *definition = module->product_definition[1];
+        }
+        if (use_nir && info->processor_version < 20103)
+        {
+            /* NIR variables are only available with processor version >= 02.01.03 */
+            /* return an empty product if the nir variables are not available */
+            *user_data = info;
+            return 0;
         }
     }
     if (strcmp(module->name, "S5P_L2_NO2") == 0)
@@ -780,7 +798,8 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             /* return an empty product if the processor version is too old to produce O22CLD */
             if (info->processor_version < 20200)
             {
-                info->num_times = 0;
+                *user_data = info;
+                return 0;
             }
         }
     }
@@ -800,7 +819,8 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             {
                 /* 335/367 is only available with processor version >= 02.04.00 */
                 /* return an empty product if the wavelength pair is not available */
-                info->num_times = 0;
+                *user_data = info;
+                return 0;
             }
 
         }
@@ -814,6 +834,18 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             assert(strcmp(option_value, "340_380nm") == 0);
             info->wavelength_ratio = 340;
         }
+    }
+
+    if (init_cursors(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+
+    if (init_dimensions(info) != 0)
+    {
+        ingestion_done(info);
+        return -1;
     }
 
     *user_data = info;
@@ -1220,11 +1252,27 @@ static int read_geolocation_latitude_bounds(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels * info->num_corners, data);
 }
 
+static int read_geolocation_latitude_bounds_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "latitude_bounds_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_corners, data);
+}
+
 static int read_geolocation_longitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->geolocation_cursor, "longitude_bounds", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_corners, data);
+}
+
+static int read_geolocation_longitude_bounds_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "longitude_bounds_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels * info->num_corners, data);
 }
 
@@ -1279,11 +1327,27 @@ static int read_geolocation_solar_azimuth_angle(void *user_data, harp_array data
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_geolocation_solar_azimuth_angle_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "solar_azimuth_angle_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_geolocation_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->geolocation_cursor, "solar_zenith_angle", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_geolocation_solar_zenith_angle_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "solar_zenith_angle_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1295,11 +1359,27 @@ static int read_geolocation_viewing_azimuth_angle(void *user_data, harp_array da
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_geolocation_viewing_azimuth_angle_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "viewing_azimuth_angle_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->geolocation_cursor, "viewing_zenith_angle", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_geolocation_viewing_zenith_angle_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "viewing_zenith_angle_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1737,6 +1817,14 @@ static int read_input_surface_altitude(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_surface_altitude_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "surface_altitude_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_surface_altitude_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1750,6 +1838,14 @@ static int read_input_surface_pressure(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->input_data_cursor, "surface_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_surface_pressure_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "surface_pressure_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2361,11 +2457,27 @@ static int read_product_latitude(void *user_data, harp_array data)
                         data);
 }
 
+static int read_product_latitude_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "latitude_nir", harp_type_float, info->num_scanlines * info->num_pixels,
+                        data);
+}
+
 static int read_product_longitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->product_cursor, "longitude", harp_type_float, info->num_scanlines * info->num_pixels,
+                        data);
+}
+
+static int read_product_longitude_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "longitude_nir", harp_type_float, info->num_scanlines * info->num_pixels,
                         data);
 }
 
@@ -2673,11 +2785,27 @@ static int read_results_cloud_albedo_crb(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_cloud_albedo_crb_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_albedo_crb_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_cloud_albedo_crb_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_albedo_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_albedo_crb_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_albedo_crb_precision_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2689,6 +2817,14 @@ static int read_results_cloud_fraction_apriori(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_cloud_fraction_apriori_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_apriori_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_cloud_fraction_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2697,11 +2833,43 @@ static int read_results_cloud_fraction_crb(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_cloud_fraction_crb_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_cloud_fraction_crb_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_fraction_crb_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb_precision_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_fraction_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_fraction_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_precision_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2726,11 +2894,43 @@ static int read_results_cloud_height_crb(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_cloud_height_crb_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_height_crb_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_cloud_height_crb_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_height_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_height_crb_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_height_crb_precision_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_optical_thickness_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_optical_thickness_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_optical_thickness_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_optical_thickness_precision_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2755,6 +2955,22 @@ static int read_results_cloud_pressure_crb_precision(void *user_data, harp_array
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_pressure_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_top_height_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_top_height_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_top_height_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_top_height_precision_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -3081,11 +3297,27 @@ static int read_results_surface_albedo_fitted(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_surface_albedo_fitted_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_fitted_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_surface_albedo_fitted_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "surface_albedo_fitted_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_surface_albedo_fitted_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_fitted_precision_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -3097,11 +3329,27 @@ static int read_results_surface_albedo_fitted_crb(void *user_data, harp_array da
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_surface_albedo_fitted_crb_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_fitted_crb_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_results_surface_albedo_fitted_crb_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "surface_albedo_fitted_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_surface_albedo_fitted_crb_precision_nir(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_fitted_crb_precision_nir", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -4837,6 +5085,11 @@ static int read_snow_ice_type(void *user_data, harp_array data)
     return read_snow_ice_type_from_flag(user_data, "snow_ice_flag", data);
 }
 
+static int read_snow_ice_type_nir(void *user_data, harp_array data)
+{
+    return read_snow_ice_type_from_flag(user_data, "snow_ice_flag_nir", data);
+}
+
 static int read_snow_ice_type_nise(void *user_data, harp_array data)
 {
     return read_snow_ice_type_from_flag(user_data, "snow_ice_flag_nise", data);
@@ -4870,6 +5123,11 @@ static int read_sea_ice_fraction_from_flag(void *user_data, const char *variable
 static int read_sea_ice_fraction(void *user_data, harp_array data)
 {
     return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag", data);
+}
+
+static int read_sea_ice_fraction_nir(void *user_data, harp_array data)
+{
+    return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag_nir", data);
 }
 
 static int read_sea_ice_fraction_nise(void *user_data, harp_array data)
@@ -5079,6 +5337,32 @@ static void register_geolocation_variables(harp_product_definition *product_defi
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void register_geolocation_variables_nir(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    /* latitude */
+    description = "latitude of the ground pixel center (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_float, 1,
+                                                                     dimension_type, NULL, description, "degree_north",
+                                                                     NULL, read_product_latitude_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
+    path = "/PRODUCT/latitude_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude */
+    description = "longitude of the ground pixel center (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float,
+                                                                     1, dimension_type, NULL, description,
+                                                                     "degree_east", NULL, read_product_longitude_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/longitude_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
 static void register_additional_geolocation_variables(harp_product_definition *product_definition)
 {
     const char *path;
@@ -5180,6 +5464,110 @@ static void register_additional_geolocation_variables(harp_product_definition *p
                                                                      read_geolocation_viewing_azimuth_angle);
     harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
     path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
+static void register_additional_geolocation_variables_nir(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    harp_dimension_type bounds_dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    long bounds_dimension[2] = { -1, 4 };
+
+    /* latitude_bounds */
+    description = "latitudes of the ground pixel corners (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds",
+                                                                     harp_type_float, 2, bounds_dimension_type,
+                                                                     bounds_dimension, description, "degree_north",
+                                                                     NULL, read_geolocation_latitude_bounds_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude_bounds */
+    description = "longitudes of the ground pixel corners (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds",
+                                                                     harp_type_float, 2, bounds_dimension_type,
+                                                                     bounds_dimension, description, "degree_east",
+                                                                     NULL, read_geolocation_longitude_bounds_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* sensor_latitude */
+    description = "latitude of the geodetic sub-satellite point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_latitude",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "degree_north", NULL,
+                                                                     read_geolocation_satellite_latitude);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0f, 90.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    description = "the satellite latitude associated with a scanline is repeated for each pixel in the scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* sensor_longitude */
+    description = "longitude of the goedetic sub-satellite point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_longitude",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "degree_east", NULL,
+                                                                     read_geolocation_satellite_longitude);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    description = "the satellite longitude associated with a scanline is repeated for each pixel in the scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* sensor_altitude */
+    description = "altitude of the satellite with respect to the geodetic sub-satellite point (WGS84)";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "m", NULL,
+                                                                     read_geolocation_satellite_altitude);
+    harp_variable_definition_set_valid_range_float(variable_definition, 700000.0f, 900000.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    description = "the satellite altitude associated with a scanline is repeated for each pixel in the scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* solar_zenith_angle */
+    description = "zenith angle of the Sun at the ground pixel location (WGS84); angle measured away from the vertical";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "degree", NULL,
+                                                                     read_geolocation_solar_zenith_angle_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_azimuth_angle */
+    description = "azimuth angle of the Sun at the ground pixel location (WGS84); angle measured East-of-North";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "degree", NULL,
+                                                                     read_geolocation_solar_azimuth_angle_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* sensor_zenith_angle */
+    description = "zenith angle of the satellite at the ground pixel location (WGS84); angle measured away from the "
+        "vertical";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_zenith_angle",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "degree", NULL,
+                                                                     read_geolocation_viewing_zenith_angle_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* sensor_azimuth_angle */
+    description = "azimuth angle of the satellite at the ground pixel location (WGS84); angle measured East-of-North";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_azimuth_angle",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "degree", NULL,
+                                                                     read_geolocation_viewing_azimuth_angle_nir);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle_nir[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -5298,11 +5686,11 @@ static void register_surface_variables(harp_product_definition *product_definiti
     if (include_surface_pressure)
     {
         description = "surface pressure";
-        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
                                                        dimension_type, NULL, description, "Pa", NULL,
                                                        read_input_surface_pressure);
+        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
     }
 
@@ -5323,22 +5711,48 @@ static void register_surface_variables(harp_product_definition *product_definiti
         }
         /* surface_meridional_wind_velocity */
         description = "northward wind";
-        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_meridional_wind_velocity",
                                                        harp_type_float, 1, dimension_type, NULL, description, "m/s",
                                                        include_func, read_input_northward_wind);
+        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/northward_wind[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, processor_description, path, NULL);
 
         /* surface_zonal_wind_velocity */
         description = "eastward wind";
-        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_zonal_wind_velocity",
                                                        harp_type_float, 1, dimension_type, NULL, description, "m/s",
                                                        include_func, read_input_eastward_wind);
+        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, processor_description, path, NULL);
     }
+}
+
+static void register_surface_variables_nir(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    /* surface_altitude */
+    description = "surface altitude";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_input_surface_altitude_nir);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_pressure */
+    description = "surface pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_surface_pressure_nir);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_snow_ice_flag_variables(harp_product_definition *product_definition, int nise_extension)
@@ -5380,6 +5794,36 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
         harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_sea_ice_fraction_function);
+    description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+}
+
+static void register_snow_ice_flag_variables_nir(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag_nir[]";
+
+    /* snow_ice_type */
+    description = "surface snow/ice type";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_snow_ice_type_nir);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, snow_ice_type_values);
+    description = "0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), "
+        "other values map to -1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* sea_ice_fraction */
+    description = "sea-ice concentration (as a fraction)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_sea_ice_fraction_nir);
     description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
@@ -7825,6 +8269,104 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
+static void register_cloud_cal_nir_variables(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud]);
+    register_geolocation_variables_nir(product_definition);
+    register_additional_geolocation_variables_nir(product_definition);
+
+    /* cloud_fraction */
+    description = "retrieved fraction of horizontal area occupied by clouds using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_uncertainty */
+    description = "uncertainty of the retrieved fraction of horizontal area occupied by clouds using the OCRA/ROCINN "
+        "CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_apriori */
+    description = "effective radiometric cloud fraction a priori";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_apriori", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_apriori_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_apriori_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_top_height */
+    description = "retrieved altitude of the cloud top using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_results_cloud_top_height_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_height_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_top_height_uncertainty */
+    description = "uncertainty of the altitude of the cloud top using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_results_cloud_top_height_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_height_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_optical_depth */
+    description = "retrieved cloud optical depth using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_results_cloud_optical_thickness_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_optical_thickness_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_optical_depth_uncertainty */
+    description = "uncertainty of the retrieved cloud optical depth using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
+                                                   read_results_cloud_optical_thickness_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_optical_thickness_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo fitted using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_surface_albedo_fitted_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo_uncertainty */
+    description = "uncertainty of the surface albedo fitted using the OCRA/ROCINN CAL model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_surface_albedo_fitted_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_surface_variables_nir(product_definition);
+    register_snow_ice_flag_variables_nir(product_definition);
+}
+
 static void register_cloud_crb_variables(harp_product_definition *product_definition)
 {
     const char *path;
@@ -7961,9 +8503,108 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     register_snow_ice_flag_variables(product_definition, 1);
 }
 
+static void register_cloud_crb_nir_variables(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud]);
+    register_geolocation_variables_nir(product_definition);
+    register_additional_geolocation_variables_nir(product_definition);
+
+    /* cloud_fraction */
+    description = "retrieved effective radiometric cloud fraction using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_crb_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_uncertainty */
+    description = "uncertainty of the retrieved effective radiometric cloud fraction using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_crb_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_fraction_apriori */
+    description = "effective radiometric cloud fraction a priori";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_apriori", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_fraction_apriori_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_apriori_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_height */
+    description = "retrieved altitude at the level of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_results_cloud_height_crb_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_height_uncertainty */
+    description = "error of the retrieved altitude at the level of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_results_cloud_height_crb_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_albedo */
+    description = "albedo of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_albedo_crb_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_albedo_uncertainty */
+    description = "uncertainty of the albedo of cloud using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_albedo_crb_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo fitted using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_surface_albedo_fitted_crb_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo_uncertainty */
+    description = "uncertainty of the surface albedo fitted using the OCRA/ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_surface_albedo_fitted_crb_precision_nir);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb_precision_nir[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_surface_variables_nir(product_definition);
+    register_snow_ice_flag_variables_nir(product_definition);
+}
+
 static void register_cloud_product(void)
 {
     const char *model_options[] = { "CAL", "CRB" };
+    const char *band_options[] = { "UVVIS", "NIR" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
 
@@ -7973,13 +8614,25 @@ static void register_cloud_product(void)
     harp_ingestion_register_option(module, "model", "whether to retrieve the cloud properties from the CAL model or "
                                    "the CRB model; option values are 'CAL' (default) and 'CRB'", 2, model_options);
 
+    harp_ingestion_register_option(module, "band", "whether to retrieve the cloud properties on the spatial grid of "
+                                   "the TROPOMI UVVIS bands (default) or the spatial grid of the NIR band", 2,
+                                   band_options);
+
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CLOUD_CAL", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "model=CAL or model unset");
+    harp_product_definition_add_mapping(product_definition, NULL, "model=CAL or model unset, band=UVVIS or band unset");
     register_cloud_cal_variables(product_definition);
 
+    product_definition = harp_ingestion_register_product(module, "S5P_L2_CLOUD_CAL_NIR", NULL, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "model=CAL or model unset, band=NIR");
+    register_cloud_cal_nir_variables(product_definition);
+
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CLOUD_CRB", NULL, read_dimensions);
-    harp_product_definition_add_mapping(product_definition, NULL, "model=CRB");
+    harp_product_definition_add_mapping(product_definition, NULL, "model=CRB, band=UVVIS or band unset");
     register_cloud_crb_variables(product_definition);
+
+    product_definition = harp_ingestion_register_product(module, "S5P_L2_CLOUD_CRB_NIR", NULL, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "model=CRB, band=NIR");
+    register_cloud_crb_nir_variables(product_definition);
 }
 
 static void register_fresco_product(void)
