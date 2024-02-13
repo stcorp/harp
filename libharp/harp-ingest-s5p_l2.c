@@ -5246,7 +5246,8 @@ static int include_from_020600(void *user_data)
     return ((ingest_info *)user_data)->processor_version >= 20600;
 }
 
-static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims)
+static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims,
+                                    int include_validity)
 {
     const char *path;
     const char *description;
@@ -5300,15 +5301,18 @@ static void register_core_variables(harp_product_definition *product_definition,
                                                    description, NULL, NULL, read_orbit_index);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/@orbit", NULL);
 
-    /* validity */
-    description = "processing quality flag";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int32, 1, dimension_type,
-                                                   NULL, description, NULL, NULL,
-                                                   read_results_processing_quality_flags);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
-    description = "the uint32 data is cast to int32";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    if (include_validity)
+    {
+        /* validity */
+        description = "processing quality flag";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int32, 1,
+                                                       dimension_type, NULL, description, NULL, NULL,
+                                                       read_results_processing_quality_flags);
+        path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_quality_flags[]";
+        description = "the uint32 data is cast to int32";
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    }
 }
 
 static void register_geolocation_variables(harp_product_definition *product_definition)
@@ -5844,7 +5848,7 @@ static void register_aer_ai_product(void)
     harp_ingestion_register_option(module, "wavelength_ratio", description, 3, wavelength_ratio_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_AI", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_ai]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_ai], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, 1, 1);
@@ -5908,7 +5912,7 @@ static void register_aer_lh_product(void)
     harp_ingestion_register_option(module, "surface_albedo", description, 1, surface_albedo_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_LH", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, 1, 1);
@@ -6050,7 +6054,7 @@ static void register_ch4_product(void)
                                    "bias corrected CH4 column vmr (ch4=bias_corrected)", 1, ch4_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CH4", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_ch4]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_ch4], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -6235,7 +6239,7 @@ static void register_co_product(void)
                                    avk_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CO", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_co]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_co], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -6402,7 +6406,7 @@ static void register_hcho_product(void)
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_HCHO", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_hcho]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_hcho], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -6606,7 +6610,7 @@ static void register_o3_product(void)
                                    "filtering (see PRF) instead of using the qa_value variable", 1, qa_filter_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O3", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -7140,7 +7144,7 @@ static void register_o3_pr_product(void)
                                             "Sentinel-5P L2 O3 profile", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O3_PR", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3_pr]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_o3_pr], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
@@ -7394,7 +7398,7 @@ static void register_o22cloud_subproduct(harp_ingestion_module *module)
     product_definition = harp_ingestion_register_product(module, "S5P_L2_O22CLD", NULL, read_dimensions);
     description = "If processor version < 02.02.00 then an empty product is returned.";
     harp_product_definition_add_mapping(product_definition, description, "data=o22cld");
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -7504,7 +7508,7 @@ static void register_no2_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_NO2", NULL, read_dimensions);
     harp_product_definition_add_mapping(product_definition, NULL, "data unset");
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_no2], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -7786,7 +7790,7 @@ static void register_so2_product(void)
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_SO2", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_so2]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_so2], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -8095,7 +8099,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -8276,7 +8280,7 @@ static void register_cloud_cal_nir_variables(harp_product_definition *product_de
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud], 0);
     register_geolocation_variables_nir(product_definition);
     register_additional_geolocation_variables_nir(product_definition);
 
@@ -8374,7 +8378,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
@@ -8510,7 +8514,7 @@ static void register_cloud_crb_nir_variables(harp_product_definition *product_de
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
 
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_cloud], 0);
     register_geolocation_variables_nir(product_definition);
     register_additional_geolocation_variables_nir(product_definition);
 
@@ -8649,7 +8653,7 @@ static void register_fresco_product(void)
                                             ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_FRESCO", NULL, read_dimensions);
-    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_fresco]);
+    register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_fresco], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
