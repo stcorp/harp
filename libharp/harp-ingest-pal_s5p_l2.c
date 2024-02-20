@@ -3236,46 +3236,46 @@ static void register_tcwv_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* water_vapor_column_number_density */
+    /* water_vapor_column_density */
     description = "total vertical column of water vapor";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_number_density",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "kg/m^2",
                                                    NULL, read_product_total_column_water_vapor);
     path = "/PRODUCT/total_column_water_vapor";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* water_vapor_column_number_density_uncertainty */
+    /* water_vapor_column_density_uncertainty */
     description = "precision of the total vertical column of water vapor";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_number_density_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
+        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "kg/m^2",
                                                    NULL, read_product_total_column_water_vapor_precision);
     path = "/PRODUCT/total_column_water_vapor_precision";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* water_vapor_column_number_density_validity */
+    /* water_vapor_column_density_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_number_density_validity",
+        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_density_validity",
                                                    harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 
-    /* water_vapor_column_number_density_amf */
+    /* water_vapor_column_density_amf */
     description = "water vapor total column air mass factor";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_number_density_amf",
+        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_density_amf",
                                                    harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_results_air_mass_factor_total);
 
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/air_mass_factor_total[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* water_vapor_column_number_density_avk */
+    /* water_vapor_column_density_avk */
     description = "total column averaging kernel";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_number_density_avk",
+        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_density_avk",
                                                    harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_results_averaging_kernel);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
