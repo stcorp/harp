@@ -46,6 +46,7 @@ typedef enum pal_s5p_product_type_enum
     pal_s5p_type_aer_ot,
     pal_s5p_type_bro,
     pal_s5p_type_chocho,
+    pal_s5p_type_oclo,
     pal_s5p_type_sif,
     pal_s5p_type_so2cbr,
     pal_s5p_type_tcwv
@@ -72,6 +73,7 @@ static const char *pal_s5p_dimension_name[PAL_S5P_NUM_PRODUCT_TYPES][PAL_S5P_NUM
     {"time", "scanline", "ground_pixel", "corner", "wavelength", NULL}, /* pal_s5p_type_aer_ot */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_bro    */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_chocho */
+    {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_oclo */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_sif    */
     {"time", "scanline", "ground_pixel", "corner", NULL, "layer"},      /* pal_s5p_type_so2cbr */
     {"time", "scanline", "ground_pixel", "corner", NULL, "layer"}       /* pal_s5p_type_tcwv   */
@@ -347,6 +349,8 @@ static const char *get_product_type_name(pal_s5p_product_type product_type)
             return "L2__AER_OT";
         case pal_s5p_type_chocho:
             return "L2__CHOCHO";
+        case pal_s5p_type_oclo:
+            return "L2__OCLO__";
         case pal_s5p_type_so2cbr:
             return "L2__SO2CBR";
         case pal_s5p_type_sif:
@@ -1278,6 +1282,22 @@ static int read_product_single_scattering_albedo(void *user_data, harp_array dat
 
     return read_dataset(info->product_cursor, "single_scattering_albedo", harp_type_float,
                         info->num_scanlines * info->num_pixels * info->num_wavelengths, data);
+}
+
+static int read_product_chlorinedioxide_slant_column_density(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "chlorinedioxide_slant_column_density", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_chlorinedioxide_slant_column_density_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "chlorinedioxide_slant_column_density_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_product_total_column_water_vapor(void *user_data, harp_array data)
@@ -2726,6 +2746,70 @@ static void register_chocho_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 }
 
+static void register_oclo_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    module = harp_ingestion_register_module("S5P_PAL_L2_OCLO", "Sentinel-5P PAL", "S5P_PAL", "L2__OCLO__",
+                                            "Sentinel-5P L2 Chlorine Dioxide (OClO) product", ingestion_init,
+                                            ingestion_done);
+
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_OCLO", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 1);
+
+    /* cloud_fraction */
+    description = "Retrieved effective radiometric cloud fraction derived in NO2 fitting window";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_cloud_fraction_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_crb";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_pressure */
+    description = "cloud pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_input_cloud_pressure_crb);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* OClO_slant_column_number_density */
+    description = "OClO slant column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   "molecules/cm2", NULL,
+                                                   read_product_chlorinedioxide_slant_column_density);
+    path = "/PRODUCT/chlorinedioxide_slant_column_density";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* OClO_slant_column_number_density_uncertainty */
+    description = "OClO slant column density precision";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   "molecules/cm2", NULL,
+                                                   read_product_chlorinedioxide_slant_column_density_precision);
+    path = "/PRODUCT/chlorinedioxide_slant_column_density_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* OClO_slant_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+}
+
 static void register_sif_product(void)
 {
     const char *sif_options[] = { "735" };
@@ -3296,6 +3380,7 @@ int harp_ingestion_module_pal_s5p_l2_init(void)
     register_aer_ot_product();
     register_bro_product();
     register_chocho_product();
+    register_oclo_product();
     register_sif_product();
     register_so2cbr_product();
     register_tcwv_product();

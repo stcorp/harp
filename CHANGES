@@ -5,6 +5,7 @@
 * Updates to product ingestions:
   - ECMWF GRIB: added general support for new masterTablesVersion numbers
   - S5P L2 CLOUD: added support for nir-band spatial grid data
+  - S5P PAL L2: added support for OClO
   - S5P PAL L2 BRO: fixed memory issue with reading total column and
     uncertainty variables
   - S5P PAL L2 TCWV: fixed wrong quantity for density variables

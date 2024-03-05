@@ -535,6 +535,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_PAL_L2_AER_OT.html \
 	doc/html/ingestions/S5P_PAL_L2_BRO.html \
 	doc/html/ingestions/S5P_PAL_L2_CHOCHO.html \
+	doc/html/ingestions/S5P_PAL_L2_OCLO.html \
 	doc/html/ingestions/S5P_PAL_L2_SIF.html \
 	doc/html/ingestions/S5P_PAL_L2_SO2CBR.html \
 	doc/html/ingestions/S5P_PAL_L2_TCWV.html \
@@ -1667,6 +1668,8 @@ doc/html/ingestions/S5P_PAL_L2_AER_OT.html:
 doc/html/ingestions/S5P_PAL_L2_BRO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_PAL_L2_CHOCHO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_PAL_L2_OCLO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_PAL_L2_SIF.html:
 	$(MAKE) harp_doc
