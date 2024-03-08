@@ -1206,6 +1206,14 @@ static int read_product_aerosol_optical_thickness(void *user_data, harp_array da
                         info->num_scanlines * info->num_pixels * info->num_wavelengths, data);
 }
 
+static int read_product_aerosol_optical_thickness_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "aerosol_optical_thickness_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_wavelengths, data);
+}
+
 static int read_product_aerosol_type(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1274,14 +1282,6 @@ static int read_product_qa_value(void *user_data, harp_array data)
     coda_set_option_perform_conversions(1);
 
     return result;
-}
-
-static int read_product_single_scattering_albedo(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->product_cursor, "single_scattering_albedo", harp_type_float,
-                        info->num_scanlines * info->num_pixels * info->num_wavelengths, data);
 }
 
 static int read_product_chlorinedioxide_slant_column_density(void *user_data, harp_array data)
@@ -1362,6 +1362,20 @@ static int read_results_water_vapor_profile_apriori(void *user_data, harp_array 
 
     return read_dataset(info->detailed_results_cursor, "water_vapor_profile_apriori", harp_type_float,
                         info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
+static int read_aot_single_scattering_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->processor_version < 20000)
+    {
+        return read_dataset(info->product_cursor, "single_scattering_albedo", harp_type_float,
+                            info->num_scanlines * info->num_pixels * info->num_wavelengths, data);
+    }
+
+    return read_dataset(info->detailed_results_cursor, "single_scattering_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_wavelengths, data);
 }
 
 static int read_sea_ice_fraction_from_flag(void *user_data, const char *variable_name, harp_array data)
@@ -2145,6 +2159,11 @@ static int read_tcwv_pressure_bounds(void *user_data, harp_array data)
     return 0;
 }
 
+static int include_from_020000(void *user_data)
+{
+    return ((ingest_info *)user_data)->processor_version >= 20000;
+}
+
 static int include_so2cbr_apriori_profile(void *user_data)
 {
     return ((ingest_info *)user_data)->so2_column_type == 0;
@@ -2420,6 +2439,16 @@ static void register_aer_ot_product(void)
     path = "/PRODUCT/aerosol_optical_thickness";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* aerosol_optical_depth_uncertainty */
+    description = "precision of the total aerosol optical thickness of the atmospheric column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, include_from_020000,
+                                                   read_product_aerosol_optical_thickness_precision);
+    path = "/PRODUCT/aerosol_optical_thickness_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, NULL);
+
     /* aerosol_optical_depth_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
     variable_definition =
@@ -2434,9 +2463,11 @@ static void register_aer_ot_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "single_scattering_albedo", harp_type_float, 2,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_product_single_scattering_albedo);
+                                                   read_aot_single_scattering_albedo);
     path = "/PRODUCT/single_scattering_albedo";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 02.00.00", path, NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/single_scattering_albedo";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, NULL);
 
     /* aerosol_type */
     description = "selected aerosol type";
@@ -2924,7 +2955,7 @@ static void register_so2cbr_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_intensity_weighted[]";
     harp_variable_definition_add_mapping(variable_definition, "cloud_fraction=radiance", NULL, path, NULL);
 
-    /* cloud_fraction_precission */
+    /* cloud_fraction_precision */
     description = "uncertainty of the cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float, 1,

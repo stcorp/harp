@@ -227,31 +227,37 @@
 <td><p>[]</p></td>
 <td><p>total aerosol optical thickness of the atmospheric column</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_optical_depth_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>precision of the total aerosol optical thickness of the atmospheric column</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td></td>
 <td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>single_scattering_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>single_scattering_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>Single scattering albedo; fraction of the aerosol scattering and absorption, according to the selected aerosol type.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_type</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_type</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>selected aerosol type</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>wavelength</strong></p></td>
+<tr class="row-even"><td><p><strong>wavelength</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>spectral</em>}</p></td>
 <td><p>[nm]</p></td>
 <td><p>wavelength</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -379,13 +385,32 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_optical_thickness</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_optical_depth_validity</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.00.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/aerosol_optical_thickness_precision</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth_validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>single_scattering_albedo</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>single_scattering_albedo</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>processor version &lt; 02.00.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/single_scattering_albedo</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.00.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/single_scattering_albedo</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>aerosol_type</strong></p></td>
 <td><p><em>path</em></p></td>
