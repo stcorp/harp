@@ -3,6 +3,7 @@
 * Added check for unit equality when appending variables.
 
 * Updates to product ingestions:
+  - EarthCARE: updates for new V11 format definition baseline
   - ECMWF GRIB: added general support for new masterTablesVersion numbers
   - S5P L2 CLOUD: added support for nir-band spatial grid data
   - S5P PAL L2: added support for OClO

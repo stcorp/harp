@@ -638,11 +638,11 @@ static int read_aerosol_optical_thickness_error_MSI(void *user_data, harp_array 
                       info->num_time, data);
 }
 
-static int read_aerosol_type(void *user_data, harp_array data)
+static int read_aerosol_dominant_type_ATLID(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "aerosol_type", harp_type_int8, info->num_time, data);
+    return read_array(info->science_data_cursor, "aerosol_dominant_type_ATLID", harp_type_int8, info->num_time, data);
 }
 
 static int read_angstrom_parameter_MSI(void *user_data, harp_array data)
@@ -868,14 +868,6 @@ static int read_cloud_water_path_error(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_array(info->science_data_cursor, "cloud_water_path_error", harp_type_float, info->num_time, data);
-}
-
-static int read_data_quality_flag(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "data_quality_flag", harp_type_int8,
-                      info->num_time * info->num_vertical, data);
 }
 
 static int read_elevation(void *user_data, harp_array data)
@@ -1130,7 +1122,7 @@ static int read_lidar_ratio_355nm(void *user_data, harp_array data)
 
     if (info->atlid_resolution == 1)
     {
-        name = "lidar_ratio_355nm_med_resolution";
+        name = "lidar_ratio_355nm_medium_resolution";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1147,7 +1139,7 @@ static int read_lidar_ratio_355nm_error(void *user_data, harp_array data)
 
     if (info->atlid_resolution == 1)
     {
-        name = "lidar_ratio_355nm_med_resolution_error";
+        name = "lidar_ratio_355nm_medium_resolution_error";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1155,21 +1147,6 @@ static int read_lidar_ratio_355nm_error(void *user_data, harp_array data)
     }
 
     return read_array(info->science_data_cursor, name, harp_type_float, info->num_time * info->num_vertical, data);
-}
-
-static int read_liquid_cloud_water_path(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "liquid_cloud_water_path", harp_type_float, info->num_time, data);
-}
-
-static int read_liquid_cloud_water_path_error(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_array(info->science_data_cursor, "liquid_cloud_water_path_error", harp_type_float, info->num_time,
-                      data);
 }
 
 static int read_liquid_effective_radius(void *user_data, harp_array data)
@@ -1265,6 +1242,21 @@ static int read_liquid_water_content_relative_error(void *user_data, harp_array 
     free(buffer.ptr);
 
     return 0;
+}
+
+static int read_liquid_water_path(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "liquid_water_path", harp_type_float, info->num_time, data);
+}
+
+static int read_liquid_water_path_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->science_data_cursor, "liquid_water_path_error", harp_type_float, info->num_time,
+                      data);
 }
 
 static int read_longitude(void *user_data, harp_array data)
@@ -1409,7 +1401,7 @@ static int read_particle_backscatter_coefficient_355nm(void *user_data, harp_arr
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_backscatter_coefficient_355nm_med_resolution";
+        name = "particle_backscatter_coefficient_355nm_medium_resolution";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1426,7 +1418,7 @@ static int read_particle_backscatter_coefficient_355nm_error(void *user_data, ha
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_backscatter_coefficient_355nm_med_resolution_error";
+        name = "particle_backscatter_coefficient_355nm_medium_resolution_error";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1459,7 +1451,7 @@ static int read_particle_extinction_coefficient_355nm(void *user_data, harp_arra
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_extinction_coefficient_355nm_med_resolution";
+        name = "particle_extinction_coefficient_355nm_medium_resolution";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1476,7 +1468,7 @@ static int read_particle_extinction_coefficient_355nm_error(void *user_data, har
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_extinction_coefficient_355nm_med_resolution_error";
+        name = "particle_extinction_coefficient_355nm_medium_resolution_error";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1493,7 +1485,7 @@ static int read_particle_linear_depolarization_ratio_355nm(void *user_data, harp
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_linear_depolarization_ratio_355nm_med_resolution";
+        name = "particle_linear_depolarization_ratio_355nm_medium_resolution";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1510,7 +1502,7 @@ static int read_particle_linear_depolarization_ratio_355nm_error(void *user_data
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_linear_depolarization_ratio_355nm_med_resolution_error";
+        name = "particle_linear_depolarization_ratio_355nm_medium_resolution_error";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1527,7 +1519,7 @@ static int read_particle_optical_depth_355nm(void *user_data, harp_array data)
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_optical_depth_355nm_med_resolution";
+        name = "particle_optical_depth_355nm_medium_resolution";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1544,7 +1536,7 @@ static int read_particle_optical_depth_355nm_error(void *user_data, harp_array d
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_optical_depth_355nm_med_resolution_error";
+        name = "particle_optical_depth_355nm_medium_resolution_error";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -1757,7 +1749,7 @@ static int read_synergetic_target_classification(void *user_data, harp_array dat
 
     if (info->atlid_resolution == 1)
     {
-        name = "synergetic_target_classification_med_resolution";
+        name = "synergetic_target_classification_medium_resolution";
     }
     else if (info->atlid_resolution == 2)
     {
@@ -2122,7 +2114,7 @@ static void register_ac__tc__2b_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/synergetic_target_classification", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/synergetic_target_classification_med_resolution", NULL);
+                                         "/ScienceData/synergetic_target_classification_medium_resolution", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/synergetic_target_classification_low_resolution", NULL);
 
@@ -2320,8 +2312,9 @@ static void register_am__acd_2b_product(void)
     /* aerosol_type */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "aerosol_type", harp_type_int8,
                                                                      1, dimension_type, NULL, "aerosol type", NULL,
-                                                                     NULL, read_aerosol_type);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_type", NULL);
+                                                                     NULL, read_aerosol_dominant_type_ATLID);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/aerosol_dominant_type_ATLID",
+                                         NULL);
 
     /* validity */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
@@ -2773,7 +2766,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_extinction_coefficient_355nm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_extinction_coefficient_355nm_med_resolution", NULL);
+                                         "/ScienceData/particle_extinction_coefficient_355nm_medium_resolution", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_extinction_coefficient_355nm_low_resolution", NULL);
 
@@ -2787,7 +2780,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_extinction_coefficient_355nm_error", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_extinction_coefficient_355nm_med_resolution_error",
+                                         "/ScienceData/particle_extinction_coefficient_355nm_medium_resolution_error",
                                          NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_extinction_coefficient_355nm_low_resolution_error",
@@ -2801,7 +2794,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_backscatter_coefficient_355nm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_backscatter_coefficient_355nm_med_resolution", NULL);
+                                         "/ScienceData/particle_backscatter_coefficient_355nm_medium_resolution", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_backscatter_coefficient_355nm_low_resolution", NULL);
 
@@ -2815,7 +2808,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_backscatter_coefficient_355nm_error", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_backscatter_coefficient_355nm_med_resolution_error",
+                                         "/ScienceData/particle_backscatter_coefficient_355nm_medium_resolution_error",
                                          NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_backscatter_coefficient_355nm_low_resolution_error",
@@ -2828,7 +2821,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/lidar_ratio_355nm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/lidar_ratio_355nm_med_resolution", NULL);
+                                         "/ScienceData/lidar_ratio_355nm_medium_resolution", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/lidar_ratio_355nm_low_resolution", NULL);
 
@@ -2840,7 +2833,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/lidar_ratio_355nm_error", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/lidar_ratio_355nm_med_resolution_error", NULL);
+                                         "/ScienceData/lidar_ratio_355nm_medium_resolution_error", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/lidar_ratio_355nm_low_resolution_error", NULL);
 
@@ -2854,7 +2847,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_linear_depolarization_ratio_355nm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_med_resolution",
+                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_medium_resolution",
                                          NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_linear_depolarization_ratio_355nm_low_resolution",
@@ -2869,9 +2862,8 @@ static void register_atl_ebd_2a_product(void)
                                                    read_particle_linear_depolarization_ratio_355nm_error);
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_linear_depolarization_ratio_355nm_error", NULL);
-    harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_med_resolution_error",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL, "/ScienceData/particle_"
+                                         "linear_depolarization_ratio_355nm_medium_resolution_error", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_linear_depolarization_ratio_355nm_low_resolution_error",
                                          NULL);
@@ -2884,7 +2876,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_optical_depth_355nm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_optical_depth_355nm_med_resolution", NULL);
+                                         "/ScienceData/particle_optical_depth_355nm_medium_resolution", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_optical_depth_355nm_low_resolution", NULL);
 
@@ -2898,7 +2890,7 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_optical_depth_355nm_error", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_optical_depth_355nm_med_resolution_error", NULL);
+                                         "/ScienceData/particle_optical_depth_355nm_medium_resolution_error", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
                                          "/ScienceData/particle_optical_depth_355nm_low_resolution_error", NULL);
 
@@ -2925,13 +2917,6 @@ static void register_atl_ebd_2a_product(void)
                                                                      "simple classification", NULL, NULL,
                                                                      read_simple_classification);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/simple_classification", NULL);
-
-    /* extinction_coefficient_validity */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "extinction_coefficient_validity", harp_type_int8,
-                                                                     2, dimension_type, NULL, "data_quality_flag", NULL,
-                                                                     NULL, read_data_quality_flag);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/data_quality_flag", NULL);
 
     /* validity */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 2,
@@ -3512,16 +3497,16 @@ static void register_cpr_cld_2a_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "liquid_water_column_density",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      "liquid cloud water path", "kg/m2", NULL,
-                                                                     read_liquid_cloud_water_path);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_cloud_water_path", NULL);
+                                                                     read_liquid_water_path);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_water_path", NULL);
 
     /* liquid_water_column_density_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
                                                                      "liquid_water_column_density_uncertainty",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      "liquid cloud water path error", "kg/m2", NULL,
-                                                                     read_liquid_cloud_water_path_error);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_cloud_water_path_error",
+                                                                     read_liquid_water_path_error);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_water_path_error",
                                          NULL);
 
     /* validity */
