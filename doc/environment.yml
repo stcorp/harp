@@ -2,7 +2,7 @@ name: harpdoc
 channels:
   - conda-forge
 dependencies:
-  - breathe
+  - breathe==4.35.0
   - doxygen
   - sphinx
   - sphinx-autobuild

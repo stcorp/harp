@@ -1,6 +1,11 @@
+1.21 2024-03-14
+~~~~~~~~~~~~~~~
+
 * Fixed incorrect weight division for random uncertainties in spatial binning.
 
 * Added check for unit equality when appending variables.
+
+* Fixed CMake build for locating Python 3.12.
 
 * Updates to product ingestions:
   - EarthCARE: updates for new V11 format definition baseline

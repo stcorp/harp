@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'HARP'
-copyright = u'2015-2023 S[&]T, The Netherlands'
+copyright = u'2015-2024 S[&]T, The Netherlands'
 author = u'S&T'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -61,7 +61,7 @@ author = u'S&T'
 # built documents.
 #
 # The short X.Y version.
-version = '1.20.2'
+version = '1.21'
 # The full version, including alpha/beta/rc tags.
 release = version
 

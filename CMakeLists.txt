@@ -5,7 +5,7 @@ endif()
 
 project(HARP)
 
-set(VERSION 1.20.2)
+set(VERSION 1.21)
 set(HARP_VERSION \"${VERSION}\")
 set(CPACK_PACKAGE_VERSION ${VERSION})
 
