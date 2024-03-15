@@ -287,7 +287,7 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>cloud fraction from VIIRS data in the SWIR channel for the instantaneous field of view</p></td>
+<td><p>cloud fraction from VIIRS data for the instantaneous field of view</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>aerosol_height</strong></p></td>
 <td><p>float</p></td>
@@ -299,19 +299,19 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>aerosol optical thicknesss in the SWIR band</p></td>
+<td><p>aerosol optical thicknesss</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>surface albedo in the SWIR channel</p></td>
+<td><p>surface albedo</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_albedo_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>precision of the surface albedo in the SWIR channel</p></td>
+<td><p>precision of the surface albedo</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -341,6 +341,10 @@
 <tr class="row-even"><td><p>ch4</p></td>
 <td><p>bias_corrected</p></td>
 <td><p>whether to ingest the ‘normal’ CH4 column vmr (default) or the bias corrected CH4 column vmr (ch4=bias_corrected)</p></td>
+</tr>
+<tr class="row-odd"><td><p>band</p></td>
+<td><p>NIR</p></td>
+<td><p>whether to retrieve aerosol/cloud/surface properties of the TROPOMI SWIR band (default) or the NIR band (band=NIR)</p></td>
 </tr>
 </tbody>
 </table>
@@ -545,33 +549,69 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_NIR_IFOV[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_SWIR_IFOV[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>aerosol_height</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>aerosol_height</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>processor version &gt;= 01.00.00</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_altitude[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>processor version &lt; 01.00.00</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_height[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>aerosol_optical_depth</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_NIR[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_SWIR[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_NIR[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_albedo_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo_uncertainty</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_NIR_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR_precision[]</strong></p></td>
 </tr>
 </tbody>

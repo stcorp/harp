@@ -97,6 +97,7 @@ typedef struct ingest_info_struct
     int use_radiance_cloud_fraction;
     int use_aer_lh_surface_albedo_772;
     int use_ch4_bias_corrected;
+    int use_ch4_nir;
     int use_co_corrected;
     int use_co_nd_avk;
     int use_hcho_clear_sky_amf;
@@ -599,6 +600,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_radiance_cloud_fraction = 0;
     info->use_aer_lh_surface_albedo_772 = 0;
     info->use_ch4_bias_corrected = 0;
+    info->use_ch4_nir = 0;
     info->use_co_corrected = 0;
     info->use_co_nd_avk = 0;
     info->use_hcho_clear_sky_amf = 0;
@@ -739,6 +741,13 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     if (harp_ingestion_options_has_option(options, "surface_albedo"))
     {
         info->use_aer_lh_surface_albedo_772 = 1;
+    }
+    if (strcmp(module->name, "S5P_L2_CH4") == 0)
+    {
+        if (harp_ingestion_options_has_option(options, "band"))
+        {
+            info->use_ch4_nir = 1;
+        }
     }
 
     *definition = *module->product_definition;
@@ -1524,14 +1533,6 @@ static int read_input_cloud_fraction(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->input_data_cursor, "cloud_fraction", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_input_cloud_fraction_viirs_swir(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->input_data_cursor, "cloud_fraction_VIIRS_SWIR_IFOV", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2752,15 +2753,6 @@ static int read_results_aerosol_optical_thickness_precision(void *user_data, har
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_results_aerosol_optical_thickness_swir(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "aerosol_optical_thickness_SWIR", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-
 static int read_results_air_mass_factor_stratosphere(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3353,22 +3345,6 @@ static int read_results_surface_albedo_fitted_crb_precision_nir(void *user_data,
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_results_surface_albedo_SWIR(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "surface_albedo_SWIR", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_results_surface_albedo_SWIR_precision(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "surface_albedo_SWIR_precision", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
 static int read_results_water_total_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3541,6 +3517,33 @@ static int read_co_surface_pressure(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_ch4_aerosol_optical_thickness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_ch4_nir)
+    {
+        return read_dataset(info->detailed_results_cursor, "aerosol_optical_thickness_NIR", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    return read_dataset(info->detailed_results_cursor, "aerosol_optical_thickness_SWIR", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+
+static int read_ch4_cloud_fraction_viirs(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_ch4_nir)
+    {
+        return read_dataset(info->input_data_cursor, "cloud_fraction_VIIRS_NIR_IFOV", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    return read_dataset(info->input_data_cursor, "cloud_fraction_VIIRS_SWIR_IFOV", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_ch4_methane_mixing_ratio(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3551,6 +3554,32 @@ static int read_ch4_methane_mixing_ratio(void *user_data, harp_array data)
                             info->num_scanlines * info->num_pixels, data);
     }
     return read_dataset(info->product_cursor, "methane_mixing_ratio", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_ch4_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_ch4_bias_corrected)
+    {
+        return read_dataset(info->detailed_results_cursor, "surface_albedo_NIR", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_SWIR", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_ch4_surface_albedo_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_ch4_bias_corrected)
+    {
+        return read_dataset(info->detailed_results_cursor, "surface_albedo_NIR_precision", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_SWIR_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -6036,6 +6065,7 @@ static void register_aer_lh_product(void)
 static void register_ch4_product(void)
 {
     const char *ch4_options[] = { "bias_corrected" };
+    const char *band_options[] = { "NIR" };
     const char *path;
     const char *description;
     harp_ingestion_module *module;
@@ -6052,6 +6082,8 @@ static void register_ch4_product(void)
 
     harp_ingestion_register_option(module, "ch4", "whether to ingest the 'normal' CH4 column vmr (default) or the "
                                    "bias corrected CH4 column vmr (ch4=bias_corrected)", 1, ch4_options);
+    harp_ingestion_register_option(module, "band", "whether to retrieve aerosol/cloud/surface properties of "
+                                   "the TROPOMI SWIR band (default) or the NIR band (band=NIR)", 1, band_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_CH4", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_ch4], 1);
@@ -6166,13 +6198,15 @@ static void register_ch4_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_fraction */
-    description = "cloud fraction from VIIRS data in the SWIR channel for the instantaneous field of view";
+    description = "cloud fraction from VIIRS data for the instantaneous field of view";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_viirs_swir);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_ch4_cloud_fraction_viirs);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_NIR_IFOV[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_VIIRS_SWIR_IFOV[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
 
     /* aerosol_height */
     description = "aerosol height parameter in the CH4 retrieval";
@@ -6186,31 +6220,37 @@ static void register_ch4_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version < 01.00.00", path, NULL);
 
     /* aerosol_optical_depth */
-    description = "aerosol optical thicknesss in the SWIR band";
+    description = "aerosol optical thicknesss";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_aerosol_optical_thickness_swir);
+                                                   read_ch4_aerosol_optical_thickness);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_NIR[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_SWIR[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
 
     /* surface_albedo */
-    description = "surface albedo in the SWIR channel";
+    description = "surface albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_surface_albedo_SWIR);
+                                                   read_ch4_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_NIR[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
 
     /* surface_albedo_uncertainty */
-    description = "precision of the surface albedo in the SWIR channel";
+    description = "precision of the surface albedo";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_results_surface_albedo_SWIR_precision);
+                                                   read_ch4_surface_albedo_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_NIR_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
 }
 
 static void register_co_product(void)
