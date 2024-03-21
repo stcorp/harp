@@ -1,3 +1,6 @@
+* Updates to product ingestions:
+  - EARLINET: fixed memory issue when reading extinction data.
+
 1.21 2024-03-15
 ~~~~~~~~~~~~~~~
 

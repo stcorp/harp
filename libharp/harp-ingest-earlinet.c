@@ -510,7 +510,7 @@ int harp_ingestion_module_earlinet_init(void)
     /* extinction_coefficient */
     description = "extinction coefficient";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "extinction_coefficient", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "extinction_coefficient", harp_type_double, 3,
                                                    dimension_type, NULL, description, "1/m", include_extinction,
                                                    read_extinction);
     path = "/extinction";
