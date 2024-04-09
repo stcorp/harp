@@ -1,5 +1,6 @@
 * Updates to product ingestions:
   - EARLINET: fixed memory issue when reading extinction data.
+  - GEOMS UVVIS.DOBSON: fixed issue with reading of int16 typed data.
 
 1.21 2024-03-15
 ~~~~~~~~~~~~~~~

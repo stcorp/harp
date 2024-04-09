@@ -211,41 +211,6 @@ static int read_variable_float(void *user_data, const char *path, long num_eleme
     return 0;
 }
 
-static int read_variable_int16(void *user_data, const char *path, long num_elements, harp_array data)
-{
-    coda_cursor cursor;
-    long actual_num_elements;
-
-    if (coda_cursor_set_product(&cursor, ((ingest_info *)user_data)->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, path) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (actual_num_elements != num_elements)
-    {
-        harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected %ld)", path, actual_num_elements,
-                       num_elements);
-        return -1;
-    }
-    if (coda_cursor_read_int16_array(&cursor, data.int16_data, coda_array_ordering_c) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    return 0;
-}
-
 static int read_data_source(void *user_data, harp_array data)
 {
     return read_attribute(user_data, "@DATA_SOURCE", data);
@@ -288,12 +253,12 @@ static int read_solar_zenith_angle(void *user_data, harp_array data)
 
 static int read_column(void *user_data, harp_array data)
 {
-    return read_variable_int16(user_data, "O3_COLUMN_ABSORPTION", ((ingest_info *)user_data)->num_time, data);
+    return read_variable_float(user_data, "O3_COLUMN_ABSORPTION", ((ingest_info *)user_data)->num_time, data);
 }
 
 static int read_column_uncertainty(void *user_data, harp_array data)
 {
-    return read_variable_int16(user_data, "O3_COLUMN_ABSORPTION_UNCERTAINTY_COMBINED_STANDARD",
+    return read_variable_float(user_data, "O3_COLUMN_ABSORPTION_UNCERTAINTY_COMBINED_STANDARD",
                                ((ingest_info *)user_data)->num_time, data);
 }
 
@@ -535,24 +500,25 @@ static int init_product_definition(harp_ingestion_module *module, int version)
 
     /* O3_column_number_density */
     description = "O3 column number density";
-    variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "O3_column_number_density", harp_type_int16, 1, dimension_type, NULL, description, "DU",
-         NULL, read_column);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "DU", NULL, read_column);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O3.COLUMN_ABSORPTION", NULL);
 
     /* O3_column_number_density_uncertainty */
     description = "uncertainty of the O3 column number density";
-    variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "O3_column_number_density_uncertainty", harp_type_int16, 1, dimension_type, NULL,
-         description, "DU", NULL, read_column_uncertainty);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "O3_column_number_density_uncertainty",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "DU", NULL, read_column_uncertainty);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/O3.COLUMN_ABSORPTION_UNCERTAINTY.COMBINED.STANDARD", NULL);
 
     /* O3_column_number_density_amf */
     description = "air mass factor of the O3 column number density";
-    variable_definition = harp_ingestion_register_variable_full_read
-        (product_definition, "O3_column_number_density_amf", harp_type_float, 1, dimension_type, NULL,
-         description, "1", NULL, read_column_amf);
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf",
+                                                                     harp_type_float, 1, dimension_type, NULL,
+                                                                     description, "1", NULL, read_column_amf);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O3.COLUMN_ABSORPTION_AMF", NULL);
 
     return 0;
