@@ -31,6 +31,7 @@
 
 #include "coda.h"
 #include "harp-ingestion.h"
+#include "harp-constants.h"
 
 #include <assert.h>
 #include <math.h>
@@ -85,7 +86,6 @@ typedef struct ingest_info_struct
 
     int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
     int use_sif_735;    /* 0: sif_743 (default), 1: sif_735 */
-
     int use_radiance_cloud_fraction;
     int use_custom_qa_filter;
 
@@ -592,6 +592,8 @@ static int ingestion_init(const harp_ingestion_module *module,
     info->product = product;
     info->so2_column_type = 0;
     info->use_sif_735 = 0;
+    info->use_radiance_cloud_fraction = 0;
+    info->use_custom_qa_filter = 0;
     info->num_times = 0;
     info->num_scanlines = 0;
     info->num_pixels = 0;
@@ -613,6 +615,16 @@ static int ingestion_init(const harp_ingestion_module *module,
     if (harp_ingestion_options_has_option(options, "735"))
     {
         info->use_sif_735 = 1;
+    }
+
+    if (harp_ingestion_options_has_option(options, "cloud_fraction"))
+    {
+        info->use_radiance_cloud_fraction = 1;
+    }
+
+    if (harp_ingestion_options_has_option(options, "qa_filter"))
+    {
+        info->use_custom_qa_filter = 1;
     }
 
     if (harp_ingestion_options_has_option(options, "so2_column"))
@@ -1270,6 +1282,184 @@ static int read_product_longitude(void *user_data, harp_array data)
                         data);
 }
 
+static int apply_custom_qa_filter_so2cbr_v2(ingest_info *info, harp_array qa_value)
+{
+    harp_array new_qa, data;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long i;
+
+    /* we first calculate the new qa as a value between 0.0 and 1.0 and at the end convert this to a 0..100 value */
+
+    new_qa.ptr = malloc(num_elements * sizeof(double));
+    if (new_qa.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        return -1;
+    }
+
+    /* start with qa value 1 */
+    for (i = 0; i < num_elements; i++)
+    {
+        new_qa.double_data[i] = 1.0;
+    }
+
+    /* we allocate the buffer for the largest data type, so we can also use it to read smaller data types */
+    data.ptr = malloc(num_elements * sizeof(double));
+    if (data.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(double), __FILE__, __LINE__);
+        free(new_qa.ptr);
+        return -1;
+    }
+
+    /* SZA > 85 -> 0 */
+    /* 85 >= SZA > 65 -> (1-(0.9226-cos(SZA))) */
+    if (read_geolocation_solar_zenith_angle(info, data) != 0)
+    {
+        free(new_qa.ptr);
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.float_data[i] > 85 || harp_isnan(data.float_data[i]))
+        {
+            new_qa.double_data[i] = 0;
+        }
+        else if (data.float_data[i] > 65)
+        {
+            new_qa.double_data[i] *= 0.0774 + cos(data.float_data[i] * CONST_DEG2RAD);
+        }
+    }
+
+    /* VCD < -0.0045 -> 0 */
+    if (read_dataset(info->product_cursor, "sulfurdioxide_total_vertical_column", harp_type_float,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        free(new_qa.ptr);
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.float_data[i] < -0.0045 || harp_isnan(data.float_data[i]))
+        {
+            new_qa.double_data[i] = 0;
+        }
+    }
+
+    /* snow -> (1 - 0.51) */
+    if (read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_int8, info->num_scanlines * info->num_pixels,
+                     data) != 0)
+    {
+        free(new_qa.ptr);
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.int8_data[i] == 1)
+        {
+            new_qa.double_data[i] *= 0.49;
+        }
+    }
+
+    /* AMF < 0.15 -> (1 - 0.51) */
+    if (read_dataset(info->detailed_results_cursor, "sulfurdioxide_total_air_mass_factor_polluted", harp_type_float,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        free(new_qa.ptr);
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (harp_isnan(data.float_data[i]))
+        {
+            new_qa.double_data[i] = 0;
+        }
+        else if (data.float_data[i] < 0.15)
+        {
+            new_qa.double_data[i] *= 0.49;
+        }
+    }
+
+    /* fitwin == 2 -> (1 - 0.4) */
+    /* fitwin == 3 -> (1 - 0.8) */
+    if (read_dataset(info->detailed_results_cursor, "selected_fitting_window_flag", harp_type_int32,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        free(new_qa.ptr);
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.int32_data[i] == 2)
+        {
+            new_qa.double_data[i] *= 0.6;
+        }
+        else if (data.int32_data[i] == 3)
+        {
+            new_qa.double_data[i] *= 0.2;
+        }
+    }
+
+    /* crf > 0.5 -> (1 - crf) */
+    if (read_dataset(info->detailed_results_cursor, "cloud_fraction_intensity_weighted", harp_type_float,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        free(new_qa.ptr);
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (harp_isnan(data.float_data[i]))
+        {
+            new_qa.double_data[i] = 0;
+        }
+        else if (data.float_data[i] > 0.5)
+        {
+            new_qa.double_data[i] *= (1 - data.float_data[i]);
+        }
+    }
+
+    /* cobraflag == 0 -> (1 - 0.5) */
+    /* cobraflag == 1 -> (1 - 0.25) */
+    if (read_dataset(info->detailed_results_cursor, "sulfurdioxide_cobra_flag", harp_type_int8,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        free(new_qa.ptr);
+        free(data.ptr);
+        return -1;
+    }
+    for (i = 0; i < num_elements; i++)
+    {
+        if (data.int8_data[i] == 0)
+        {
+            new_qa.double_data[i] *= 0.5;
+        }
+        else if (data.int8_data[i] == 1)
+        {
+            new_qa.double_data[i] *= 0.25;
+        }
+    }
+
+    free(data.ptr);
+
+    for (i = 0; i < num_elements; i++)
+    {
+        qa_value.int8_data[i] = (int8_t)(100 * new_qa.double_data[i]);
+    }
+
+    free(new_qa.ptr);
+
+    return 0;
+}
+
 static int read_product_qa_value(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1280,6 +1470,20 @@ static int read_product_qa_value(void *user_data, harp_array data)
     result = read_dataset(info->product_cursor, "qa_value", harp_type_int8, info->num_scanlines * info->num_pixels,
                           data);
     coda_set_option_perform_conversions(1);
+
+    if (info->use_custom_qa_filter)
+    {
+        if (info->product_type == pal_s5p_type_so2cbr)
+        {
+            if (info->processor_version >= 20000)
+            {
+                if (apply_custom_qa_filter_so2cbr_v2(info, data) != 0)
+                {
+                    return -1;
+                }
+            }
+        }
+    }
 
     return result;
 }
@@ -2907,6 +3111,7 @@ static void register_so2cbr_product(void)
 {
     const char *so2cbr_column_options[] = { "1km", "7km", "15km" };
     const char *cloud_fraction_options[] = { "radiance" };
+    const char *qa_filter_options[] = { "custom" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     const char *path;
@@ -2928,6 +3133,11 @@ static void register_so2cbr_product(void)
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance)", 1, cloud_fraction_options);
+
+    harp_ingestion_register_option(module, "qa_filter", "if enabled (qa_filter=custom) then for data generated by "
+                                   "the SO2 COBRA processor V02.00.00 the validity will be set to 0 or 100 based on "
+                                   "the revised qa_value calculation (see PRF) instead of using the existing qa_value",
+                                   1, qa_filter_options);
 
     product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_SO2CBR", NULL, read_dimensions);
 

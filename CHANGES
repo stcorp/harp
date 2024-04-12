@@ -1,6 +1,8 @@
 * Updates to product ingestions:
   - EARLINET: fixed memory issue when reading extinction data.
   - GEOMS UVVIS.DOBSON: fixed issue with reading of int16 typed data.
+  - S5P PAL L2 SO2 COBRA: fixed cloud_fraction option behaviour and added
+    alternative qa value calculation for processor V02.00.00.
 
 1.21 2024-03-15
 ~~~~~~~~~~~~~~~
