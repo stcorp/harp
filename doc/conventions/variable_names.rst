@@ -86,6 +86,8 @@ longitude_bounds                                                                
 meridional_wind_velocity                       surface                         X       X    X             [m/s]
 molar_mass                                                                     X       X    X             [g/mol]              this is the molar mass of the total substance (it is defined by the
                                                                                                                                relation between the variables 'density' and 'number_density')
+molecular_circular_depolarization_ratio                                        X       X    X       X     []
+molecular_linear_depolarization_ratio                                          X       X    X       X     []
 month                                                                                                                          category variable for month of year ('January', ..., 'December')
 number_density                                 surface                         X       X    X             [molec/m3]
 O3_effective_temperature                                                       X            X             [K]
@@ -109,6 +111,8 @@ orbit_index                                                                     
 <particle_type>_top_height                                                     X            X             [m]
 <particle_type>_top_pressure                                                   X            X             [m]
 particle_type                                                                  X            X
+particle_circular_depolarization_ratio                                         X       X    X       X     []
+particle_linear_depolarization_ratio                                           X       X    X       X     []
 planetary_boundary_layer_height                                                X            X             [m]
 potential_temperature                          surface                         X       X    X             [K]
 pressure                                       surface                         X       X    X             [Pa]
@@ -179,6 +183,8 @@ viewing_azimuth_angle                                                          X
 viewing_elevation_angle                                                        X                          [degree]
 viewing_zenith_angle                                                           X                          [degree]
 virtual_temperature                                                            X       X    X             [K]
+volume_circular_depolarization_ratio                                           X       X    X       X     []
+volume_linear_depolarization_ratio                                             X       X    X       X     []
 wavelength                                                                     X                    X     [m]
 wavelength_bounds                                                              X                    X     [m]
 wavelength_irradiance                                                          X                    X     [W/m2/m]
