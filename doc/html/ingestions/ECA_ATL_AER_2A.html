@@ -127,43 +127,43 @@
 <td><p>[m]</p></td>
 <td><p>joint standard grid height</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_height</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>elevation</p></td>
+<td><p>surface altitude</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_extinction_coefficient</strong></p></td>
+<tr class="row-even"><td><p><strong>particle_extinction_coefficient</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[1/m]</p></td>
 <td><p>particle extinction coefficient 355nm</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_extinction_coefficient_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>particle_extinction_coefficient_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[1/m]</p></td>
 <td><p>particle extinction coefficient 355nm error</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_backscatter_coefficient</strong></p></td>
+<tr class="row-even"><td><p><strong>particle_backscatter_coefficient</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[1/m/sr]</p></td>
 <td><p>particle backscatter coefficient 355nm</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_backscatter_coefficient_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>particle_backscatter_coefficient_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[1/m/sr]</p></td>
 <td><p>particle backscatter coefficient 355nm error</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>linear_depolarization_ratio</strong></p></td>
+<tr class="row-even"><td><p><strong>particle_linear_depolarization_ratio</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>particle linear depolarization ratio 355nm</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>linear_depolarization_ratio_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>particle_linear_depolarization_ratio_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
@@ -246,37 +246,43 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>altitude</strong></p></td>
+<tr class="row-even"><td rowspan="2"><p><strong>altitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/ScienceData/height</strong></p></td>
+<td><p><strong>/ScienceData/height, /ScienceData/geoid_offset</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_height</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>altitude[i,j] = height[i,j] + geoid_offset[i]</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>surface_altitude</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/ScienceData/elevation</strong></p></td>
+<td><p><strong>/ScienceData/elevation, /ScienceData/geoid_offset</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_extinction_coefficient</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>altitude = elevation + geoid_offset</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>particle_extinction_coefficient</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_extinction_coefficient_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>particle_extinction_coefficient_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_backscatter_coefficient</strong></p></td>
+<tr class="row-even"><td><p><strong>particle_backscatter_coefficient</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_backscatter_coefficient_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>particle_backscatter_coefficient_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>linear_depolarization_ratio</strong></p></td>
+<tr class="row-even"><td><p><strong>particle_linear_depolarization_ratio</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/ScienceData/particle_linear_depolarization_ratio_355nm</strong></p></td>
+<td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>linear_depolarization_ratio_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>particle_linear_depolarization_ratio_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/ScienceData/particle_linear_depolarization_ratio_355nm_error</strong></p></td>
+<td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm_error</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>lidar_ratio</strong></p></td>
 <td><p><em>path</em></p></td>

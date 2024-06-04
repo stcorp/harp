@@ -370,6 +370,40 @@ static int init_geolocation_edge_grid(ingest_info *info)
     return 0;
 }
 
+static int read_as_altitude(ingest_info *info, const char *variable_name, harp_array data)
+{
+    harp_array buffer;
+    long i;
+
+    if (read_array(info->science_data_cursor, variable_name, harp_type_float, info->num_time, data) != 0)
+    {
+        return -1;
+    }
+
+    buffer.ptr = malloc(info->num_time * sizeof(float));
+    if (buffer.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_array(info->science_data_cursor, "geoid_offset", harp_type_float, info->num_time, buffer) != 0)
+    {
+        free(buffer.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_time; i++)
+    {
+        data.float_data[i] += buffer.float_data[i];
+    }
+
+    free(buffer.ptr);
+
+    return 0;
+}
+
 static int read_355nm(void *user_data, harp_array data)
 {
     (void)user_data;
@@ -474,11 +508,12 @@ static int read_aerosol_mass_content(void *user_data, harp_array data)
                       info->num_time * info->num_vertical, data);
 }
 
-static int read_aerosol_layer_base_top(void *user_data, harp_array data)
+static int read_aerosol_layer_base_top_as_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     harp_array buffer;
     long dimension[2];
+    long i, j;
 
     if (read_array(info->science_data_cursor, "aerosol_layer_base", harp_type_float,
                    info->num_time * info->num_vertical, data) != 0)
@@ -496,7 +531,37 @@ static int read_aerosol_layer_base_top(void *user_data, harp_array data)
     /* change {2,N} dimension ordering to {N,2} */
     dimension[0] = 2;
     dimension[1] = info->num_time * info->num_vertical;
-    return harp_array_transpose(harp_type_float, 2, dimension, NULL, data);
+    if (harp_array_transpose(harp_type_float, 2, dimension, NULL, data) != 0)
+    {
+        return -1;
+    }
+
+    buffer.ptr = malloc(info->num_time * sizeof(float));
+    if (buffer.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_array(info->science_data_cursor, "geoid_offset", harp_type_float, info->num_time, buffer) != 0)
+    {
+        free(buffer.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_time; i++)
+    {
+        for (j = 0; j < info->num_vertical * 2; j++)
+        {
+            data.float_data[i * info->num_vertical * 2 + j] += buffer.float_data[i];
+        }
+    }
+
+    free(buffer.ptr);
+
+    return 0;
+
 }
 
 static int read_aerosol_layer_optical_thickness_355nm(void *user_data, harp_array data)
@@ -761,11 +826,11 @@ static int read_cloud_mask_quality_status(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "cloud_mask_quality_status", harp_type_int8, info->num_time, data);
 }
 
-static int read_cloud_top_height(void *user_data, harp_array data)
+static int read_cloud_top_height_as_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "cloud_top_height", harp_type_float, info->num_time, data);
+    return read_as_altitude(info, "cloud_top_height", data);
 }
 
 static int read_cloud_top_height_error(void *user_data, harp_array data)
@@ -775,11 +840,11 @@ static int read_cloud_top_height_error(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "cloud_top_height_error", harp_type_float, info->num_time, data);
 }
 
-static int read_cloud_top_height_AM(void *user_data, harp_array data)
+static int read_cloud_top_height_AM_as_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_array(info->science_data_cursor, "cloud_top_height_MSI", harp_type_float, info->num_time, data) != 0)
+    if (read_as_altitude(info, "cloud_top_height_MSI", data) != 0)
     {
         return -1;
     }
@@ -796,6 +861,7 @@ static int read_cloud_top_height_AM(void *user_data, harp_array data)
                            info->num_time * sizeof(float), __FILE__, __LINE__);
             return -1;
         }
+
         if (read_array(info->science_data_cursor, "cloud_top_height_difference_ATLID_MSI", harp_type_float,
                        info->num_time, buffer) != 0)
         {
@@ -870,18 +936,50 @@ static int read_cloud_water_path_error(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "cloud_water_path_error", harp_type_float, info->num_time, data);
 }
 
-static int read_elevation(void *user_data, harp_array data)
+static int read_elevation_as_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "elevation", harp_type_float, info->num_time, data);
+    return read_as_altitude(info, "elevation", data);
 }
 
-static int read_height(void *user_data, harp_array data)
+static int read_height_as_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    harp_array buffer;
+    long i, j;
 
-    return read_array(info->science_data_cursor, "height", harp_type_float, info->num_time * info->num_vertical, data);
+    if (read_array(info->science_data_cursor, "height", harp_type_float, info->num_time * info->num_vertical,
+                   data) != 0)
+    {
+        return -1;
+    }
+
+    buffer.ptr = malloc(info->num_time * sizeof(float));
+    if (buffer.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_time * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_array(info->science_data_cursor, "geoid_offset", harp_type_float, info->num_time, buffer) != 0)
+    {
+        free(buffer.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_time; i++)
+    {
+        for (j = 0; j < info->num_vertical; j++)
+        {
+            data.float_data[i * info->num_vertical + j] += buffer.float_data[i];
+        }
+    }
+
+    free(buffer.ptr);
+
+    return 0;
 }
 
 static int read_ice_effective_radius(void *user_data, harp_array data)
@@ -1255,8 +1353,7 @@ static int read_liquid_water_path_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "liquid_water_path_error", harp_type_float, info->num_time,
-                      data);
+    return read_array(info->science_data_cursor, "liquid_water_path_error", harp_type_float, info->num_time, data);
 }
 
 static int read_longitude(void *user_data, harp_array data)
@@ -1478,35 +1575,35 @@ static int read_particle_extinction_coefficient_355nm_error(void *user_data, har
     return read_array(info->science_data_cursor, name, harp_type_float, info->num_time * info->num_vertical, data);
 }
 
-static int read_particle_linear_depolarization_ratio_355nm(void *user_data, harp_array data)
+static int read_particle_linear_depol_ratio_355nm(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    const char *name = "particle_linear_depolarization_ratio_355nm";
+    const char *name = "particle_linear_depol_ratio_355nm";
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_linear_depolarization_ratio_355nm_medium_resolution";
+        name = "particle_linear_depol_ratio_355nm_medium_resolution";
     }
     else if (info->atlid_resolution == 2)
     {
-        name = "particle_linear_depolarization_ratio_355nm_low_resolution";
+        name = "particle_linear_depol_ratio_355nm_low_resolution";
     }
 
     return read_array(info->science_data_cursor, name, harp_type_float, info->num_time * info->num_vertical, data);
 }
 
-static int read_particle_linear_depolarization_ratio_355nm_error(void *user_data, harp_array data)
+static int read_particle_linear_depol_ratio_355nm_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    const char *name = "particle_linear_depolarization_ratio_355nm_error";
+    const char *name = "particle_linear_depol_ratio_355nm_error";
 
     if (info->atlid_resolution == 1)
     {
-        name = "particle_linear_depolarization_ratio_355nm_medium_resolution_error";
+        name = "particle_linear_depol_ratio_355nm_medium_resolution_error";
     }
     else if (info->atlid_resolution == 2)
     {
-        name = "particle_linear_depolarization_ratio_355nm_low_resolution_error";
+        name = "particle_linear_depol_ratio_355nm_low_resolution_error";
     }
 
     return read_array(info->science_data_cursor, name, harp_type_float, info->num_time * info->num_vertical, data);
@@ -1713,11 +1810,11 @@ static int read_simplified_uppermost_cloud_classification(void *user_data, harp_
                       info->num_time, data);
 }
 
-static int read_surface_elevation(void *user_data, harp_array data)
+static int read_surface_elevation_as_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_array(info->science_data_cursor, "surface_elevation", harp_type_float, info->num_time, data);
+    return read_as_altitude(info, "surface_elevation", data);
 }
 
 static int read_surface_elevation_bbr(void *user_data, harp_array data)
@@ -1906,6 +2003,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     if (harp_ingestion_options_has_option(options, "direction"))
     {
+        if (harp_ingestion_options_get_option(options, "direction", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
         if (strcmp(option_value, "fore") == 0)
         {
             info->bbr_direction = 1;
@@ -1932,6 +2034,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     if (harp_ingestion_options_has_option(options, "radiance"))
     {
+        if (harp_ingestion_options_get_option(options, "radiance", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
         if (strcmp(option_value, "SW_MSI") == 0)
         {
             info->bbr_radiance = 1;
@@ -2097,14 +2204,19 @@ static void register_ac__tc__2b_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float,
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
-                                                                     read_height);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
+                                                                     read_height_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/height, /ScienceData/geoid_offset",
+                                         "altitude[i,j] = height[i,j] + geoid_offset[i]");
 
-    /* surface_height */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_height",
+    /* surface_altitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     "elevation ", "m", NULL, read_elevation);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/elevation", NULL);
+                                                                     "surface altitude", "m", NULL,
+                                                                     read_elevation_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/elevation, /ScienceData/geoid_offset",
+                                         "altitude = elevation + geoid_offset");
 
     /* scene_type */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "scene_type",
@@ -2143,8 +2255,10 @@ static void register_acm_cap_2b_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float,
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
-                                                                     read_height);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
+                                                                     read_height_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/height, /ScienceData/geoid_offset",
+                                         "altitude[i,j] = height[i,j] + geoid_offset[i]");
 
     /* liquid_water_density */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "liquid_water_density",
@@ -2365,11 +2479,13 @@ static void register_am__cth_2b_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, "cloud top height", "m", NULL,
-                                                   read_cloud_top_height_AM);
-    path = "/ScienceData/cloud_top_height_MSI";
-    harp_variable_definition_add_mapping(variable_definition, NULL, "source unset", path, NULL);
-    path = "/ScienceData/cloud_top_height_MSI, /ScienceData/cloud_top_height_difference_ATLID_MSI";
-    description = "cloud_top_height_MSI + cloud_top_height_difference_ATLID_MSI";
+                                                   read_cloud_top_height_AM_as_altitude);
+    path = "/ScienceData/cloud_top_height_MSI, /ScienceData/geoid_offset";
+    description = "cloud_top_height_MSI + geoid_offset";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "source unset", path, description);
+    path = "/ScienceData/cloud_top_height_MSI, /ScienceData/cloud_top_height_difference_ATLID_MSI, "
+        "/ScienceData/geoid_offset";
+    description = "cloud_top_height_MSI + cloud_top_height_difference_ATLID_MSI + geoid_offset";
     harp_variable_definition_add_mapping(variable_definition, NULL, "source=atlid", path, description);
 
     /* validity */
@@ -2402,27 +2518,32 @@ static void register_atl_aer_2a_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float,
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
-                                                                     read_height);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
+                                                                     read_height_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/height, /ScienceData/geoid_offset",
+                                         "altitude[i,j] = height[i,j] + geoid_offset[i]");
 
-    /* surface_height */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_height",
+    /* surface_altitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     "elevation ", "m", NULL, read_elevation);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/elevation", NULL);
+                                                                     "surface altitude", "m", NULL,
+                                                                     read_elevation_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/elevation, /ScienceData/geoid_offset",
+                                         "altitude = elevation + geoid_offset");
 
-    /* aerosol_extinction_coefficient */
+    /* particle_extinction_coefficient */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "aerosol_extinction_coefficient",
+                                                                     "particle_extinction_coefficient",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "particle extinction coefficient 355nm", "1/m",
                                                                      NULL, read_particle_extinction_coefficient_355nm);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/particle_extinction_coefficient_355nm", NULL);
 
-    /* aerosol_extinction_coefficient_uncertainty */
+    /* particle_extinction_coefficient_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "aerosol_extinction_coefficient_uncertainty",
+                                                                     "particle_extinction_coefficient_uncertainty",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "particle extinction coefficient 355nm error",
                                                                      "1/m", NULL,
@@ -2430,18 +2551,18 @@ static void register_atl_aer_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/particle_extinction_coefficient_355nm_error", NULL);
 
-    /* aerosol_backscatter_coefficient */
+    /* particle_backscatter_coefficient */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "aerosol_backscatter_coefficient",
+                                                                     "particle_backscatter_coefficient",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "particle backscatter coefficient 355nm", "1/m/sr",
                                                                      NULL, read_particle_backscatter_coefficient_355nm);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/particle_backscatter_coefficient_355nm", NULL);
 
-    /* aerosol_backscatter_coefficient_uncertainty */
+    /* particle_backscatter_coefficient_uncertainty */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
-                                                                     "aerosol_backscatter_coefficient_uncertainty",
+                                                                     "particle_backscatter_coefficient_uncertainty",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "particle backscatter coefficient 355nm error",
                                                                      "1/m/sr", NULL,
@@ -2449,24 +2570,26 @@ static void register_atl_aer_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/particle_backscatter_coefficient_355nm_error", NULL);
 
-    /* linear_depolarization_ratio */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "linear_depolarization_ratio",
+    /* particle_linear_depolarization_ratio */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition,
+                                                                     "particle_linear_depolarization_ratio",
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "particle linear depolarization ratio 355nm",
                                                                      HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                     read_particle_linear_depolarization_ratio_355nm);
+                                                                     read_particle_linear_depol_ratio_355nm);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm", NULL);
+                                         "/ScienceData/particle_linear_depol_ratio_355nm", NULL);
 
-    /* linear_depolarization_ratio_uncertainty */
+    /* particle_linear_depolarization_ratio_uncertainty */
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "linear_depolarization_ratio_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "particle_linear_depolarization_ratio_uncertainty",
                                                    harp_type_float, 2, dimension_type, NULL,
                                                    "particle linear depolarization ratio 355nm error",
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_particle_linear_depolarization_ratio_355nm_error);
+                                                   read_particle_linear_depol_ratio_355nm_error);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_error", NULL);
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_error", NULL);
 
     /* lidar_ratio */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "lidar_ratio", harp_type_float,
@@ -2521,6 +2644,7 @@ static void register_atl_ald_2a_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[3];
     const char *description;
+    const char *path;
     long dimension[3];
 
     description = "ATLID aerosol layers in cloud-free observations";
@@ -2543,10 +2667,12 @@ static void register_atl_ald_2a_product(void)
     /* altitude_bounds */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds",
                                                                      harp_type_float, 3, dimension_type, dimension,
-                                                                     "aerorosl layer base and top", "m", NULL,
-                                                                     read_aerosol_layer_base_top);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
-                                         "/ScienceData/aerosol_layer_base, /ScienceData/aerosol_layer_top", NULL);
+                                                                     "aerosol layer base and top", "m", NULL,
+                                                                     read_aerosol_layer_base_top_as_altitude);
+    path = "/ScienceData/aerosol_layer_base, /ScienceData/aerosol_layer_top, /ScienceData/geoid_offset";
+    description = "altitude_bounds[i,j,0] = aerosol_layer_base[i,j] + geoid_offset[i]; "
+        "altitude_bounds[i,j,1] = aerosol_layer_top[i,j] + geoid_offset[i]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* aerosol_optical_depth */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth",
@@ -2734,14 +2860,19 @@ static void register_atl_ebd_2a_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float,
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
-                                                                     read_height);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
+                                                                     read_height_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/height, /ScienceData/geoid_offset",
+                                         "altitude[i,j] = height[i,j] + geoid_offset[i]");
 
-    /* surface_height */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_height",
+    /* surface_altitude */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     "elevation ", "m", NULL, read_elevation);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/elevation", NULL);
+                                                                     "surface altitude", "m", NULL,
+                                                                     read_elevation_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/elevation, /ScienceData/geoid_offset",
+                                         "altitude = elevation + geoid_offset");
 
     /* viewing_elevation_angle */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_elevation_angle",
@@ -2843,14 +2974,14 @@ static void register_atl_ebd_2a_product(void)
                                                                      harp_type_float, 2, dimension_type, NULL,
                                                                      "particle linear depolarization ratio 355nm",
                                                                      HARP_UNIT_DIMENSIONLESS, NULL,
-                                                                     read_particle_linear_depolarization_ratio_355nm);
+                                                                     read_particle_linear_depol_ratio_355nm);
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm", NULL);
+                                         "/ScienceData/particle_linear_depol_ratio_355nm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_medium_resolution",
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_medium_resolution",
                                          NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_low_resolution",
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_low_resolution",
                                          NULL);
 
     /* linear_depolarization_ratio_uncertainty */
@@ -2859,13 +2990,14 @@ static void register_atl_ebd_2a_product(void)
                                                    harp_type_float, 2, dimension_type, NULL,
                                                    "particle linear depolarization ratio 355nm error",
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_particle_linear_depolarization_ratio_355nm_error);
+                                                   read_particle_linear_depol_ratio_355nm_error);
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_error", NULL);
-    harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL, "/ScienceData/particle_"
-                                         "linear_depolarization_ratio_355nm_medium_resolution_error", NULL);
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_error", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_medium_resolution_error",
+                                         NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
-                                         "/ScienceData/particle_linear_depolarization_ratio_355nm_low_resolution_error",
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_low_resolution_error",
                                          NULL);
 
     /* optical_depth */
@@ -2955,14 +3087,19 @@ static void register_atl_ice_2a_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float,
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
-                                                                     read_height);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
+                                                                     read_height_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/height, /ScienceData/geoid_offset",
+                                         "altitude[i,j] = height[i,j] + geoid_offset[i]");
 
     /* surface_altitude */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
-                                                                     "surface altitude ", "m", NULL, read_elevation);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/elevation", NULL);
+                                                                     "surface altitude", "m", NULL,
+                                                                     read_elevation_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/elevation, /ScienceData/geoid_offset",
+                                         "altitude = elevation + geoid_offset");
 
     /* viewing_elevation_angle */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_elevation_angle",
@@ -3413,15 +3550,19 @@ static void register_cpr_cld_2a_product(void)
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float,
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
-                                                                     read_height);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/height", NULL);
+                                                                     read_height_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/height, /ScienceData/geoid_offset",
+                                         "altitude[i,j] = height[i,j] + geoid_offset[i]");
 
     /* surface_altitude */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_altitude",
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      "surface altitude ", "m", NULL,
-                                                                     read_surface_elevation);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/surface_elevation", NULL);
+                                                                     read_surface_elevation_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/surface_elevation, /ScienceData/geoid_offset",
+                                         "surface_altitude = surface_elevation + geoid_offset");
 
     /* surface_type */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_type",
@@ -3506,8 +3647,7 @@ static void register_cpr_cld_2a_product(void)
                                                                      harp_type_float, 1, dimension_type, NULL,
                                                                      "liquid cloud water path error", "kg/m2", NULL,
                                                                      read_liquid_water_path_error);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_water_path_error",
-                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/liquid_water_path_error", NULL);
 
     /* validity */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 2,
@@ -3733,8 +3873,10 @@ static void register_msi_cop_2a_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, "cloud top height", "m", NULL,
-                                                   read_cloud_top_height);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/cloud_top_height", NULL);
+                                                   read_cloud_top_height_as_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/ScienceData/cloud_top_height, /ScienceData/geoid_offset",
+                                         "cloud_top_height + geoid_offset");
 
     /* cloud_top_height_uncertainty */
     variable_definition =
