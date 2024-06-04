@@ -18,34 +18,6 @@ Name                                           Prefixes        Postfixes       Q
 ============================================== =============== =============== ======= ==== ======= ===== ==================== =======================================================================
 absolute_vorticity                                                             X       X    X             [1/s]
 absorbing_aerosol_index                                                        X            X             []
-aerosol_backscatter_coefficient                surface                         X       X    X       X     [1/m/sr]
-aerosol_base_height                                                            X            X             [m]
-aerosol_base_pressure                                                          X            X             [Pa]
-aerosol_column_number_density                                                  X       X    X             [1/m2]
-aerosol_density                                                                X       X    X             [kg/m3]
-aerosol_extinction_coefficient                 surface                         X       X    X       X     [1/m]
-aerosol_height                                                                 X            X             [m]
-aerosol_lidar_ratio                            surface                         X       X    X       X     [sr]
-aerosol_number_density                                                         X       X    X             [1/m3]
-aerosol_optical_depth                          stratospheric,                  X       X    X       X     []                   this is equal to 'aerosol optical thickness'
-                                               tropospheric
-aerosol_pressure                                                               X            X             [Pa]
-aerosol_top_height                                                             X            X             [m]
-aerosol_top_pressure                                                           X            X             [Pa]
-<aerosol_size>_aerosol_backscatter_coefficient surface                         X       X    X       X     [1/m/sr]
-<aerosol_type>_aerosol_base_height                                             X            X             [m]
-<aerosol_type>_aerosol_base_pressure                                           X            X             [Pa]
-<aerosol_size>_aerosol_column_number_density                                   X       X    X             [1/m2]
-<aerosol_size>_aerosol_density                                                 X       X    X             [kg/m3]
-<aerosol_size>_aerosol_extinction_coefficient  surface                         X       X    X       X     [1/m]
-<aerosol_type>_aerosol_height                                                  X            X             [m]
-<aerosol_size>_aerosol_lidar_ratio             surface                         X       X    X       X     [sr]
-<aerosol_size>_aerosol_number_density                                          X       X    X             [1/m3]
-<aerosol_size>_aerosol_optical_depth           stratospheric,                  X       X    X       X     []                   this is equal to 'aerosol optical thickness'
-                                               tropospheric
-<aerosol_type>_aerosol_pressure                                                X            X             [Pa]
-<aerosol_type>_aerosol_top_height                                              X            X             [m]
-<aerosol_type>_aerosol_top_pressure                                            X            X             [m]
 altitude                                       sensor,                         X       X    X             [m]
                                                surface
 altitude_bounds                                                                X       X    X             [m]
@@ -119,14 +91,25 @@ number_density                                 surface                         X
 O3_effective_temperature                                                       X            X             [K]
 optical_depth                                                                  X       X    X       X     []                   this is equal to 'optical thickness'
 orbit_index                                                                                                                    the absolute orbit number for data from polar orbiting satellites
-<particle>_column_number_density                                               X       X    X             [1/m2]
-<particle>_effective_radius                                                                               [m]
-<particle>_number_density                                                      X       X    X             [1/m3]
+<particle_type>_backscatter_coefficient        surface                         X       X    X       X     [1/m/sr]
+<particle_type>_base_height                                                    X            X             [m]
+<particle_type>_base_pressure                                                  X            X             [Pa]
+<particle_type>_column_density                 stratospheric,                  X       X    X             [kg/m2]
+                                               tropospheric
+<particle_type>_column_number_density                                          X       X    X             [1/m2]
+<particle_type>_density                                                        X       X    X             [kg/m3]
+<particle_type>_effective_radius                                                                          [m]
+<particle_type>_extinction_coefficient         surface                         X       X    X       X     [1/m]
+<particle_type>_height                                                         X            X             [m]
+<particle_type>_lidar_ratio                    surface                         X       X    X       X     [sr]
+<particle_type>_number_density                                                 X       X    X             [1/m3]
+<particle_type>_optical_depth                  stratospheric,                  X       X    X       X     []                   this is equal to 'optical thickness'
+                                               tropospheric
+<particle_type>_pressure                                                       X            X             [Pa]
+<particle_type>_top_height                                                     X            X             [m]
+<particle_type>_top_pressure                                                   X            X             [m]
 particle_type                                                                  X            X
 planetary_boundary_layer_height                                                X            X             [m]
-<pm>_column_density                            stratospheric,                  X       X    X             [kg/m2]
-                                               tropospheric
-<pm>_density                                   surface                         X       X    X             [kg/m3]
 potential_temperature                          surface                         X       X    X             [K]
 pressure                                       surface                         X       X    X             [Pa]
 pressure_bounds                                                                X       X    X             [Pa]
@@ -233,7 +216,7 @@ aerosol                aerosol particles
 ice_particle           ice particles
 liquid_particle        liquid droplets
 particle               any generic set of particles
-<pm>                   any of the particulate matter types
+<pm_type>              any of the particulate matter types
 rain_particle          rain droplets
 snow_particle          snow flakes
 ====================== ===================================
