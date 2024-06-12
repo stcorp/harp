@@ -404,6 +404,43 @@ static int read_as_altitude(ingest_info *info, const char *variable_name, harp_a
     return 0;
 }
 
+static int read_as_altitude_msi(ingest_info *info, const char *variable_name, harp_array data)
+{
+    harp_array buffer;
+    long i, j;
+
+    if (read_array(info->science_data_cursor, variable_name, harp_type_float, info->num_time, data) != 0)
+    {
+        return -1;
+    }
+
+    buffer.ptr = malloc(info->num_along_track * sizeof(float));
+    if (buffer.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_along_track * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_array(info->science_data_cursor, "geoid_offset", harp_type_float, info->num_along_track, buffer) != 0)
+    {
+        free(buffer.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_along_track; i++)
+    {
+        for (j = 0; j < info->num_across_track; j++)
+        {
+            data.float_data[i * info->num_across_track + j] += buffer.float_data[i];
+        }
+    }
+
+    free(buffer.ptr);
+
+    return 0;
+}
+
 static int read_355nm(void *user_data, harp_array data)
 {
     (void)user_data;
@@ -826,11 +863,11 @@ static int read_cloud_mask_quality_status(void *user_data, harp_array data)
     return read_array(info->science_data_cursor, "cloud_mask_quality_status", harp_type_int8, info->num_time, data);
 }
 
-static int read_cloud_top_height_as_altitude(void *user_data, harp_array data)
+static int read_cloud_top_height_as_altitude_msi(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_as_altitude(info, "cloud_top_height", data);
+    return read_as_altitude_msi(info, "cloud_top_height", data);
 }
 
 static int read_cloud_top_height_error(void *user_data, harp_array data)
@@ -3873,7 +3910,7 @@ static void register_msi_cop_2a_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, "cloud top height", "m", NULL,
-                                                   read_cloud_top_height_as_altitude);
+                                                   read_cloud_top_height_as_altitude_msi);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/cloud_top_height, /ScienceData/geoid_offset",
                                          "cloud_top_height + geoid_offset");
