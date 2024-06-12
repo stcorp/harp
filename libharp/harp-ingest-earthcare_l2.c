@@ -3015,11 +3015,9 @@ static void register_atl_ebd_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, "resolution unset", NULL,
                                          "/ScienceData/particle_linear_depol_ratio_355nm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=medium", NULL,
-                                         "/ScienceData/particle_linear_depol_ratio_355nm_medium_resolution",
-                                         NULL);
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_medium_resolution", NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
-                                         "/ScienceData/particle_linear_depol_ratio_355nm_low_resolution",
-                                         NULL);
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_low_resolution", NULL);
 
     /* linear_depolarization_ratio_uncertainty */
     variable_definition =
@@ -3034,8 +3032,7 @@ static void register_atl_ebd_2a_product(void)
                                          "/ScienceData/particle_linear_depol_ratio_355nm_medium_resolution_error",
                                          NULL);
     harp_variable_definition_add_mapping(variable_definition, "resolution=low", NULL,
-                                         "/ScienceData/particle_linear_depol_ratio_355nm_low_resolution_error",
-                                         NULL);
+                                         "/ScienceData/particle_linear_depol_ratio_355nm_low_resolution_error", NULL);
 
     /* optical_depth */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "optical_depth",
