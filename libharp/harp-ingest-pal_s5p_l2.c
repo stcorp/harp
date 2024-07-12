@@ -1617,6 +1617,22 @@ static int read_sea_ice_fraction_nise(void *user_data, harp_array data)
     return read_sea_ice_fraction_from_flag(user_data, "snow_ice_flag_nise", data);
 }
 
+static int read_aot_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    int result;
+
+    result = read_dataset(info->input_data_cursor, "cloud_fraction", harp_type_float,
+                          info->num_scanlines * info->num_pixels, data);
+    if (result != 0)
+    {
+        result = read_dataset(info->input_data_cursor, "effective_cloud_fraction", harp_type_float,
+                              info->num_scanlines * info->num_pixels, data);
+    }
+
+    return result;
+}
+
 static int read_sif(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2602,9 +2618,13 @@ static void register_aer_ot_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_fraction);
+                                                   read_aot_cloud_fraction);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    description = "if AOT product was generated with VIIRS input data";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_cloud_fraction";
+    description = "if AOT product was not generated with VIIRS input data";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* surface_pressure */
     description = "surface air pressure";

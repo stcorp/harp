@@ -1,3 +1,7 @@
+* Updates to product ingestions:
+  - S5P PAL L2 AOT: added support for cloud_fraction vs.
+    effective_cloud_fraction split
+
 1.22 2024-06-12
 ~~~~~~~~~~~~~~~
 
