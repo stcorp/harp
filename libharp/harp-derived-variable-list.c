@@ -459,6 +459,19 @@ static int get_dry_air_mixing_ratio_from_h2o_mixing_ratio(harp_variable *variabl
     return 0;
 }
 
+static int get_dry_air_mixing_ratio_from_h2o_mixing_ratio_dry_air(harp_variable *variable,
+                                                                  const harp_variable **source_variable)
+{
+    long i;
+
+    for (i = 0; i < variable->num_elements; i++)
+    {
+        variable->data.double_data[i] = 1 / (1 + source_variable[0]->data.double_data[i]);
+    }
+
+    return 0;
+}
+
 static int get_elevation_angle_from_zenith_angle(harp_variable *variable, const harp_variable **source_variable)
 {
     long i;
@@ -5800,6 +5813,19 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
 
+    /* dry air mass mixing ratio from H2O mass mixing ratio dry air */
+    if (harp_variable_conversion_new("dry_air_mass_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
+                                     num_dimensions, dimension_type, 0,
+                                     get_dry_air_mixing_ratio_from_h2o_mixing_ratio_dry_air, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_mass_mixing_ratio_dry_air", harp_type_double,
+                                            HARP_UNIT_DIMENSIONLESS, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
     /* H2O mass mixing ratio from dry air mass mixing ratio */
     if (harp_variable_conversion_new("H2O_mass_mixing_ratio", harp_type_double, HARP_UNIT_DIMENSIONLESS,
                                      num_dimensions, dimension_type, 0, get_h2o_mixing_ratio_from_dry_air_mixing_ratio,
@@ -6568,6 +6594,19 @@ static int add_conversions_for_grid(int num_dimensions, harp_dimension_type dime
         return -1;
     }
     if (harp_variable_conversion_add_source(conversion, "H2O_volume_mixing_ratio", harp_type_double,
+                                            HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
+    {
+        return -1;
+    }
+
+    /* dry air volume mixing ratio from H2O volume mixing ratio dry air */
+    if (harp_variable_conversion_new("dry_air_volume_mixing_ratio", harp_type_double, HARP_UNIT_VOLUME_MIXING_RATIO,
+                                     num_dimensions, dimension_type, 0,
+                                     get_dry_air_mixing_ratio_from_h2o_mixing_ratio_dry_air, &conversion) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_conversion_add_source(conversion, "H2O_volume_mixing_ratio_dry_air", harp_type_double,
                                             HARP_UNIT_VOLUME_MIXING_RATIO, num_dimensions, dimension_type, 0) != 0)
     {
         return -1;

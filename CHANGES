@@ -1,3 +1,6 @@
+* Added derivations to retrieve dry air mass/volume mixing ratio from H2O
+  mass/volume mixing ratio with regard to dry air.
+
 * Updates to product ingestions:
   - S5P PAL L2 AOT: added support for cloud_fraction vs.
     effective_cloud_fraction split

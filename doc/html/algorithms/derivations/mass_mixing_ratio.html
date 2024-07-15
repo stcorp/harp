@@ -392,6 +392,35 @@ with regard to total air</p></td>
 <div class="math notranslate nohighlight">
 \[q_{dry\_air} = 1 - q_{H_{2}O}\]</div>
 </li>
+<li id="derivation-dry-air-mass-mixing-ratio-from-h2o-mass-mixing-ratio-dry-air"><p>dry air mass mixing ratio from H2O mass mixing ratio</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>description</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>variable name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\bar{q}_{H_{2}O}\)</span></p></td>
+<td><p>mass mixing ratio of H2O
+with regard to dry air</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></p></td>
+<td><p><cite>H2O_mass_mixing_ratio_dry_air {:}</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(q_{dry\_air}\)</span></p></td>
+<td><p>mass mixing ratio of dry air
+with regard to total air</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{kg}{kg}\)</span></p></td>
+<td><p><cite>dry_air_mass_mixing_ratio {:}</cite></p></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern <cite>:</cite> for the dimensions can represent <cite>{vertical}</cite>, <cite>{latitude,longitude}</cite>, <cite>{latitude,longitude,vertical}</cite>,
+<cite>{time}</cite>, <cite>{time,vertical}</cite>, <cite>{time,latitude,longitude}</cite>, <cite>{time,latitude,longitude,vertical}</cite>, or no dimensions at all.</p>
+<div class="math notranslate nohighlight">
+\[q_{dry\_air} = \frac{1}{1 + \bar{q}_{H_{2}O}}\]</div>
+</li>
 </ol>
 <blockquote>
 <div></div></blockquote>

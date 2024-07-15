@@ -158,6 +158,27 @@ mass mixing ratio derivations
       q_{dry\_air} = 1 - q_{H_{2}O}
 
 
+   .. _derivation_dry_air_mass_mixing_ratio_from_H2O_mass_mixing_ratio_dry_air:
+
+#. dry air mass mixing ratio from H2O mass mixing ratio
+
+   ======================== ============================ ===================== ===================================
+   symbol                   description                  unit                  variable name
+   ======================== ============================ ===================== ===================================
+   :math:`\bar{q}_{H_{2}O}` mass mixing ratio of H2O     :math:`\frac{kg}{kg}` `H2O_mass_mixing_ratio_dry_air {:}`
+                            with regard to dry air
+   :math:`q_{dry\_air}`     mass mixing ratio of dry air :math:`\frac{kg}{kg}` `dry_air_mass_mixing_ratio {:}`
+                            with regard to total air
+   ======================== ============================ ===================== ===================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      q_{dry\_air} = \frac{1}{1 + \bar{q}_{H_{2}O}}
+
+
   .. _derivation_H2O_mass_mixing_ratio_from_dry_air_mass_mixing_ratio:
 
 #. H2O mass mixing ratio from dry air mass mixing ratio

@@ -202,6 +202,26 @@ volume mixing ratio derivations
       \nu_{dry\_air} = 1 - \nu_{H_{2}O}
 
 
+   .. _derivation_dry_air_volume_mixing_ratio_from_H2O_volume_mixing_ratio_dry_air:
+
+#. dry air volume mixing ratio from H2O volume mixing ratio dry air
+
+   ========================== ============================== =========== =====================================
+   symbol                     description                    unit        variable name
+   ========================== ============================== =========== =====================================
+   :math:`\bar{\nu}_{H_{2}O}` volume mixing ratio of H2O     :math:`ppv` `H2O_volume_mixing_ratio_dry_air {:}`
+                              with regard to dry air
+   :math:`\nu_{dry\_air}`     volume mixing ratio of dry air :math:`ppv` `dry_air_volume_mixing_ratio {:}`
+                              with regard to total air
+   ========================== ============================== =========== =====================================
+
+   The pattern `:` for the dimensions can represent `{vertical}`, `{latitude,longitude}`, `{latitude,longitude,vertical}`,
+   `{time}`, `{time,vertical}`, `{time,latitude,longitude}`, `{time,latitude,longitude,vertical}`, or no dimensions at all.
+
+   .. math::
+
+      \nu_{dry\_air} = \frac{1}{1 + \bar{\nu}_{H_{2}O}}
+
    .. _derivation_H2O_volume_mixing_ratio_from_dry_air_volume_mixing_ratio:
 
 #. H2O volume mixing ratio from dry air volume mixing ratio
