@@ -644,18 +644,32 @@ def _get_c_data_type(value):
     elif numpy.isscalar(value):
         if isinstance(value, (str, bytes)):
             return _lib.harp_type_string
-        elif numpy.can_cast(value, numpy.int8):
+        try:
+            numpy.array(value, dtype=numpy.int8)
             return _lib.harp_type_int8
-        elif numpy.can_cast(value, numpy.int16):
+        except:
+            pass
+        try:
+            numpy.array(value, dtype=numpy.int16)
             return _lib.harp_type_int16
-        elif numpy.can_cast(value, numpy.int32):
+        except:
+            pass
+        try:
+            numpy.array(value, dtype=numpy.int32)
             return _lib.harp_type_int32
-        elif numpy.can_cast(value, numpy.float32):
+        except:
+            pass
+        try:
+            numpy.array(value, dtype=numpy.float32)
             return _lib.harp_type_float
-        elif numpy.can_cast(value, numpy.float64):
+        except:
+            pass
+        try:
+            numpy.array(value, dtype=numpy.float64)
             return _lib.harp_type_double
-        else:
-            raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
+        except:
+            pass
+        raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
     else:
         raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
 
