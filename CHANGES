@@ -1,3 +1,5 @@
+* Fixed numpy 2.x compatibility issue in python interface.
+
 * Added derivations to retrieve dry air mass/volume mixing ratio from H2O
   mass/volume mixing ratio with regard to dry air.
 
