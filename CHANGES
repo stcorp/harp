@@ -1,3 +1,6 @@
+1.23 2024-07-29
+~~~~~~~~~~~~~~~
+
 * Fixed numpy 2.x compatibility issue in python interface.
 
 * Added derivations to retrieve dry air mass/volume mixing ratio from H2O
