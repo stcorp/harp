@@ -1452,7 +1452,7 @@ def _extend_variable_for_dim(variable, dim_index, new_length):
     shape = list(variable.data.shape)
     shape[dim_index] = new_length - shape[dim_index]
     filler = numpy.empty(shape, dtype=variable.data.dtype)
-    filler[:] = numpy.NAN
+    filler[:] = numpy.nan
     variable.data = numpy.concatenate([variable.data, filler], axis=dim_index)
 
 
