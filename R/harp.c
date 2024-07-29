@@ -52,7 +52,7 @@ static SEXP rharp_named_element(SEXP l, const char *name)
 /* report errors to R */
 static void rharp_error()
 {
-    error(harp_errno_to_string(harp_errno));
+    error("%s", harp_errno_to_string(harp_errno));
 }
 
 static void rharp_var_error(const char *varname)
