@@ -647,27 +647,27 @@ def _get_c_data_type(value):
         try:
             numpy.array(value, dtype=numpy.int8)
             return _lib.harp_type_int8
-        except:
+        except Exception:
             pass
         try:
             numpy.array(value, dtype=numpy.int16)
             return _lib.harp_type_int16
-        except:
+        except Exception:
             pass
         try:
             numpy.array(value, dtype=numpy.int32)
             return _lib.harp_type_int32
-        except:
+        except Exception:
             pass
         try:
             numpy.array(value, dtype=numpy.float32)
             return _lib.harp_type_float
-        except:
+        except Exception:
             pass
         try:
             numpy.array(value, dtype=numpy.float64)
             return _lib.harp_type_double
-        except:
+        except Exception:
             pass
         raise UnsupportedTypeError("unsupported type %r" % value.__class__.__name__)
     else:
