@@ -1529,7 +1529,7 @@ def execute_operations(products, operations="", post_operations=""):
         # Create C product.
         c_product_ptr = _ffi.new("harp_product **")
         if _lib.harp_product_new(c_product_ptr) != 0:
-            raise harp.CLibraryError()
+            raise CLibraryError()
         try:
             _export_product(products, c_product_ptr[0])
             if _lib.harp_product_execute_operations(c_product_ptr[0], _encode_string(operations)) != 0:
