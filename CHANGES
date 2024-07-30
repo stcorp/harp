@@ -1,10 +1,12 @@
-1.23 2024-07-29
+1.23 2024-07-30
 ~~~~~~~~~~~~~~~
 
 * Fixed numpy 2.x compatibility issues in python interface.
 
 * Added derivations to retrieve dry air mass/volume mixing ratio from H2O
   mass/volume mixing ratio with regard to dry air.
+
+* Fixed some issues with building the HARP R interface extension.
 
 * Updates to product ingestions:
   - S5P PAL L2 AOT: added support for cloud_fraction vs.
