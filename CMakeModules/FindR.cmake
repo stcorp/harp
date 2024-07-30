@@ -28,6 +28,9 @@ if(R_EXECUTABLE)
   set(R_INCLUDE_DIR "${RHOME}/include")
   set(R_LIBRARY_DIR "${RHOME}/lib")
   set(CMAKE_REQUIRED_INCLUDES ${R_INCLUDE_DIR})
+  # define needed for R>=4.3 with MSVC because of:
+  #   syntax error: missing ';' before identifier 'private_data_c'
+  set(CMAKE_REQUIRED_FLAGS "-DR_LEGACY_RCOMPLEX")
 endif(R_EXECUTABLE)
 
 check_include_file(R.h HAVE_R_H)
