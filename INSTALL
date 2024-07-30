@@ -61,7 +61,7 @@ What you will need
     against them.
 
   - If you plan on using the Python interface you need either Python 2
-    (version 2.7 or higher) or Python 3 (version 3.4 or higher).
+    (version 2.7) or Python 3 (version 3.6 or higher).
     You will also need the Python packages ``numpy`` (version 1.4 or higher)
     and ``cffi`` (version 1.5.2 or higher).
 
