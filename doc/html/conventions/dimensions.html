@@ -156,12 +156,14 @@ kernel, which has dimensions <code class="docutils literal notranslate"><span cl
 necessarily the same for each single sample.</p>
 <p>A grid that differs from sample to sample could have a different effective length per sample. This is implemented by
 taking the maximum length over all samples as the length of the dimension and padding the dimension for each sample at
-the end with ‘invalid’ values (e.g. <code class="docutils literal notranslate"><span class="pre">NaN</span></code>). For instance, you can have an <code class="docutils literal notranslate"><span class="pre">altitude{time,vertical}</span></code> variable where
-<code class="docutils literal notranslate"><span class="pre">altitude[0,:]</span></code> has 7 levels and equals <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">15,</span> <span class="pre">20,</span> <span class="pre">25,</span> <span class="pre">30]</span></code> and <code class="docutils literal notranslate"><span class="pre">altitude[1,:]</span></code> has only 6 levels and
-equals <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">6,</span> <span class="pre">12,</span> <span class="pre">18,</span> <span class="pre">24,</span> <span class="pre">30,</span> <span class="pre">NaN]</span></code>.</p>
+the end with fill values (<code class="docutils literal notranslate"><span class="pre">NaN</span></code> for floating point values, <code class="docutils literal notranslate"><span class="pre">0</span></code> for integers, and empty strings for string values).
+For instance, you can have an <code class="docutils literal notranslate"><span class="pre">altitude{time,vertical}</span></code> variable where <code class="docutils literal notranslate"><span class="pre">altitude[0,:]</span></code> has 7 levels and equals
+<code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">5.0,</span> <span class="pre">10.0,</span> <span class="pre">15.0,</span> <span class="pre">20.0,</span> <span class="pre">25.0,</span> <span class="pre">30.0]</span></code> and <code class="docutils literal notranslate"><span class="pre">altitude[1,:]</span></code> has only 6 levels and equals
+<code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">6.0,</span> <span class="pre">12.0,</span> <span class="pre">18.0,</span> <span class="pre">24.0,</span> <span class="pre">30.0,</span> <span class="pre">NaN]</span></code>.</p>
 <p>Operations performed by HARP will determine the effective length of a dimension for each sample by ignoring all trailing
 <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values of the axis variable that is used for the operation (e.g. the <code class="docutils literal notranslate"><span class="pre">altitude</span></code> or <code class="docutils literal notranslate"><span class="pre">pressure</span></code> variable for a
-vertical dimension or the <code class="docutils literal notranslate"><span class="pre">wavelength</span></code> or <code class="docutils literal notranslate"><span class="pre">wavenumber</span></code> variable for a spectral dimension).</p>
+vertical dimension or the <code class="docutils literal notranslate"><span class="pre">wavelength</span></code> or <code class="docutils literal notranslate"><span class="pre">wavenumber</span></code> variable for a spectral dimension). Axis variables should
+therefore always use floating point values.</p>
 </section>
 
 

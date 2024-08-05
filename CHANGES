@@ -1,3 +1,6 @@
+* Fixed appending non-float variables with different sub-dimensions when
+  using the Python harp.collocate() function.
+
 1.23 2024-07-30
 ~~~~~~~~~~~~~~~
 

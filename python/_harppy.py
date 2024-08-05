@@ -1451,8 +1451,10 @@ def _get_time_length(product):
 def _extend_variable_for_dim(variable, dim_index, new_length):
     shape = list(variable.data.shape)
     shape[dim_index] = new_length - shape[dim_index]
-    filler = numpy.empty(shape, dtype=variable.data.dtype)
-    filler[:] = numpy.nan
+    if variable.data.dtype.kind == 'f':
+        filler = numpy.full(shape, numpy.nan, dtype=variable.data.dtype)
+    else:
+        filler = numpy.zeros(shape, dtype=variable.data.dtype)
     variable.data = numpy.concatenate([variable.data, filler], axis=dim_index)
 
 

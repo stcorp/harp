@@ -69,10 +69,12 @@ necessarily the same for each single sample.
 
 A grid that differs from sample to sample could have a different effective length per sample. This is implemented by
 taking the maximum length over all samples as the length of the dimension and padding the dimension for each sample at
-the end with 'invalid' values (e.g. ``NaN``). For instance, you can have an ``altitude{time,vertical}`` variable where
-``altitude[0,:]`` has 7 levels and equals ``[0, 5, 10, 15, 20, 25, 30]`` and ``altitude[1,:]`` has only 6 levels and
-equals ``[0, 6, 12, 18, 24, 30, NaN]``.
+the end with fill values (``NaN`` for floating point values, ``0`` for integers, and empty strings for string values).
+For instance, you can have an ``altitude{time,vertical}`` variable where ``altitude[0,:]`` has 7 levels and equals
+``[0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0]`` and ``altitude[1,:]`` has only 6 levels and equals
+``[0.0, 6.0, 12.0, 18.0, 24.0, 30.0, NaN]``.
 
 Operations performed by HARP will determine the effective length of a dimension for each sample by ignoring all trailing
 ``NaN`` values of the axis variable that is used for the operation (e.g. the ``altitude`` or ``pressure`` variable for a
-vertical dimension or the ``wavelength`` or ``wavenumber`` variable for a spectral dimension).
+vertical dimension or the ``wavelength`` or ``wavenumber`` variable for a spectral dimension). Axis variables should
+therefore always use floating point values.
