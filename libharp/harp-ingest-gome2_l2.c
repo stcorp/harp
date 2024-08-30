@@ -3104,7 +3104,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
                                                    NULL, description, "seconds since 2000-01-01", NULL,
                                                    read_time_compound);
     path = "/GEOLOCATION/Time[]/Day, /GEOLOCATION/Time[]/MillisecondOfDay";
-    description = "the time values are converted to seconds since 2000-01-01 00:00:00 using time = (Day - 1577836800) "
+    description = "the time values are converted to seconds since 2000-01-01 00:00:00 using time = (Day - 18262) "
         "* 86400 + MillisecondOfDay / 1000";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
