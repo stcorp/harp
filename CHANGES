@@ -1,6 +1,10 @@
 * Fixed appending non-float variables with different sub-dimensions when
   using the Python harp.collocate() function.
 
+* Updates to product ingestions:
+  - GOME-2 L2: added support for O3MARS aerosol layer height and added
+    support for O3MARP V5
+
 1.23 2024-07-30
 ~~~~~~~~~~~~~~~
 

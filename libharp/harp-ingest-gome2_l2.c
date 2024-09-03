@@ -2376,6 +2376,41 @@ static int read_cloud_optical_thickness_error(void *user_data, harp_array data)
                                      "CLOUD_PROPERTIES/CloudOpticalThickness_Error", info->num_main, data);
 }
 
+static int read_aah_error_flag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/AAH_ErrorFlag", harp_type_int32, info->num_main, data);
+}
+
+static int read_absorbing_aerosol_heigth(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolHeight", harp_type_double, info->num_main, data);
+}
+
+static int read_absorbing_aerosol_heigth_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolHeightError", harp_type_double, info->num_main, data);
+}
+
+static int read_absorbing_aerosol_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolPressure", harp_type_double, info->num_main, data);
+}
+
+static int read_absorbing_aerosol_pressure_error(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolPressureError", harp_type_double, info->num_main, data);
+}
+
 static int read_absorbing_aerosol_index_data(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3087,6 +3122,132 @@ static int include_surface_albedo(void *user_data)
 
     /* since not all V2 products have the surface albedo, we only support it from V3 onwards */
     return info->product_version >= 3 && info->detailed_results_type >= 0;
+}
+
+static void register_common_aerosol_variables(harp_product_definition *product_definition)
+{
+    const char *scan_direction_type_values[] = { "forward", "backward" };
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    long dimension_bounds[2] = { -1, 4 };
+    const char *description;
+    const char *path;
+
+    /* datetime */
+    description = "time of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL,
+                                                   read_time_string);
+    path = "/GEOLOCATION/Time[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude */
+    description = "longitude of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude_center);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/LongitudeCenter[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* latitude */
+    description = "latitude of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude_center);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    path = "/GEOLOCATION/LatitudeCenter[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude_bounds */
+    description = "corner longitudes of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
+                                                   dimension_type, dimension_bounds, description, "degree_east", NULL,
+                                                   read_longitude_corner);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/LongitudeCorner[]";
+    description = "the corner coordinates are re-arranged in the order 2-4-3-1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* latitude_bounds */
+    description = "corner latitudes of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
+                                                   dimension_type, dimension_bounds, description, "degree_north", NULL,
+                                                   read_latitude_corner);
+    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    path = "/GEOLOCATION/LatitudeCorner[]";
+    description = "the corner coordinates are re-arranged in the order 2-4-3-1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* solar_azimuth_angle */
+    description = "solar azimuth angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_azimuth_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/SolarAzimuthAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_zenith_angle */
+    description = "solar zenith angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_zenith_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    path = "/GEOLOCATION/SolarZenithAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* viewing_azimuth_angle */
+    description = "viewing azimuth angle at top of atmosphere";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_viewing_azimuth_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, -360.0, 360.0);
+    path = "/GEOLOCATION/LineOfSightAzimuthAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* viewing_zenith_angle */
+    description = "viewing zenith angle at top of atmosphere";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_viewing_zenith_angle);
+    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    path = "/GEOLOCATION/LineOfSightZenithAngle[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* absorbing_aerosol_index */
+    description = "absorbing aerosol index";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_absorbing_aerosol_index_data);
+    path = "/DATA/AAI[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scan_direction_type */
+    description = "scan direction for each measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scan_direction_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_scan_direction);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
+    path = "/GEOLOCATION/ScanDirection[]";
+    description = "subtract 1 to turn values 1,2 into 0,1";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* scene_type */
+    description = "sun glint condition";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_type", harp_type_int32, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_sun_glint_flag);
+    path = "/DATA/SunGlintFlag[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_common_trace_gases_variables(harp_product_definition *product_definition)
@@ -4207,119 +4368,20 @@ static void register_common_trace_gases_options(harp_ingestion_module *module)
 
 static void register_o3marp_product(void)
 {
-    const char *scan_direction_type_values[] = { "forward", "backward" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
-    long dimension_bounds[2] = { -1, 4 };
     const char *description;
     const char *path;
 
     module = harp_ingestion_register_module("GOME2_L2_O3MARP", "GOME-2", "ACSAF", "O3MARP",
-                                            "GOME2 offline absorbing aerosol index product", ingestion_init_aerosol,
-                                            ingestion_done_aerosol);
+                                            "GOME2 offline absorbing aerosol index from PMD product",
+                                            ingestion_init_aerosol, ingestion_done_aerosol);
 
     product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MARP", NULL, read_dimensions);
     harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range_string);
-
-    /* datetime */
-    description = "time of the measurement";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "seconds since 2000-01-01", NULL,
-                                                   read_time_string);
-    path = "/GEOLOCATION/Time[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* longitude */
-    description = "longitude of the measurement";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_east", NULL, read_longitude_center);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
-    path = "/GEOLOCATION/LongitudeCenter[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* latitude */
-    description = "latitude of the measurement";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
-                                                   NULL, description, "degree_north", NULL, read_latitude_center);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
-    path = "/GEOLOCATION/LatitudeCenter[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* longitude_bounds */
-    description = "corner longitudes of the measurement";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
-                                                   dimension_type, dimension_bounds, description, "degree_east", NULL,
-                                                   read_longitude_corner);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
-    path = "/GEOLOCATION/LongitudeCorner[]";
-    description = "the corner coordinates are re-arranged in the order 2-4-3-1";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-
-    /* latitude_bounds */
-    description = "corner latitudes of the measurement";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
-                                                   dimension_type, dimension_bounds, description, "degree_north", NULL,
-                                                   read_latitude_corner);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
-    path = "/GEOLOCATION/LatitudeCorner[]";
-    description = "the corner coordinates are re-arranged in the order 2-4-3-1";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-
-    /* solar_azimuth_angle */
-    description = "solar azimuth angle";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_solar_azimuth_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
-    path = "/GEOLOCATION/SolarAzimuthAngle[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* solar_zenith_angle */
-    description = "solar zenith angle";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_solar_zenith_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
-    path = "/GEOLOCATION/SolarZenithAngle[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* viewing_azimuth_angle */
-    description = "viewing azimuth angle at top of atmosphere";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_viewing_azimuth_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, -360.0, 360.0);
-    path = "/GEOLOCATION/LineOfSightAzimuthAngle[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* viewing_zenith_angle */
-    description = "viewing zenith angle at top of atmosphere";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_viewing_zenith_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
-    path = "/GEOLOCATION/LineOfSightZenithAngle[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* absorbing_aerosol_index */
-    description = "absorbing aerosol index";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_absorbing_aerosol_index_data);
-    path = "/DATA/AAI[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    register_common_aerosol_variables(product_definition);
 
     /* cloud_fraction */
     description = "cloud fraction";
@@ -4329,23 +4391,68 @@ static void register_o3marp_product(void)
                                                    read_pmd_cloud_fraction);
     path = "/DATA/PMD_CloudFraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
 
-    /* scan_direction_type */
-    description = "scan direction for each measurement";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "scan_direction_type", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_scan_direction);
-    harp_variable_definition_set_enumeration_values(variable_definition, 2, scan_direction_type_values);
-    path = "/GEOLOCATION/ScanDirection[]";
-    description = "subtract 1 to turn values 1,2 into 0,1";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+static void register_o3mars_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    const char *description;
+    const char *path;
 
-    /* scene_type */
-    description = "sun glint condition";
+    module = harp_ingestion_register_module("GOME2_L2_O3MARS", "GOME-2", "ACSAF", "O3MARS",
+                                            "GOME2 offline absorbing layer height and absorbing aerosol index product",
+                                            ingestion_init_aerosol, ingestion_done_aerosol);
+
+    product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MARS", NULL, read_dimensions);
+    harp_ingestion_register_datetime_range_read(product_definition, read_datetime_range_string);
+    register_common_aerosol_variables(product_definition);
+
+    /* aerosol_height */
+    description = "absorbing aerosol height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "scene_type", harp_type_int32, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_sun_glint_flag);
-    path = "/DATA/SunGlintFlag[]";
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "km", NULL,
+                                                   read_absorbing_aerosol_heigth);
+    path = "/DATA/AAH_AbsorbingAerosolHeight[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_height_uncertainty */
+    description = "absorbing aerosol height error";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_uncertainty", harp_type_double,
+                                                   1, dimension_type, NULL, description, "km", NULL,
+                                                   read_absorbing_aerosol_heigth_error);
+    path = "/DATA/AAH_AbsorbingAerosolHeightError[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_pressure */
+    description = "absorbing aerosol pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure", harp_type_double, 1,
+                                                   dimension_type, NULL, description, "hPa", NULL,
+                                                   read_absorbing_aerosol_pressure);
+    path = "/DATA/AAH_AbsorbingAerosolPressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_pressure_uncertainty */
+    description = "absorbing aerosol pressure error";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure_uncertainty", harp_type_double,
+                                                   1, dimension_type, NULL, description, "hPa", NULL,
+                                                   read_absorbing_aerosol_pressure_error);
+    path = "/DATA/AAH_AbsorbingAerosolPressureError[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* validity */
+    description = "error flag for absorbing aerosol height";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int32, 1, dimension_type,
+                                                   NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_aah_error_flag);
+    path = "/DATA/AAH_ErrorFlag";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
@@ -4421,6 +4528,7 @@ static void register_ersoto_product(void)
 int harp_ingestion_module_gome2_l2_init(void)
 {
     register_o3marp_product();
+    register_o3mars_product();
     register_o3mnto_product();
     register_o3moto_product();
     register_ersnto_product();
