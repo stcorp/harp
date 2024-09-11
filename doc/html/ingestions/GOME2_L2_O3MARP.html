@@ -157,23 +157,23 @@
 <td><p>[degree]</p></td>
 <td><p>absorbing aerosol index</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>cloud fraction</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>scan_direction_type</strong></p></td>
+<tr class="row-even"><td><p><strong>scan_direction_type</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>scan direction for each measurement; enumeration values: forward (0), backward (1)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>scene_type</strong></p></td>
+<tr class="row-odd"><td><p><strong>scene_type</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>sun glint condition</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>cloud fraction</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -240,20 +240,20 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/DATA/AAI[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/DATA/PMD_CloudFraction[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><p><strong>scan_direction_type</strong></p></td>
+<tr class="row-even"><td rowspan="2"><p><strong>scan_direction_type</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/GEOLOCATION/ScanDirection[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>subtract 1 to turn values 1,2 into 0,1</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>scene_type</strong></p></td>
+<tr class="row-even"><td><p><strong>scene_type</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/DATA/SunGlintFlag[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/DATA/PMD_CloudFraction[]</strong></p></td>
 </tr>
 </tbody>
 </table>

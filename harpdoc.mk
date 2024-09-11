@@ -409,6 +409,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GOME2_L1_sun_reference.html \
 	doc/html/ingestions/GOME2_L1_transmission.html \
 	doc/html/ingestions/GOME2_L2_O3MARP.html \
+	doc/html/ingestions/GOME2_L2_O3MARS.html \
 	doc/html/ingestions/GOME2_L2_O3MNTO.html \
 	doc/html/ingestions/GOME2_L2_O3MOTO.html \
 	doc/html/ingestions/GOME_L1_EXTRACTED.html \
@@ -535,6 +536,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_PAL_L2_AER_OT.html \
 	doc/html/ingestions/S5P_PAL_L2_BRO.html \
 	doc/html/ingestions/S5P_PAL_L2_CHOCHO.html \
+	doc/html/ingestions/S5P_PAL_L2_HDO_S.html \
 	doc/html/ingestions/S5P_PAL_L2_OCLO.html \
 	doc/html/ingestions/S5P_PAL_L2_SIF.html \
 	doc/html/ingestions/S5P_PAL_L2_SO2CBR.html \
@@ -1417,6 +1419,8 @@ doc/html/ingestions/GOME2_L1_transmission.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L2_O3MARP.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/GOME2_L2_O3MARS.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L2_O3MNTO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GOME2_L2_O3MOTO.html:
@@ -1668,6 +1672,8 @@ doc/html/ingestions/S5P_PAL_L2_AER_OT.html:
 doc/html/ingestions/S5P_PAL_L2_BRO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_PAL_L2_CHOCHO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5P_PAL_L2_HDO_S.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_PAL_L2_OCLO.html:
 	$(MAKE) harp_doc

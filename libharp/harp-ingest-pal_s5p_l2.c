@@ -47,6 +47,7 @@ typedef enum pal_s5p_product_type_enum
     pal_s5p_type_aer_ot,
     pal_s5p_type_bro,
     pal_s5p_type_chocho,
+    pal_s5p_type_hdo_s,
     pal_s5p_type_oclo,
     pal_s5p_type_sif,
     pal_s5p_type_so2cbr,
@@ -74,6 +75,7 @@ static const char *pal_s5p_dimension_name[PAL_S5P_NUM_PRODUCT_TYPES][PAL_S5P_NUM
     {"time", "scanline", "ground_pixel", "corner", "wavelength", NULL}, /* pal_s5p_type_aer_ot */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_bro    */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_chocho */
+    {"time", "scanline", "ground_pixel", "corner", NULL, "layer"},      /* pal_s5p_type_hdo_s */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_oclo */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_sif    */
     {"time", "scanline", "ground_pixel", "corner", NULL, "layer"},      /* pal_s5p_type_so2cbr */
@@ -276,8 +278,8 @@ static int read_dataset(coda_cursor cursor,
     return 0;
 }
 
-static int read_array(coda_cursor cursor,
-                      const char *path, harp_data_type data_type, long num_elements, harp_array data)
+static int read_array(coda_cursor cursor, const char *path, harp_data_type data_type, long num_elements,
+                      harp_array data)
 {
     long coda_num_elements;
 
@@ -337,6 +339,46 @@ static int read_array(coda_cursor cursor,
     return 0;
 }
 
+static int read_layer_bounds_from_levels(ingest_info *info, coda_cursor cursor, const char *path, harp_array data)
+{
+    long dimension[2];
+    long num_layers;
+    long i, j;
+
+    if (read_array(cursor, path, harp_type_float, info->num_scanlines * info->num_pixels * (info->num_layers + 1),
+                   data) != 0)
+    {
+        return -1;
+    }
+    /* invert axis */
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers + 1;
+    if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Convert from #levels (== #layers + 1) consecutive altitudes to #layers x 2 altitude bounds. Iterate in reverse to
+     * ensure correct results (conversion is performed in place).
+     */
+    num_layers = info->num_layers;
+
+    for (i = info->num_scanlines * info->num_pixels - 1; i >= 0; i--)
+    {
+        float *level = &data.float_data[i * (num_layers + 1)];
+        float *layer_bounds = &data.float_data[i * num_layers * 2];
+
+        for (j = num_layers - 1; j >= 0; j--)
+        {
+            /* NB. The order of the following two lines is important to ensure correct results. */
+            layer_bounds[j * 2 + 1] = level[j + 1];
+            layer_bounds[j * 2] = level[j];
+        }
+    }
+
+    return 0;
+}
+
 static const char *get_product_type_name(pal_s5p_product_type product_type)
 {
     switch (product_type)
@@ -349,6 +391,8 @@ static const char *get_product_type_name(pal_s5p_product_type product_type)
             return "L2__AER_OT";
         case pal_s5p_type_chocho:
             return "L2__CHOCHO";
+        case pal_s5p_type_hdo_s:
+            return "L2__HDO__S";
         case pal_s5p_type_oclo:
             return "L2__OCLO__";
         case pal_s5p_type_so2cbr:
@@ -677,7 +721,8 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
         dimension[harp_dimension_spectral] = info->num_wavelengths;
     }
 
-    if ((info->product_type == pal_s5p_type_so2cbr) || (info->product_type == pal_s5p_type_tcwv))
+    if ((info->product_type == pal_s5p_type_hdo_s) || (info->product_type == pal_s5p_type_so2cbr) ||
+        (info->product_type == pal_s5p_type_tcwv))
     {
         dimension[harp_dimension_vertical] = info->num_layers;
     }
@@ -963,6 +1008,13 @@ static int read_input_aerosol_index_354_388(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_altitude_bounds(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_layer_bounds_from_levels(info, info->input_data_cursor, "altitude_levels", data);
+}
+
 static int read_input_cloud_albedo(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1089,6 +1141,13 @@ static int read_input_ozone_total_vertical_column_precision(void *user_data, har
 
     return read_dataset(info->input_data_cursor, "ozone_total_vertical_column_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_pressure_bounds(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_layer_bounds_from_levels(info, info->input_data_cursor, "pressure_levels", data);
 }
 
 static int read_input_surface_albedo(void *user_data, harp_array data)
@@ -1264,6 +1323,82 @@ static int read_product_glyoxal_tropospheric_vertical_column_precision(void *use
 
     return read_array(info->product_cursor, "glyoxal_tropospheric_vertical_column_precision", harp_type_float,
                       info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_h2o_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->product_cursor, "h2o_column", harp_type_float, info->num_scanlines * info->num_pixels,
+                      data);
+}
+
+static int read_product_h2o_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->product_cursor, "h2o_column_precision", harp_type_float,
+                      info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_h2o_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_array(info->product_cursor, "h2o_profile_apriori", harp_type_float,
+                   info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    /* invert axis */
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_product_hdo_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->product_cursor, "hdo_column", harp_type_float, info->num_scanlines * info->num_pixels,
+                      data);
+}
+
+static int read_product_hdo_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_array(info->product_cursor, "hdo_column_precision", harp_type_float,
+                      info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_hdo_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_array(info->product_cursor, "hdo_profile_apriori", harp_type_float,
+                   info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    /* invert axis */
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 static int read_product_latitude(void *user_data, harp_array data)
@@ -1558,6 +1693,50 @@ static int read_results_brominemonoxide_total_vertical_column_trueness(void *use
 
     return read_dataset(info->detailed_results_cursor,
                         variable_name, harp_type_float, info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_h2o_column_averaging_kernel(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_array(info->detailed_results_cursor, "h2o_column_averaging_kernel", harp_type_float,
+                   info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    /* invert axis */
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_results_hdo_column_averaging_kernel(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_array(info->detailed_results_cursor, "hdo_column_averaging_kernel", harp_type_float,
+                   info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    /* invert axis */
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    if (harp_array_invert(harp_type_float, 1, 2, dimension, data) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 static int read_results_water_vapor_profile_apriori(void *user_data, harp_array data)
@@ -3001,6 +3180,128 @@ static void register_chocho_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
 }
 
+static void register_hdo_s_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+
+    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_vertical,
+        harp_dimension_independent
+    };
+    long dimension[3] = { -1, -1, 2 };
+
+    module = harp_ingestion_register_module("S5P_PAL_L2_HDO_S", "Sentinel-5P PAL", "S5P_PAL", "L2__HDO__S",
+                                            "Sentinel-5P L2 Heavy Water (HDO) product from SRON/SICOR algorithm",
+                                            ingestion_init, ingestion_done);
+
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_HDO_S", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 0);
+
+    /* altitude_bounds */
+    description = "altitude bounds per profile layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds", harp_type_float, 3,
+                                                   dimension_type, dimension, description, "m", NULL,
+                                                   read_input_altitude_bounds);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/altitude_levels[]";
+    description = "derived from height per level (layer boundary) by repeating the inner levels; the upper bound of "
+        "layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* pressure_bounds */
+    description = "pressure bounds per profile layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
+                                                   dimension_type, dimension, description, "Pa", NULL,
+                                                   read_input_pressure_bounds);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_levels[]";
+    description = "derived from pressure per level (layer boundary) by repeating the inner levels; the upper bound of "
+        "layer k is equal to the lower bound of layer k+1; the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* h2o_column_number_density */
+    description = "Vertically integrated column of water";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "h2o_column_number_density", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "molec/cm2", NULL,
+                                                   read_product_h2o_column);
+    path = "/PRODUCT/h2o_column";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* h2o_column_number_density_uncertainty */
+    description = "Standard error of vertically integrated column of water";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "h2o_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm2",
+                                                   NULL, read_product_h2o_column_precision);
+    path = "/PRODUCT/h2o_column";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* h2o_column_number_density_apriori */
+    description = "A-priori vertically integrated partial column of water in layers";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "h2o_column_number_density_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   "molec/cm2", NULL, read_product_h2o_profile_apriori);
+    path = "/PRODUCT/h2o_column";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* h2o_column_number_density_avk */
+    description = "Column averaging kernel of the vertically integrated column of water";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "h2o_column_number_density_avk",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   "(molec/cm2)/(molec/cm2)", NULL,
+                                                   read_results_h2o_column_averaging_kernel);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/h2o_column_averaging_kernel[]";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* hdo_column_number_density */
+    description = "Vertically integrated column of heavy water";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "hdo_column_number_density", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "molec/cm2", NULL,
+                                                   read_product_hdo_column);
+    path = "/PRODUCT/hdo_column";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* hdo_column_number_density_uncertainty */
+    description = "Standard error of vertically integrated column of heavy water";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "hdo_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm2",
+                                                   NULL, read_product_hdo_column_precision);
+    path = "/PRODUCT/hdo_column";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* hdo_column_number_density_apriori */
+    description = "A-priori vertically integrated partial column of heavy water in layers";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "hdo_column_number_density_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   "molec/cm2", NULL, read_product_hdo_profile_apriori);
+    path = "/PRODUCT/hdo_column";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* hdo_column_number_density_avk */
+    description = "Column averaging kernel of the vertically integrated column of heavy water";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "hdo_column_number_density_avk",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   "(molec/cm2)/(molec/cm2)", NULL,
+                                                   read_results_hdo_column_averaging_kernel);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/hdo_column_averaging_kernel[]";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+}
+
 static void register_oclo_product(void)
 {
     harp_ingestion_module *module;
@@ -3641,6 +3942,7 @@ int harp_ingestion_module_pal_s5p_l2_init(void)
     register_aer_ot_product();
     register_bro_product();
     register_chocho_product();
+    register_hdo_s_product();
     register_oclo_product();
     register_sif_product();
     register_so2cbr_product();
