@@ -96,7 +96,7 @@ typedef struct ingest_info_struct
     int use_summed_total_column;
     int use_radiance_cloud_fraction;
     int use_aer_lh_surface_albedo_772;
-    int use_ch4_bias_corrected;
+    int use_ch4_correction;     /* 0: none, 1: bias corrected, 2: bias and destriping corrected */
     int use_ch4_nir;
     int use_co_corrected;
     int use_co_nd_avk;
@@ -599,7 +599,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_summed_total_column = 1;
     info->use_radiance_cloud_fraction = 0;
     info->use_aer_lh_surface_albedo_772 = 0;
-    info->use_ch4_bias_corrected = 0;
+    info->use_ch4_correction = 0;
     info->use_ch4_nir = 0;
     info->use_co_corrected = 0;
     info->use_co_nd_avk = 0;
@@ -660,7 +660,28 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     if (harp_ingestion_options_has_option(options, "ch4"))
     {
-        info->use_ch4_bias_corrected = 1;
+        if (harp_ingestion_options_get_option(options, "ch4", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "bias_corrected") == 0)
+        {
+            info->use_ch4_correction = 1;
+        }
+        else if (strcmp(option_value, "corrected") == 0)
+        {
+            if (info->processor_version < 20700)
+            {
+                /* destriped column is only available with processor version >= 02.07.00 */
+                /* return an empty product if the columns are not available */
+                /* (i.e. just pick the first definition and leave num_times set to 0) */
+                *definition = *module->product_definition;
+                *user_data = info;
+                return 0;
+            }
+            info->use_ch4_correction = 2;
+        }
     }
     if (harp_ingestion_options_has_option(options, "co"))
     {
@@ -3548,9 +3569,14 @@ static int read_ch4_methane_mixing_ratio(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->use_ch4_bias_corrected)
+    if (info->use_ch4_correction == 1)
     {
         return read_dataset(info->product_cursor, "methane_mixing_ratio_bias_corrected", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    if (info->use_ch4_correction == 2)
+    {
+        return read_dataset(info->product_cursor, "methane_mixing_ratio_bias_corrected_destriped", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
     }
     return read_dataset(info->product_cursor, "methane_mixing_ratio", harp_type_float,
@@ -3561,7 +3587,7 @@ static int read_ch4_surface_albedo(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->use_ch4_bias_corrected)
+    if (info->use_ch4_nir)
     {
         return read_dataset(info->detailed_results_cursor, "surface_albedo_NIR", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
@@ -3574,7 +3600,7 @@ static int read_ch4_surface_albedo_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->use_ch4_bias_corrected)
+    if (info->use_ch4_nir)
     {
         return read_dataset(info->detailed_results_cursor, "surface_albedo_NIR_precision", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
@@ -5275,6 +5301,11 @@ static int include_from_020600(void *user_data)
     return ((ingest_info *)user_data)->processor_version >= 20600;
 }
 
+static int include_from_020700(void *user_data)
+{
+    return ((ingest_info *)user_data)->processor_version >= 20700;
+}
+
 static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims,
                                     int include_validity)
 {
@@ -5788,14 +5819,17 @@ static void register_surface_variables_nir(harp_product_definition *product_defi
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-static void register_snow_ice_flag_variables(harp_product_definition *product_definition, int nise_extension)
+static void register_snow_ice_flag_variables(harp_product_definition *product_definition, int nise_extension,
+                                             int ipf_27_switch)
 {
     const char *path;
     const char *description;
+    const char *mapping_condition = NULL;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     int (*read_snow_ice_type_function)(void *, harp_array);
     int (*read_sea_ice_fraction_function)(void *, harp_array);
+    int (*condition_function)(void *) = NULL;
 
     if (nise_extension)
     {
@@ -5809,26 +5843,31 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
         read_snow_ice_type_function = read_snow_ice_type;
         read_sea_ice_fraction_function = read_sea_ice_fraction;
     }
+    if (ipf_27_switch)
+    {
+        mapping_condition = "processor version >= 02.07.00";
+        condition_function = include_from_020700;
+    }
 
     /* snow_ice_type */
     description = "surface snow/ice type";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   dimension_type, NULL, description, NULL, condition_function,
                                                    read_snow_ice_type_function);
     harp_variable_definition_set_enumeration_values(variable_definition, 5, snow_ice_type_values);
     description = "0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), "
         "other values map to -1";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, mapping_condition, path, description);
 
     /* sea_ice_fraction */
     description = "sea-ice concentration (as a fraction)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sea_ice_fraction", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_sea_ice_fraction_function);
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   condition_function, read_sea_ice_fraction_function);
     description = "if 1 <= snow_ice_flag <= 100 then snow_ice_flag/100.0 else 0.0";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, mapping_condition, path, description);
 }
 
 static void register_snow_ice_flag_variables_nir(harp_product_definition *product_definition)
@@ -5915,6 +5954,8 @@ static void register_aer_ai_product(void)
                                                    harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+
+    register_snow_ice_flag_variables(product_definition, 0, 1);
 }
 
 static void register_aer_lh_product(void)
@@ -6059,12 +6100,12 @@ static void register_aer_lh_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388", NULL);
 
-    register_snow_ice_flag_variables(product_definition, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0);
 }
 
 static void register_ch4_product(void)
 {
-    const char *ch4_options[] = { "bias_corrected" };
+    const char *ch4_options[] = { "bias_corrected", "corrected" };
     const char *band_options[] = { "NIR" };
     const char *path;
     const char *description;
@@ -6081,7 +6122,8 @@ static void register_ch4_product(void)
                                             "Sentinel-5P L2 CH4 total column", ingestion_init, ingestion_done);
 
     harp_ingestion_register_option(module, "ch4", "whether to ingest the 'normal' CH4 column vmr (default) or the "
-                                   "bias corrected CH4 column vmr (ch4=bias_corrected)", 1, ch4_options);
+                                   "bias corrected CH4 column vmr (ch4=bias_corrected), or the bias corrected and "
+                                   "destriping corrected CH4 column vmr (ch4=corrected)", 2, ch4_options);
     harp_ingestion_register_option(module, "band", "whether to retrieve aerosol/cloud/surface properties of "
                                    "the TROPOMI SWIR band (default) or the NIR band (band=NIR)", 1, band_options);
 
@@ -6128,6 +6170,9 @@ static void register_ch4_product(void)
     harp_variable_definition_add_mapping(variable_definition, "ch4 unset", NULL, path, NULL);
     path = "/PRODUCT/methane_mixing_ratio_bias_corrected[]";
     harp_variable_definition_add_mapping(variable_definition, "ch4=bias_corrected", NULL, path, NULL);
+    path = "/PRODUCT/methane_mixing_ratio_bias_corrected_destriped[]";
+    harp_variable_definition_add_mapping(variable_definition, "ch4=corrected", "processor version >= 02.07.00", path,
+                                         NULL);
 
     /* CH4_column_volume_mixing_ratio_dry_air_uncertainty */
     description = "uncertainty of the column averaged dry air mixing ratio of methane (1 sigma error)";
@@ -6251,6 +6296,8 @@ static void register_ch4_product(void)
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+
+    register_snow_ice_flag_variables(product_definition, 0, 1);
 }
 
 static void register_co_product(void)
@@ -6423,6 +6470,8 @@ static void register_co_product(void)
                                                    read_results_scattering_optical_thickness_SWIR);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scattering_optical_thickness_SWIR[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    register_snow_ice_flag_variables(product_definition, 0, 1);
 }
 
 static void register_hcho_product(void)
@@ -6972,7 +7021,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
     register_surface_variables(product_definition, 1, 2);
-    register_snow_ice_flag_variables(product_definition, 1);
+    register_snow_ice_flag_variables(product_definition, 1, 0);
 }
 
 static void register_o3_profile_variables(harp_product_definition *product_definition)
@@ -7189,7 +7238,7 @@ static void register_o3_pr_product(void)
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
     register_surface_variables(product_definition, 1, 1);
-    register_snow_ice_flag_variables(product_definition, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0);
 }
 
 static void register_o3_tcl_product(void)
@@ -7782,7 +7831,7 @@ static void register_no2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1, 1);
-    register_snow_ice_flag_variables(product_definition, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0);
 
     /* tropopause_pressure */
     description = "tropopause pressure";
@@ -8310,7 +8359,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1, 2);
-    register_snow_ice_flag_variables(product_definition, 1);
+    register_snow_ice_flag_variables(product_definition, 1, 0);
 }
 
 static void register_cloud_cal_nir_variables(harp_product_definition *product_definition)
@@ -8544,7 +8593,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1, 2);
-    register_snow_ice_flag_variables(product_definition, 1);
+    register_snow_ice_flag_variables(product_definition, 1, 0);
 }
 
 static void register_cloud_crb_nir_variables(harp_product_definition *product_definition)
@@ -8832,7 +8881,7 @@ static void register_fresco_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
 
     register_surface_variables(product_definition, 0, 1);
-    register_snow_ice_flag_variables(product_definition, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0);
 }
 
 int harp_ingestion_module_s5p_l2_init(void)

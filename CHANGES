@@ -4,6 +4,9 @@
 * Updates to product ingestions:
   - GOME-2 L2: added support for O3MARS aerosol layer height and added
     support for O3MARP V5
+  - S5P L2: added snow_ice_type/sea_ice_fraction ingestion for AAI/CO/CH4
+  - S5P L2 CH4: added 'corrected' option to ingest destriped columns and
+    fixed issue in NIR/SWIR selection of surface albedo
   - S5P PAL L2: added support for SRON/SICOR HDO (L2__HDO__S) product
 
 1.23 2024-07-30

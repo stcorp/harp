@@ -313,6 +313,18 @@
 <td><p>[]</p></td>
 <td><p>precision of the surface albedo</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>snow_ice_type</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sea_ice_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>sea-ice concentration (as a fraction)</p></td>
+</tr>
 <tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
@@ -339,8 +351,8 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>ch4</p></td>
-<td><p>bias_corrected</p></td>
-<td><p>whether to ingest the ‘normal’ CH4 column vmr (default) or the bias corrected CH4 column vmr (ch4=bias_corrected)</p></td>
+<td><p>bias_corrected, corrected</p></td>
+<td><p>whether to ingest the ‘normal’ CH4 column vmr (default) or the bias corrected CH4 column vmr (ch4=bias_corrected), or the bias corrected and destriping corrected CH4 column vmr (ch4=corrected)</p></td>
 </tr>
 <tr class="row-odd"><td><p>band</p></td>
 <td><p>NIR</p></td>
@@ -499,7 +511,7 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>CH4_column_volume_mixing_ratio_dry_air</strong></p></td>
+<tr class="row-odd"><td rowspan="6"><p><strong>CH4_column_volume_mixing_ratio_dry_air</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>ch4 unset</p></td>
 </tr>
@@ -511,6 +523,12 @@
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/methane_mixing_ratio_bias_corrected[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>ch4=corrected and processor version &gt;= 02.07.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/methane_mixing_ratio_bias_corrected_destriped[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>CH4_column_volume_mixing_ratio_dry_air_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -613,6 +631,32 @@
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>snow_ice_type</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.07.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>sea_ice_fraction</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.07.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</p></td>
 </tr>
 </tbody>
 </table>
