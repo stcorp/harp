@@ -2,6 +2,7 @@
   using the Python harp.collocate() function.
 
 * Updates to product ingestions:
+  - ESACCI_GHG: fixed incorrect unit for CH4/CO variables
   - GOME-2 L2: added support for O3MARS aerosol layer height and added
     support for O3MARP V5
   - S5P L2: added snow_ice_type/sea_ice_fraction ingestion for AAI/CO/CH4

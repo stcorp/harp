@@ -574,7 +574,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     description = "CH4 column volume mixing ratio";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "ppbv",
                                                    include_ch4, read_CH4_column_volume_mixing_ratio);
     path = "xch4[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -583,7 +583,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
     description = "CH4 column volume mixing ratio uncertainty";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CH4_column_volume_mixing_ratio_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                   harp_type_double, 1, dimension_type, NULL, description, "ppbv",
                                                    include_ch4, read_CH4_column_volume_mixing_ratio_uncertainty);
     path = "xch4_uncertainty[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -594,7 +594,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
         description = "CO column volume mixing ratio";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "CO_column_volume_mixing_ratio",
-                                                       harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                       harp_type_double, 1, dimension_type, NULL, description, "ppbv",
                                                        NULL, read_CO_column_volume_mixing_ratio);
         path = "xco[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -603,7 +603,7 @@ static void register_fields(harp_product_definition *product_definition, ghg_dat
         description = "CO column volume mixing ratio uncertainty";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "CO_column_volume_mixing_ratio_uncertainty",
-                                                       harp_type_double, 1, dimension_type, NULL, description, "ppmv",
+                                                       harp_type_double, 1, dimension_type, NULL, description, "ppbv",
                                                        NULL, read_CO_column_volume_mixing_ratio_uncertainty);
         path = "xco_uncertainty[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
