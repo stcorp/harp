@@ -3280,6 +3280,14 @@ static void register_hdo_s_product(void)
     path = "/PRODUCT/hdo_column";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* hdo_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "hdo_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_product_qa_value);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+
     /* hdo_column_number_density_apriori */
     description = "A-priori vertically integrated partial column of heavy water in layers";
     variable_definition =
