@@ -217,19 +217,25 @@
 <td><p>[molec/cm2]</p></td>
 <td><p>Standard error of vertically integrated column of heavy water</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>hdo_column_number_density_apriori</strong></p></td>
+<tr class="row-even"><td><p><strong>hdo_column_number_density_validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>hdo_column_number_density_apriori</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[molec/cm2]</p></td>
 <td><p>A-priori vertically integrated partial column of heavy water in layers</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>hdo_column_number_density_avk</strong></p></td>
+<tr class="row-even"><td><p><strong>hdo_column_number_density_avk</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[(molec/cm2)/(molec/cm2)]</p></td>
 <td><p>Column averaging kernel of the vertically integrated column of heavy water</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -346,18 +352,22 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/hdo_column</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>hdo_column_number_density_apriori</strong></p></td>
+<tr class="row-even"><td><p><strong>hdo_column_number_density_validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/qa_value</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>hdo_column_number_density_apriori</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/hdo_column</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>hdo_column_number_density_avk</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>hdo_column_number_density_avk</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/hdo_column_averaging_kernel[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 </tbody>
