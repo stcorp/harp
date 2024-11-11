@@ -356,6 +356,12 @@ This section describes the functions defined by the HARP Python library.
    will be called on each individual matching file. All imported products will then
    be appended into a single merged product and that merged product will be returned.
 
+   If the filename argument is a .pth file, then the products referenced in the .pth
+   file will be treated as a HARP Dataset and its merged content will be returned.
+   Note that the `source_product` attribute of products in a HARP Dataset needs to be
+   unique; if a dataset contains multiple products with the same `source_product` value
+   then only the last product in the list will be kept.
+
    :param str,list filename: Filename, file pattern, .pth file, or list of
                        filenames/patterns/.pths of the product(s) to import
    :param str operations: Actions to apply as part of the import; should be

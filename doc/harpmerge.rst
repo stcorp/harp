@@ -15,6 +15,10 @@ the time dimension and storing the result into a single output file.
           If a file is a .pth file then the file paths from that text file
           (one per line) are included. These file paths can be absolute or
           relative and can point to files, directories, or other .pth files.
+          Note that the 'source_product' attribute of products in a .pth file
+          needs to be unique; if a .pth file references multiple products with
+          the same 'source_product' value then only the last product in the
+          list will be kept.
 
           Options:
               -a, --operations <operation list>

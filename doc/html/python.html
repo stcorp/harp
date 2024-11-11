@@ -560,6 +560,11 @@ modules.</p>
 pattern, or a list of globbing patterns then the harp.import_product() function
 will be called on each individual matching file. All imported products will then
 be appended into a single merged product and that merged product will be returned.</p>
+<p>If the filename argument is a .pth file, then the products referenced in the .pth
+file will be treated as a HARP Dataset and its merged content will be returned.
+Note that the <cite>source_product</cite> attribute of products in a HARP Dataset needs to be
+unique; if a dataset contains multiple products with the same <cite>source_product</cite> value
+then only the last product in the list will be kept.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
