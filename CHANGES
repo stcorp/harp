@@ -1,5 +1,8 @@
+1.24 2024-11-11
+~~~~~~~~~~~~~~~
+
 * Fixed appending non-float variables with different sub-dimensions when
-  using the Python harp.collocate() function.
+  using the Python harp.concatenate() function.
 
 * Updates to product ingestions:
   - ESACCI_GHG: fixed incorrect unit for CH4/CO variables
