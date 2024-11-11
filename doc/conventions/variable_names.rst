@@ -183,8 +183,6 @@ viewing_azimuth_angle                                                          X
 viewing_elevation_angle                                                        X                          [degree]
 viewing_zenith_angle                                                           X                          [degree]
 virtual_temperature                                                            X       X    X             [K]
-volume_circular_depolarization_ratio                                           X       X    X       X     []
-volume_linear_depolarization_ratio                                             X       X    X       X     []
 wavelength                                                                     X                    X     [m]
 wavelength_bounds                                                              X                    X     [m]
 wavelength_irradiance                                                          X                    X     [W/m2/m]
