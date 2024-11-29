@@ -1,3 +1,6 @@
+* Updates to product ingestions:
+  - GEOMS FTIR: reinterpret vmr from old GEOMS templates as dry air vmr.
+
 1.24 2024-11-11
 ~~~~~~~~~~~~~~~
 

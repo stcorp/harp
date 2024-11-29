@@ -181,43 +181,43 @@
 <td><p>[molec/m2]</p></td>
 <td><p>total H2O vertical column</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>NO2_volume_mixing_ratio</strong></p></td>
+<tr class="row-even"><td><p><strong>NO2_volume_mixing_ratio_dry_air</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[ppmv]</p></td>
 <td><p>NO2 volume mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>NO2_volume_mixing_ratio_apriori</strong></p></td>
+<tr class="row-odd"><td><p><strong>NO2_volume_mixing_ratio_dry_air_apriori</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[ppmv]</p></td>
 <td><p>a priori NO2 volume mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>NO2_volume_mixing_ratio_avk</strong></p></td>
+<tr class="row-even"><td><p><strong>NO2_volume_mixing_ratio_dry_air_avk</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>averaging kernel for the NO2 volume mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>NO2_volume_mixing_ratio_covariance</strong></p></td>
+<tr class="row-odd"><td><p><strong>NO2_volume_mixing_ratio_dry_air_covariance</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>, <em>vertical</em>}</p></td>
 <td><p>[(ppmv)2]</p></td>
 <td><p>covariance of the NO2 volume mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>NO2_volume_mixing_ratio_uncertainty_random</strong></p></td>
+<tr class="row-even"><td><p><strong>NO2_volume_mixing_ratio_dry_air_uncertainty_random</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[ppmv]</p></td>
 <td><p>random uncertainty of the NO2 volume mixing ratio</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>NO2_volume_mixing_ratio_uncertainty_systematic</strong></p></td>
+<tr class="row-odd"><td><p><strong>NO2_volume_mixing_ratio_dry_air_uncertainty_systematic</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[ppmv]</p></td>
 <td><p>systematic uncertainty of the NO2 volume mixing ratio</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio</strong></p></td>
+<tr class="row-even"><td><p><strong>H2O_volume_mixing_ratio_dry_air</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[ppmv]</p></td>
@@ -439,7 +439,7 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>unit is converted to molec/m2</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio</strong></p></td>
+<tr class="row-odd"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_dry_air</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -461,7 +461,7 @@
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_apriori</strong></p></td>
+<tr class="row-even"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_dry_air_apriori</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -483,7 +483,7 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_avk</strong></p></td>
+<tr class="row-odd"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_dry_air_avk</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -505,7 +505,7 @@
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_covariance</strong></p></td>
+<tr class="row-even"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_dry_air_covariance</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -527,7 +527,7 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>unit is converted to (ppmv)2; the vertical axis is re-ordered from surface to top-of-atmosphere</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_uncertainty_random</strong></p></td>
+<tr class="row-odd"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_dry_air_uncertainty_random</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -549,7 +549,7 @@
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_uncertainty_systematic</strong></p></td>
+<tr class="row-even"><td rowspan="7"><p><strong>NO2_volume_mixing_ratio_dry_air_uncertainty_systematic</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
@@ -571,7 +571,7 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the vertical axis is re-ordered from surface to top-of-atmosphere; the uncertainty is the square root of the trace of the covariance; unit is converted to ppmv</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><p><strong>H2O_volume_mixing_ratio</strong></p></td>
+<tr class="row-odd"><td rowspan="6"><p><strong>H2O_volume_mixing_ratio_dry_air</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>solar measurement</p></td>
 </tr>

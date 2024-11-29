@@ -1555,9 +1555,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         }
     }
 
-    /* <gas>_volume_mixing_ratio */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio%s", harp_gas_name[gas],
-             version < 3 ? "" : "_dry_air");
+    /* <gas>_volume_mixing_ratio_dry_air */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_dry_air", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
@@ -1584,9 +1583,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
                                              description);
     }
 
-    /* <gas>_volume_mixing_ratio_apriori */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio%s_apriori", harp_gas_name[gas],
-             version < 3 ? "" : "_dry_air");
+    /* <gas>_volume_mixing_ratio_dry_air_apriori */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_dry_air_apriori", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "a priori %s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "ppmv",
@@ -1618,9 +1616,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, description);
     }
 
-    /* <gas>_volume_mixing_ratio_avk */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio%s_avk", harp_gas_name[gas],
-             version < 3 ? "" : "_dry_air");
+    /* <gas>_volume_mixing_ratio_dry_air_avk */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_dry_air_avk", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "averaging kernel for the %s volume mixing ratio",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
@@ -1648,9 +1645,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
                                              description);
     }
 
-    /* <gas>_volume_mixing_ratio_covariance */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio%s_covariance", harp_gas_name[gas],
-             version < 3 ? "" : "_dry_air");
+    /* <gas>_volume_mixing_ratio_dry_air_covariance */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_dry_air_covariance", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "covariance of the %s volume mixing ratio", harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 3, dimension_type, NULL, gas_description, "(ppmv)2",
@@ -1681,9 +1677,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
                                              description);
     }
 
-    /* <gas>_volume_mixing_ratio_uncertainty_random */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio%s_uncertainty_random", harp_gas_name[gas],
-             version < 3 ? "" : "_dry_air");
+    /* <gas>_volume_mixing_ratio_dry_air_uncertainty_random */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_dry_air_uncertainty_random", harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s volume mixing ratio",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
@@ -1716,9 +1711,9 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
                                              description);
     }
 
-    /* <gas>_volume_mixing_ratio_uncertainty_systematic */
-    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio%s_uncertainty_systematic", harp_gas_name[gas],
-             version < 3 ? "" : "_dry_air");
+    /* <gas>_volume_mixing_ratio_dry_air_uncertainty_systematic */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_volume_mixing_ratio_dry_air_uncertainty_systematic",
+             harp_gas_name[gas]);
     snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "systematic uncertainty of the %s volume mixing ratio",
              harp_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
@@ -1752,8 +1747,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
 
     if (gas != ftir_H2O)
     {
-        /* H2O_volume_mixing_ratio */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "H2O_volume_mixing_ratio%s", version < 3 ? "" : "_dry_air");
+        /* H2O_volume_mixing_ratio_dry_air */
+        snprintf(gas_var_name, MAX_NAME_LENGTH, "H2O_volume_mixing_ratio_dry_air");
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL,
              "H2O volume mixing ratio", "ppmv", NULL, read_h2o_vmr);
