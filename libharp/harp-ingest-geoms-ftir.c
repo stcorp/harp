@@ -1748,9 +1748,8 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     if (gas != ftir_H2O)
     {
         /* H2O_volume_mixing_ratio_dry_air */
-        snprintf(gas_var_name, MAX_NAME_LENGTH, "H2O_volume_mixing_ratio_dry_air");
         variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL,
+            (product_definition, "H2O_volume_mixing_ratio_dry_air", harp_type_double, 2, dimension_type, NULL,
              "H2O volume mixing ratio", "ppmv", NULL, read_h2o_vmr);
         description = "unit is converted to ppmv; the vertical axis is re-ordered from surface to top-of-atmosphere";
         if (version == 1)
