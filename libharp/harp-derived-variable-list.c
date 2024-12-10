@@ -791,26 +791,34 @@ static int get_longitude_bounds_from_midpoints(harp_variable *variable, const ha
     /* wrap values to [-180,180] */
     for (i = 0; i < variable->num_elements; i++)
     {
-        while (variable->data.double_data[i] < -180)
+        if (variable->data.double_data[i] < -1e4 || variable->data.double_data[i] > 1e4)
         {
-            if (-180 - variable->data.double_data[i] < EPSILON)
-            {
-                variable->data.double_data[i] = -180;
-            }
-            else
-            {
-                variable->data.double_data[i] += 360;
-            }
+            /* map excessive out of bounds longitude values to NaN */
+            variable->data.double_data[i] = harp_nan();
         }
-        while (variable->data.double_data[i] > 180)
+        else
         {
-            if (variable->data.double_data[i] - 180 < EPSILON)
+            while (variable->data.double_data[i] < -180)
             {
-                variable->data.double_data[i] = 180;
+                if (-180 - variable->data.double_data[i] < EPSILON)
+                {
+                    variable->data.double_data[i] = -180;
+                }
+                else
+                {
+                    variable->data.double_data[i] += 360;
+                }
             }
-            else
+            while (variable->data.double_data[i] > 180)
             {
-                variable->data.double_data[i] -= 360;
+                if (variable->data.double_data[i] - 180 < EPSILON)
+                {
+                    variable->data.double_data[i] = 180;
+                }
+                else
+                {
+                    variable->data.double_data[i] -= 360;
+                }
             }
         }
     }

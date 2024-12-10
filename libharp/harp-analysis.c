@@ -402,13 +402,21 @@ double harp_relative_azimuth_angle_from_sensor_and_solar_azimuth_angles(double s
 {
     double angle = sensor_azimuth_angle - solar_azimuth_angle;
 
-    while (angle < 0)
+    if (angle < -1e4 || angle > 1e4)
     {
-        angle += 360;
+        /* use generic wrap for excessive angle values */
+        angle = harp_wrap(angle, 0, 360);
     }
-    while (angle >= 360)
+    else
     {
-        angle -= 360;
+        while (angle < 0)
+        {
+            angle += 360;
+        }
+        while (angle >= 360)
+        {
+            angle -= 360;
+        }
     }
 
     if (angle > 180)

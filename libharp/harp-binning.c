@@ -584,13 +584,21 @@ static void make_2d_polygon(long *num_elements, double *latitude, double *longit
 
     for (i = 1; i < *num_elements; i++)
     {
-        while (longitude[i] < longitude[i - 1] - 180)
+        if (longitude[i] - longitude[i - 1] < -1e4 || longitude[i] - longitude[i - 1] > 1e4)
         {
-            longitude[i] += 360;
+            /* use generic wrap for excessive angle values */
+            longitude[i] = harp_wrap(longitude[i], longitude[i - 1] - 180, longitude[i - 1] + 180);
         }
-        while (longitude[i] > longitude[i - 1] + 180)
+        else
         {
-            longitude[i] -= 360;
+            while (longitude[i] < longitude[i - 1] - 180)
+            {
+                longitude[i] += 360;
+            }
+            while (longitude[i] > longitude[i - 1] + 180)
+            {
+                longitude[i] -= 360;
+            }
         }
 
         if (latitude[i] < min_lat)
@@ -614,13 +622,21 @@ static void make_2d_polygon(long *num_elements, double *latitude, double *longit
 
     /* close the polygon (this could have a different longitude, due to the ref_lon mapping) */
     lon = longitude[0];
-    while (lon < longitude[(*num_elements) - 1] - 180)
+    if (lon - longitude[(*num_elements) - 1] < -1e4 || lon - longitude[(*num_elements) - 1] > 1e4)
     {
-        lon += 360;
+        /* use generic wrap for excessive angle values */
+        lon = harp_wrap(lon, longitude[(*num_elements) - 1] - 180, longitude[(*num_elements) - 1] + 180);
     }
-    while (lon > longitude[(*num_elements) - 1] + 180)
+    else
     {
-        lon -= 360;
+        while (lon < longitude[(*num_elements) - 1] - 180)
+        {
+            lon += 360;
+        }
+        while (lon > longitude[(*num_elements) - 1] + 180)
+        {
+            lon -= 360;
+        }
     }
     if (lon < min_lon)
     {
