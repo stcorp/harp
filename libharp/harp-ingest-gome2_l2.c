@@ -3250,6 +3250,27 @@ static void register_common_aerosol_variables(harp_product_definition *product_d
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void register_ozone_profile_variables(harp_product_definition *product_definition)
+{
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
+    long dimension_bounds[2] = { -1, 4 };
+    const char *description;
+    const char *path;
+
+#if 0
+    /* datetime */
+    description = "time of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
+                                                   NULL, description, "seconds since 2000-01-01", NULL,
+                                                   read_time_string);
+    path = "/GEOLOCATION/Time";
+    description = "the time values are converted from a string to seconds since 2000-01-01 00:00:00";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+#endif
+}
+
 static void register_common_trace_gases_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
@@ -4456,6 +4477,34 @@ static void register_o3mars_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void register_o3mnhp_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+
+    module = harp_ingestion_register_module("GOME2_L2_O3MNHP", "GOME-2", "ACSAF", "O3MNHP",
+                                            "GOME2 near-real-time high-resolution ozone profile product",
+                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+
+    /* O3MNTO product */
+    product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MNHP", NULL, read_dimensions);
+    register_ozone_profile_variables(product_definition);
+}
+
+static void register_o3mohp_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+
+    module = harp_ingestion_register_module("GOME2_L2_O3MOHP", "GOME-2", "ACSAF", "O3MOHP",
+                                            "GOME2 offline high-resolution ozone profile product",
+                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+
+    /* O3MOTO product */
+    product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MOHP", NULL, read_dimensions);
+    register_ozone_profile_variables(product_definition);
+}
+
 static void register_o3mnto_product(void)
 {
     harp_ingestion_module *module;
@@ -4524,11 +4573,12 @@ static void register_ersoto_product(void)
     register_scan_variables(product_definition, 1);
 }
 
-
 int harp_ingestion_module_gome2_l2_init(void)
 {
     register_o3marp_product();
     register_o3mars_product();
+    register_o3mnhp_product();
+    register_o3mohp_product();
     register_o3mnto_product();
     register_o3moto_product();
     register_ersnto_product();
