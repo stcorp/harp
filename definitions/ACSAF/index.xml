@@ -121,6 +121,15 @@
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
+  <cd:ProductType name="O3MOHP">
+    <cd:Description>GOME offline high-resolution ozone profile product</cd:Description>
+    <cd:ProductDefinition id="O3MOHP" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the HDF5 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>str(/Metadata@ProductType[0]) == "O3MOHP"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
   <cd:ProductType name="O3MARP">
     <cd:Description>GOME offline absorbing aerosol index product</cd:Description>
     <cd:ProductDefinition id="O3MARP_v4" format="hdf5" version="4">
