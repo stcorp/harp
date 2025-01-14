@@ -3,7 +3,9 @@ channels:
   - conda-forge
 dependencies:
   - breathe==4.35.0
-  - doxygen
-  - sphinx
-  - sphinx-autobuild
-  - sphinx_rtd_theme
+  - docutils==0.19
+  - doxygen==1.10.0
+  - pygments==2.18.0
+  - sphinx==6.2.1
+  - sphinx-autobuild==2024.2.4
+  - sphinx_rtd_theme==2.0.0
