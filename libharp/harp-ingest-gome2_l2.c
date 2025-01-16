@@ -2418,7 +2418,7 @@ static int read_scene_albedo(void *user_data, harp_array data)
     return read_albedo_from_state(user_data, "DATA/StateRetrieved", data);
 }
 
-static int read_o3_profile_avk(void *user_data, harp_array data)
+static int read_matrix_from_state(void *user_data, const char *path, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     harp_array kernel;
@@ -2432,8 +2432,7 @@ static int read_o3_profile_avk(void *user_data, harp_array data)
         return -1;
     }
 
-    if (read_dataset(info, "DATA/AveragingKernel", harp_type_float, info->num_main * info->num_state * info->num_state,
-                     kernel) != 0)
+    if (read_dataset(info, path, harp_type_float, info->num_main * info->num_state * info->num_state, kernel) != 0)
     {
         free(kernel.ptr);
         return -1;
@@ -2456,6 +2455,23 @@ static int read_o3_profile_avk(void *user_data, harp_array data)
     free(kernel.ptr);
 
     return 0;
+}
+
+static int read_o3_profile_avk(void *user_data, harp_array data)
+{
+    return read_matrix_from_state(user_data, "DATA/AveragingKernel", data);
+}
+
+static int read_o3_profile_covariance(void *user_data, harp_array data)
+{
+    return read_matrix_from_state(user_data, "DATA/AveragingKernel", data);
+}
+
+static int read_tropopause_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "DATA/TropopausePressure", harp_type_float, info->num_main, data);
 }
 
 static int read_o3_temperature(void *user_data, harp_array data)
@@ -2822,6 +2838,24 @@ static int read_index_in_scan(void *user_data, harp_array data)
     {
         assert(info->index_in_scan_buffer.int32_data[i] >= 0 && info->index_in_scan_buffer.int32_data[i] <= 127);
         data.int8_data[i] = (int8_t)info->index_in_scan_buffer.int32_data[i];
+    }
+
+    return 0;
+}
+
+static int read_index_in_scan_offbyone(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i;
+
+    if (read_index_in_scan(user_data, data) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        data.int8_data[i] -= 1;
     }
 
     return 0;
@@ -3672,6 +3706,16 @@ static void register_ozone_profile_variables(harp_product_definition *product_de
     description = "the time values are converted from a string to seconds since 2000-01-01 00:00:00";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* scan_subindex */
+    description = "the relative index of this measurement within a scan";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scan_subindex", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_index_in_scan_offbyone);
+    description = "index is reduced by 1 to make it a zero-based index";
+    path = "/GEOLOCATION/IndexInScan[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
     /* longitude */
     description = "longitude of the measurement";
     variable_definition =
@@ -3783,6 +3827,15 @@ static void register_ozone_profile_variables(harp_product_definition *product_de
     path = "/DATA/OutputPressureGrid";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* tropopause_pressure */
+    description = "pressure level of the troposphere/stratosphere boundary location";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "hPa", NULL,
+                                                   read_tropopause_pressure);
+    path = "/DATA/TropopausePressure";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
     /* O3_column_number_density */
     description = "o3 partial column density profile";
     variable_definition =
@@ -3808,6 +3861,16 @@ static void register_ozone_profile_variables(harp_product_definition *product_de
                                                    3, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_o3_profile_avk);
     path = "/DATA/AveragingKernel[0..NOutputLayers,0..NOutputLayers,:]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_covariance */
+    dimension_type[2] = harp_dimension_vertical;
+    description = "o3 partial column density covariance matrix";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_covariance",
+                                                   harp_type_float, 3, dimension_type, NULL, description,
+                                                   "DU", NULL, read_o3_profile_covariance);
+    path = "/DATA/ErrorCovarianceTotal[0..NOutputLayers,0..NOutputLayers,:]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* validity */
