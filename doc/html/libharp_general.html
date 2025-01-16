@@ -279,17 +279,41 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv417harp_convert_unitPKcPKclPd">
-<span id="_CPPv317harp_convert_unitPKcPKclPd"></span><span id="_CPPv217harp_convert_unitPKcPKclPd"></span><span id="harp_convert_unit__cCP.cCP.l.doubleP"></span><span class="target" id="group__harp__general_1gaf2f2e7ffc3090f796385669ed69f92e9"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_convert_unit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">from_unit</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">to_unit</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_values</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><br /></dt>
-<dd><p>Perform unit conversion on data</p>
-<p>Apply unit conversion on a range of floating point values. Conversion will be performed in-place. If there is no conversion available from the current unit to the new unit then an error will be raised. </p>
+<dt class="sig sig-object cpp" id="_CPPv423harp_convert_unit_floatPKcPKclPf">
+<span id="_CPPv323harp_convert_unit_floatPKcPKclPf"></span><span id="_CPPv223harp_convert_unit_floatPKcPKclPf"></span><span id="harp_convert_unit_float__cCP.cCP.l.floatP"></span><span class="target" id="group__harp__general_1gaec658a7873b6a19c57d0b4ee25344339"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_convert_unit_float</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">from_unit</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">to_unit</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_values</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Perform unit conversion on single precision floating point data</p>
+<p>Apply unit conversion on a range of single precision floating point values. Conversion will be performed in-place. If there is no conversion available from the current unit to the new unit then an error will be raised. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_unit</strong> – Existing unit of the data that should be converted (use udunits2 compliant units). </p></li>
 <li><p><strong>to_unit</strong> – Unit to which the data should be converted (use udunits2 compliant units). </p></li>
 <li><p><strong>num_values</strong> – Number of floating point values in <em>value</em>. </p></li>
-<li><p><strong>value</strong> – Array of floating point values that should be converted. </p></li>
+<li><p><strong>value</strong> – Array of single precision floating point values that should be converted. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424harp_convert_unit_doublePKcPKclPd">
+<span id="_CPPv324harp_convert_unit_doublePKcPKclPd"></span><span id="_CPPv224harp_convert_unit_doublePKcPKclPd"></span><span id="harp_convert_unit_double__cCP.cCP.l.doubleP"></span><span class="target" id="group__harp__general_1gac11a6b503bf71db39ac81486913a7280"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_convert_unit_double</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">from_unit</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">to_unit</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_values</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Perform unit conversion on double precision floating point data</p>
+<p>Apply unit conversion on a range of double precision floating point values. Conversion will be performed in-place. If there is no conversion available from the current unit to the new unit then an error will be raised. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_unit</strong> – Existing unit of the data that should be converted (use udunits2 compliant units). </p></li>
+<li><p><strong>to_unit</strong> – Unit to which the data should be converted (use udunits2 compliant units). </p></li>
+<li><p><strong>num_values</strong> – Number of floating point values in <em>value</em>. </p></li>
+<li><p><strong>value</strong> – Array of double precision floating point values that should be converted. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

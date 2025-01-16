@@ -1,4 +1,9 @@
+* Added harp_convert_unit_double() and harp_convert_unit_float().
+  harp_convert_unit() is now deprecated.
+
 * Updates to product ingestions:
+  - GOME2 L2: added support for NHP/OHP ozone profile products and all
+    products now use float instead of double for most variables.
   - GEOMS FTIR: reinterpret vmr from old GEOMS templates as dry air vmr.
 
 1.24 2024-11-11

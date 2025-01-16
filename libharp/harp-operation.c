@@ -263,7 +263,7 @@ static int eval_comparison(harp_operation_comparison_filter *operation, harp_dat
 
     if (operation->unit_converter != NULL)
     {
-        double_value = harp_unit_converter_convert(operation->unit_converter, double_value);
+        double_value = harp_unit_converter_convert_double(operation->unit_converter, double_value);
     }
 
     switch (operation->operator_type)
@@ -315,7 +315,7 @@ static int eval_longitude_range(harp_operation_longitude_range_filter *operation
 
     if (operation->unit_converter != NULL)
     {
-        double_value = harp_unit_converter_convert(operation->unit_converter, double_value);
+        double_value = harp_unit_converter_convert_double(operation->unit_converter, double_value);
     }
 
     /* map longitude to [min,min+360) */
@@ -354,7 +354,7 @@ static int eval_membership(harp_operation_membership_filter *operation, harp_dat
 
     if (operation->unit_converter != NULL)
     {
-        double_value = harp_unit_converter_convert(operation->unit_converter, double_value);
+        double_value = harp_unit_converter_convert_double(operation->unit_converter, double_value);
     }
 
     for (i = 0; i < operation->num_values; i++)

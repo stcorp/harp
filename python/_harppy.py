@@ -1598,7 +1598,8 @@ def execute_operations(products, operations="", post_operations=""):
 def convert_unit(from_unit, to_unit, values):
     values = numpy.array(values, dtype=numpy.double)
     c_data = _ffi.cast("double *", values.ctypes.data)
-    if _lib.harp_convert_unit(_encode_string(from_unit), _encode_string(to_unit), numpy.size(values), c_data) != 0:
+    if _lib.harp_convert_unit_double(_encode_string(from_unit), _encode_string(to_unit), numpy.size(values),
+                                     c_data) != 0:
         raise CLibraryError()
     return values
 

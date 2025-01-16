@@ -104,61 +104,61 @@
 <td><p>time of the measurement</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>longitude</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_east]</p></td>
 <td><p>longitude of the measurement</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>latitude</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_north]</p></td>
 <td><p>latitude of the measurement</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>longitude_bounds</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_east]</p></td>
 <td><p>corner longitudes of the measurement</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>latitude_bounds</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_north]</p></td>
 <td><p>corner latitudes of the measurement</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_solar_zenith_angle</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>solar zenith angle at the sensor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>solar zenith angle at top of atmosphere</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>viewing_zenith_angle</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>viewing zenith angle at top of atmosphere</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>relative_azimuth_angle</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>relative azimuth angle at top of atmosphere</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>BrO_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>BrO column number density</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>BrO_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the BrO column number density</p></td>
@@ -170,13 +170,13 @@
 <td><p>quality flags for BrO retrieval</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>H2O_column_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[kg/m^2]</p></td>
 <td><p>H2O column mass density</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>H2O_column_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[kg/m^2]</p></td>
 <td><p>uncertainty of the H2O column mass density</p></td>
@@ -188,13 +188,13 @@
 <td><p>quality flags for H2O retrieval</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>HCHO_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>HCHO column number density</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>HCHO_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the HCHO column number density</p></td>
@@ -206,13 +206,13 @@
 <td><p>quality flags for HCHO retrieval</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>NO2_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>NO2 column number density</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the NO2 column number density</p></td>
@@ -224,13 +224,13 @@
 <td><p>quality flags for NO2 retrieval</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>tropospheric NO2 column number density</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the tropospheric NO2 column number density</p></td>
@@ -242,13 +242,13 @@
 <td><p>quality flags for tropospheric NO2 retrieval</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm2]</p></td>
 <td><p>O3 column number density</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>O3_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm2]</p></td>
 <td><p>uncertainty of the O3 column number density</p></td>
@@ -260,13 +260,13 @@
 <td><p>quality flags for O3 retrieval</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>OClO_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>OClO column number density</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>OClO_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the OClO column number density</p></td>
@@ -278,13 +278,13 @@
 <td><p>quality flags for OClO retrieval</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm2]</p></td>
 <td><p>SO2 column number density</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm2]</p></td>
 <td><p>uncertainty of the SO2 column number density</p></td>
@@ -296,301 +296,301 @@
 <td><p>quality flags for SO2 retrieval</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>BrO_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>BrO air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>BrO_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the BrO air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>H2O_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>H2O air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>H2O_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the H2O air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>HCHO_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>HCHO air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>HCHO_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the HCHO air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>NO2_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>NO2 air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>NO2_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the NO2 air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>tropospheric_NO2_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>tropospheric NO2 air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>tropospheric_NO2_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the tropospheric NO2 air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>O3_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>O3 air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>O3_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the O3 air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>OClO_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>OClO air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>OClO_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the OClO air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density_amf</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>SO2 air mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_column_number_density_amf_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the SO2 air mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>BrO_slant_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>BrO retrieved effective slant column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>BrO_slant_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the BrO retrieved effective slant column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>H2O_slant_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>H2O retrieved effective slant column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>H2O_slant_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the H2O retrieved effective slant column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>HCHO_slant_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>HCHO retrieved effective slant column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>HCHO_slant_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the HCHO retrieved effective slant column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>NO2_slant_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>NO2 retrieved effective slant column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>NO2_slant_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the NO2 retrieved effective slant column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>O3_slant_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>O3 retrieved effective slant column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>O3_slant_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the O3 retrieved effective slant column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>OClO_slant_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>OClO retrieved effective slant column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>OClO_slant_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the OClO retrieved effective slant column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_slant_column_number_density</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>SO2 retrieved effective slant column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_slant_column_number_density_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[molec/cm^2]</p></td>
 <td><p>uncertainty of the SO2 retrieved effective slant column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>O3_effective_temperature</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[K]</p></td>
 <td><p>fitted ozone temperature</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>pressure</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>pressure levels</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>HCHO_volume_mixing_ratio_dry_air_apriori</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[ppv]</p></td>
 <td><p>a priori HCHO volume mixing ratio profile</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>HCHO_column_number_density_avk</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>HCHO column averaging kernel</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>NO2_volume_mixing_ratio_dry_air_apriori</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[ppv]</p></td>
 <td><p>a priori NO2 volume mixing ratio profile</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>NO2_column_number_density_avk</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>NO2 column averaging kernel</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>surface albedo</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud fraction</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the cloud fraction</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>cloud top pressure</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>uncertainty of the cloud top pressure</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_top_height</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[km]</p></td>
 <td><p>cloud top height</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>cloud_top_height_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[km]</p></td>
 <td><p>uncertainty of the cloud top height</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_top_albedo</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud top albedo</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>cloud_top_albedo_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the cloud top albedo</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_optical_depth</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud optical depth</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>cloud_optical_depth_uncertainty</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the cloud optical depth</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>absorbing aerosol index</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_heigth</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[km]</p></td>
 <td><p>surface height</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
-<td><p>double</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[hPa]</p></td>
 <td><p>surface pressure</p></td>

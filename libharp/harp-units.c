@@ -392,12 +392,27 @@ int harp_unit_converter_new(const char *from_unit, const char *to_unit, harp_uni
     return 0;
 }
 
-double harp_unit_converter_convert(const harp_unit_converter *unit_converter, double value)
+float harp_unit_converter_convert_float(const harp_unit_converter *unit_converter, float value)
+{
+    return cv_convert_float(unit_converter->converter, value);
+}
+
+double harp_unit_converter_convert_double(const harp_unit_converter *unit_converter, double value)
 {
     return cv_convert_double(unit_converter->converter, value);
 }
 
-void harp_unit_converter_convert_array(const harp_unit_converter *unit_converter, long num_values, double *value)
+void harp_unit_converter_convert_array_float(const harp_unit_converter *unit_converter, long num_values, float *value)
+{
+    float *value_end;
+
+    for (value_end = value + num_values; value != value_end; value++)
+    {
+        *value = cv_convert_float(unit_converter->converter, *value);
+    }
+}
+
+void harp_unit_converter_convert_array_double(const harp_unit_converter *unit_converter, long num_values, double *value)
 {
     double *value_end;
 
@@ -439,19 +454,25 @@ int harp_unit_compare(const char *unit_a, const char *unit_b)
     return result;
 }
 
-/** Perform unit conversion on data
+/* this function is deprecated */
+LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value)
+{
+    return harp_convert_unit_double(from_unit, to_unit, num_values, value);
+}
+
+/** Perform unit conversion on single precision floating point data
  * \ingroup harp_general
- * Apply unit conversion on a range of floating point values. Conversion will be performed in-place.
+ * Apply unit conversion on a range of single precision floating point values. Conversion will be performed in-place.
  * If there is no conversion available from the current unit to the new unit then an error will be raised.
  * \param from_unit Existing unit of the data that should be converted (use udunits2 compliant units).
  * \param to_unit Unit to which the data should be converted (use udunits2 compliant units).
  * \param num_values Number of floating point values in \a value.
- * \param value Array of floating point values that should be converted.
+ * \param value Array of single precision floating point values that should be converted.
  * \return
  *   \arg \c 0, Success.
  *   \arg \c -1, Error occurred (check #harp_errno).
  */
-LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value)
+LIBHARP_API int harp_convert_unit_float(const char *from_unit, const char *to_unit, long num_values, float *value)
 {
     harp_unit_converter *unit_converter;
 
@@ -461,17 +482,47 @@ LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, lo
     }
 
     /* Perform unit conversion. */
-    harp_unit_converter_convert_array(unit_converter, num_values, value);
+    harp_unit_converter_convert_array_float(unit_converter, num_values, value);
 
     harp_unit_converter_delete(unit_converter);
     return 0;
 }
 
+/** Perform unit conversion on double precision floating point data
+ * \ingroup harp_general
+ * Apply unit conversion on a range of double precision floating point values. Conversion will be performed in-place.
+ * If there is no conversion available from the current unit to the new unit then an error will be raised.
+ * \param from_unit Existing unit of the data that should be converted (use udunits2 compliant units).
+ * \param to_unit Unit to which the data should be converted (use udunits2 compliant units).
+ * \param num_values Number of floating point values in \a value.
+ * \param value Array of double precision floating point values that should be converted.
+ * \return
+ *   \arg \c 0, Success.
+ *   \arg \c -1, Error occurred (check #harp_errno).
+ */
+LIBHARP_API int harp_convert_unit_double(const char *from_unit, const char *to_unit, long num_values, double *value)
+{
+    harp_unit_converter *unit_converter;
+
+    if (harp_unit_converter_new(from_unit, to_unit, &unit_converter) != 0)
+    {
+        return -1;
+    }
+
+    /* Perform unit conversion. */
+    harp_unit_converter_convert_array_double(unit_converter, num_values, value);
+
+    harp_unit_converter_delete(unit_converter);
+    return 0;
+}
+
+
 /** Perform unit conversion on a variable
  * \ingroup harp_variable
  * Apply an automatic conversion on the variable to arrive at the new given unit.
  * If there is no conversion available from the current unit to the new unit then an error will be raised.
- * The data type of the variable will be changed to 'double' as part of the conversion.
+ * The data type of the variable will be changed to 'double' as part of the conversion if it is not already using a
+ * floating point data type.
  * \param variable Variable on which the apply unit conversion.
  * \param target_unit Unit to which the variable should be converted (use udunits2 compliant units).
  * \return
@@ -488,21 +539,39 @@ LIBHARP_API int harp_variable_convert_unit(harp_variable *variable, const char *
         return -1;
     }
 
-    /* Convert to double */
-    if (harp_variable_convert_data_type(variable, harp_type_double) != 0)
+    if (variable->data_type == harp_type_float)
     {
-        harp_unit_converter_delete(unit_converter);
-        return -1;
+        /* Scale the data */
+        harp_unit_converter_convert_array_float(unit_converter, variable->num_elements, variable->data.float_data);
+
+        /* Update valid_min */
+        variable->valid_min.float_data = harp_unit_converter_convert_float(unit_converter,
+                                                                           variable->valid_min.float_data);
+
+        /* Update valid_max */
+        variable->valid_max.float_data = harp_unit_converter_convert_float(unit_converter,
+                                                                           variable->valid_max.float_data);
     }
+    else
+    {
+        /* Convert to double */
+        if (harp_variable_convert_data_type(variable, harp_type_double) != 0)
+        {
+            harp_unit_converter_delete(unit_converter);
+            return -1;
+        }
 
-    /* Scale the data */
-    harp_unit_converter_convert_array(unit_converter, variable->num_elements, variable->data.double_data);
+        /* Scale the data */
+        harp_unit_converter_convert_array_double(unit_converter, variable->num_elements, variable->data.double_data);
 
-    /* Update valid_min */
-    variable->valid_min.double_data = harp_unit_converter_convert(unit_converter, variable->valid_min.double_data);
+        /* Update valid_min */
+        variable->valid_min.double_data = harp_unit_converter_convert_double(unit_converter,
+                                                                             variable->valid_min.double_data);
 
-    /* Update valid_max */
-    variable->valid_max.double_data = harp_unit_converter_convert(unit_converter, variable->valid_max.double_data);
+        /* Update valid_max */
+        variable->valid_max.double_data = harp_unit_converter_convert_double(unit_converter,
+                                                                             variable->valid_max.double_data);
+    }
 
     free(variable->unit);
 

@@ -55,6 +55,9 @@ typedef struct ingest_info_struct
     int product_version;
     long num_main;
 
+    /* trace gas and profile specific */
+    long num_vertical;
+
     /* trace gas specific */
     int window_for_species[7];
     int detailed_results_type;
@@ -66,9 +69,11 @@ typedef struct ingest_info_struct
     harp_array esc_error_buffer;
     harp_array index_in_scan_buffer;
     harp_array quality_flags_buffer;
-    long num_vertical;
     long num_windows;
     int revision;
+
+    /* profile specific */
+    long num_state;     /* state vector length */
 } ingest_info;
 
 static int init_num_main(ingest_info *info)
@@ -274,6 +279,54 @@ static int init_revision(ingest_info *info)
     return 0;
 }
 
+static int init_profile_dimensions(ingest_info *info)
+{
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, "/GEOLOCATION/Time") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &info->num_main) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    if (coda_cursor_goto(&cursor, "/DATA/StateDef") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &info->num_state) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->num_state /= info->num_main;
+
+    if (coda_cursor_goto(&cursor, "/DATA/AltitudeProfile") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &info->num_vertical) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    info->num_vertical /= info->num_main;
+    info->num_vertical--;       /* change number of edges to number of layers */
+
+    return 0;
+}
+
 static int read_dataset(ingest_info *info, const char *path, harp_data_type data_type, long num_elements,
                         harp_array data)
 {
@@ -310,11 +363,11 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
                 return -1;
             }
             break;
-        case harp_type_double:
+        case harp_type_float:
             {
-                double fill_value;
+                float fill_value;
 
-                if (coda_cursor_read_double_array(&cursor, data.double_data, coda_array_ordering_c) != 0)
+                if (coda_cursor_read_float_array(&cursor, data.float_data, coda_array_ordering_c) != 0)
                 {
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
@@ -324,7 +377,7 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
                 }
-                if (coda_cursor_read_double(&cursor, &fill_value) != 0)
+                if (coda_cursor_read_float(&cursor, &fill_value) != 0)
                 {
                     harp_set_error(HARP_ERROR_CODA, NULL);
                     return -1;
@@ -336,9 +389,9 @@ static int read_dataset(ingest_info *info, const char *path, harp_data_type data
                     /* Replace fill values with NaN. */
                     for (i = 0; i < num_elements; i++)
                     {
-                        if (data.double_data[i] == fill_value)
+                        if (data.float_data[i] == fill_value)
                         {
-                            data.double_data[i] = coda_NaN();
+                            data.float_data[i] = coda_NaN();
                         }
                     }
                 }
@@ -356,8 +409,8 @@ static int read_dataset_for_subindex(ingest_info *info, const char *path, long n
                                      harp_array data)
 {
     coda_cursor cursor;
-    double *buffer;
-    double fill_value;
+    float *buffer;
+    float fill_value;
     long dim[CODA_MAX_NUM_DIMS];
     int num_dims;
     long i;
@@ -395,14 +448,14 @@ static int read_dataset_for_subindex(ingest_info *info, const char *path, long n
         return -1;
     }
 
-    buffer = malloc(dim[0] * dim[1] * sizeof(double));
+    buffer = malloc(dim[0] * dim[1] * sizeof(float));
     if (buffer == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       dim[0] * dim[1] * sizeof(double), __FILE__, __LINE__);
+                       dim[0] * dim[1] * sizeof(float), __FILE__, __LINE__);
         return -1;
     }
-    if (coda_cursor_read_double_array(&cursor, buffer, coda_array_ordering_c) != 0)
+    if (coda_cursor_read_float_array(&cursor, buffer, coda_array_ordering_c) != 0)
     {
         free(buffer);
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -410,7 +463,7 @@ static int read_dataset_for_subindex(ingest_info *info, const char *path, long n
     }
     for (i = 0; i < dim[0]; i++)
     {
-        data.double_data[i] = buffer[i * dim[1] + subindex];
+        data.float_data[i] = buffer[i * dim[1] + subindex];
     }
     free(buffer);
 
@@ -419,7 +472,7 @@ static int read_dataset_for_subindex(ingest_info *info, const char *path, long n
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_read_double(&cursor, &fill_value) != 0)
+    if (coda_cursor_read_float(&cursor, &fill_value) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -431,9 +484,9 @@ static int read_dataset_for_subindex(ingest_info *info, const char *path, long n
         /* Replace fill values with NaN. */
         for (i = 0; i < num_elements; i++)
         {
-            if (data.double_data[i] == fill_value)
+            if (data.float_data[i] == fill_value)
             {
-                data.double_data[i] = coda_NaN();
+                data.float_data[i] = coda_NaN();
             }
         }
     }
@@ -448,20 +501,20 @@ static int read_relative_uncertainty(ingest_info *info, const char *path_quantit
     harp_array relerr;
     long i;
 
-    if (read_dataset(info, path_quantity, harp_type_double, num_elements, data) != 0)
+    if (read_dataset(info, path_quantity, harp_type_float, num_elements, data) != 0)
     {
         return -1;
     }
 
-    relerr.ptr = malloc(num_elements * sizeof(double));
+    relerr.ptr = malloc(num_elements * sizeof(float));
     if (relerr.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(float), __FILE__, __LINE__);
         return -1;
     }
 
-    if (read_dataset(info, path_error, harp_type_double, num_elements, relerr) != 0)
+    if (read_dataset(info, path_error, harp_type_float, num_elements, relerr) != 0)
     {
         free(relerr.ptr);
         return -1;
@@ -470,7 +523,7 @@ static int read_relative_uncertainty(ingest_info *info, const char *path_quantit
     /* Convert relative error (in percent) to standard deviation (same unit as the associated quantity). */
     for (i = 0; i < num_elements; i++)
     {
-        data.double_data[i] *= relerr.double_data[i] * 0.01;    /* relative error is a percentage */
+        data.float_data[i] *= relerr.float_data[i] * 0.01;      /* relative error is a percentage */
     }
 
     free(relerr.ptr);
@@ -489,21 +542,21 @@ static int init_amf(ingest_info *info)
         dimension[1] = info->num_windows;
         num_elements = harp_get_num_elements(2, dimension);
 
-        info->amf_buffer.ptr = malloc(num_elements * sizeof(double));
+        info->amf_buffer.ptr = malloc(num_elements * sizeof(float));
         if (info->amf_buffer.ptr == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           num_elements * sizeof(double), __FILE__, __LINE__);
+                           num_elements * sizeof(float), __FILE__, __LINE__);
             return -1;
         }
 
-        if (read_dataset(info, "DETAILED_RESULTS/AMFTotal", harp_type_double, num_elements, info->amf_buffer) != 0)
+        if (read_dataset(info, "DETAILED_RESULTS/AMFTotal", harp_type_float, num_elements, info->amf_buffer) != 0)
         {
             return -1;
         }
 
         /* Transpose such that all values for each window are contiguous in memory. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->amf_buffer) != 0)
+        if (harp_array_transpose(harp_type_float, 2, dimension, NULL, info->amf_buffer) != 0)
         {
             return -1;
         }
@@ -529,22 +582,22 @@ static int init_amf_error(ingest_info *info)
         dimension[1] = info->num_windows;
         num_elements = harp_get_num_elements(2, dimension);
 
-        info->amf_error_buffer.ptr = malloc(num_elements * sizeof(double));
+        info->amf_error_buffer.ptr = malloc(num_elements * sizeof(float));
         if (info->amf_error_buffer.ptr == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           num_elements * sizeof(double), __FILE__, __LINE__);
+                           num_elements * sizeof(float), __FILE__, __LINE__);
             return -1;
         }
 
-        if (read_dataset(info, "DETAILED_RESULTS/AMFTotal_Error", harp_type_double, num_elements,
+        if (read_dataset(info, "DETAILED_RESULTS/AMFTotal_Error", harp_type_float, num_elements,
                          info->amf_error_buffer) != 0)
         {
             return -1;
         }
 
         /* Transpose such that all values for each window are contiguous in memory. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->amf_error_buffer) != 0)
+        if (harp_array_transpose(harp_type_float, 2, dimension, NULL, info->amf_error_buffer) != 0)
         {
             return -1;
         }
@@ -552,7 +605,7 @@ static int init_amf_error(ingest_info *info)
         /* Convert relative error (in percent) to standard deviation (unitless). */
         for (i = 0; i < num_elements; i++)
         {
-            info->amf_error_buffer.double_data[i] *= info->amf_buffer.double_data[i] * 0.01;
+            info->amf_error_buffer.float_data[i] *= info->amf_buffer.float_data[i] * 0.01;
         }
     }
 
@@ -570,21 +623,21 @@ static int init_esc(ingest_info *info)
         dimension[1] = info->num_windows;
         num_elements = harp_get_num_elements(2, dimension);
 
-        info->esc_buffer.ptr = malloc(num_elements * sizeof(double));
+        info->esc_buffer.ptr = malloc(num_elements * sizeof(float));
         if (info->esc_buffer.ptr == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           num_elements * sizeof(double), __FILE__, __LINE__);
+                           num_elements * sizeof(float), __FILE__, __LINE__);
             return -1;
         }
 
-        if (read_dataset(info, "DETAILED_RESULTS/ESC", harp_type_double, num_elements, info->esc_buffer) != 0)
+        if (read_dataset(info, "DETAILED_RESULTS/ESC", harp_type_float, num_elements, info->esc_buffer) != 0)
         {
             return -1;
         }
 
         /* Transpose such that all values for each window are contiguous in memory. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->esc_buffer) != 0)
+        if (harp_array_transpose(harp_type_float, 2, dimension, NULL, info->esc_buffer) != 0)
         {
             return -1;
         }
@@ -610,22 +663,22 @@ static int init_esc_error(ingest_info *info)
         dimension[1] = info->num_windows;
         num_elements = harp_get_num_elements(2, dimension);
 
-        info->esc_error_buffer.ptr = malloc(num_elements * sizeof(double));
+        info->esc_error_buffer.ptr = malloc(num_elements * sizeof(float));
         if (info->esc_error_buffer.ptr == NULL)
         {
             harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                           num_elements * sizeof(double), __FILE__, __LINE__);
+                           num_elements * sizeof(float), __FILE__, __LINE__);
             return -1;
         }
 
-        if (read_dataset(info, "DETAILED_RESULTS/ESC_Error", harp_type_double, num_elements,
+        if (read_dataset(info, "DETAILED_RESULTS/ESC_Error", harp_type_float, num_elements,
                          info->esc_error_buffer) != 0)
         {
             return -1;
         }
 
         /* Transpose such that all values for each window are contiguous in memory. */
-        if (harp_array_transpose(harp_type_double, 2, dimension, NULL, info->esc_error_buffer) != 0)
+        if (harp_array_transpose(harp_type_float, 2, dimension, NULL, info->esc_error_buffer) != 0)
         {
             return -1;
         }
@@ -633,7 +686,7 @@ static int init_esc_error(ingest_info *info)
         /* Convert relative error (in percent) to standard deviation (unitless). */
         for (i = 0; i < num_elements; i++)
         {
-            info->esc_error_buffer.double_data[i] *= info->esc_buffer.double_data[i] * 0.01;
+            info->esc_error_buffer.float_data[i] *= info->esc_buffer.float_data[i] * 0.01;
         }
     }
 
@@ -876,7 +929,7 @@ static int read_amf(ingest_info *info, species_type species, harp_array data)
     }
 
     offset = info->window_for_species[species] * info->num_main;
-    memcpy(data.double_data, &info->amf_buffer.double_data[offset], info->num_main * sizeof(double));
+    memcpy(data.float_data, &info->amf_buffer.float_data[offset], info->num_main * sizeof(float));
 
     return 0;
 }
@@ -894,7 +947,7 @@ static int read_amf_error(ingest_info *info, species_type species, harp_array da
     }
 
     offset = info->window_for_species[species] * info->num_main;
-    memcpy(data.double_data, &info->amf_error_buffer.double_data[offset], info->num_main * sizeof(double));
+    memcpy(data.float_data, &info->amf_error_buffer.float_data[offset], info->num_main * sizeof(float));
 
     return 0;
 }
@@ -912,7 +965,7 @@ static int read_esc(ingest_info *info, species_type species, harp_array data)
     }
 
     offset = info->window_for_species[species] * info->num_main;
-    memcpy(data.double_data, &info->esc_buffer.double_data[offset], info->num_main * sizeof(double));
+    memcpy(data.float_data, &info->esc_buffer.float_data[offset], info->num_main * sizeof(float));
 
     return 0;
 }
@@ -930,7 +983,7 @@ static int read_esc_error(ingest_info *info, species_type species, harp_array da
     }
 
     offset = info->window_for_species[species] * info->num_main;
-    memcpy(data.double_data, &info->esc_error_buffer.double_data[offset], info->num_main * sizeof(double));
+    memcpy(data.float_data, &info->esc_error_buffer.float_data[offset], info->num_main * sizeof(float));
 
     return 0;
 }
@@ -1138,28 +1191,28 @@ static int read_longitude_center(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/LongitudeCenter", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/LongitudeCenter", harp_type_float, info->num_main, data);
 }
 
 static int read_longitude_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/LongitudeCentre", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/LongitudeCentre", harp_type_float, info->num_main, data);
 }
 
 static int read_latitude_center(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/LatitudeCenter", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/LatitudeCenter", harp_type_float, info->num_main, data);
 }
 
 static int read_latitude_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/LatitudeCentre", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/LatitudeCentre", harp_type_float, info->num_main, data);
 }
 
 static int read_longitude_bounds_abcd(void *user_data, harp_array data)
@@ -1172,28 +1225,67 @@ static int read_longitude_bounds_abcd(void *user_data, harp_array data)
     dimension[1] = info->num_main;
 
     tmp = data;
-    if (read_dataset(info, "GEOLOCATION/LongitudeB", harp_type_double, info->num_main, data) != 0)
+    if (read_dataset(info, "GEOLOCATION/LongitudeB", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
-    data.double_data += info->num_main;
-    if (read_dataset(info, "GEOLOCATION/LongitudeD", harp_type_double, info->num_main, data) != 0)
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/LongitudeD", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
-    data.double_data += info->num_main;
-    if (read_dataset(info, "GEOLOCATION/LongitudeC", harp_type_double, info->num_main, data) != 0)
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/LongitudeC", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
-    data.double_data += info->num_main;
-    if (read_dataset(info, "GEOLOCATION/LongitudeA", harp_type_double, info->num_main, data) != 0)
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/LongitudeA", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
 
     /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
-    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, tmp) != 0)
+    if (harp_array_transpose(harp_type_float, 2, dimension, NULL, tmp) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_longitude_bounds_abcd_profile(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+    harp_array tmp;
+
+    dimension[0] = 4;
+    dimension[1] = info->num_main;
+
+    tmp = data;
+    if (read_dataset(info, "GEOLOCATION/Longitude_B", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/Longitude_D", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/Longitude_C", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/Longitude_A", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
+    if (harp_array_transpose(harp_type_float, 2, dimension, NULL, tmp) != 0)
     {
         return -1;
     }
@@ -1211,28 +1303,67 @@ static int read_latitude_bounds_abcd(void *user_data, harp_array data)
     dimension[1] = info->num_main;
 
     tmp = data;
-    if (read_dataset(info, "GEOLOCATION/LatitudeB", harp_type_double, info->num_main, data) != 0)
+    if (read_dataset(info, "GEOLOCATION/LatitudeB", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
-    data.double_data += info->num_main;
-    if (read_dataset(info, "GEOLOCATION/LatitudeD", harp_type_double, info->num_main, data) != 0)
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/LatitudeD", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
-    data.double_data += info->num_main;
-    if (read_dataset(info, "GEOLOCATION/LatitudeC", harp_type_double, info->num_main, data) != 0)
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/LatitudeC", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
-    data.double_data += info->num_main;
-    if (read_dataset(info, "GEOLOCATION/LatitudeA", harp_type_double, info->num_main, data) != 0)
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/LatitudeA", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
 
     /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
-    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, tmp) != 0)
+    if (harp_array_transpose(harp_type_float, 2, dimension, NULL, tmp) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+static int read_latitude_bounds_abcd_profile(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+    harp_array tmp;
+
+    dimension[0] = 4;
+    dimension[1] = info->num_main;
+
+    tmp = data;
+    if (read_dataset(info, "GEOLOCATION/Latitude_B", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/Latitude_D", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/Latitude_C", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+    data.float_data += info->num_main;
+    if (read_dataset(info, "GEOLOCATION/Latitude_A", harp_type_float, info->num_main, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
+    if (harp_array_transpose(harp_type_float, 2, dimension, NULL, tmp) != 0)
     {
         return -1;
     }
@@ -1249,25 +1380,25 @@ static int read_longitude_corner(void *user_data, harp_array data)
     dimension[0] = 4;
     dimension[1] = info->num_main;
 
-    if (read_dataset(info, "GEOLOCATION/LongitudeCorner", harp_type_double, 4 * info->num_main, data) != 0)
+    if (read_dataset(info, "GEOLOCATION/LongitudeCorner", harp_type_float, 4 * info->num_main, data) != 0)
     {
         return -1;
     }
 
     /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
-    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
+    if (harp_array_transpose(harp_type_float, 2, dimension, NULL, data) != 0)
     {
         return -1;
     }
 
     for (i = 0; i < info->num_main; i++)
     {
-        double tmp;
+        float tmp;
 
-        tmp = data.double_data[i * 4];
-        data.double_data[i * 4] = data.double_data[i * 4 + 1];
-        data.double_data[i * 4 + 1] = data.double_data[i * 4 + 3];
-        data.double_data[i * 4 + 3] = tmp;
+        tmp = data.float_data[i * 4];
+        data.float_data[i * 4] = data.float_data[i * 4 + 1];
+        data.float_data[i * 4 + 1] = data.float_data[i * 4 + 3];
+        data.float_data[i * 4 + 3] = tmp;
     }
 
     return 0;
@@ -1282,25 +1413,25 @@ static int read_latitude_corner(void *user_data, harp_array data)
     dimension[0] = 4;
     dimension[1] = info->num_main;
 
-    if (read_dataset(info, "GEOLOCATION/LatitudeCorner", harp_type_double, 4 * info->num_main, data) != 0)
+    if (read_dataset(info, "GEOLOCATION/LatitudeCorner", harp_type_float, 4 * info->num_main, data) != 0)
     {
         return -1;
     }
 
     /* Transpose such that the four corner coordinates for each sample are contiguous in memory. */
-    if (harp_array_transpose(harp_type_double, 2, dimension, NULL, data) != 0)
+    if (harp_array_transpose(harp_type_float, 2, dimension, NULL, data) != 0)
     {
         return -1;
     }
 
     for (i = 0; i < info->num_main; i++)
     {
-        double tmp;
+        float tmp;
 
-        tmp = data.double_data[i * 4];
-        data.double_data[i * 4] = data.double_data[i * 4 + 1];
-        data.double_data[i * 4 + 1] = data.double_data[i * 4 + 3];
-        data.double_data[i * 4 + 3] = tmp;
+        tmp = data.float_data[i * 4];
+        data.float_data[i * 4] = data.float_data[i * 4 + 1];
+        data.float_data[i * 4 + 1] = data.float_data[i * 4 + 3];
+        data.float_data[i * 4 + 3] = tmp;
     }
 
     return 0;
@@ -1310,56 +1441,84 @@ static int read_solar_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/SolarAzimuthAngle", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/SolarAzimuthAngle", harp_type_float, info->num_main, data);
+}
+
+static int read_solar_azimuth_angle_f(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/SolarAzimuthAngle_F", harp_type_float, info->num_main, data);
 }
 
 static int read_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/SolarZenithAngle", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/SolarZenithAngle", harp_type_float, info->num_main, data);
+}
+
+static int read_solar_zenith_angle_f(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/SolarZenithAngle_F", harp_type_float, info->num_main, data);
 }
 
 static int read_solar_zenith_angle_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/SolarZenithAngleCentre", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/SolarZenithAngleCentre", harp_type_float, info->num_main, data);
 }
 
 static int read_solar_zenith_angle_sensor_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/SolarZenithAngleSatCentre", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/SolarZenithAngleSatCentre", harp_type_float, info->num_main, data);
 }
 
 static int read_viewing_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/LineOfSightAzimuthAngle", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/LineOfSightAzimuthAngle", harp_type_float, info->num_main, data);
+}
+
+static int read_viewing_azimuth_angle_f(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/LineOfSightAzimuthAngle_F", harp_type_float, info->num_main, data);
 }
 
 static int read_viewing_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngle", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngle", harp_type_float, info->num_main, data);
+}
+
+static int read_viewing_zenith_angle_f(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngle_F", harp_type_float, info->num_main, data);
 }
 
 static int read_viewing_zenith_angle_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngleCentre", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/LineOfSightZenithAngleCentre", harp_type_float, info->num_main, data);
 }
 
 static int read_relative_azimuth_angle_centre(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "GEOLOCATION/RelativeAzimuthCentre", harp_type_double, info->num_main, data);
+    return read_dataset(info, "GEOLOCATION/RelativeAzimuthCentre", harp_type_float, info->num_main, data);
 }
 
 static int read_bro_column(void *user_data, harp_array data)
@@ -1368,10 +1527,10 @@ static int read_bro_column(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_bro)
     {
-        return read_dataset(info, "DETAILED_RESULTS/BrO/VCDCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/BrO/VCDCorrected", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/BrO", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/BrO", harp_type_float, info->num_main, data);
 }
 
 static int read_bro_column_error(void *user_data, harp_array data)
@@ -1380,7 +1539,7 @@ static int read_bro_column_error(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_bro)
     {
-        return read_dataset(info, "DETAILED_RESULTS/BrO/VCDCorrected_Error", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/BrO/VCDCorrected_Error", harp_type_float, info->num_main, data);
     }
 
     if (info->product_version < 3)
@@ -1388,7 +1547,7 @@ static int read_bro_column_error(void *user_data, harp_array data)
         return read_relative_uncertainty(info, "TOTAL_COLUMNS/BrO", "TOTAL_COLUMNS/BrO_Error", info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/BrO_Error", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/BrO_Error", harp_type_float, info->num_main, data);
 }
 
 static int read_h2o_column(void *user_data, harp_array data)
@@ -1397,10 +1556,10 @@ static int read_h2o_column(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_h2o)
     {
-        return read_dataset(info, "DETAILED_RESULTS/H2O/VCDCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/H2O/VCDCorrected", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/H2O", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/H2O", harp_type_float, info->num_main, data);
 }
 
 static int read_h2o_column_error(void *user_data, harp_array data)
@@ -1409,7 +1568,7 @@ static int read_h2o_column_error(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_h2o)
     {
-        return read_dataset(info, "DETAILED_RESULTS/H2O/VCDCorrected_Error", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/H2O/VCDCorrected_Error", harp_type_float, info->num_main, data);
     }
 
     return read_relative_uncertainty(info, "TOTAL_COLUMNS/H2O", "TOTAL_COLUMNS/H2O_Error", info->num_main, data);
@@ -1421,10 +1580,10 @@ static int read_hcho_column(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_hcho)
     {
-        return read_dataset(info, "DETAILED_RESULTS/HCHO/VCDCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/HCHO/VCDCorrected", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/HCHO", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/HCHO", harp_type_float, info->num_main, data);
 }
 
 static int read_hcho_column_error(void *user_data, harp_array data)
@@ -1433,7 +1592,7 @@ static int read_hcho_column_error(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_hcho)
     {
-        return read_dataset(info, "DETAILED_RESULTS/HCHO/VCDCorrected_Error", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/HCHO/VCDCorrected_Error", harp_type_float, info->num_main, data);
     }
 
     if (info->product_version < 3)
@@ -1441,7 +1600,7 @@ static int read_hcho_column_error(void *user_data, harp_array data)
         return read_relative_uncertainty(info, "TOTAL_COLUMNS/HCHO", "TOTAL_COLUMNS/HCHO_Error", info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/HCHO_Error", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/HCHO_Error", harp_type_float, info->num_main, data);
 }
 
 static int read_no2_column(void *user_data, harp_array data)
@@ -1450,10 +1609,10 @@ static int read_no2_column(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_no2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDCorrected", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/NO2", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/NO2", harp_type_float, info->num_main, data);
 }
 
 static int read_no2_column_error(void *user_data, harp_array data)
@@ -1462,7 +1621,7 @@ static int read_no2_column_error(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_no2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDCorrected_Error", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDCorrected_Error", harp_type_float, info->num_main, data);
     }
 
     if (info->product_version < 3)
@@ -1470,7 +1629,7 @@ static int read_no2_column_error(void *user_data, harp_array data)
         return read_relative_uncertainty(info, "TOTAL_COLUMNS/NO2", "TOTAL_COLUMNS/NO2_Error", info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/NO2_Error", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/NO2_Error", harp_type_float, info->num_main, data);
 }
 
 static int read_no2_column_tropospheric(void *user_data, harp_array data)
@@ -1479,15 +1638,15 @@ static int read_no2_column_tropospheric(void *user_data, harp_array data)
 
     if (info->detailed_results_type == species_type_no2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDTropo", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDTropo", harp_type_float, info->num_main, data);
     }
 
     if (info->product_version < 2)
     {
-        return read_dataset(info, "TOTAL_COLUMNS/NO2_Trop", harp_type_double, info->num_main, data);
+        return read_dataset(info, "TOTAL_COLUMNS/NO2_Trop", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/NO2Tropo", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/NO2Tropo", harp_type_float, info->num_main, data);
 }
 
 static int read_no2_column_tropospheric_error(void *user_data, harp_array data)
@@ -1496,7 +1655,7 @@ static int read_no2_column_tropospheric_error(void *user_data, harp_array data)
 
     if (info->detailed_results_type == species_type_no2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDTropo_Error", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/NO2/VCDTropo_Error", harp_type_float, info->num_main, data);
     }
 
     if (info->product_version < 3)
@@ -1505,7 +1664,7 @@ static int read_no2_column_tropospheric_error(void *user_data, harp_array data)
                                          data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/NO2Tropo_Error", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/NO2Tropo_Error", harp_type_float, info->num_main, data);
 }
 
 static int read_o3_column(void *user_data, harp_array data)
@@ -1514,14 +1673,14 @@ static int read_o3_column(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_o3)
     {
-        return read_dataset(info, "DETAILED_RESULTS/O3/VCDCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/O3/VCDCorrected", harp_type_float, info->num_main, data);
     }
 
-    if (read_dataset(info, "TOTAL_COLUMNS/O3", harp_type_double, info->num_main, data) != 0)
+    if (read_dataset(info, "TOTAL_COLUMNS/O3", harp_type_float, info->num_main, data) != 0)
     {
         return -1;
     }
-    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
+    return harp_convert_unit_float("DU", "molec/cm2", info->num_main, data.float_data);
 }
 
 static int read_o3_column_error(void *user_data, harp_array data)
@@ -1530,7 +1689,7 @@ static int read_o3_column_error(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_o3)
     {
-        return read_dataset(info, "DETAILED_RESULTS/O3/VCDCorrected_Error", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/O3/VCDCorrected_Error", harp_type_float, info->num_main, data);
     }
 
     if (info->product_version < 3)
@@ -1542,19 +1701,19 @@ static int read_o3_column_error(void *user_data, harp_array data)
     }
     else
     {
-        if (read_dataset(info, "TOTAL_COLUMNS/O3_Error", harp_type_double, info->num_main, data) != 0)
+        if (read_dataset(info, "TOTAL_COLUMNS/O3_Error", harp_type_float, info->num_main, data) != 0)
         {
             return -1;
         }
     }
-    return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
+    return harp_convert_unit_float("DU", "molec/cm2", info->num_main, data.float_data);
 }
 
 static int read_oclo_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "TOTAL_COLUMNS/OClO", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/OClO", harp_type_float, info->num_main, data);
 }
 
 static int read_oclo_column_error(void *user_data, harp_array data)
@@ -1566,7 +1725,7 @@ static int read_oclo_column_error(void *user_data, harp_array data)
         return read_relative_uncertainty(info, "TOTAL_COLUMNS/OClO", "TOTAL_COLUMNS/OClO_Error", info->num_main, data);
     }
 
-    return read_dataset(info, "TOTAL_COLUMNS/OClO_Error", harp_type_double, info->num_main, data);
+    return read_dataset(info, "TOTAL_COLUMNS/OClO_Error", harp_type_float, info->num_main, data);
 }
 
 static int read_so2_column(void *user_data, harp_array data)
@@ -1575,11 +1734,11 @@ static int read_so2_column(void *user_data, harp_array data)
 
     if (info->detailed_results_type != species_type_so2 || (info->so2_column_type == 1 && !info->corrected_column))
     {
-        if (read_dataset(info, "TOTAL_COLUMNS/SO2", harp_type_double, info->num_main, data) != 0)
+        if (read_dataset(info, "TOTAL_COLUMNS/SO2", harp_type_float, info->num_main, data) != 0)
         {
             return -1;
         }
-        return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
+        return harp_convert_unit_float("DU", "molec/cm2", info->num_main, data.float_data);
     }
     return read_dataset_for_subindex(info, "DETAILED_RESULTS/SO2/VCDCorrected", info->num_main, info->so2_column_type,
                                      data);
@@ -1601,12 +1760,12 @@ static int read_so2_column_error(void *user_data, harp_array data)
         }
         else
         {
-            if (read_dataset(info, "TOTAL_COLUMNS/SO2_Error", harp_type_double, info->num_main, data) != 0)
+            if (read_dataset(info, "TOTAL_COLUMNS/SO2_Error", harp_type_float, info->num_main, data) != 0)
             {
                 return -1;
             }
         }
-        return harp_convert_unit("DU", "molec/cm2", info->num_main, data.double_data);
+        return harp_convert_unit_float("DU", "molec/cm2", info->num_main, data.float_data);
     }
     return read_dataset_for_subindex(info, "DETAILED_RESULTS/SO2/VCDCorrected_Error", info->num_main,
                                      info->so2_column_type, data);
@@ -1672,7 +1831,7 @@ static int read_amf_no2_tropospheric(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DETAILED_RESULTS/NO2/AMFTropo", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DETAILED_RESULTS/NO2/AMFTropo", harp_type_float, info->num_main, data);
 }
 
 static int read_amf_no2_tropospheric_error(void *user_data, harp_array data)
@@ -1733,7 +1892,7 @@ static int read_esc_bro(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_bro)
     {
-        return read_dataset(info, "DETAILED_RESULTS/BrO/ESCCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/BrO/ESCCorrected", harp_type_float, info->num_main, data);
     }
 
     return read_esc(info, species_type_bro, data);
@@ -1752,7 +1911,7 @@ static int read_esc_h2o(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_h2o)
     {
-        return read_dataset(info, "DETAILED_RESULTS/H2O/ESCCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/H2O/ESCCorrected", harp_type_float, info->num_main, data);
     }
 
     return read_esc(info, species_type_h2o, data);
@@ -1771,7 +1930,7 @@ static int read_esc_hcho(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_hcho)
     {
-        return read_dataset(info, "DETAILED_RESULTS/HCHO/ESCCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/HCHO/ESCCorrected", harp_type_float, info->num_main, data);
     }
 
     return read_esc(info, species_type_hcho, data);
@@ -1818,7 +1977,7 @@ static int read_esc_oclo(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_oclo)
     {
-        return read_dataset(info, "DETAILED_RESULTS/OClO/ESCCorrected", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/OClO/ESCCorrected", harp_type_float, info->num_main, data);
     }
 
     return read_esc(info, species_type_oclo, data);
@@ -1830,7 +1989,7 @@ static int read_esc_oclo_error(void *user_data, harp_array data)
 
     if (info->corrected_column && info->detailed_results_type == species_type_oclo)
     {
-        return read_dataset(info, "DETAILED_RESULTS/OClO/ESCCorrected_Error", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/OClO/ESCCorrected_Error", harp_type_float, info->num_main, data);
     }
 
     return read_esc_error(info, species_type_oclo, data);
@@ -1915,7 +2074,7 @@ static int read_quality_flags_hcho(void *user_data, harp_array data)
     if (flags.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
         return -1;
     }
 
@@ -1953,7 +2112,7 @@ static int read_quality_flags_tropo_no2(void *user_data, harp_array data)
     if (flags.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
         return -1;
     }
 
@@ -1994,7 +2153,7 @@ static int read_quality_flags_o3(void *user_data, harp_array data)
     if (flags.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
         return -1;
     }
 
@@ -2030,7 +2189,7 @@ static int read_quality_flags_oclo(void *user_data, harp_array data)
     if (flags.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
         return -1;
     }
 
@@ -2066,7 +2225,7 @@ static int read_quality_flags_so2(void *user_data, harp_array data)
     if (flags.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(int32_t), __FILE__, __LINE__);
         return -1;
     }
 
@@ -2103,11 +2262,207 @@ static int read_quality_flags_so2(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_quality_flags_o3_profile(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long num_elements = info->num_main;
+    harp_array flags;
+    long i;
+
+    flags.ptr = malloc(32 * num_elements * sizeof(int32_t));
+    if (flags.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       32 * num_elements * sizeof(int32_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DATA/QualityProcessing", harp_type_int32, 32 * num_elements, flags) != 0)
+    {
+        free(flags.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int8_data[i] =
+            (flags.int32_data[i] < 0) +
+            ((flags.int32_data[i] == 0) << 1) +
+            ((flags.int32_data[4 * num_elements + i] == 1) << 2) + ((flags.int32_data[5 * num_elements + i] == 1) << 3);
+    }
+
+    free(flags.ptr);
+
+    return 0;
+}
+
+static int read_profile_bounds(void *user_data, const char *path, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array profile;
+    long i, j;
+
+    profile.ptr = malloc(info->num_main * (info->num_vertical + 1) * sizeof(float));
+    if (profile.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_main * (info->num_vertical + 1) * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, path, harp_type_float, info->num_main * (info->num_vertical + 1), profile) != 0)
+    {
+        free(profile.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        for (j = 0; j < info->num_vertical; j++)
+        {
+            data.float_data[i * info->num_vertical * 2 + j * 2] = profile.float_data[j * info->num_main + i];
+            data.float_data[i * info->num_vertical * 2 + j * 2 + 1] = profile.float_data[(j + 1) * info->num_main + i];
+        }
+    }
+
+    free(profile.ptr);
+
+    return 0;
+}
+
+static int read_altitude_bounds(void *user_data, harp_array data)
+{
+    return read_profile_bounds(user_data, "DATA/AltitudeProfile", data);
+}
+
+static int read_pressure_bounds(void *user_data, harp_array data)
+{
+    return read_profile_bounds(user_data, "DATA/OutputPressureGrid", data);
+}
+
+static int read_profile_from_state(void *user_data, const char *path, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array state;
+    long i, j;
+
+    state.ptr = malloc(info->num_main * info->num_state * sizeof(float));
+    if (state.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_main * info->num_state * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, path, harp_type_float, info->num_main * info->num_state, state) != 0)
+    {
+        free(state.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        for (j = 0; j < info->num_vertical; j++)
+        {
+            data.float_data[i * info->num_vertical + j] = state.float_data[j * info->num_main + i];
+        }
+    }
+
+    free(state.ptr);
+
+    return 0;
+}
+
+static int read_o3_profile(void *user_data, harp_array data)
+{
+    return read_profile_from_state(user_data, "DATA/StateRetrieved", data);
+}
+
+static int read_o3_profile_apriori(void *user_data, harp_array data)
+{
+    return read_profile_from_state(user_data, "DATA/Apriori", data);
+}
+
+static int read_albedo_from_state(void *user_data, const char *path, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array state;
+    long i;
+
+    state.ptr = malloc(info->num_main * info->num_state * sizeof(float));
+    if (state.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_main * info->num_state * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, path, harp_type_float, info->num_main * info->num_state, state) != 0)
+    {
+        free(state.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        data.float_data[i] = state.float_data[info->num_vertical * info->num_main + i];
+    }
+
+    free(state.ptr);
+
+    return 0;
+}
+
+static int read_scene_albedo(void *user_data, harp_array data)
+{
+    return read_albedo_from_state(user_data, "DATA/StateRetrieved", data);
+}
+
+static int read_o3_profile_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array kernel;
+    long i, j, k;
+
+    kernel.ptr = malloc(info->num_main * info->num_state * info->num_state * sizeof(float));
+    if (kernel.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_main * info->num_state * info->num_state * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(info, "DATA/AveragingKernel", harp_type_float, info->num_main * info->num_state * info->num_state,
+                     kernel) != 0)
+    {
+        free(kernel.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < info->num_main; i++)
+    {
+        long offset = i * info->num_vertical * info->num_vertical;
+
+        for (j = 0; j < info->num_vertical; j++)
+        {
+            for (k = 0; k < info->num_vertical; k++)
+            {
+                data.float_data[offset + j * info->num_vertical + k] =
+                    kernel.float_data[(k * info->num_state + j) * info->num_main + i];
+            }
+        }
+    }
+
+    free(kernel.ptr);
+
+    return 0;
+}
+
 static int read_o3_temperature(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DETAILED_RESULTS/O3/O3Temperature", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DETAILED_RESULTS/O3/O3Temperature", harp_type_float, info->num_main, data);
 }
 
 static int read_pressure(void *user_data, harp_array data)
@@ -2117,7 +2472,7 @@ static int read_pressure(void *user_data, harp_array data)
 
     if (info->detailed_results_type == species_type_hcho)
     {
-        if (read_dataset(info, "DETAILED_RESULTS/HCHO/AveragingKernelPressureLevel", harp_type_double,
+        if (read_dataset(info, "DETAILED_RESULTS/HCHO/AveragingKernelPressureLevel", harp_type_float,
                          info->num_main * info->num_vertical, data) != 0)
         {
             return -1;
@@ -2125,7 +2480,7 @@ static int read_pressure(void *user_data, harp_array data)
     }
     else if (info->detailed_results_type == species_type_no2)
     {
-        if (read_dataset(info, "DETAILED_RESULTS/NO2/AveragingKernelPressureLevel", harp_type_double,
+        if (read_dataset(info, "DETAILED_RESULTS/NO2/AveragingKernelPressureLevel", harp_type_float,
                          info->num_main * info->num_vertical, data) != 0)
         {
             return -1;
@@ -2139,7 +2494,7 @@ static int read_pressure(void *user_data, harp_array data)
 
     dimension[0] = info->num_main;
     dimension[1] = info->num_vertical;
-    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
 static int read_hcho_apriori(void *user_data, harp_array data)
@@ -2147,7 +2502,7 @@ static int read_hcho_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     long dimension[2];
 
-    if (read_dataset(info, "DETAILED_RESULTS/HCHO/AprioriHCHOProfile", harp_type_double,
+    if (read_dataset(info, "DETAILED_RESULTS/HCHO/AprioriHCHOProfile", harp_type_float,
                      info->num_main * info->num_vertical, data) != 0)
     {
         return -1;
@@ -2155,7 +2510,7 @@ static int read_hcho_apriori(void *user_data, harp_array data)
 
     dimension[0] = info->num_main;
     dimension[1] = info->num_vertical;
-    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
 static int read_hcho_avk(void *user_data, harp_array data)
@@ -2163,7 +2518,7 @@ static int read_hcho_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     long dimension[2];
 
-    if (read_dataset(info, "DETAILED_RESULTS/HCHO/AveragingKernel", harp_type_double,
+    if (read_dataset(info, "DETAILED_RESULTS/HCHO/AveragingKernel", harp_type_float,
                      info->num_main * info->num_vertical, data) != 0)
     {
         return -1;
@@ -2171,7 +2526,7 @@ static int read_hcho_avk(void *user_data, harp_array data)
 
     dimension[0] = info->num_main;
     dimension[1] = info->num_vertical;
-    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
 static int read_no2_apriori(void *user_data, harp_array data)
@@ -2179,7 +2534,7 @@ static int read_no2_apriori(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     long dimension[2];
 
-    if (read_dataset(info, "DETAILED_RESULTS/NO2/AprioriNO2Profile", harp_type_double,
+    if (read_dataset(info, "DETAILED_RESULTS/NO2/AprioriNO2Profile", harp_type_float,
                      info->num_main * info->num_vertical, data) != 0)
     {
         return -1;
@@ -2187,7 +2542,7 @@ static int read_no2_apriori(void *user_data, harp_array data)
 
     dimension[0] = info->num_main;
     dimension[1] = info->num_vertical;
-    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
 static int read_no2_avk(void *user_data, harp_array data)
@@ -2195,7 +2550,7 @@ static int read_no2_avk(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     long dimension[2];
 
-    if (read_dataset(info, "DETAILED_RESULTS/NO2/AveragingKernel", harp_type_double,
+    if (read_dataset(info, "DETAILED_RESULTS/NO2/AveragingKernel", harp_type_float,
                      info->num_main * info->num_vertical, data) != 0)
     {
         return -1;
@@ -2203,7 +2558,7 @@ static int read_no2_avk(void *user_data, harp_array data)
 
     dimension[0] = info->num_main;
     dimension[1] = info->num_vertical;
-    return harp_array_invert(harp_type_double, 1, 2, dimension, data);
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
 static int read_surface_albedo(void *user_data, harp_array data)
@@ -2222,15 +2577,15 @@ static int read_surface_albedo(void *user_data, harp_array data)
     dimension[1] = info->num_windows;
     num_elements = harp_get_num_elements(2, dimension);
 
-    buffer.ptr = malloc(num_elements * sizeof(double));
+    buffer.ptr = malloc(num_elements * sizeof(float));
     if (buffer.ptr == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       num_elements * sizeof(double), __FILE__, __LINE__);
+                       num_elements * sizeof(float), __FILE__, __LINE__);
         return -1;
     }
 
-    if (read_dataset(info, "DETAILED_RESULTS/SurfaceAlbedo", harp_type_double, num_elements, buffer) != 0)
+    if (read_dataset(info, "DETAILED_RESULTS/SurfaceAlbedo", harp_type_float, num_elements, buffer) != 0)
     {
         free(buffer.ptr);
         return -1;
@@ -2238,7 +2593,7 @@ static int read_surface_albedo(void *user_data, harp_array data)
 
     for (i = 0; i < info->num_main; i++)
     {
-        data.double_data[i] = buffer.double_data[i * info->num_windows + offset];
+        data.float_data[i] = buffer.float_data[i * info->num_windows + offset];
     }
 
     free(buffer.ptr);
@@ -2252,10 +2607,10 @@ static int read_cloud_fraction(void *user_data, harp_array data)
 
     if (info->product_version < 2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/CloudFraction", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/CloudFraction", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "CLOUD_PROPERTIES/CloudFraction", harp_type_double, info->num_main, data);
+    return read_dataset(info, "CLOUD_PROPERTIES/CloudFraction", harp_type_float, info->num_main, data);
 }
 
 static int read_cloud_fraction_error(void *user_data, harp_array data)
@@ -2278,10 +2633,10 @@ static int read_pressure_cloud_top(void *user_data, harp_array data)
 
     if (info->product_version < 2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/CloudTopPressure", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/CloudTopPressure", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "CLOUD_PROPERTIES/CloudTopPressure", harp_type_double, info->num_main, data);
+    return read_dataset(info, "CLOUD_PROPERTIES/CloudTopPressure", harp_type_float, info->num_main, data);
 }
 
 static int read_pressure_cloud_top_error(void *user_data, harp_array data)
@@ -2304,10 +2659,10 @@ static int read_height_cloud_top(void *user_data, harp_array data)
 
     if (info->product_version < 2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/CloudTopHeight", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/CloudTopHeight", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "CLOUD_PROPERTIES/CloudTopHeight", harp_type_double, info->num_main, data);
+    return read_dataset(info, "CLOUD_PROPERTIES/CloudTopHeight", harp_type_float, info->num_main, data);
 }
 
 static int read_height_cloud_top_error(void *user_data, harp_array data)
@@ -2330,10 +2685,10 @@ static int read_albedo_cloud_top(void *user_data, harp_array data)
 
     if (info->product_version < 2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/CloudTopAlbedo", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/CloudTopAlbedo", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "CLOUD_PROPERTIES/CloudTopAlbedo", harp_type_double, info->num_main, data);
+    return read_dataset(info, "CLOUD_PROPERTIES/CloudTopAlbedo", harp_type_float, info->num_main, data);
 }
 
 static int read_albedo_cloud_top_error(void *user_data, harp_array data)
@@ -2356,10 +2711,10 @@ static int read_cloud_optical_thickness(void *user_data, harp_array data)
 
     if (info->product_version < 2)
     {
-        return read_dataset(info, "DETAILED_RESULTS/CloudOpticalThickness", harp_type_double, info->num_main, data);
+        return read_dataset(info, "DETAILED_RESULTS/CloudOpticalThickness", harp_type_float, info->num_main, data);
     }
 
-    return read_dataset(info, "CLOUD_PROPERTIES/CloudOpticalThickness", harp_type_double, info->num_main, data);
+    return read_dataset(info, "CLOUD_PROPERTIES/CloudOpticalThickness", harp_type_float, info->num_main, data);
 }
 
 static int read_cloud_optical_thickness_error(void *user_data, harp_array data)
@@ -2387,56 +2742,56 @@ static int read_absorbing_aerosol_heigth(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DATA/AAH_AbsorbingAerosolHeight", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolHeight", harp_type_float, info->num_main, data);
 }
 
 static int read_absorbing_aerosol_heigth_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DATA/AAH_AbsorbingAerosolHeightError", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolHeightError", harp_type_float, info->num_main, data);
 }
 
 static int read_absorbing_aerosol_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DATA/AAH_AbsorbingAerosolPressure", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolPressure", harp_type_float, info->num_main, data);
 }
 
 static int read_absorbing_aerosol_pressure_error(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DATA/AAH_AbsorbingAerosolPressureError", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DATA/AAH_AbsorbingAerosolPressureError", harp_type_float, info->num_main, data);
 }
 
 static int read_absorbing_aerosol_index_data(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DATA/AAI", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DATA/AAI", harp_type_float, info->num_main, data);
 }
 
 static int read_absorbing_aerosol_index_detailed_results(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DETAILED_RESULTS/AAI", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DETAILED_RESULTS/AAI", harp_type_float, info->num_main, data);
 }
 
 static int read_surface_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DETAILED_RESULTS/SurfaceHeight", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DETAILED_RESULTS/SurfaceHeight", harp_type_float, info->num_main, data);
 }
 
 static int read_surface_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DETAILED_RESULTS/SurfacePressure", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DETAILED_RESULTS/SurfacePressure", harp_type_float, info->num_main, data);
 }
 
 static int read_sun_glint_flag(void *user_data, harp_array data)
@@ -2450,7 +2805,7 @@ static int read_pmd_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info, "DATA/PMD_CloudFraction", harp_type_double, info->num_main, data);
+    return read_dataset(info, "DATA/PMD_CloudFraction", harp_type_float, info->num_main, data);
 }
 
 static int read_index_in_scan(void *user_data, harp_array data)
@@ -2765,6 +3120,16 @@ static void ingestion_done_aerosol(void *user_data)
     }
 }
 
+static void ingestion_done_profile(void *user_data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info != NULL)
+    {
+        free(info);
+    }
+}
+
 static void ingestion_done_trace_gases(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2833,6 +3198,43 @@ static int ingestion_init_aerosol(const harp_ingestion_module *module, coda_prod
     if (init_num_main(info) != 0)
     {
         ingestion_done_aerosol(info);
+        return -1;
+    }
+
+    *definition = *module->product_definition;
+    *user_data = info;
+
+    return 0;
+}
+
+static int ingestion_init_profile(const harp_ingestion_module *module, coda_product *product,
+                                  const harp_ingestion_options *options, harp_product_definition **definition,
+                                  void **user_data)
+{
+    ingest_info *info;
+
+    (void)options;
+
+    info = malloc(sizeof(ingest_info));
+    if (info == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       sizeof(ingest_info), __FILE__, __LINE__);
+        return -1;
+    }
+    info->product = product;
+    info->product_version = -1;
+
+    if (coda_get_product_version(info->product, &info->product_version) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        ingestion_done_aerosol(info);
+        return -1;
+    }
+
+    if (init_profile_dimensions(info) != 0)
+    {
+        ingestion_done_profile(info);
         return -1;
     }
 
@@ -3145,28 +3547,28 @@ static void register_common_aerosol_variables(harp_product_definition *product_d
     /* longitude */
     description = "longitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float, 1, dimension_type,
                                                    NULL, description, "degree_east", NULL, read_longitude_center);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/LongitudeCenter[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
     description = "latitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_float, 1, dimension_type,
                                                    NULL, description, "degree_north", NULL, read_latitude_center);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
     path = "/GEOLOCATION/LatitudeCenter[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_bounds */
     description = "corner longitudes of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_float, 2,
                                                    dimension_type, dimension_bounds, description, "degree_east", NULL,
                                                    read_longitude_corner);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/LongitudeCorner[]";
     description = "the corner coordinates are re-arranged in the order 2-4-3-1";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -3174,10 +3576,10 @@ static void register_common_aerosol_variables(harp_product_definition *product_d
     /* latitude_bounds */
     description = "corner latitudes of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_float, 2,
                                                    dimension_type, dimension_bounds, description, "degree_north", NULL,
                                                    read_latitude_corner);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
     path = "/GEOLOCATION/LatitudeCorner[]";
     description = "the corner coordinates are re-arranged in the order 2-4-3-1";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -3185,47 +3587,47 @@ static void register_common_aerosol_variables(harp_product_definition *product_d
     /* solar_azimuth_angle */
     description = "solar azimuth angle";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_azimuth_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/SolarAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
     description = "solar zenith angle";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* viewing_azimuth_angle */
     description = "viewing azimuth angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_azimuth_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, -360.0, 360.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -360.0, 360.0);
     path = "/GEOLOCATION/LineOfSightAzimuthAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* viewing_zenith_angle */
     description = "viewing zenith angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_zenith_angle);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/LineOfSightZenithAngle[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* absorbing_aerosol_index */
     description = "absorbing aerosol index";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_absorbing_aerosol_index_data);
     path = "/DATA/AAI[]";
@@ -3253,22 +3655,171 @@ static void register_common_aerosol_variables(harp_product_definition *product_d
 static void register_ozone_profile_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
-    long dimension_bounds[2] = { -1, 4 };
+    harp_dimension_type dimension_type[3] =
+        { harp_dimension_time, harp_dimension_independent, harp_dimension_independent };
+    long spatial_dimension_bounds[2] = { -1, 4 };
+    long vertical_dimension_bounds[3] = { -1, -1, 2 };
     const char *description;
     const char *path;
 
-#if 0
     /* datetime */
     description = "time of the measurement";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1, dimension_type,
                                                    NULL, description, "seconds since 2000-01-01", NULL,
                                                    read_time_string);
-    path = "/GEOLOCATION/Time";
+    path = "/GEOLOCATION/Time[]";
     description = "the time values are converted from a string to seconds since 2000-01-01 00:00:00";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-#endif
+
+    /* longitude */
+    description = "longitude of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float, 1, dimension_type,
+                                                   NULL, description, "degree_east", NULL, read_longitude_center);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/LongitudeCenter[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* latitude */
+    description = "latitude of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_float, 1, dimension_type,
+                                                   NULL, description, "degree_north", NULL, read_latitude_center);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
+    path = "/GEOLOCATION/LatitudeCenter[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* longitude_bounds */
+    description = "corner longitudes of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_float, 2,
+                                                   dimension_type, spatial_dimension_bounds, description, "degree_east",
+                                                   NULL, read_longitude_bounds_abcd_profile);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0, 180.0);
+    path = "/GEOLOCATION/Longitude_A[], /GEOLOCATION/Longitude_B[], /GEOLOCATION/Longitude_C[], "
+        "/GEOLOCATION/Longitude_D[]";
+    description = "the corner coordinates are re-arranged in the order B-D-C-A";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* latitude_bounds */
+    description = "corner latitudes of the measurement";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_float, 2,
+                                                   dimension_type, spatial_dimension_bounds, description,
+                                                   "degree_north", NULL, read_latitude_bounds_abcd_profile);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
+    path = "/GEOLOCATION/Latitude_A[], /GEOLOCATION/Latitude_B[], /GEOLOCATION/Latitude_C[], /GEOLOCATION/Latitude_D[]";
+    description = "the corner coordinates are re-arranged in the order B-D-C-A";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* solar_zenith_angle */
+    description = "solar zenith angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_zenith_angle_f);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
+    path = "/GEOLOCATION/SolarZenithAngle_F[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* solar_azimuth_angle */
+    description = "solar azimuth angle";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_azimuth_angle_f);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0, 360.0);
+    path = "/GEOLOCATION/SolarAzimuthAngle_F[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* viewing_zenith_angle */
+    description = "viewing zenith angle at top of atmosphere";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_viewing_zenith_angle_f);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
+    path = "/GEOLOCATION/LineOfSightZenithAngle_F[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* viewing_azimuth_angle */
+    description = "relative azimuth angle at top of atmosphere";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_viewing_azimuth_angle_f);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0, 360.0);
+    path = "/GEOLOCATION/LineOfSightAzimithAngle_F[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* scene_albedo */
+    description = "fitted albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_scene_albedo);
+    path = "/DATA/StateRetrieved[NOutputLayers,:]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* altitude_bounds */
+    dimension_type[1] = harp_dimension_vertical;
+    description = "altitude layer boundaries";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds", harp_type_float, 3,
+                                                   dimension_type, vertical_dimension_bounds, description, "km", NULL,
+                                                   read_altitude_bounds);
+    description = "the N+1 altitude layer boundaries are converted into [N,2] boundary values";
+    path = "/DATA/AltitudeProfile";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* pressure_bounds */
+    description = "pressure layer boundaries";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
+                                                   dimension_type, vertical_dimension_bounds, description, "hPa", NULL,
+                                                   read_pressure_bounds);
+    description = "the N+1 pressure layer boundaries are converted into [N,2] boundary values";
+    path = "/DATA/OutputPressureGrid";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* O3_column_number_density */
+    description = "o3 partial column density profile";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 2,
+                                                   dimension_type, NULL, description, "DU", NULL, read_o3_profile);
+    path = "/DATA/StateRetrieved[0..NOutputLayers,:]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_apriori */
+    description = "apriori o3 partial column density profile";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_apriori",
+                                                   harp_type_float, 2, dimension_type, NULL, description, "DU", NULL,
+                                                   read_o3_profile_apriori);
+    path = "/DATA/Apriori[0..NOutputLayers,:]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_avk */
+    dimension_type[2] = harp_dimension_vertical;
+    description = "o3 partial column density averaging kernel";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk", harp_type_float,
+                                                   3, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_o3_profile_avk);
+    path = "/DATA/AveragingKernel[0..NOutputLayers,0..NOutputLayers,:]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* validity */
+    description = "processing quality flags; bit 0: no retrieval performed; bit 1: convergence not reached; "
+        "bit 2: out of bound retrieval values; bit 3: too high chi square values";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1, dimension_type,
+                                                   NULL, description, NULL, NULL, read_quality_flags_o3_profile);
+    description = "bit 0: set to 1 if QualityProcessing[0,:] < 0, bit 1: set to 1 if QualityProcessing[1,:] == 0]"
+        "bit 2: set to 1 if QualityProcessing[4,:] == 1, bit 3: set to 1 if QualityProcessing[5,:] == 1";
+    path = "/DATA/QualityProcessing";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_common_trace_gases_variables(harp_product_definition *product_definition)
@@ -3293,28 +3844,28 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* longitude */
     description = "longitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_double, 1, dimension_type,
+        harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float, 1, dimension_type,
                                                    NULL, description, "degree_east", NULL, read_longitude_centre);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/LongitudeCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* latitude */
     description = "latitude of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_double, 1, dimension_type,
+        harp_ingestion_register_variable_full_read(product_definition, "latitude", harp_type_float, 1, dimension_type,
                                                    NULL, description, "degree_north", NULL, read_latitude_centre);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
     path = "/GEOLOCATION/LatitudeCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* longitude_bounds */
     description = "corner longitudes of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "longitude_bounds", harp_type_float, 2,
                                                    dimension_type, dimension_bounds, description, "degree_east", NULL,
                                                    read_longitude_bounds_abcd);
-    harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0, 180.0);
     path = "/GEOLOCATION/LongitudeA[], /GEOLOCATION/LongitudeB[], /GEOLOCATION/LongitudeC[], /GEOLOCATION/LongitudeD[]";
     description = "the corner coordinates are re-arranged in the order B-D-C-A";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -3322,10 +3873,10 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* latitude_bounds */
     description = "corner latitudes of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_double, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "latitude_bounds", harp_type_float, 2,
                                                    dimension_type, dimension_bounds, description, "degree_north", NULL,
                                                    read_latitude_bounds_abcd);
-    harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
     path = "/GEOLOCATION/LatitudeA[], /GEOLOCATION/LatitudeB[], /GEOLOCATION/LatitudeC[], /GEOLOCATION/LatitudeD[]";
     description = "the corner coordinates are re-arranged in the order B-D-C-A";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
@@ -3334,46 +3885,46 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "solar zenith angle at the sensor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "sensor_solar_zenith_angle",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "degree",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "degree",
                                                    NULL, read_solar_zenith_angle_sensor_centre);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngleSatCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* solar_zenith_angle */
     description = "solar zenith angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_solar_zenith_angle_centre);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/SolarZenithAngleCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* viewing_zenith_angle */
     description = "viewing zenith angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_float, 1,
                                                    dimension_type, NULL, description, "degree", NULL,
                                                    read_viewing_zenith_angle_centre);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 180.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 180.0);
     path = "/GEOLOCATION/LineOfSightZenithAngleCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* relative_azimuth_angle */
     description = "relative azimuth angle at top of atmosphere";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "relative_azimuth_angle", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "relative_azimuth_angle", harp_type_float,
                                                    1, dimension_type, NULL, description, "degree", NULL,
                                                    read_relative_azimuth_angle_centre);
-    harp_variable_definition_set_valid_range_double(variable_definition, 0.0, 360.0);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0, 360.0);
     path = "/GEOLOCATION/RelativeAzimuthCentre[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* BrO_column_number_density */
     description = "BrO column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "molec/cm^2", include_bro,
                                                    read_bro_column);
     path = "/TOTAL_COLUMNS/BrO[]";
@@ -3387,7 +3938,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the BrO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    "molec/cm^2", include_bro, read_bro_column_error);
     path = "/TOTAL_COLUMNS/BrO_Error[], /TOTAL_COLUMNS/BrO[]";
     description = "derived from the relative error in percent as: BrO_Error[] * 0.01 * BrO[]";
@@ -3413,7 +3964,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* H2O_column_density */
     description = "H2O column mass density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_density", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "H2O_column_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "kg/m^2", include_h2o,
                                                    read_h2o_column);
     path = "/TOTAL_COLUMNS/H2O[]";
@@ -3427,7 +3978,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the H2O column mass density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "kg/m^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "kg/m^2",
                                                    include_h2o, read_h2o_column_error);
     path = "/TOTAL_COLUMNS/H2O_Error[], /TOTAL_COLUMNS/H2O[]";
     description = "derived from the relative error in percent as: H2O_Error[] * 0.01 * H2O[]";
@@ -3454,7 +4005,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* HCHO_column_number_density */
     description = "HCHO column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density", harp_type_float,
                                                    1, dimension_type, NULL, description, "molec/cm^2", include_hcho,
                                                    read_hcho_column);
     path = "/TOTAL_COLUMNS/HCHO[]";
@@ -3468,7 +4019,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the HCHO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    "molec/cm^2", include_hcho_column_error, read_hcho_column_error);
     path = "/TOTAL_COLUMNS/HCHO_Error[], /TOTAL_COLUMNS/HCHO[]";
     description = "derived from the relative error in percent as: HCHO_Error[] * 0.01 * HCHO[]";
@@ -3495,7 +4046,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* NO2_column_number_density */
     description = "NO2 column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "molec/cm^2", include_no2,
                                                    read_no2_column);
     path = "/TOTAL_COLUMNS/NO2[]";
@@ -3509,7 +4060,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the NO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    "molec/cm^2", include_no2, read_no2_column_error);
     path = "/TOTAL_COLUMNS/NO2_Error[], /TOTAL_COLUMNS/NO2[]";
     description = "derived from the relative error in percent as: NO2_Error[] * 0.01 * NO2[]";
@@ -3536,7 +4087,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "tropospheric NO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_no2_column_tropospheric, read_no2_column_tropospheric);
     path = "/TOTAL_COLUMNS/NO2_Trop[]";
     harp_variable_definition_add_mapping(variable_definition, NULL,
@@ -3552,7 +4103,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_no2_column_tropospheric_error,
                                                    read_no2_column_tropospheric_error);
     path = "/TOTAL_COLUMNS/NO2Tropo_Error[]";
@@ -3576,7 +4127,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* O3_column_number_density */
     description = "O3 column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "molec/cm2", include_o3,
                                                    read_o3_column);
     path = "/TOTAL_COLUMNS/O3[]";
@@ -3591,7 +4142,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the O3 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm2",
                                                    include_o3, read_o3_column_error);
     path = "/TOTAL_COLUMNS/O3_Error[], /TOTAL_COLUMNS/O3[]";
     description = "derived from the relative error in percent as: O3_Error[] * 0.01 * O3[]; "
@@ -3623,7 +4174,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* OClO_column_number_density */
     description = "OClO column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density", harp_type_float,
                                                    1, dimension_type, NULL, description, "molec/cm^2", include_oclo,
                                                    read_oclo_column);
     path = "/TOTAL_COLUMNS/OClO[]";
@@ -3633,7 +4184,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the OClO column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_oclo, read_oclo_column_error);
     path = "/TOTAL_COLUMNS/OClO_Error[], /TOTAL_COLUMNS/OClO[]";
     description = "derived from the relative error in percent as: OClO_Error[] * 0.01 * OClO[]";
@@ -3655,7 +4206,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* SO2_column_number_density */
     description = "SO2 column number density";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_float, 1,
                                                    dimension_type, NULL, description, "molec/cm2", include_so2,
                                                    read_so2_column);
     path = "/TOTAL_COLUMNS/SO2[]";
@@ -3679,7 +4230,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the SO2 column number density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm2",
                                                    include_so2, read_so2_column_error);
     path = "/TOTAL_COLUMNS/SO2_Error[], /TOTAL_COLUMNS/SO2[]";
     description = "derived from the relative error in percent as: SO2_Error[] * 0.01 * SO2[]; "
@@ -3725,7 +4276,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "BrO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_bro_details, read_amf_bro);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'BrO'";
@@ -3735,7 +4286,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the BrO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_bro_details, read_amf_bro_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
@@ -3746,7 +4297,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "H2O air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_h2o_details, read_amf_h2o);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'H2O'";
@@ -3756,7 +4307,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the H2O air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_h2o_details, read_amf_h2o_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
@@ -3767,7 +4318,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "HCHO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_hcho_details, read_amf_hcho);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'HCHO'";
@@ -3777,7 +4328,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the HCHO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_hcho_details, read_amf_hcho_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
@@ -3788,7 +4339,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_no2_details, read_amf_no2);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'NO2'";
@@ -3798,7 +4349,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_no2_details, read_amf_no2_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
@@ -3809,7 +4360,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "tropospheric NO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_no2_details_v2,
                                                    read_amf_no2_tropospheric);
     path = "/DETAILED_RESULTS/NO2/AMFTropo[]";
@@ -3821,7 +4372,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_no2_details_v2,
                                                    read_amf_no2_tropospheric_error);
     path = "/DETAILED_RESULTS/NO2/AMFTropo_Error[], /DETAILED_RESULTS/NO2/AMFTropo[]";
@@ -3832,7 +4383,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* O3_column_number_density_amf */
     description = "O3 air mass factor";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf", harp_type_float,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    include_o3_details, read_amf_o3);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
@@ -3843,7 +4394,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the O3 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_o3_details, read_amf_o3_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
@@ -3854,7 +4405,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "OClO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_amf_oclo);
     path = "/DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'OClO'";
@@ -3864,7 +4415,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the OClO air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_oclo_details, read_amf_oclo_error);
     path = "/DETAILED_RESULTS/AMFTotal_Error[,window], /DETAILED_RESULTS/AMFTotal[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: AMFTotal_Error[,window] * 0.01 * AMFTotal[,window]; "
@@ -3875,7 +4426,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "SO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_so2_details, read_amf_so2);
     path = "/DETAILED_RESULTS/SO2/AMFTotal[:,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
@@ -3894,7 +4445,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the SO2 air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_amf_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_so2_details, read_amf_so2_error);
     path = "/DETAILED_RESULTS/SO2/AMFTotal_Error[:,0]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "detailed_results=SO2 and so2_column=15km", path,
@@ -3913,7 +4464,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "BrO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_bro_details, read_esc_bro);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'BrO'";
@@ -3927,7 +4478,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the BrO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "BrO_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_bro_details_uncorrected, read_esc_bro_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
@@ -3939,7 +4490,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "H2O retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_h2o_details, read_esc_h2o);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'H2O'";
@@ -3953,7 +4504,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the H2O retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "H2O_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_h2o_details_uncorrected, read_esc_h2o_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
@@ -3965,7 +4516,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "HCHO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_hcho_details, read_esc_hcho);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'HCHO'";
@@ -3979,7 +4530,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the HCHO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_hcho_details_uncorrected, read_esc_hcho_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
@@ -3991,7 +4542,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "NO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_no2_details, read_esc_no2);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'NO2'";
@@ -4001,7 +4552,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the NO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_no2_details, read_esc_no2_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
@@ -4012,7 +4563,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "O3 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_o3_details, read_esc_o3);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'O3'";
@@ -4022,7 +4573,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the O3 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_o3_details, read_esc_o3_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
@@ -4033,7 +4584,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "OClO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_oclo_details, read_esc_oclo);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'OClO'";
@@ -4047,7 +4598,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the OClO retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "OClO_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_oclo_details, read_esc_oclo_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
@@ -4062,7 +4613,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "SO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_so2_details, read_esc_so2);
     path = "/DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "window is the index in MainSpecies[] that has the value 'SO2'";
@@ -4085,7 +4636,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the SO2 retrieved effective slant column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_slant_column_number_density_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "molec/cm^2",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "molec/cm^2",
                                                    include_so2_esc_error, read_esc_so2_error);
     path = "/DETAILED_RESULTS/ESC_Error[,window], /DETAILED_RESULTS/ESC[,window], /META_DATA/MainSpecies[]";
     description = "derived from the relative error in percent as: ESC_Error[,window] * 0.01 * ESC[,window]; "
@@ -4097,7 +4648,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "fitted ozone temperature";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "O3_effective_temperature",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_TEMPERATURE, include_o3_temp, read_o3_temperature);
     path = "/DETAILED_RESULTS/O3/O3Temperature";
     harp_variable_definition_add_mapping(variable_definition, "detailed_results=O3", "CODA product version >= 2", path,
@@ -4107,7 +4658,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     dimension_type[1] = harp_dimension_vertical;
     description = "pressure levels";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_double, 2, dimension_type,
+        harp_ingestion_register_variable_full_read(product_definition, "pressure", harp_type_float, 2, dimension_type,
                                                    NULL, description, "hPa", include_pressure, read_pressure);
     path = "/DETAILED_RESULTS/HCHO/AveragingKernelPressureLevel";
     description = "the vertical grid is inverted to make it ascending";
@@ -4121,7 +4672,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "a priori HCHO volume mixing ratio profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_volume_mixing_ratio_dry_air_apriori",
-                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_VOLUME_MIXING_RATIO, include_hcho_avk_apriori,
                                                    read_hcho_apriori);
     path = "/DETAILED_RESULTS/HCHO/AprioriHCHOProfile";
@@ -4133,7 +4684,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "HCHO column averaging kernel";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_column_number_density_avk",
-                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_hcho_avk_apriori, read_hcho_avk);
     path = "/DETAILED_RESULTS/HCHO/AveragingKernel";
     description = "the vertical grid is inverted to make it ascending";
@@ -4144,7 +4695,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "a priori NO2 volume mixing ratio profile";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_volume_mixing_ratio_dry_air_apriori",
-                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_VOLUME_MIXING_RATIO, include_no2_avk_apriori,
                                                    read_no2_apriori);
     path = "/DETAILED_RESULTS/HCHO/AprioriNO2Profile";
@@ -4156,7 +4707,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "NO2 column averaging kernel";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_avk",
-                                                   harp_type_double, 2, dimension_type, NULL, description,
+                                                   harp_type_float, 2, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, include_no2_avk_apriori, read_no2_avk);
     path = "/DETAILED_RESULTS/NO2/AveragingKernel";
     description = "the vertical grid is inverted to make it ascending";
@@ -4166,7 +4717,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* surface_albedo */
     description = "surface albedo";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    include_surface_albedo, read_surface_albedo);
     path = "/DETAILED_RESULTS/SurfaceAlbedo[,window], /META_DATA/MainSpecies[]";
@@ -4178,7 +4729,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_fraction */
     description = "cloud fraction";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_fraction);
     path = "/DETAILED_RESULTS/CloudFraction[]";
@@ -4189,7 +4740,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_fraction_uncertainty */
     description = "uncertainty of the cloud fraction";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_fraction_error);
     description = "derived from the relative error in percent as: CloudFraction_Error[] * 0.01 * CloudFraction[]";
@@ -4201,7 +4752,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_top_pressure */
     description = "cloud top pressure";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "hPa", NULL,
                                                    read_pressure_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopPressure[]";
@@ -4213,7 +4764,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description, "hPa",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "hPa",
                                                    NULL, read_pressure_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopPressure_Error[] * 0.01 * CloudTopPressure[]";
     path = "/DETAILED_RESULTS/CloudTopPressure_Error[], /DETAILED_RESULTS/CloudTopPressure[]";
@@ -4224,7 +4775,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_top_height */
     description = "cloud top height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "km", NULL,
                                                    read_height_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopHeight[]";
@@ -4235,7 +4786,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_top_height_uncertainty */
     description = "uncertainty of the cloud top height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_height_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, "km", NULL,
                                                    read_height_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopHeight_Error[] * 0.01 * CloudTopHeight[]";
@@ -4247,7 +4798,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_top_albedo */
     description = "cloud top albedo";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_albedo_cloud_top);
     path = "/DETAILED_RESULTS/CloudTopAlbedo[]";
@@ -4258,7 +4809,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_top_albedo_uncertainty */
     description = "uncertainty of the cloud top albedo";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo_uncertainty", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_albedo_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    NULL, read_albedo_cloud_top_error);
     description = "derived from the relative error in percent as: CloudTopAlbedo_Error[] * 0.01 * CloudTopAlbedo[]";
@@ -4270,7 +4821,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* cloud_optical_depth */
     description = "cloud optical depth";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cloud_optical_thickness);
     path = "/DETAILED_RESULTS/CloudOpticalThickness[]";
@@ -4282,7 +4833,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     description = "uncertainty of the cloud optical depth";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth_uncertainty",
-                                                   harp_type_double, 1, dimension_type, NULL, description,
+                                                   harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_optical_thickness_error);
     description = "derived from the relative error in percent as: CloudOpticalThickness_Error[] * 0.01 * "
         "CloudOpticalThickness[]";
@@ -4294,7 +4845,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* absorbing_aerosol_index */
     description = "absorbing aerosol index";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_absorbing_aerosol_index_detailed_results);
     path = "/DETAILED_RESULTS/AAI[]";
@@ -4303,7 +4854,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* surface_height */
     description = "surface height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_heigth", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "surface_heigth", harp_type_float, 1,
                                                    dimension_type, NULL, description, "km", NULL, read_surface_height);
     path = "/DETAILED_RESULTS/SurfaceHeight[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -4311,7 +4862,7 @@ static void register_common_trace_gases_variables(harp_product_definition *produ
     /* surface_pressure */
     description = "surface pressure";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "hPa", NULL,
                                                    read_surface_pressure);
     path = "/DETAILED_RESULTS/SurfacePressure[]";
@@ -4407,7 +4958,7 @@ static void register_o3marp_product(void)
     /* cloud_fraction */
     description = "cloud fraction";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_pmd_cloud_fraction);
     path = "/DATA/PMD_CloudFraction[]";
@@ -4434,7 +4985,7 @@ static void register_o3mars_product(void)
     /* aerosol_height */
     description = "absorbing aerosol height";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height", harp_type_float, 1,
                                                    dimension_type, NULL, description, "km", NULL,
                                                    read_absorbing_aerosol_heigth);
     path = "/DATA/AAH_AbsorbingAerosolHeight[]";
@@ -4443,7 +4994,7 @@ static void register_o3mars_product(void)
     /* aerosol_height_uncertainty */
     description = "absorbing aerosol height error";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_uncertainty", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, "km", NULL,
                                                    read_absorbing_aerosol_heigth_error);
     path = "/DATA/AAH_AbsorbingAerosolHeightError[]";
@@ -4452,7 +5003,7 @@ static void register_o3mars_product(void)
     /* aerosol_pressure */
     description = "absorbing aerosol pressure";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "hPa", NULL,
                                                    read_absorbing_aerosol_pressure);
     path = "/DATA/AAH_AbsorbingAerosolPressure[]";
@@ -4461,7 +5012,7 @@ static void register_o3mars_product(void)
     /* aerosol_pressure_uncertainty */
     description = "absorbing aerosol pressure error";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure_uncertainty", harp_type_double,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure_uncertainty", harp_type_float,
                                                    1, dimension_type, NULL, description, "hPa", NULL,
                                                    read_absorbing_aerosol_pressure_error);
     path = "/DATA/AAH_AbsorbingAerosolPressureError[]";
@@ -4484,7 +5035,7 @@ static void register_o3mnhp_product(void)
 
     module = harp_ingestion_register_module("GOME2_L2_O3MNHP", "GOME-2", "ACSAF", "O3MNHP",
                                             "GOME2 near-real-time high-resolution ozone profile product",
-                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+                                            ingestion_init_profile, ingestion_done_profile);
 
     /* O3MNTO product */
     product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MNHP", NULL, read_dimensions);
@@ -4498,7 +5049,7 @@ static void register_o3mohp_product(void)
 
     module = harp_ingestion_register_module("GOME2_L2_O3MOHP", "GOME-2", "ACSAF", "O3MOHP",
                                             "GOME2 offline high-resolution ozone profile product",
-                                            ingestion_init_trace_gases, ingestion_done_trace_gases);
+                                            ingestion_init_profile, ingestion_done_profile);
 
     /* O3MOTO product */
     product_definition = harp_ingestion_register_product(module, "GOME2_L2_O3MOHP", NULL, read_dimensions);

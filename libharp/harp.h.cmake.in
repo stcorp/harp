@@ -429,6 +429,8 @@ LIBHARP_API int harp_set_option_regrid_out_of_bounds(int method);
 LIBHARP_API int harp_get_option_regrid_out_of_bounds(void);
 
 LIBHARP_API int harp_convert_unit(const char *from_unit, const char *to_unit, long num_values, double *value);
+LIBHARP_API int harp_convert_unit_float(const char *from_unit, const char *to_unit, long num_values, float *value);
+LIBHARP_API int harp_convert_unit_double(const char *from_unit, const char *to_unit, long num_values, double *value);
 
 /* Generated documentation */
 LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const char *variable_name,

@@ -257,8 +257,8 @@ static int collocation_mask_from_result(const harp_collocation_result *collocati
             }
             for (i = 0; i < mask->num_index_pairs; i++)
             {
-                mask->index_pair[i].datetime_diff = harp_unit_converter_convert(unit_converter,
-                                                                                mask->index_pair[i].datetime_diff);
+                mask->index_pair[i].datetime_diff =
+                    harp_unit_converter_convert_double(unit_converter, mask->index_pair[i].datetime_diff);
             }
         }
     }
