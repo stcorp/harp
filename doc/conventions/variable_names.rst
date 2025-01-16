@@ -176,7 +176,7 @@ sun_normalized_radiance                                                        X
 surface_albedo                                                                 X            X       X     []
 temperature                                    surface                         X       X    X             [K]
 tropopause_altitude                                                            X            X             [m]                  altitude of the troposphere/stratosphere boundary location
-tropopause_pressure                                                            X            X             [K]                  pressure level of the troposphere/stratosphere boundary location
+tropopause_pressure                                                            X            X             [hPa]                pressure level of the troposphere/stratosphere boundary location
 validity                                                                                                                       validity flag for each time sample or whole product;
                                                                                                                                only to be used if validity flag is for multiple variables combined
 viewing_azimuth_angle                                                          X                          [degree]
