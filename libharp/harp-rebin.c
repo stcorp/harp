@@ -37,12 +37,15 @@
 #include <stdio.h>
 #include <string.h>
 
+#define MAX_NAME_LENGTH 128
+
 typedef enum binning_type_enum
 {
     binning_skip,
     binning_remove,
     binning_average,
-    binning_sum
+    binning_sum,
+    binning_weight      /* only used for int32_t and float data */
 } binning_type;
 
 static binning_type get_binning_type(harp_variable *variable, harp_dimension_type dimension_type)
@@ -50,13 +53,6 @@ static binning_type get_binning_type(harp_variable *variable, harp_dimension_typ
     long variable_name_length = (long)strlen(variable->name);
     int num_matching_dims;
     int i;
-
-    /* remove any count/weight variables */
-    if ((variable_name_length >= 5 && strcmp(&variable->name[variable_name_length - 5], "count") == 0) ||
-        (variable_name_length >= 6 && strcmp(&variable->name[variable_name_length - 6], "weight") == 0))
-    {
-        return binning_remove;
-    }
 
     /* ensure that there is only 1 dimension of the given type */
     for (i = 0, num_matching_dims = 0; i < variable->num_dimensions; i++)
@@ -86,6 +82,23 @@ static binning_type get_binning_type(harp_variable *variable, harp_dimension_typ
         {
             return binning_remove;
         }
+    }
+
+    /* remove any count variables that depend on the binned dimension */
+    if (variable_name_length >= 5 && strcmp(&variable->name[variable_name_length - 5], "count") == 0)
+    {
+        return binning_remove;
+    }
+
+    /* only keep valid weight variables */
+    if (variable_name_length >= 6 && strcmp(&variable->name[variable_name_length - 6], "weight") == 0)
+    {
+        if (variable->num_dimensions < 1 || variable->dimension_type[0] != harp_dimension_time ||
+            variable->data_type != harp_type_float || variable->unit != NULL)
+        {
+            return binning_remove;
+        }
+        return binning_weight;
     }
 
     /* we can't bin string values */
@@ -214,6 +227,130 @@ static int filter_binnable_variables(harp_product *product, harp_dimension_type 
     }
 
     return 0;
+}
+
+/* find a <variable->name>_weight variable.
+ * If the variable exists but is invalid its entry in the bintype array will be set to binning_remove.
+ */
+static int get_weight_variable_for_variable(harp_product *product, harp_variable *variable, binning_type *bintype,
+                                            harp_variable **weight_variable)
+{
+    char variable_name[MAX_NAME_LENGTH];
+    int index;
+    int i;
+
+    *weight_variable = NULL;
+
+    snprintf(variable_name, MAX_NAME_LENGTH, "%s_weight", variable->name);
+    if (!harp_product_has_variable(product, variable_name))
+    {
+        return 0;
+    }
+
+    if (harp_product_get_variable_index_by_name(product, variable_name, &index) != 0)
+    {
+        return -1;
+    }
+    if (bintype[index] == binning_remove)
+    {
+        return 0;
+    }
+
+    /* make sure that the dimensions of the weight variable match the dimensions of the given variable */
+    if (product->variable[index]->num_dimensions != variable->num_dimensions)
+    {
+        bintype[index] = binning_remove;
+        return 0;
+    }
+    for (i = 0; i < product->variable[index]->num_dimensions; i++)
+    {
+        if (product->variable[index]->dimension_type[i] != variable->dimension_type[i] ||
+            product->variable[index]->dimension[i] != variable->dimension[i])
+        {
+            bintype[index] = binning_remove;
+            return 0;
+        }
+    }
+
+    *weight_variable = product->variable[index];
+
+    return 0;
+}
+
+/* get weight values for each element in the provided variable.
+ * if a '<variable>_weight' or 'weight' variable exists then 'weight' will be populated and the return value will be 1.
+ * if no applicable weight variable could be found then the return value will be 0.
+ * the return value is -1 when an error is encountered.
+ */
+static int get_weight_for_variable(harp_product *product, harp_variable *variable, binning_type *bintype, float *weight)
+{
+    harp_variable *weight_variable = NULL;
+    long i, j;
+
+    if (variable->num_dimensions <= 1 || variable->dimension_type[0] != harp_dimension_time)
+    {
+        return 0;
+    }
+
+    if (get_weight_variable_for_variable(product, variable, bintype, &weight_variable) != 0)
+    {
+        return -1;
+    }
+    if (weight_variable == NULL)
+    {
+        int index;
+
+        if (!harp_product_has_variable(product, "weight"))
+        {
+            return 0;
+        }
+        if (harp_product_get_variable_index_by_name(product, "weight", &index) != 0)
+        {
+            return -1;
+        }
+        if (bintype[index] == binning_remove)
+        {
+            return 0;
+        }
+        weight_variable = product->variable[index];
+
+        /* initial dimensions should match */
+        if (weight_variable->num_dimensions > variable->num_dimensions)
+        {
+            return 0;
+        }
+        for (i = 0; i < weight_variable->num_dimensions; i++)
+        {
+            if (weight_variable->dimension_type[i] != variable->dimension_type[i] ||
+                weight_variable->dimension[i] != variable->dimension[i])
+            {
+                return 0;
+            }
+        }
+    }
+
+    /* this should be assured by bintype[index] not being equal to binning_remove */
+    assert(weight_variable->data_type == harp_type_float);
+
+    /* store data into weight parameter */
+    if (variable->num_elements == weight_variable->num_elements)
+    {
+        memcpy(weight, weight_variable->data.float_data, weight_variable->num_elements * sizeof(float));
+    }
+    else
+    {
+        long num_sub_elements = variable->num_elements / weight_variable->num_elements;
+
+        for (i = 0; i < weight_variable->num_elements; i++)
+        {
+            for (j = 0; j < num_sub_elements; j++)
+            {
+                weight[i * num_sub_elements + j] = weight_variable->data.float_data[i];
+            }
+        }
+    }
+
+    return 1;
 }
 
 static int add_source_index(long source_index, double weight, long *cumsum_index, long **map_source_index,
@@ -358,8 +495,8 @@ static int find_matching_intervals_for_bounds(harp_variable *target_bounds, harp
  * The target bounds variable should be an axis bounds variable containing the interval edges (bins) of the target grid (as 'double' values).
  * It should be a two-dimensional variable (for a time independent grid) or a three-dimensional variable (for a time dependent grid).
  * The last dimension should be an independent dimension of length 2 (for the lower/upper bound of each interval).
- * The dimension to use for regridding is based on the type of the second to last dimenion of the target grid variable.
- * This function cannot be used to rebin an independent dimension or rebin the time dimension.
+ * The dimension to use for regridding is based on the type of the second to last dimension of the target grid variable.
+ * This function cannot be used to rebin an independent dimension.
  *
  * For each variable in the product, a dimension-specific rule based on the variable name will determine how to rebin
  * the variable.
@@ -388,16 +525,19 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
     long target_num_dim_elements;
     harp_variable *variable;
     long variable_name_length = (long)strlen(target_bounds->name);
+    long weight_size = 0;
     long i;
 
     /* owned memory */
     harp_variable *source_bounds = NULL;
     harp_variable *local_target_bounds = NULL;
+    binning_type *bintype = NULL;
     long *map_source_index = NULL;      /* [num_map_elements] flat index into [dim] source array */
     double *map_source_weight = NULL;   /* [num_map_elements] weight for each [dim] source array */
     long *map_offset = NULL;    /* [(time,) dim] offset index into map_source_index/map_weight for target array */
     long *map_length = NULL;    /* [(time,) dim] number of elements in map_source_index/map_weight for target array */
     double *buffer = NULL;
+    float *weight = NULL;
 
     if (variable_name_length < 7 || strcmp(&target_bounds->name[variable_name_length - 7], "_bounds") != 0)
     {
@@ -492,7 +632,7 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
         }
     }
 
-    /* remove grid variables if they exists (since we don't want to rebin them) */
+    /* remove grid variables if they exist (since we don't want to rebin them) */
     /* this won't affect the source_bounds variables that we already derived */
     if (harp_product_has_variable(product, source_bounds->name))
     {
@@ -521,6 +661,28 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
         }
     }
 
+    /* make 'bintype' big enough to also store any count/weight variables that we may want to add (i.e. factor 2) */
+    bintype = malloc(2 * product->num_variables * sizeof(binning_type));
+    if (bintype == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       2 * product->num_variables * sizeof(binning_type), __FILE__, __LINE__);
+        goto error;
+    }
+    for (i = 0; i < product->num_variables; i++)
+    {
+        bintype[i] = get_binning_type(product->variable[i], 0);
+
+        /* determine the maximum number of elements (as size for the 'weight' array) */
+        if (bintype[i] != binning_remove && bintype[i] != binning_skip)
+        {
+            if (product->variable[i]->num_elements > weight_size)
+            {
+                weight_size = product->variable[i]->num_elements;
+            }
+        }
+    }
+
     /* allocate memory for map_offset, map_length, and buffer */
     map_offset = (long *)malloc(bounds_num_time_elements * target_num_dim_elements * (size_t)sizeof(double));
     if (map_offset == NULL)
@@ -541,6 +703,13 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        target_num_dim_elements * sizeof(double), __FILE__, __LINE__);
+        goto error;
+    }
+    weight = (float *)malloc(weight_size * (size_t)sizeof(float));
+    if (weight == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       weight_size * sizeof(float), __FILE__, __LINE__);
         goto error;
     }
 
@@ -564,21 +733,34 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
     /* regrid each variable */
     for (i = product->num_variables - 1; i >= 0; i--)
     {
-        binning_type type;
         long target_bounds_time_index;
         long num_blocks;
         long num_elements;
         long j;
+        int result = 0;
 
         variable = product->variable[i];
 
-        /* Check if we can rebin this kind of variable */
-        type = get_binning_type(variable, dimension_type);
-
-        assert(type != binning_remove);
-        if (type == binning_skip)
+        if (bintype[i] == binning_skip || bintype[i] == binning_remove)
         {
             continue;
+        }
+
+        if (bintype[i] != binning_weight)
+        {
+            result = get_weight_for_variable(product, variable, bintype, weight);
+            if (result < 0)
+            {
+                goto error;
+            }
+        }
+        if (result == 0)
+        {
+            /* if there is no pre-existing weight variable then set all weights to 1 */
+            for (j = 0; j < variable->num_elements; j++)
+            {
+                weight[j] = 1;
+            }
         }
 
         /* Ensure that the variable data consists of doubles */
@@ -596,15 +778,6 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
                 {
                     goto error;
                 }
-            }
-        }
-        /* Also make variable time dependent if the grid dimension is time and the variable does not depend on time */
-        if (dimension_type == harp_dimension_time &&
-            (variable->num_dimensions == 0 || variable->dimension_type[0] != harp_dimension_time))
-        {
-            if (harp_variable_add_dimension(variable, 0, harp_dimension_time, source_num_dim_elements) != 0)
-            {
-                goto error;
             }
         }
 
@@ -654,20 +827,20 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
                     for (m = 0; m < map_length[target_bounds_time_index * target_num_dim_elements + k]; m++)
                     {
                         long source_index = j * source_num_dim_elements + map_source_index[offset + m];
-                        double weight = map_source_weight[offset + m];
+                        double w = weight[source_index * num_elements + l] * map_source_weight[offset + m];
                         double value = variable->data.double_data[source_index * num_elements + l];
 
                         if (!harp_isnan(value))
                         {
-                            valuesum += weight * value;
-                            weightsum += weight;
+                            valuesum += w * value;
+                            weightsum += w;
                         }
                     }
 
                     if (weightsum != 0)
                     {
                         buffer[k] = valuesum;
-                        if (type == binning_average)
+                        if (bintype[i] == binning_average || bintype[i] == binning_weight)
                         {
                             buffer[k] /= weightsum;
                         }
@@ -681,6 +854,24 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
                 {
                     variable->data.double_data[(j * source_num_dim_elements + k) * num_elements + l] = buffer[k];
                 }
+            }
+        }
+
+        /* Convert weight variables back to float */
+        if (bintype[i] == binning_weight && harp_variable_convert_data_type(variable, harp_type_float) != 0)
+        {
+            goto error;
+        }
+    }
+
+    /* remove all variables that need to be removed (in reverse order!) */
+    for (i = product->num_variables - 1; i >= 0; i--)
+    {
+        if (bintype[i] == binning_remove)
+        {
+            if (harp_product_remove_variable(product, product->variable[i]) != 0)
+            {
+                goto error;
             }
         }
     }
@@ -712,7 +903,9 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
     free(map_source_weight);
     free(map_offset);
     free(map_length);
+    free(bintype);
     free(buffer);
+    free(weight);
 
     return 0;
 
@@ -735,9 +928,17 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
     {
         free(map_length);
     }
+    if (bintype != NULL)
+    {
+        free(bintype);
+    }
     if (buffer != NULL)
     {
         free(buffer);
+    }
+    if (weight != NULL)
+    {
+        free(weight);
     }
 
     return -1;
