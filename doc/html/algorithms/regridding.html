@@ -166,7 +166,7 @@ quantity in the given dimension. The algorithm for this is the same algorithm as
 <p>Rebinning uses a weighted average of the overlapping intervals of the source grid with the interval of the target grid.
 Each interval is defined by its upper and lower boundary. We define the source interval grid as <span class="math notranslate nohighlight">\(x^{B}_{s}(i,l)\)</span>
 with <span class="math notranslate nohighlight">\(i=1..N\)</span> and <span class="math notranslate nohighlight">\(l=1..2\)</span>, and the target interval grid as <span class="math notranslate nohighlight">\(x^{B}_{t}(j,l)\)</span> with <span class="math notranslate nohighlight">\(j=1..M\)</span> and
-<span class="math notranslate nohighlight">\(l=1..2\)</span>.</p>
+<span class="math notranslate nohighlight">\(l=1..2\)</span>. The coverage weight factor is defined as <span class="math notranslate nohighlight">\(c(i,j)\)</span>.</p>
 <p>The rebinning is then performed as follows:</p>
 <blockquote>
 <div><div class="math notranslate nohighlight">
@@ -175,13 +175,16 @@ with <span class="math notranslate nohighlight">\(i=1..N\)</span> and <span clas
   x^{max}_{s}(i) &amp; = &amp; \max_{l}{x^{B}_{s}(i,l)} \\
   x^{min}_{t}(j) &amp; = &amp; \min_{l}{x^{B}_{t}(j,l)} \\
   x^{max}_{t}(j) &amp; = &amp; \max_{l}{x^{B}_{t}(j,l)} \\
-  w(i,j) &amp; = &amp; \frac{\max(\min(x^{max}_{s}(i), x^{max}_{t}(j)) - \max(x^{min}_{s}(i), x^{min}_{t}(j)), 0)}
+  c(i,j) &amp; = &amp; \frac{\max(\min(x^{max}_{s}(i), x^{max}_{t}(j)) - \max(x^{min}_{s}(i), x^{min}_{t}(j)), 0)}
                     {x^{max}_{s}(i) - x^{min}_{s}(i)} \\
   y_{t}(j) &amp; = &amp; \begin{cases}
-    \frac{\sum_{i}{w(i,j)y_{s}(i)}}{\sum_{i}{w(i,j)}}, &amp; \sum_{i}{w(i,j)} &gt; 0 \\
-    \mathit{nan}, &amp; \sum_{i}{w(i,j)} = 0
+    \frac{\sum_{i}{c(i,j)w(i)y_{s}(i)}}{\sum_{i}{c(i,j)w(i)}}, &amp; \sum_{i}{c(i,j)w(i)} &gt; 0 \\
+    \mathit{nan}, &amp; \sum_{i}{c(i,j)w(i)} = 0
   \end{cases} \\
 \end{eqnarray}</div></div></blockquote>
+<p>The weight <span class="math notranslate nohighlight">\(w(i)\)</span> is taken from an existing <cite>weight</cite> variable if it exists and is set to 1 if there was no
+existing <cite>weight</cite> variable.</p>
+<p>Rebinning of existing weight variables is treated similar, except that <span class="math notranslate nohighlight">\(w(i)\)</span> is set to 1.</p>
 <p>For variables that provide an integrated quantity in the given dimension, the end result is the sum of the weighted
 contributions instead of the average. Such variables are, for example, partial column density profiles for the vertical
 dimension. Other such vertical variables are column averaging kernels and degree-of-freedom profiles.</p>
@@ -190,11 +193,22 @@ dimension. Other such vertical variables are column averaging kernels and degree
 <div><div class="math notranslate nohighlight">
 \begin{eqnarray}
   y_{t}(j) &amp; = &amp; \begin{cases}
-    \sum_{i}{w(i,j)y_{s}(i)}, &amp; \sum_{i}{w(i,j)} &gt; 0 \\
-    \mathit{nan}, &amp; \sum_{i}{w(i,j)} = 0
+    \sum_{i}{c(i,j)w(i)y_{s}(i)}, &amp; \sum_{i}{c(i,j)w(i)} &gt; 0 \\
+    \mathit{nan}, &amp; \sum_{i}{c(i,j)w(i)} = 0
   \end{cases} \\
 \end{eqnarray}</div></div></blockquote>
-<p>If the product already contained any <cite>count</cite> or <cite>weight</cite> variables, then these are removed before a rebinning is performed.</p>
+<p>If the product contained any <cite>count</cite> variables that depend on the rebinned dimension then these are removed before a
+rebinning is performed.</p>
+<p>In most cases, each variable is directly mapped to <span class="math notranslate nohighlight">\(y\)</span>. The special cases are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>uncertainty variables are always averaged as correlated (i.e. using a regular average).</p></li>
+<li><p>variables that define an angle (such as <cite>latitude</cite>, <cite>longitude</cite>, <cite>angle</cite> and <cite>direction</cite>) are averaged using their
+unit vector representation (<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))\)</span>. The final average
+is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>. The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span>
+is stored as a weight variable.</p></li>
+</ul>
+</div></blockquote>
 </section>
 <section id="binning">
 <span id="id3"></span><h2>Binning</h2>

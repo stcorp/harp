@@ -92,7 +92,7 @@ Rebinning
 Rebinning uses a weighted average of the overlapping intervals of the source grid with the interval of the target grid.
 Each interval is defined by its upper and lower boundary. We define the source interval grid as :math:`x^{B}_{s}(i,l)`
 with :math:`i=1..N` and :math:`l=1..2`, and the target interval grid as :math:`x^{B}_{t}(j,l)` with :math:`j=1..M` and
-:math:`l=1..2`.
+:math:`l=1..2`. The coverage weight factor is defined as :math:`c(i,j)`.
 
 The rebinning is then performed as follows:
 
@@ -104,14 +104,18 @@ The rebinning is then performed as follows:
         x^{max}_{s}(i) & = & \max_{l}{x^{B}_{s}(i,l)} \\
         x^{min}_{t}(j) & = & \min_{l}{x^{B}_{t}(j,l)} \\
         x^{max}_{t}(j) & = & \max_{l}{x^{B}_{t}(j,l)} \\
-        w(i,j) & = & \frac{\max(\min(x^{max}_{s}(i), x^{max}_{t}(j)) - \max(x^{min}_{s}(i), x^{min}_{t}(j)), 0)}
+        c(i,j) & = & \frac{\max(\min(x^{max}_{s}(i), x^{max}_{t}(j)) - \max(x^{min}_{s}(i), x^{min}_{t}(j)), 0)}
                           {x^{max}_{s}(i) - x^{min}_{s}(i)} \\
         y_{t}(j) & = & \begin{cases}
-          \frac{\sum_{i}{w(i,j)y_{s}(i)}}{\sum_{i}{w(i,j)}}, & \sum_{i}{w(i,j)} > 0 \\
-          \mathit{nan}, & \sum_{i}{w(i,j)} = 0
+          \frac{\sum_{i}{c(i,j)w(i)y_{s}(i)}}{\sum_{i}{c(i,j)w(i)}}, & \sum_{i}{c(i,j)w(i)} > 0 \\
+          \mathit{nan}, & \sum_{i}{c(i,j)w(i)} = 0
         \end{cases} \\
       \end{eqnarray}
 
+The weight :math:`w(i)` is taken from an existing `weight` variable if it exists and is set to 1 if there was no
+existing `weight` variable.
+
+Rebinning of existing weight variables is treated similar, except that :math:`w(i)` is set to 1.
 
 For variables that provide an integrated quantity in the given dimension, the end result is the sum of the weighted
 contributions instead of the average. Such variables are, for example, partial column density profiles for the vertical
@@ -124,12 +128,23 @@ The rebinning operation for integrated variables uses the following revised calc
 
       \begin{eqnarray}
         y_{t}(j) & = & \begin{cases}
-          \sum_{i}{w(i,j)y_{s}(i)}, & \sum_{i}{w(i,j)} > 0 \\
-          \mathit{nan}, & \sum_{i}{w(i,j)} = 0
+          \sum_{i}{c(i,j)w(i)y_{s}(i)}, & \sum_{i}{c(i,j)w(i)} > 0 \\
+          \mathit{nan}, & \sum_{i}{c(i,j)w(i)} = 0
         \end{cases} \\
       \end{eqnarray}
 
-If the product already contained any `count` or `weight` variables, then these are removed before a rebinning is performed.
+
+If the product contained any `count` variables that depend on the rebinned dimension then these are removed before a
+rebinning is performed.
+
+In most cases, each variable is directly mapped to :math:`y`. The special cases are:
+
+  - uncertainty variables are always averaged as correlated (i.e. using a regular average).
+
+  - variables that define an angle (such as `latitude`, `longitude`, `angle` and `direction`) are averaged using their
+    unit vector representation (:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))`. The final average
+    is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`. The norm :math:`\|\textbf{y}_{t}\|`
+    is stored as a weight variable.
 
 .. _binning:
 
