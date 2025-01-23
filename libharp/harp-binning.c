@@ -47,7 +47,7 @@ typedef enum binning_type_enum
     binning_remove,
     binning_average,
     binning_uncertainty,
-    binning_sum,        /* only used for int32_t and float data */
+    binning_weight,     /* only used for int32_t and float data */
     binning_angle,      /* will use averaging using 2D vectors */
     binning_time_min,
     binning_time_max,
@@ -81,7 +81,7 @@ static binning_type get_binning_type(harp_variable *variable, int force_correlat
         {
             return binning_remove;
         }
-        return binning_sum;
+        return binning_weight;
     }
 
     /* only keep valid weight variables */
@@ -92,7 +92,7 @@ static binning_type get_binning_type(harp_variable *variable, int force_correlat
         {
             return binning_remove;
         }
-        return binning_sum;
+        return binning_weight;
     }
 
     /* we only bin variables with a time dimension */
@@ -194,7 +194,7 @@ static binning_type get_spatial_binning_type(harp_variable *variable)
         }
 
         /* existing count and weight variables are removed if we perform a spatial bin */
-        if (type == binning_sum)
+        if (type == binning_weight)
         {
             return binning_remove;
         }
@@ -1562,7 +1562,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         variable = product->variable[k];
 
         /* convert variables to double */
-        if (bintype[k] != binning_sum)
+        if (bintype[k] != binning_weight)
         {
             if (harp_variable_convert_data_type(variable, harp_type_double) != 0)
             {
@@ -1586,7 +1586,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
                 {
                     weight[i] = 1.0;
                 }
-                if (add_weight_variable(product, bintype, binning_sum, variable->name, variable->num_dimensions,
+                if (add_weight_variable(product, bintype, binning_weight, variable->name, variable->num_dimensions,
                                         variable->dimension_type, variable->dimension, weight) != 0)
                 {
                     goto error;
@@ -1675,7 +1675,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         harp_variable *variable;
         long num_sub_elements;
 
-        if (bintype[k] == binning_skip || bintype[k] == binning_remove || bintype[k] == binning_sum)
+        if (bintype[k] == binning_skip || bintype[k] == binning_remove || bintype[k] == binning_weight)
         {
             /* we handle the summable variables in a second iteration to prevent wrong use of weights/counts */
             continue;
@@ -1830,7 +1830,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
 
             if (store_count_variable)
             {
-                if (add_count_variable(product, bintype, binning_sum, variable->name, variable->num_dimensions,
+                if (add_count_variable(product, bintype, binning_weight, variable->name, variable->num_dimensions,
                                        variable->dimension_type, variable->dimension, count) != 0)
                 {
                     goto error;
@@ -1838,7 +1838,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
             }
             if (store_weight_variable)
             {
-                if (add_weight_variable(product, bintype, binning_sum, variable->name, variable->num_dimensions,
+                if (add_weight_variable(product, bintype, binning_weight, variable->name, variable->num_dimensions,
                                         variable->dimension_type, variable->dimension, weight) != 0)
                 {
                     goto error;
@@ -1852,7 +1852,7 @@ LIBHARP_API int harp_product_bin(harp_product *product, long num_bins, long num_
         harp_variable *variable;
         long num_sub_elements;
 
-        if (bintype[k] != binning_sum)
+        if (bintype[k] != binning_weight)
         {
             continue;
         }
