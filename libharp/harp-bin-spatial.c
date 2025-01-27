@@ -122,18 +122,13 @@ static binning_type get_binning_type(harp_variable *variable)
 
     if (strstr(variable->name, "_uncertainty") != NULL)
     {
-        if (strstr(variable->name, "_uncertainty_systematic") != NULL)
-        {
-            /* always propagate uncertainty assuming full correlation for the systematic part */
-            return binning_average;
-        }
         if (strstr(variable->name, "_uncertainty_random") != NULL)
         {
             /* always propagate uncertainty assuming no correlation for the random part */
             return binning_uncertainty;
         }
         /* propagate uncertainty assuming no correlation */
-        return binning_uncertainty;
+        return binning_average;
     }
 
     /* we can't bin averaging kernels */
