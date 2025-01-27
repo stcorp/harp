@@ -69,7 +69,8 @@ libharp_la_SOURCES = \
 	libharp/harp-area-mask.c \
 	libharp/harp-aux-afgl86.c \
 	libharp/harp-aux-usstd76.c \
-	libharp/harp-binning.c \
+	libharp/harp-bin.c \
+	libharp/harp-bin-spatial.c \
 	libharp/harp-chemistry.h \
 	libharp/harp-chemistry.c \
 	libharp/harp-collocation.c \
