@@ -1,3 +1,8 @@
+* The rebin() operation now takes into account existing weight variables
+  and properly handles angle variables. Rebinning the result of a
+  bin_spatial() operation to a lower resolution now gives the same result
+  as when a spatial bin was performed directly to that lower resolution.
+
 * Added harp_convert_unit_double() and harp_convert_unit_float().
   harp_convert_unit() is now deprecated.
 

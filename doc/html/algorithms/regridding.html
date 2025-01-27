@@ -199,16 +199,14 @@ dimension. Other such vertical variables are column averaging kernels and degree
 \end{eqnarray}</div></div></blockquote>
 <p>If the product contained any <cite>count</cite> variables that depend on the rebinned dimension then these are removed before a
 rebinning is performed.</p>
-<p>In most cases, each variable is directly mapped to <span class="math notranslate nohighlight">\(y\)</span>. The special cases are:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>uncertainty variables are always averaged as correlated (i.e. using a regular average).</p></li>
-<li><p>variables that define an angle (such as <cite>latitude</cite>, <cite>longitude</cite>, <cite>angle</cite> and <cite>direction</cite>) are averaged using their
-unit vector representation (<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))\)</span>. The final average
-is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>. The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span>
-is stored as a weight variable.</p></li>
-</ul>
-</div></blockquote>
+<p>In most cases, each variable is directly mapped to <span class="math notranslate nohighlight">\(y\)</span>. The special case is variables that define an angle
+(such as <cite>latitude</cite>, <cite>longitude</cite>, <cite>angle</cite> and <cite>direction</cite>). These are turned into their unit vector representation
+(<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s})\)</span>). The unit vectors are multiplied with any
+existing weights <span class="math notranslate nohighlight">\(w(i)\)</span> but will use <span class="math notranslate nohighlight">\(w(i)=1\)</span> in the rebinning operation itself
+(i.e. the division is performed with <span class="math notranslate nohighlight">\(\sum_{i}{c(i,j)}\)</span>).
+The final vector is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>.
+The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span> is stored as the final weight variable.</p>
+<p>Uncertainty variables are always averaged as correlated (i.e. using a regular average).</p>
 </section>
 <section id="binning">
 <span id="id3"></span><h2>Binning</h2>
@@ -248,10 +246,11 @@ variable if it exists, and set to 1 if there was no existing <cite>weight</cite>
 <li><p>total uncertainty variables are averaged based on the <cite>propagate_uncertainty</cite> option that can be set using the
 <a class="reference internal" href="../operations.html#operation-set"><span class="std std-ref">set() operation</span></a>. If it is set to <cite>uncorrelated</cite> then the variable is averaged as a random
 uncertainty variable (using its square), otherwise a regular average is taken.</p></li>
-<li><p>variables that define an angle (such as <cite>latitude</cite>, <cite>longitude</cite>, <cite>angle</cite> and <cite>direction</cite>) are averaged using their
-unit vector representation (<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))\)</span>. The final average
-is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>. The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span>
-is stored as a weight variable.</p></li>
+<li><p>variables that define an angle (such as <cite>latitude</cite>, <cite>longitude</cite>, <cite>angle</cite> and <cite>direction</cite>) are turned into their
+unit vector representation (<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}), \textrm{sin}(y_{s})\)</span>). The unit vectors
+are multiplied with any existing weights <span class="math notranslate nohighlight">\(w(i)\)</span> and summed (without dividing by <span class="math notranslate nohighlight">\(N_{j}\)</span>).
+The final vector is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>.
+The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span> is stored as the final weight variable.</p></li>
 </ul>
 </div></blockquote>
 </section>

@@ -120,35 +120,6 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv416harp_product_binP12harp_productllPl">
-<span id="_CPPv316harp_product_binP12harp_productllPl"></span><span id="_CPPv216harp_product_binP12harp_productllPl"></span><span id="harp_product_bin__harp_productP.l.l.lP"></span><span class="target" id="group__harp__product_1gac1a935b414c03ed0a9a414a53dbc311e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_bin</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_bins</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_elements</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">bin_index</span></span><span class="sig-paren">)</span><br /></dt>
-<dd><p>Bin the product’s variables. This will bin all variables in the time dimension. Each time sample will be put in the bin defined by bin_index. All variables with a time dimension will then be resampled using these bins. The resulting value for each variable will be the average of all values for the bin (using existing count or weight variables as weighting factors where available). Variables with multiple dimensions will have all elements in the sub dimensions averaged on an element by element basis.</p>
-<p>Variables that have a time dimension but no unit (or using a string data type) will be removed. The exception are count and weight variables, which will be summed.</p>
-<p>All variables that are binned (except existing count/weight variables) are converted to a double data type. Bins that have no samples will end up with a NaN value.</p>
-<p>If the product did not already have a ‘count’ variable then a ‘count’ variable will be added to the product that will contain the number of samples per bin.</p>
-<p>Only non-NaN values will contribute to a bin. If there are NaN values and there is not already a variable-specific count or weight variable for that variable, then a separate variable-specific count variable will be created that will contain the number of non-NaN values that contributed to each bin. This count variable will have the same dimensions as the variable it provides the count for.</p>
-<p>For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains the magnitude of the sum of the unit vectors that was used to calculate the angle average.</p>
-<p>For uncertainty variables the first order propagation rules are used (assuming full correlation for systematic uncertainty variables and using the <a class="reference internal" href="libharp_general.html#group__harp__general_1ga9fea5f821a70646daeb1915bf2ae3ddb"><span class="std std-ref">harp_get_option_propagate_uncertainty()</span></a> setting for total and random uncertainty variables).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>product</strong> – Product to regrid. </p></li>
-<li><p><strong>num_bins</strong> – Number of target bins. </p></li>
-<li><p><strong>num_elements</strong> – Length of bin_index array (should equal the length of the time dimension) </p></li>
-<li><p><strong>bin_index</strong> – Array of target bin index numbers (0 .. num_bins-1) for each sample in the time dimension.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv424harp_product_bin_spatialP12harp_productllPllPdlPd">
 <span id="_CPPv324harp_product_bin_spatialP12harp_productllPllPdlPd"></span><span id="_CPPv224harp_product_bin_spatialP12harp_productllPllPdlPd"></span><span id="harp_product_bin_spatial__harp_productP.l.l.lP.l.doubleP.l.doubleP"></span><span class="target" id="group__harp__product_1ga10e515f7b5a798c0b952db718bafeaa3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_bin_spatial</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_time_bins</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_time_elements</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">time_bin_index</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_latitude_edges</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">latitude_edges</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_longitude_edges</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">longitude_edges</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Bin the product’s variables into a spatial grid. This will bin all variables with a time dimension into a three dimensional time x latitude x longitude grid. Each time sample will first be allocated to a time bin defined by time_bin_index (similar to <em>harp_product_bin</em>). Then within that time bin the sample will be allocated to the appropriate cell(s) in the latitude/longitude grid as defined by the latitude_edges and longitude_edges variables.</p>
@@ -173,6 +144,35 @@
 <li><p><strong>latitude_edges</strong> – latitude grid edge vales </p></li>
 <li><p><strong>num_longitude_edges</strong> – Number of edges for the longitude grid (number of longitude columns = num_longitude_edges - 1) </p></li>
 <li><p><strong>longitude_edges</strong> – longitude grid edge vales</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, Success. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code>, Error occurred (check <a class="reference internal" href="libharp_error.html#group__harp__error_1gab2eeb46528306c6799632d1e800c4c36"><span class="std std-ref">harp_errno</span></a>). </p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416harp_product_binP12harp_productllPl">
+<span id="_CPPv316harp_product_binP12harp_productllPl"></span><span id="_CPPv216harp_product_binP12harp_productllPl"></span><span id="harp_product_bin__harp_productP.l.l.lP"></span><span class="target" id="group__harp__product_1gac1a935b414c03ed0a9a414a53dbc311e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_bin</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_bins</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_elements</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">bin_index</span></span><span class="sig-paren">)</span><br /></dt>
+<dd><p>Bin the product’s variables. This will bin all variables in the time dimension. Each time sample will be put in the bin defined by bin_index. All variables with a time dimension will then be resampled using these bins. The resulting value for each variable will be the average of all values for the bin (using existing count or weight variables as weighting factors where available). Variables with multiple dimensions will have all elements in the sub dimensions averaged on an element by element basis.</p>
+<p>Variables that have a time dimension but no unit (or using a string data type) will be removed. The exception are count and weight variables, which will be summed.</p>
+<p>All variables that are binned (except existing count/weight variables) are converted to a double data type. Bins that have no samples will end up with a NaN value.</p>
+<p>If the product did not already have a ‘count’ variable then a ‘count’ variable will be added to the product that will contain the number of samples per bin.</p>
+<p>Only non-NaN values will contribute to a bin. If there are NaN values and there is not already a variable-specific count or weight variable for that variable, then a separate variable-specific count variable will be created that will contain the number of non-NaN values that contributed to each bin. This count variable will have the same dimensions as the variable it provides the count for.</p>
+<p>For angle variables a variable-specific weight variable will be created (if it did not yet exist) that contains the magnitude of the sum of the unit vectors that was used to calculate the angle average.</p>
+<p>For uncertainty variables the first order propagation rules are used (assuming full correlation for systematic uncertainty variables and using the <a class="reference internal" href="libharp_general.html#group__harp__general_1ga9fea5f821a70646daeb1915bf2ae3ddb"><span class="std std-ref">harp_get_option_propagate_uncertainty()</span></a> setting for total and random uncertainty variables).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>product</strong> – Product to regrid. </p></li>
+<li><p><strong>num_bins</strong> – Number of target bins. </p></li>
+<li><p><strong>num_elements</strong> – Length of bin_index array (should equal the length of the time dimension) </p></li>
+<li><p><strong>bin_index</strong> – Array of target bin index numbers (0 .. num_bins-1) for each sample in the time dimension.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -688,10 +688,20 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv444harp_product_rebin_with_axis_bounds_variableP12harp_productP13harp_variable">
 <span id="_CPPv344harp_product_rebin_with_axis_bounds_variableP12harp_productP13harp_variable"></span><span id="_CPPv244harp_product_rebin_with_axis_bounds_variableP12harp_productP13harp_variable"></span><span id="harp_product_rebin_with_axis_bounds_variable__harp_productP.harp_variableP"></span><span class="target" id="group__harp__product_1gafff2379c782c653ac75a743d0df868ca"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">harp_product_rebin_with_axis_bounds_variable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412harp_product" title="harp_product"><span class="n"><span class="pre">harp_product</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">product</span></span>, <a class="reference internal" href="libharp_variable.html#_CPPv413harp_variable" title="harp_variable"><span class="n"><span class="pre">harp_variable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">target_bounds</span></span><span class="sig-paren">)</span><br /></dt>
-<dd><p>Rebin all variables in the product to a specified interval grid. The target bounds variable should be an axis bounds variable containing the interval edges (bins) of the target grid (as ‘double’ values). It should be a two-dimensional variable (for a time independent grid) or a three-dimensional variable (for a time dependent grid). The last dimension should be an independent dimension of length 2 (for the lower/upper bound of each interval). The dimension to use for regridding is based on the type of the second to last dimension of the target grid variable. This function cannot be used to rebin an independent dimension.</p>
-<p>For each variable in the product, a dimension-specific rule based on the variable name will determine how to rebin the variable. For most variables the result will be the interval weighted average of all values overlapping the target interval. Variables that represent an integrated quantity for the rebinned dimension will use an interval weighted sum. For uncertainty variables the first order propagation rules are used (assuming full correlation).</p>
-<p>Variables that depend on the rebinned dimenion but have no unit (or use a string data type) will be removed. Any existing count or weight variables will also be removed.</p>
-<p>All variables that are rebinned are converted to a double data type. Bins that have no overlapping source boundaries will end up with a NaN value.</p>
+<dd><p>Rebin all variables in the product to a specified interval grid. The target bounds variable should be an axis bounds variable containing the interval edges (bins) of the target grid </p>
+<section id="group__harp__product_1autotoc_md0">
+<h2>(as ‘double’ values). It should be a two-dimensional variable (for a time independent grid) or a three-dimensional</h2>
+</section>
+<section id="group__harp__product_1autotoc_md1">
+<span id="group__harp__product_1autotoc_md0"></span><h2>variable (for a time dependent grid).</h2>
+<p id="group__harp__product_1autotoc_md1">The last dimension should be an independent dimension of length 2 (for the lower/upper bound of each interval). The dimension to use for regridding is based on the type of the second to last dimension of the target grid variable. This function cannot be used to rebin an independent dimension.</p>
+<p>For each variable in the product, a dimension-specific rule based on the variable name will determine how to rebin the variable. For most variables the result will be the interval weighted average of all values overlapping the target interval. This weight includes the weight of an existing weight variable (by means of multiplication) if it exists.</p>
+<p>Variables that represent an integrated quantity for the rebinned dimension will use an interval weighted sum. For uncertainty variables the first order propagation rules are used (assuming full correlation).</p>
+<p>For angle variables a variable-specific weight will be used that contains the magnitude of the sum of the unit vectors that was used to calculate the angle average. This weight is multiplied by any existing weight variable.</p>
+<p>Variables that depend on the rebinned dimenion but have no unit (or use a string data type) will be removed. Any existing count variables that depend on the given dimension will also be removed.</p>
+<p>All variables that are rebinned (except existing weight variables) are converted to a double data type. Bins that have no overlapping source boundaries will end up with a NaN value.</p>
+<p></p>
+</section>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

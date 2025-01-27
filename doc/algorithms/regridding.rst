@@ -137,14 +137,15 @@ The rebinning operation for integrated variables uses the following revised calc
 If the product contained any `count` variables that depend on the rebinned dimension then these are removed before a
 rebinning is performed.
 
-In most cases, each variable is directly mapped to :math:`y`. The special cases are:
+In most cases, each variable is directly mapped to :math:`y`. The special case is variables that define an angle
+(such as `latitude`, `longitude`, `angle` and `direction`). These are turned into their unit vector representation
+(:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s})`). The unit vectors are multiplied with any
+existing weights :math:`w(i)` but will use :math:`w(i)=1` in the rebinning operation itself
+(i.e. the division is performed with :math:`\sum_{i}{c(i,j)}`).
+The final vector is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`.
+The norm :math:`\|\textbf{y}_{t}\|` is stored as the final weight variable.
 
-  - uncertainty variables are always averaged as correlated (i.e. using a regular average).
-
-  - variables that define an angle (such as `latitude`, `longitude`, `angle` and `direction`) are averaged using their
-    unit vector representation (:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))`. The final average
-    is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`. The norm :math:`\|\textbf{y}_{t}\|`
-    is stored as a weight variable.
+Uncertainty variables are always averaged as correlated (i.e. using a regular average).
 
 .. _binning:
 
@@ -195,10 +196,11 @@ In most cases, each variable is directly mapped to :math:`y`. The special cases 
     :ref:`set() operation <operation_set>`. If it is set to `uncorrelated` then the variable is averaged as a random
     uncertainty variable (using its square), otherwise a regular average is taken.
 
-  - variables that define an angle (such as `latitude`, `longitude`, `angle` and `direction`) are averaged using their
-    unit vector representation (:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))`. The final average
-    is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`. The norm :math:`\|\textbf{y}_{t}\|`
-    is stored as a weight variable.
+  - variables that define an angle (such as `latitude`, `longitude`, `angle` and `direction`) are turned into their
+    unit vector representation (:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}), \textrm{sin}(y_{s})`). The unit vectors
+    are multiplied with any existing weights :math:`w(i)` and summed (without dividing by :math:`N_{j}`).
+    The final vector is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`.
+    The norm :math:`\|\textbf{y}_{t}\|` is stored as the final weight variable.
 
 .. _spatial_binning:
 
