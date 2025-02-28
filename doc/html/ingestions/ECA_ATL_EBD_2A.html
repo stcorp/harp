@@ -298,7 +298,7 @@
 <td><p><strong>/ScienceData/height, /ScienceData/geoid_offset</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>altitude[i,j] = height[i,j] + geoid_offset[i]</p></td>
+<td><p>the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]</p></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><p><strong>surface_altitude</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -315,18 +315,24 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/tropopause_height</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>extinction_coefficient</strong></p></td>
+<tr class="row-even"><td rowspan="9"><p><strong>extinction_coefficient</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm_medium_resolution</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
@@ -334,12 +340,18 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm_low_resolution</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>extinction_coefficient_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><p><strong>extinction_coefficient_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm_error</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
@@ -347,24 +359,36 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm_medium_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_extinction_coefficient_355nm_low_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>backscatter_coefficient</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="9"><p><strong>backscatter_coefficient</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm_medium_resolution</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
@@ -372,12 +396,18 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm_low_resolution</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>backscatter_coefficient_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><p><strong>backscatter_coefficient_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm_error</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
@@ -385,24 +415,36 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm_medium_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_backscatter_coefficient_355nm_low_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>lidar_ratio</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="9"><p><strong>lidar_ratio</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/lidar_ratio_355nm</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/lidar_ratio_355nm_medium_resolution</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
@@ -410,12 +452,18 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/lidar_ratio_355nm_low_resolution</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>lidar_ratio_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><p><strong>lidar_ratio_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/lidar_ratio_355nm_error</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
@@ -423,24 +471,36 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/lidar_ratio_355nm_medium_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/lidar_ratio_355nm_low_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>linear_depolarization_ratio</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="9"><p><strong>linear_depolarization_ratio</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm_medium_resolution</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
@@ -448,12 +508,18 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm_low_resolution</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>linear_depolarization_ratio_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><p><strong>linear_depolarization_ratio_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm_error</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
@@ -461,24 +527,36 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm_medium_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_linear_depol_ratio_355nm_low_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="9"><p><strong>optical_depth</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_optical_depth_355nm</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_optical_depth_355nm_medium_resolution</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
@@ -486,12 +564,18 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_optical_depth_355nm_low_resolution</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>optical_depth_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><p><strong>optical_depth_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>resolution unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_optical_depth_355nm_error</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>resolution=medium</p></td>
@@ -499,27 +583,45 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_optical_depth_355nm_medium_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>resolution=low</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_optical_depth_355nm_low_resolution_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>particle_effective_radius</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>particle_effective_radius</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_effective_area_radius</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>particle_effective_radius_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>particle_effective_radius_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/particle_effective_area_radius_error</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>particle_type</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>particle_type</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/simple_classification</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>validity</strong></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/quality_status</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>wavelength</strong></p></td>
 <td><p><em>description</em></p></td>

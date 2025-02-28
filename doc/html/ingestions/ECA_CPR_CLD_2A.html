@@ -245,7 +245,7 @@
 <td><p><strong>/ScienceData/height, /ScienceData/geoid_offset</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>altitude[i,j] = height[i,j] + geoid_offset[i]</p></td>
+<td><p>the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]</p></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><p><strong>surface_altitude</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -274,21 +274,33 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/rain_water_path_error</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>liquid_water_density</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>liquid_water_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/liquid_water_content</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>liquid_water_density_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>liquid_water_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/liquid_water_content, /ScienceData/liquid_water_content_relative_error</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>liquid_particle_effective_radius</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>liquid_particle_effective_radius</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/liquid_effective_radius</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>liquid_particle_effective_radius_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>liquid_particle_effective_radius_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/liquid_effective_radius, /ScienceData/liquid_effective_radius_relative_error</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>liquid_water_column_density</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -298,9 +310,12 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/liquid_water_path_error</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>validity</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/ScienceData/retrieval_status</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
 </tbody>
 </table>
