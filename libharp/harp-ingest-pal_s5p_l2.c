@@ -48,6 +48,7 @@ typedef enum pal_s5p_product_type_enum
     pal_s5p_type_bro,
     pal_s5p_type_chocho,
     pal_s5p_type_hdo_s,
+    pal_s5p_type_kd,
     pal_s5p_type_oclo,
     pal_s5p_type_sif,
     pal_s5p_type_so2cbr,
@@ -76,6 +77,7 @@ static const char *pal_s5p_dimension_name[PAL_S5P_NUM_PRODUCT_TYPES][PAL_S5P_NUM
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_bro    */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_chocho */
     {"time", "scanline", "ground_pixel", "corner", NULL, "layer"},      /* pal_s5p_type_hdo_s */
+    {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_kd */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_oclo */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL}, /* pal_s5p_type_sif    */
     {"time", "scanline", "ground_pixel", "corner", NULL, "layer"},      /* pal_s5p_type_so2cbr */
@@ -393,6 +395,8 @@ static const char *get_product_type_name(pal_s5p_product_type product_type)
             return "L2__CHOCHO";
         case pal_s5p_type_hdo_s:
             return "L2__HDO__S";
+        case pal_s5p_type_kd:
+            return "L2__KD____";
         case pal_s5p_type_oclo:
             return "L2__OCLO__";
         case pal_s5p_type_so2cbr:
@@ -570,6 +574,10 @@ static int init_dimensions(ingest_info *info)
             return -1;
         }
     }
+    if (info->product_type == pal_s5p_type_kd)
+    {
+        info->num_wavelengths = 3;
+    }
 
     /* layer */
     if (pal_s5p_dimension_name[info->product_type][pal_s5p_dim_layer] != NULL)
@@ -716,7 +724,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 
     dimension[harp_dimension_time] = info->num_times * info->num_scanlines * info->num_pixels;
 
-    if (info->product_type == pal_s5p_type_aer_ot)
+    if (info->product_type == pal_s5p_type_aer_ot || info->product_type == pal_s5p_type_kd)
     {
         dimension[harp_dimension_spectral] = info->num_wavelengths;
     }
@@ -1810,6 +1818,89 @@ static int read_aot_cloud_fraction(void *user_data, harp_array data)
     }
 
     return result;
+}
+
+static int read_kd_wavelength_bounds(void *user_data, harp_array data)
+{
+    (void)user_data;
+
+    /* these values are taken from the Product User Manual */
+    data.float_data[0] = 312.5; /* UVAB */
+    data.float_data[1] = 338.5;
+    data.float_data[2] = 356.5; /* UVA */
+    data.float_data[3] = 390;
+    data.float_data[4] = 390;   /* blue */
+    data.float_data[5] = 423;
+
+    return 0;
+}
+
+static int read_kd_diffuse_attenuation_coeffient(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array buffer;
+    long dimension[2];
+
+    buffer.float_data = data.float_data;
+    if (read_dataset(info->product_cursor, "KD_UVA", harp_type_float, info->num_scanlines * info->num_pixels,
+                     buffer) != 0)
+    {
+        return -1;
+    }
+    buffer.float_data = &data.float_data[info->num_scanlines * info->num_pixels];
+    if (read_dataset(info->product_cursor, "KD_UVAB", harp_type_float, info->num_scanlines * info->num_pixels,
+                     buffer) != 0)
+    {
+        return -1;
+    }
+    buffer.float_data = &data.float_data[2 * info->num_scanlines * info->num_pixels];
+    if (read_dataset(info->product_cursor, "KD_blue", harp_type_float, info->num_scanlines * info->num_pixels,
+                     buffer) != 0)
+    {
+        return -1;
+    }
+
+    /* change {spectral(3),time} dimension ordering to {time,spectral(3)} */
+    dimension[0] = 3;
+    dimension[1] = info->num_scanlines * info->num_pixels;
+    return harp_array_transpose(harp_type_float, 2, dimension, NULL, data);
+}
+
+static int read_kd_qa_value(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array buffer;
+    long dimension[2];
+
+    /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
+    coda_set_option_perform_conversions(0);
+    buffer.int8_data = data.int8_data;
+    if (read_dataset(info->product_cursor, "qa_value_UVA", harp_type_int8, info->num_scanlines * info->num_pixels,
+                     buffer) != 0)
+    {
+        coda_set_option_perform_conversions(1);
+        return -1;
+    }
+    buffer.int8_data = &data.int8_data[info->num_scanlines * info->num_pixels];
+    if (read_dataset(info->product_cursor, "qa_value_UVAB", harp_type_int8, info->num_scanlines * info->num_pixels,
+                     buffer) != 0)
+    {
+        coda_set_option_perform_conversions(1);
+        return -1;
+    }
+    buffer.int8_data = &data.int8_data[2 * info->num_scanlines * info->num_pixels];
+    if (read_dataset(info->product_cursor, "qa_value_blue", harp_type_int8, info->num_scanlines * info->num_pixels,
+                     buffer) != 0)
+    {
+        coda_set_option_perform_conversions(1);
+        return -1;
+    }
+    coda_set_option_perform_conversions(1);
+
+    /* change {spectral(3),time} dimension ordering to {time,spectral(3)} */
+    dimension[0] = 3;
+    dimension[1] = info->num_scanlines * info->num_pixels;
+    return harp_array_transpose(harp_type_int8, 2, dimension, NULL, data);
 }
 
 static int read_sif(void *user_data, harp_array data)
@@ -3310,6 +3401,55 @@ static void register_hdo_s_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
+static void register_kd_product(void)
+{
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+
+    harp_dimension_type dimension_type[3] = { harp_dimension_time, harp_dimension_spectral,
+        harp_dimension_independent
+    };
+    long dimension[3] = { -1, -1, 2 };
+
+    module = harp_ingestion_register_module("S5P_PAL_L2_KD", "Sentinel-5P PAL", "S5P_PAL", "L2__KD____",
+                                            "Sentinel-5P L2 Ocean Colour (Kd) product", ingestion_init, ingestion_done);
+
+    product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_KD", NULL, read_dimensions);
+
+    register_common_variables(product_definition, 0);
+
+    /* wavelength_bounds */
+    description = "Wavelength region for each fitting window";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_bounds",
+                                                   harp_type_float, 2, &dimension_type[1], &dimension[1], description,
+                                                   "nm", NULL, read_kd_wavelength_bounds);
+    description = "set to [312.5,338.5] for UVAB, [356.5,390] for UVA, and [390,423] for blue";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+
+    /* diffuse_attenuation_coefficient */
+    description = "diffuse attenuation coefficient of the downwelling irradiance";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "diffuse_attenuation_coefficient",
+                                                   harp_type_float, 2, dimension_type, NULL, description,
+                                                   "1/m", NULL, read_kd_diffuse_attenuation_coeffient);
+    path = "/PRODUCT/KD_UVAB[], /PRODUCT/KD_UVA[], /PRODUCT/KD_blue[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* diffuse_attenuation_coefficient_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data), for each "
+        "of the fitting windows";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "diffuse_attenuation_coefficient_validity",
+                                                   harp_type_int8, 2, dimension_type, NULL, description, NULL, NULL,
+                                                   read_kd_qa_value);
+    path = "/PRODUCT/qa_value_UVAB[], /PRODUCT/qa_value_UVA[], /PRODUCT/KD_blue[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
 static void register_oclo_product(void)
 {
     harp_ingestion_module *module;
@@ -3951,6 +4091,7 @@ int harp_ingestion_module_pal_s5p_l2_init(void)
     register_bro_product();
     register_chocho_product();
     register_hdo_s_product();
+    register_kd_product();
     register_oclo_product();
     register_sif_product();
     register_so2cbr_product();

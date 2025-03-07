@@ -14,6 +14,7 @@
     products now use float instead of double for variables.
   - GEOMS FTIR: reinterpret vmr from old GEOMS templates as dry air vmr.
   - EarthCARE: all vertical profiles are inverted to make them ascending.
+  - S5P PAL L2: added support for Ocean Colour (L2__KD____) product.
 
 1.24 2024-11-11
 ~~~~~~~~~~~~~~~
