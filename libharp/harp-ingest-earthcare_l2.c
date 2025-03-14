@@ -39,8 +39,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MAX_PATH_LENGTH 256
-
 const char *BBR_DATASET_NAME_BM__RAD_2B[4] = { "Standard", "Small", "Full", "Assessment" };
 
 const char *BBR_DATASET_NAME_BMA_FLX_2B[4] = {
