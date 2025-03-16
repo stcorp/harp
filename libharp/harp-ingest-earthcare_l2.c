@@ -411,7 +411,7 @@ static int read_as_altitude(ingest_info *info, const char *variable_name, harp_a
 
     for (i = 0; i < info->num_time; i++)
     {
-        data.float_data[i] += buffer.float_data[i];
+        data.float_data[i] -= buffer.float_data[i];
     }
 
     free(buffer.ptr);
@@ -447,7 +447,7 @@ static int read_as_altitude_msi(ingest_info *info, const char *variable_name, ha
     {
         for (j = 0; j < info->num_across_track; j++)
         {
-            data.float_data[i * info->num_across_track + j] += buffer.float_data[i];
+            data.float_data[i * info->num_across_track + j] -= buffer.float_data[i];
         }
     }
 
@@ -601,7 +601,7 @@ static int read_aerosol_layer_base_top_as_altitude(void *user_data, harp_array d
     {
         for (j = 0; j < info->num_vertical * 2; j++)
         {
-            data.float_data[i * info->num_vertical * 2 + j] += buffer.float_data[i];
+            data.float_data[i * info->num_vertical * 2 + j] -= buffer.float_data[i];
         }
     }
 
@@ -1017,7 +1017,7 @@ static int read_height_as_altitude(void *user_data, harp_array data)
     {
         for (j = 0; j < info->num_vertical; j++)
         {
-            data.float_data[i * info->num_vertical + j] += buffer.float_data[i];
+            data.float_data[i * info->num_vertical + j] -= buffer.float_data[i];
         }
     }
 
@@ -2235,7 +2235,7 @@ static void register_ac__tc__2b_product(void)
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
                                                                      read_height_as_altitude);
-    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]";
+    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] - geoid_offset[i]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/height, /ScienceData/geoid_offset", description);
 
@@ -2246,7 +2246,7 @@ static void register_ac__tc__2b_product(void)
                                                                      read_elevation_as_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/elevation, /ScienceData/geoid_offset",
-                                         "altitude = elevation + geoid_offset");
+                                         "altitude = elevation - geoid_offset");
 
     /* scene_type */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "scene_type",
@@ -2288,7 +2288,7 @@ static void register_acm_cap_2b_product(void)
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
                                                                      read_height_as_altitude);
-    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]";
+    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] - geoid_offset[i]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/height, /ScienceData/geoid_offset", description);
 
@@ -2522,11 +2522,11 @@ static void register_am__cth_2b_product(void)
                                                    dimension_type, NULL, "cloud top height", "m", NULL,
                                                    read_cloud_top_height_AM_as_altitude);
     path = "/ScienceData/cloud_top_height_MSI, /ScienceData/geoid_offset";
-    description = "cloud_top_height_MSI + geoid_offset";
+    description = "cloud_top_height_MSI - geoid_offset";
     harp_variable_definition_add_mapping(variable_definition, NULL, "source unset", path, description);
     path = "/ScienceData/cloud_top_height_MSI, /ScienceData/cloud_top_height_difference_ATLID_MSI, "
         "/ScienceData/geoid_offset";
-    description = "cloud_top_height_MSI + cloud_top_height_difference_ATLID_MSI + geoid_offset";
+    description = "cloud_top_height_MSI + cloud_top_height_difference_ATLID_MSI - geoid_offset";
     harp_variable_definition_add_mapping(variable_definition, NULL, "source=atlid", path, description);
 
     /* validity */
@@ -2560,7 +2560,7 @@ static void register_atl_aer_2a_product(void)
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
                                                                      read_height_as_altitude);
-    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]";
+    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] - geoid_offset[i]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/height, /ScienceData/geoid_offset", description);
 
@@ -2571,7 +2571,7 @@ static void register_atl_aer_2a_product(void)
                                                                      read_elevation_as_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/elevation, /ScienceData/geoid_offset",
-                                         "altitude = elevation + geoid_offset");
+                                         "altitude = elevation - geoid_offset");
 
     /* particle_extinction_coefficient */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition,
@@ -2716,8 +2716,8 @@ static void register_atl_ald_2a_product(void)
                                                                      read_aerosol_layer_base_top_as_altitude);
     path = "/ScienceData/aerosol_layer_base, /ScienceData/aerosol_layer_top, /ScienceData/geoid_offset";
     description = "the vertical grid is inverted to make it ascending; "
-        "altitude_bounds[i,j,0] = aerosol_layer_base[i,j] + geoid_offset[i]; "
-        "altitude_bounds[i,j,1] = aerosol_layer_top[i,j] + geoid_offset[i]";
+        "altitude_bounds[i,j,0] = aerosol_layer_base[i,j] - geoid_offset[i]; "
+        "altitude_bounds[i,j,1] = aerosol_layer_top[i,j] - geoid_offset[i]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* aerosol_optical_depth */
@@ -2908,7 +2908,7 @@ static void register_atl_ebd_2a_product(void)
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
                                                                      read_height_as_altitude);
-    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]";
+    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] - geoid_offset[i]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/height, /ScienceData/geoid_offset", description);
 
@@ -2919,7 +2919,7 @@ static void register_atl_ebd_2a_product(void)
                                                                      read_elevation_as_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/elevation, /ScienceData/geoid_offset",
-                                         "altitude = elevation + geoid_offset");
+                                         "altitude = elevation - geoid_offset");
 
     /* viewing_elevation_angle */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_elevation_angle",
@@ -3141,7 +3141,7 @@ static void register_atl_ice_2a_product(void)
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
                                                                      read_height_as_altitude);
-    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]";
+    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] - geoid_offset[i]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/height, /ScienceData/geoid_offset", description);
 
@@ -3152,7 +3152,7 @@ static void register_atl_ice_2a_product(void)
                                                                      read_elevation_as_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/elevation, /ScienceData/geoid_offset",
-                                         "altitude = elevation + geoid_offset");
+                                         "altitude = elevation - geoid_offset");
 
     /* viewing_elevation_angle */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "viewing_elevation_angle",
@@ -3608,7 +3608,7 @@ static void register_cpr_cld_2a_product(void)
                                                                      2, dimension_type, NULL,
                                                                      "joint standard grid height", "m", NULL,
                                                                      read_height_as_altitude);
-    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] + geoid_offset[i]";
+    description = "the vertical grid is inverted to make it ascending; altitude[i,j] = height[i,j] - geoid_offset[i]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/height, /ScienceData/geoid_offset", description);
 
@@ -3619,7 +3619,7 @@ static void register_cpr_cld_2a_product(void)
                                                                      read_surface_elevation_as_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/surface_elevation, /ScienceData/geoid_offset",
-                                         "surface_altitude = surface_elevation + geoid_offset");
+                                         "surface_altitude = surface_elevation - geoid_offset");
 
     /* surface_type */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "surface_type",
@@ -3936,7 +3936,7 @@ static void register_msi_cop_2a_product(void)
                                                    read_cloud_top_height_as_altitude_msi);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/ScienceData/cloud_top_height, /ScienceData/geoid_offset",
-                                         "cloud_top_height + geoid_offset");
+                                         "cloud_top_height - geoid_offset");
 
     /* cloud_top_height_uncertainty */
     variable_definition =
