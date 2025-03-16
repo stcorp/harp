@@ -1,3 +1,6 @@
+1.25 2025-03-16
+~~~~~~~~~~~~~~~
+
 * The rebin() operation now takes into account existing weight variables
   and properly handles angle variables. Rebinning the result of a
   bin_spatial() operation to a lower resolution now gives the same result
@@ -15,7 +18,8 @@
   - GEOMS FTIR: reinterpret vmr from old GEOMS templates as dry air vmr.
   - EarthCARE L1: add support for L1 ATLID, BBR, and MSI products.
   - EarthCARE L2: all vertical profiles are inverted to make them
-    ascending and fixed geoid offset correction.
+    ascending, fixed geoid offset correction, and fixed AM__CTH_2B
+    ingestion.
   - S5P PAL L2: added support for Ocean Colour (L2__KD____) product.
 
 1.24 2024-11-11
