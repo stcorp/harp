@@ -62,6 +62,7 @@ int harp_ingestion_module_cci_l3_o3_ttoc_init(void);
 int harp_ingestion_module_cci_l4_o3_np_init(void);
 int harp_ingestion_module_cloudnet_init(void);
 int harp_ingestion_module_earlinet_init(void);
+int harp_ingestion_module_earthcare_l1_init(void);
 int harp_ingestion_module_earthcare_l2_init(void);
 int harp_ingestion_module_ecmwf_grib_init(void);
 int harp_ingestion_module_geoms_ftir_init(void);
@@ -132,6 +133,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_cci_l4_o3_np_init,
     harp_ingestion_module_cloudnet_init,
     harp_ingestion_module_earlinet_init,
+    harp_ingestion_module_earthcare_l1_init,
     harp_ingestion_module_earthcare_l2_init,
     harp_ingestion_module_ecmwf_grib_init,
     harp_ingestion_module_geoms_ftir_init,

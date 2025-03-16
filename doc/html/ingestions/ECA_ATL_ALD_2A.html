@@ -239,7 +239,7 @@
 <td><p><strong>/ScienceData/aerosol_layer_base, /ScienceData/aerosol_layer_top, /ScienceData/geoid_offset</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>the vertical grid is inverted to make it ascending; altitude_bounds[i,j,0] = aerosol_layer_base[i,j] + geoid_offset[i]; altitude_bounds[i,j,1] = aerosol_layer_top[i,j] + geoid_offset[i]</p></td>
+<td><p>the vertical grid is inverted to make it ascending; altitude_bounds[i,j,0] = aerosol_layer_base[i,j] - geoid_offset[i]; altitude_bounds[i,j,1] = aerosol_layer_top[i,j] - geoid_offset[i]</p></td>
 </tr>
 <tr class="row-even"><td rowspan="2"><p><strong>aerosol_optical_depth</strong></p></td>
 <td><p><em>path</em></p></td>

@@ -144,12 +144,16 @@ HARP_DOCFILES = \
 	doc/html/ingestions/ECA_ATL_CTH_2A.html \
 	doc/html/ingestions/ECA_ATL_EBD_2A.html \
 	doc/html/ingestions/ECA_ATL_ICE_2A.html \
+	doc/html/ingestions/ECA_ATL_NOM_1B.html \
+	doc/html/ingestions/ECA_BBR_NOM_1B.html \
+	doc/html/ingestions/ECA_BBR_SNG_1B.html \
 	doc/html/ingestions/ECA_BMA_FLX_2B.html \
 	doc/html/ingestions/ECA_BM__RAD_2B.html \
 	doc/html/ingestions/ECA_CPR_CLD_2A.html \
 	doc/html/ingestions/ECA_MSI_AOT_2A.html \
 	doc/html/ingestions/ECA_MSI_CM__2A.html \
 	doc/html/ingestions/ECA_MSI_COP_2A.html \
+	doc/html/ingestions/ECA_MSI_NOM_1B.html \
 	doc/html/ingestions/ECMWF_GRIB.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_AATSR.html \
 	doc/html/ingestions/ESACCI_AEROSOL_L2_ATSR2.html \
@@ -892,6 +896,12 @@ doc/html/ingestions/ECA_ATL_EBD_2A.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_ATL_ICE_2A.html:
 	$(MAKE) harp_doc
+doc/html/ingestions/ECA_ATL_NOM_1B.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECA_BBR_NOM_1B.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECA_BBR_SNG_1B.html:
+	$(MAKE) harp_doc
 doc/html/ingestions/ECA_BMA_FLX_2B.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_BM__RAD_2B.html:
@@ -903,6 +913,8 @@ doc/html/ingestions/ECA_MSI_AOT_2A.html:
 doc/html/ingestions/ECA_MSI_CM__2A.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECA_MSI_COP_2A.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/ECA_MSI_NOM_1B.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/ECMWF_GRIB.html:
 	$(MAKE) harp_doc

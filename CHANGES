@@ -13,7 +13,9 @@
   - GOME2 L2: added support for NHP/OHP ozone profile products and all
     products now use float instead of double for variables.
   - GEOMS FTIR: reinterpret vmr from old GEOMS templates as dry air vmr.
-  - EarthCARE: all vertical profiles are inverted to make them ascending.
+  - EarthCARE L1: add support for L1 ATLID, BBR, and MSI products.
+  - EarthCARE L2: all vertical profiles are inverted to make them
+    ascending and fixed geoid offset correction.
   - S5P PAL L2: added support for Ocean Colour (L2__KD____) product.
 
 1.24 2024-11-11
