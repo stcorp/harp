@@ -889,7 +889,7 @@ static int read_cloud_top_height_AM_as_altitude(void *user_data, harp_array data
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (read_as_altitude(info, "cloud_top_height_MSI", data) != 0)
+    if (read_as_altitude_msi(info, "cloud_top_height_MSI", data) != 0)
     {
         return -1;
     }
