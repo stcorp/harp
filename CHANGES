@@ -1,3 +1,6 @@
+* Updates to product ingestions:
+  - EarthCARE L1: fixed TIR band ingestion options for MSI_NOM_1B.
+
 1.25 2025-03-16
 ~~~~~~~~~~~~~~~
 

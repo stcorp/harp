@@ -1202,7 +1202,7 @@ static void register_msi_nom_1b_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
-    const char *band_option_values[6] = { "VNIR", "SWIR1", "SWIR2", "TRI1", "TRI2", "TRI3" };
+    const char *band_option_values[6] = { "VNIR", "SWIR1", "SWIR2", "TIR1", "TIR2", "TIR3" };
     const char *band_description;
     const char *description;
     const char *path;
@@ -1211,8 +1211,8 @@ static void register_msi_nom_1b_product(void)
     module = harp_ingestion_register_module("ECA_MSI_NOM_1B", "EarthCARE", "EARTHCARE", "MSI_NOM_1B", description,
                                             ingestion_init, ingestion_done);
 
-    description = "band: VIS (default), VNIR (band=VNIR), SWIR1 (band=SWIR1), SWIR2 (band=SWIR2), TRI1 (band=TRI1), "
-        "TRI2 (band=TRI2), TRI3 (band=TRI3)";
+    description = "band: VIS (default), VNIR (band=VNIR), SWIR1 (band=SWIR1), SWIR2 (band=SWIR2), TIR1 (band=TIR1), "
+        "TIR2 (band=TIR2), TIR3 (band=TIR3)";
     harp_ingestion_register_option(module, "band", description, 6, band_option_values);
 
     product_definition = harp_ingestion_register_product(module, "ECA_MSI_NOM_1B", NULL, read_dimensions);
