@@ -7324,7 +7324,7 @@ static void register_o3_tcl_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_O3_column_volume_mixing_ratio_dry_air",
-                                                   harp_type_float, 3, dimension_type, NULL, description, "ppbv", NULL,
+                                                   harp_type_float, 3, dimension_type, NULL, description, "ppv", NULL,
                                                    read_o3_tcl_ozone_tropospheric_mixing_ratio);
     path = "/PRODUCT/ozone_tropospheric_mixing_ratio[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);
@@ -7336,7 +7336,7 @@ static void register_o3_tcl_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_O3_column_volume_mixing_ratio_dry_air_uncertainty",
-                                                   harp_type_float, 3, dimension_type, NULL, description, "ppbv", NULL,
+                                                   harp_type_float, 3, dimension_type, NULL, description, "ppv", NULL,
                                                    read_o3_tcl_ozone_tropospheric_mixing_ratio_precision);
     path = "/PRODUCT/ozone_tropospheric_mixing_ratio_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "o3=ccd or o3 unset", NULL, path, NULL);

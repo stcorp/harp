@@ -1,5 +1,6 @@
 * Updates to product ingestions:
   - EarthCARE L1: fixed TIR band ingestion options for MSI_NOM_1B.
+  - S5P L2 O3 TCL: fixed unit of mixing ratios (ppbv -> ppv).
 
 1.25 2025-03-16
 ~~~~~~~~~~~~~~~
