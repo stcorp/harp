@@ -81,7 +81,8 @@ The special cases are:
     of the axis variable and the logarithm of the to be regridded variable is used for the interpolation.
 
 A special version of interpolation, called interval interpolation is used for variables that provide an integrated
-quantity in the given dimension. The algorithm for this is the same algorithm as for rebinning of integrated quantities as described in the next section.
+quantity in the given dimension (e.g. partial column profiles in the vertical dimension). The algorithm for this is
+the same algorithm as for rebinning of integrated quantities as described in the next section.
 
 
 .. _rebinning:
@@ -202,6 +203,9 @@ In most cases, each variable is directly mapped to :math:`y`. The special cases 
     The final vector is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`.
     The norm :math:`\|\textbf{y}_{t}\|` is stored as the final weight variable.
 
+  - for the `datetime_start` variable (if it only depends on the time dimension) the binned value is the minimum of
+    all values in a bin, and for `datetime_stop` it is the maximum of all values.
+
 .. _spatial_binning:
 
 Spatial binning
@@ -240,7 +244,8 @@ In the resulting HARP product the edge grid is stored as `latitude_bounds` and `
       \end{eqnarray}
 
 The spatial binning maps each source variable :math:`y_{s}(i)` with :math:`i=1..N_{t}` to a gridded target variable
-:math:`y_{t}(j,k)`. Each target grid cell is represented by :math:`(j,k)` with :math:`j=1..M_{\phi}` and :math:`k=1..M_{\lambda}` providing the latitude and longitude indices within the spatial grid.
+:math:`y_{t}(j,k)`. Each target grid cell is represented by :math:`(j,k)` with :math:`j=1..M_{\phi}` and
+:math:`k=1..M_{\lambda}` providing the latitude and longitude indices within the spatial grid.
 
 The source coordinates can be :math:`\phi_{s}(i)` and :math:`\lambda_{s}(i)` for latitude and longitude in case of
 points, and :math:`\phi^{B}_{s}(i,l)` and :math:`\lambda^{B}_{s}(i,l)` for the latitude and longitude boundaries in
@@ -281,7 +286,8 @@ coordinates :math:`\phi^{B}_{s}(i,l)` and :math:`\lambda^{B}_{s}(i,l)`. The weig
         \end{cases}}
       \end{eqnarray}
 
-The algorithms for the polygon area calculation :math:`\textrm{area}(\textbf{P})` and polygon intersection :math:`\textbf{P}_{a} \wedge \textbf{P}_{b}` are those for polygons in a 2D Cartesian plane (i.e. these calculations
+The algorithms for the polygon area calculation :math:`\textrm{area}(\textbf{P})` and polygon intersection
+:math:`\textbf{P}_{a} \wedge \textbf{P}_{b}` are those for polygons in a 2D Cartesian plane (i.e. these calculations
 are not performed using polygons on a sphere).
 
 With the calculated weights each variable is then regridded using:
@@ -304,3 +310,7 @@ In most cases, each variable is directly mapped to :math:`y`. The special cases 
     unit vector representation (:math:`\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))`. The final average
     is converted back into an angle using :math:`\textrm{atan2}(\textbf{y}_{t})`. The norm :math:`\|\textbf{y}_{t}\|`
     is stored as the weight for this variable.
+
+  - datetime variables (that only depend on the time dimension) are binned using a straightforward
+    :ref:`binning <binning>` in the time dimension: `datetime` and `datetime_length` are averaged, for
+    `datetime_start` the minimum is taken, and for `datetime_stop` the maximum.

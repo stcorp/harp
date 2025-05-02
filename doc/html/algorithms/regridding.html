@@ -159,7 +159,8 @@ of the axis variable and the logarithm of the to be regridded variable is used f
 </ul>
 </div></blockquote>
 <p>A special version of interpolation, called interval interpolation is used for variables that provide an integrated
-quantity in the given dimension. The algorithm for this is the same algorithm as for rebinning of integrated quantities as described in the next section.</p>
+quantity in the given dimension (e.g. partial column profiles in the vertical dimension). The algorithm for this is
+the same algorithm as for rebinning of integrated quantities as described in the next section.</p>
 </section>
 <section id="rebinning">
 <span id="id2"></span><h2>Rebinning</h2>
@@ -251,6 +252,8 @@ unit vector representation (<span class="math notranslate nohighlight">\(\textbf
 are multiplied with any existing weights <span class="math notranslate nohighlight">\(w(i)\)</span> and summed (without dividing by <span class="math notranslate nohighlight">\(N_{j}\)</span>).
 The final vector is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>.
 The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span> is stored as the final weight variable.</p></li>
+<li><p>for the <cite>datetime_start</cite> variable (if it only depends on the time dimension) the binned value is the minimum of
+all values in a bin, and for <cite>datetime_stop</cite> it is the maximum of all values.</p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -281,7 +284,8 @@ performed.</p>
   \lambda^{B}_{t}(k,2) &amp; = &amp; \lambda^{E}_{t}(k + 1) \\
 \end{eqnarray}</div></div></blockquote>
 <p>The spatial binning maps each source variable <span class="math notranslate nohighlight">\(y_{s}(i)\)</span> with <span class="math notranslate nohighlight">\(i=1..N_{t}\)</span> to a gridded target variable
-<span class="math notranslate nohighlight">\(y_{t}(j,k)\)</span>. Each target grid cell is represented by <span class="math notranslate nohighlight">\((j,k)\)</span> with <span class="math notranslate nohighlight">\(j=1..M_{\phi}\)</span> and <span class="math notranslate nohighlight">\(k=1..M_{\lambda}\)</span> providing the latitude and longitude indices within the spatial grid.</p>
+<span class="math notranslate nohighlight">\(y_{t}(j,k)\)</span>. Each target grid cell is represented by <span class="math notranslate nohighlight">\((j,k)\)</span> with <span class="math notranslate nohighlight">\(j=1..M_{\phi}\)</span> and
+<span class="math notranslate nohighlight">\(k=1..M_{\lambda}\)</span> providing the latitude and longitude indices within the spatial grid.</p>
 <p>The source coordinates can be <span class="math notranslate nohighlight">\(\phi_{s}(i)\)</span> and <span class="math notranslate nohighlight">\(\lambda_{s}(i)\)</span> for latitude and longitude in case of
 points, and <span class="math notranslate nohighlight">\(\phi^{B}_{s}(i,l)\)</span> and <span class="math notranslate nohighlight">\(\lambda^{B}_{s}(i,l)\)</span> for the latitude and longitude boundaries in
 case of areas (with <span class="math notranslate nohighlight">\(l=1..N_{V}\)</span> being the number of vertices for the area polygon).</p>
@@ -312,7 +316,8 @@ coordinates <span class="math notranslate nohighlight">\(\phi^{B}_{s}(i,l)\)</sp
     0, &amp; x_{s}(i) = \mathit{nan} \\
   \end{cases}}
 \end{eqnarray}</div></div></blockquote>
-<p>The algorithms for the polygon area calculation <span class="math notranslate nohighlight">\(\textrm{area}(\textbf{P})\)</span> and polygon intersection <span class="math notranslate nohighlight">\(\textbf{P}_{a} \wedge \textbf{P}_{b}\)</span> are those for polygons in a 2D Cartesian plane (i.e. these calculations
+<p>The algorithms for the polygon area calculation <span class="math notranslate nohighlight">\(\textrm{area}(\textbf{P})\)</span> and polygon intersection
+<span class="math notranslate nohighlight">\(\textbf{P}_{a} \wedge \textbf{P}_{b}\)</span> are those for polygons in a 2D Cartesian plane (i.e. these calculations
 are not performed using polygons on a sphere).</p>
 <p>With the calculated weights each variable is then regridded using:</p>
 <blockquote>
@@ -330,6 +335,9 @@ are not performed using polygons on a sphere).</p>
 unit vector representation (<span class="math notranslate nohighlight">\(\textbf{y}_{s} = (\textrm{cos}(y_{s}) , \textrm{sin}(y_{s}))\)</span>. The final average
 is converted back into an angle using <span class="math notranslate nohighlight">\(\textrm{atan2}(\textbf{y}_{t})\)</span>. The norm <span class="math notranslate nohighlight">\(\|\textbf{y}_{t}\|\)</span>
 is stored as the weight for this variable.</p></li>
+<li><p>datetime variables (that only depend on the time dimension) are binned using a straightforward
+<a class="reference internal" href="#binning"><span class="std std-ref">binning</span></a> in the time dimension: <cite>datetime</cite> and <cite>datetime_length</cite> are averaged, for
+<cite>datetime_start</cite> the minimum is taken, and for <cite>datetime_stop</cite> the maximum.</p></li>
 </ul>
 </div></blockquote>
 </section>
