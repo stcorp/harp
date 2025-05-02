@@ -698,18 +698,18 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
     }
 
     /* allocate memory for map_offset, map_length, and buffer */
-    map_offset = (long *)malloc(bounds_num_time_elements * target_num_dim_elements * (size_t)sizeof(double));
+    map_offset = (long *)malloc(bounds_num_time_elements * target_num_dim_elements * (size_t)sizeof(long));
     if (map_offset == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       bounds_num_time_elements * target_num_dim_elements * sizeof(double), __FILE__, __LINE__);
+                       bounds_num_time_elements * target_num_dim_elements * sizeof(long), __FILE__, __LINE__);
         goto error;
     }
-    map_length = (long *)malloc(bounds_num_time_elements * target_num_dim_elements * (size_t)sizeof(double));
+    map_length = (long *)malloc(bounds_num_time_elements * target_num_dim_elements * (size_t)sizeof(long));
     if (map_length == NULL)
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       bounds_num_time_elements * target_num_dim_elements * sizeof(double), __FILE__, __LINE__);
+                       bounds_num_time_elements * target_num_dim_elements * sizeof(long), __FILE__, __LINE__);
         goto error;
     }
     buffer = (double *)malloc(target_num_dim_elements * (size_t)sizeof(double));
@@ -717,14 +717,6 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
     {
         harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
                        target_num_dim_elements * sizeof(double), __FILE__, __LINE__);
-        goto error;
-    }
-    /* use 2x weight_size to support angular weight variables */
-    weight = (float *)malloc(2 * weight_size * (size_t)sizeof(float));
-    if (weight == NULL)
-    {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
-                       2 * weight_size * sizeof(float), __FILE__, __LINE__);
         goto error;
     }
 
@@ -743,6 +735,26 @@ LIBHARP_API int harp_product_rebin_with_axis_bounds_variable(harp_product *produ
             goto error;
         }
         source_num_dim_elements = target_num_dim_elements;
+    }
+
+    /* determine the maximum number of elements (as size for the 'weight' array) */
+    for (k = 0; k < product->num_variables; k++)
+    {
+        if (bintype[k] != binning_remove && bintype[k] != binning_skip)
+        {
+            if (product->variable[k]->num_elements > weight_size)
+            {
+                weight_size = product->variable[k]->num_elements;
+            }
+        }
+    }
+    /* use 2x weight_size to support angular weight variables */
+    weight = (float *)malloc(2 * weight_size * (size_t)sizeof(float));
+    if (weight == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       2 * weight_size * sizeof(float), __FILE__, __LINE__);
+        goto error;
     }
 
     /* pre-process all variables */

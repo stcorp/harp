@@ -1,3 +1,5 @@
+* Fixed memory corruption issue in rebinning algorithm.
+
 * Updates to product ingestions:
   - EarthCARE L1: fixed TIR band ingestion options for MSI_NOM_1B.
   - S5P L2 O3 TCL: fixed unit of mixing ratios (ppbv -> ppv).
