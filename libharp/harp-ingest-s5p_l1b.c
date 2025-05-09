@@ -54,7 +54,6 @@ typedef struct ingest_info_struct
 {
     coda_product *product;
     int band;
-
     long num_scanlines;
     long num_pixels;
     long num_channels;
@@ -68,6 +67,12 @@ typedef struct ingest_info_struct
     harp_scalar wavelength_fill_value;
     coda_cursor observable_cursor;
     harp_scalar observable_fill_value;
+    coda_cursor observable_error_cursor;
+    harp_scalar observable_error_fill_value;
+    coda_cursor observable_noise_cursor;
+    harp_scalar observable_noise_fill_value;
+
+    float *observable_buffer;   /* [num_channels] */
 } ingest_info;
 
 static void broadcast_array_float(long num_scanlines, long num_pixels, float *data)
@@ -203,6 +208,21 @@ static int read_partial_dataset(const coda_cursor *cursor, long offset, long len
 
     /* Replace values equal to the _FillValue variable attribute by NaN. */
     harp_array_replace_fill_value(harp_type_float, length, data, fill_value);
+
+    return 0;
+}
+
+static int init_observable_buffer(ingest_info *info)
+{
+    assert(info->observable_buffer == NULL);
+
+    info->observable_buffer = malloc(info->num_channels * sizeof(float));
+    if (info->observable_buffer == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       info->num_channels * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
 
     return 0;
 }
@@ -357,7 +377,14 @@ static int parse_option_band(ingest_info *info, const harp_ingestion_options *op
 
 static void ingestion_done(void *user_data)
 {
-    free(user_data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->observable_buffer != NULL)
+    {
+        free(info->observable_buffer);
+    }
+
+    free(info);
 }
 
 static int ingestion_init_s5p_l1b_ir(const harp_ingestion_module *module, coda_product *product,
@@ -377,6 +404,7 @@ static int ingestion_init_s5p_l1b_ir(const harp_ingestion_module *module, coda_p
     }
     info->product = product;
     info->band = 1;
+    info->observable_buffer = NULL;
 
     if (parse_option_band(info, options) != 0)
     {
@@ -409,17 +437,30 @@ static int ingestion_init_s5p_l1b_ir(const harp_ingestion_module *module, coda_p
     }
 
     /* Initialize cursors and fill values for datasets which will be read using partial reads. */
-    if (init_dataset
-        (info->instrument_cursor, "calibrated_wavelength", info->num_pixels * info->num_channels,
-         &info->wavelength_cursor, &info->wavelength_fill_value) != 0)
+    if (init_dataset(info->instrument_cursor, "calibrated_wavelength", info->num_pixels * info->num_channels,
+                     &info->wavelength_cursor, &info->wavelength_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
     }
 
-    if (init_dataset
-        (info->observation_cursor, "irradiance", info->num_scanlines * info->num_pixels * info->num_channels,
-         &info->observable_cursor, &info->observable_fill_value) != 0)
+    if (init_dataset(info->observation_cursor, "irradiance",
+                     info->num_scanlines * info->num_pixels * info->num_channels, &info->observable_cursor,
+                     &info->observable_fill_value) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+    if (init_dataset(info->observation_cursor, "irradiance_error",
+                     info->num_scanlines * info->num_pixels * info->num_channels, &info->observable_error_cursor,
+                     &info->observable_error_fill_value) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+    if (init_dataset(info->observation_cursor, "irradiance_noise",
+                     info->num_scanlines * info->num_pixels * info->num_channels, &info->observable_noise_cursor,
+                     &info->observable_noise_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -456,6 +497,7 @@ static int ingestion_init_s5p_l1b_ra(const harp_ingestion_module *module, coda_p
     }
     info->product = product;
     info->band = -1;
+    info->observable_buffer = NULL;
 
     if (init_cursors(info, NULL) != 0)
     {
@@ -469,17 +511,29 @@ static int ingestion_init_s5p_l1b_ra(const harp_ingestion_module *module, coda_p
     }
 
     /* Initialize cursors and fill values for datasets which will be read using partial reads. */
-    if (init_dataset
-        (info->instrument_cursor, "nominal_wavelength", info->num_pixels * info->num_channels, &info->wavelength_cursor,
-         &info->wavelength_fill_value) != 0)
+    if (init_dataset(info->instrument_cursor, "nominal_wavelength", info->num_pixels * info->num_channels,
+                     &info->wavelength_cursor, &info->wavelength_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
     }
 
-    if (init_dataset
-        (info->observation_cursor, "radiance", info->num_scanlines * info->num_pixels * info->num_channels,
-         &info->observable_cursor, &info->observable_fill_value) != 0)
+    if (init_dataset(info->observation_cursor, "radiance", info->num_scanlines * info->num_pixels * info->num_channels,
+                     &info->observable_cursor, &info->observable_fill_value) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+    if (init_dataset(info->observation_cursor, "radiance_error",
+                     info->num_scanlines * info->num_pixels * info->num_channels, &info->observable_error_cursor,
+                     &info->observable_error_fill_value) != 0)
+    {
+        ingestion_done(info);
+        return -1;
+    }
+    if (init_dataset(info->observation_cursor, "radiance_noise",
+                     info->num_scanlines * info->num_pixels * info->num_channels, &info->observable_noise_cursor,
+                     &info->observable_noise_fill_value) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -766,6 +820,72 @@ static int read_observable(void *user_data, long index, harp_array data)
                                 info->observable_fill_value);
 }
 
+static int read_observable_error(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array obs;
+    long i;
+
+    if (info->observable_buffer == NULL)
+    {
+        if (init_observable_buffer(info) != 0)
+        {
+            return -1;
+        }
+    }
+    obs.ptr = info->observable_buffer;
+
+    if (read_partial_dataset(&info->observable_error_cursor, index * info->num_channels, info->num_channels, data,
+                             info->observable_error_fill_value) != 0)
+    {
+        return -1;
+    }
+    if (read_partial_dataset(&info->observable_cursor, index * info->num_channels, info->num_channels, obs,
+                             info->observable_fill_value) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < info->num_channels; i++)
+    {
+        data.float_data[i] = fabs(pow(10, data.float_data[i] * 0.1) * obs.float_data[i]);
+    }
+
+    return 0;
+}
+
+static int read_observable_noise(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array obs;
+    long i;
+
+    if (info->observable_buffer == NULL)
+    {
+        if (init_observable_buffer(info) != 0)
+        {
+            return -1;
+        }
+    }
+    obs.ptr = info->observable_buffer;
+
+    if (read_partial_dataset(&info->observable_noise_cursor, index * info->num_channels, info->num_channels, data,
+                             info->observable_noise_fill_value) != 0)
+    {
+        return -1;
+    }
+    if (read_partial_dataset(&info->observable_cursor, index * info->num_channels, info->num_channels, obs,
+                             info->observable_fill_value) != 0)
+    {
+        return -1;
+    }
+    for (i = 0; i < info->num_channels; i++)
+    {
+        data.float_data[i] = fabs(pow(10, data.float_data[i] * 0.1) * obs.float_data[i]);
+    }
+
+    return 0;
+}
+
 static void register_irradiance_product_variables(harp_product_definition *product_definition,
                                                   const char *product_group_name)
 {
@@ -802,7 +922,7 @@ static void register_irradiance_product_variables(harp_product_definition *produ
                                                    description, NULL, NULL, read_orbit_index);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/@orbit", NULL);
 
-    /* Irradiance. */
+    /* irradiance */
     description = "calibrated wavelength";
     variable_definition =
         harp_ingestion_register_variable_block_read(product_definition, "wavelength", harp_type_float, 2,
@@ -817,6 +937,26 @@ static void register_irradiance_product_variables(harp_product_definition *produ
                                                     read_observable);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/irradiance[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "spectral photon irradiance systematic uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "photon_irradiance_uncertainty_systematic",
+                                                    harp_type_float, 2, dimension_type, NULL, description,
+                                                    "mol/(s.m^2.nm)", NULL, read_observable_error);
+    snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/irradiance_error[], "
+             "/%s/STANDARD_MODE/OBSERVATIONS/irradiance[]", product_group_name, product_group_name);
+    description = "uncertainty = abs(pow(10,irradiance_error/10.)*irradiance)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    description = "spectral photon irradiance random uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "photon_irradiance_uncertainty_random",
+                                                    harp_type_float, 2, dimension_type, NULL, description,
+                                                    "mol/(s.m^2.nm)", NULL, read_observable_noise);
+    snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/irradiance_noise[], "
+             "/%s/STANDARD_MODE/OBSERVATIONS/irradiance[]", product_group_name, product_group_name);
+    description = "uncertainty = abs(pow(10,irradiance_noise/10.)*irradiance)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_radiance_product_variables(harp_product_definition *product_definition,
@@ -958,7 +1098,7 @@ static void register_radiance_product_variables(harp_product_definition *product
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/GEODATA/viewing_azimuth_angle[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* Radiance. */
+    /* radiance */
     description = "nominal wavelength";
     variable_definition =
         harp_ingestion_register_variable_block_read(product_definition, "wavelength", harp_type_float, 2,
@@ -973,6 +1113,26 @@ static void register_radiance_product_variables(harp_product_definition *product
                                                     read_observable);
     snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/radiance[]", product_group_name);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    description = "spectral photon radiance systematic uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "photon_radiance_uncertainty_systematic",
+                                                    harp_type_float, 2, dimension_type, NULL, description,
+                                                    "mol/(s.m^2.nm.sr)", NULL, read_observable_error);
+    snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/radiance_error[], "
+             "/%s/STANDARD_MODE/OBSERVATIONS/radiance[]", product_group_name, product_group_name);
+    description = "uncertainty = abs(pow(10,radiance_error/10)*radiance)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    description = "spectral photon radiance random uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "photon_radiance_uncertainty_random",
+                                                    harp_type_float, 2, dimension_type, NULL, description,
+                                                    "mol/(s.m^2.nm.sr)", NULL, read_observable_noise);
+    snprintf(path, MAX_PATH_LENGTH, "/%s/STANDARD_MODE/OBSERVATIONS/radiance_noise[], "
+             "/%s/STANDARD_MODE/OBSERVATIONS/radiance[]", product_group_name, product_group_name);
+    description = "uncertainty = abs(pow(10,radiance_noise/10)*radiance)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 int harp_ingestion_module_s5p_l1b_init(void)

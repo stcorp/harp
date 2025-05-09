@@ -127,6 +127,18 @@
 <td><p>[mol/(s.m^2.nm)]</p></td>
 <td><p>spectral photon irradiance</p></td>
 </tr>
+<tr class="row-odd"><td><p><strong>photon_irradiance_uncertainty_systematic</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td><p>[mol/(s.m^2.nm)]</p></td>
+<td><p>spectral photon irradiance systematic uncertainty</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>photon_irradiance_uncertainty_random</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>spectral</em>}</p></td>
+<td><p>[mol/(s.m^2.nm)]</p></td>
+<td><p>spectral photon irradiance random uncertainty</p></td>
+</tr>
 <tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
@@ -192,6 +204,20 @@
 <tr class="row-odd"><td><p><strong>photon_irradiance</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/irradiance[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>photon_irradiance_uncertainty_systematic</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/irradiance_error[], /BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/irradiance[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(pow(10,irradiance_error/10.)*irradiance)</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>photon_irradiance_uncertainty_random</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/irradiance_noise[], /BAND8_IRRADIANCE/STANDARD_MODE/OBSERVATIONS/irradiance[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(pow(10,irradiance_noise/10.)*irradiance)</p></td>
 </tr>
 </tbody>
 </table>
