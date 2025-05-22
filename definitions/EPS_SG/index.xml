@@ -1,0 +1,314 @@
+<?xml version="1.0"?>
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="EPS_SG" last-modified="2025-05-22">
+  <cd:Description>>EUMETSAT Polar System Second Generation atmospheric products (Sentinel-5 and IASI-NG)</cd:Description>
+  <cd:ProductType name="IAS_02_CO_">
+    <cd:Description>IASI L2 Carbon Monoxide</cd:Description>
+    <cd:ProductDefinition id="IAS_02_CO_" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-CO_"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="IAS_02_NAC">
+    <cd:Description>IASI L2 Nitric Acid Partial Column</cd:Description>
+    <cd:ProductDefinition id="IAS_02_NAC" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-NAC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="IAS_02_O3_">
+    <cd:Description>IASI L2 Ozone Profile and Ozone Total Column</cd:Description>
+    <cd:ProductDefinition id="IAS_02_O3_" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-O3_"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="IAS_02_SO2">
+    <cd:Description>IASI L2 Sulphur Dioxide</cd:Description>
+    <cd:ProductDefinition id="IAS_02_SO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-SO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="IAS_02_CLD">
+    <cd:Description>IASI L2 Cloud Detection (from VII and IAS)</cd:Description>
+    <cd:ProductDefinition id="IAS_02_CLD" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-CLD"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="IAS_02_GHG">
+    <cd:Description>IASI L2 Green-House Gas Columns</cd:Description>
+    <cd:ProductDefinition id="IAS_02_GHG" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-GHG"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="IAS_02_SFC">
+    <cd:Description>IASI L2 Sea Surface Temperature, Land and Ice Surface Temperature, and Land and Ice Surface Emissivity</cd:Description>
+    <cd:ProductDefinition id="IAS_02_SFC" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-SFC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="IAS_02_TWV">
+    <cd:Description>IASI L2 Temperature Profile, Water Vapour Profile and Water Vapour Total Column (from IAS and MWS)</cd:Description>
+    <cd:ProductDefinition id="IAS_02_TWV" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-TWV"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="NAV_00_SRC">
+    <cd:Description>NAVATT Level 0 Product including NAVATT packets</cd:Description>
+    <cd:ProductDefinition id="NAV_00_SRC" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="NAV-00-SRC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_00_SMP">
+    <cd:Description>S-5 Level 0 Product including the specific "Small Pixel" type of source packets</cd:Description>
+    <cd:ProductDefinition id="SN5_00_SMP" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-00-SMP"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_00_SRC">
+    <cd:Description>S-5 Level 0 Product including instrument source packets</cd:Description>
+    <cd:ProductDefinition id="SN5_00_SRC" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-00-SRC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_1B_UVR">
+    <cd:Description>Sentinel-5 L1B geolocated UV and VIS radiances with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_1B_UVR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-UVR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_1B_NIR">
+    <cd:Description>Sentinel-5 L1B geolocated NIR radiances with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_1B_NIR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-NIR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_1B_SWR">
+    <cd:Description>Sentinel-5 L1B geolocated SWIR radiances with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_1B_SWR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-SWR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_1B_IRR">
+    <cd:Description>Sentinel-5 L1B averaged Sun irradiance with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_1B_IRR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-IRR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_FDY">
+    <cd:Description>Sentinel-5 L2 Formaldehyde product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_FDY" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-FDY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_GLY">
+    <cd:Description>Sentinel-5 L2 Glyoxal product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_GLY" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-GLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_SO2">
+    <cd:Description>Sentinel-5 L2 Sulphur Dioxide product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_SO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-SO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_NO2">
+    <cd:Description>Sentinel-5 L2 Nitrogen Dioxide product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_NO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-NO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_O3_">
+    <cd:Description>Sentinel-5 L2 Ozone Total Column product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_O3_" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-O3_"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_O3P">
+    <cd:Description>Sentinel-5 L2 Ozone Profile product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_O3P" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-O3P"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_AOD">
+    <cd:Description>Sentinel-5 L2 Aerosol Optical Depth product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_AOD" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-AOD"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_AUI">
+    <cd:Description>Sentinel-5 L2 Aerosol UV Index product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_AUI" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-AUI"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_ALH">
+    <cd:Description>Sentinel-5 L2 Aerosol Layer Height product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_ALH" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-ALH"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_CLD">
+    <cd:Description>Sentinel-5 L2 Cloud product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_CLD" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CLD"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_RFL">
+    <cd:Description>Sentinel-5 L2 Effective Reflectance product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_RFL" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-RFL"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_UV_">
+    <cd:Description>Sentinel-5 L2 Surface UV product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_UV_" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-UV_"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_CH4">
+    <cd:Description>Sentinel-5 L2 Methane product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_CH4" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CH4"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_CO_">
+    <cd:Description>Sentinel-5 L2 Carbon Monoxide product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_CO_" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CO_"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_HET">
+    <cd:Description>Sentinel-5 L2 Scene Heterogeneity product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_HET" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-HET"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="SN5_02_CLA">
+    <cd:Description>Sentinel-5 L2 Auxiliary Cloud product with quality information</cd:Description>
+    <cd:ProductDefinition id="SN5_02_CLA" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
+        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CLA"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>
