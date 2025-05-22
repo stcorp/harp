@@ -450,6 +450,7 @@ DEFINITION_FILES = \
 	definitions/$(CODADEF_FILE_ENVISAT_MIPAS) \
 	definitions/$(CODADEF_FILE_ENVISAT_SCIAMACHY) \
 	definitions/$(CODADEF_FILE_EPS) \
+	definitions/$(CODADEF_FILE_EPS_SG) \
 	definitions/$(CODADEF_FILE_ERS_GOME) \
 	definitions/$(CODADEF_FILE_ESACCI_AEROSOL) \
 	definitions/$(CODADEF_FILE_ESACCI_CLOUD) \
