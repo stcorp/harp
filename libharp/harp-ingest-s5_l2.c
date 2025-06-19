@@ -166,8 +166,12 @@ static void dash_to_underscore(char *s)
 {
     /* Changing '-' to '_' */
     for (; *s; ++s)
+    {
         if (*s == '-')
+        {
             *s = '_';
+        }
+    }
 }
 
 
@@ -220,7 +224,9 @@ static int get_product_type(coda_product *product, s5_product_type *product_type
 
     /* 1. bind root */
     if (coda_cursor_set_product(&cursor, product) != 0)
+    {
         return harp_set_error(HARP_ERROR_CODA, NULL), -1;
+    }
 
     /* 2. first try the clean ProductShortName */
     if (coda_cursor_goto(&cursor, "/METADATA/GRANULE_DESCRIPTION@ProductShortName") == 0)
@@ -233,13 +239,17 @@ static int get_product_type(coda_product *product, s5_product_type *product_type
         coda_type_class tc;
 
         if (coda_cursor_get_type_class(&cursor, &tc) != 0)
+        {
             return harp_set_error(HARP_ERROR_CODA, NULL), -1;
+        }
 
         if (tc == coda_array_class)
         {
             child = cursor;
             if (coda_cursor_goto_first_array_element(&child) != 0)
+            {
                 return harp_set_error(HARP_ERROR_CODA, NULL), -1;
+            }
             src = &child;
         }
         else
@@ -255,7 +265,9 @@ static int get_product_type(coda_product *product, s5_product_type *product_type
     /* 3. read the string */
     if (coda_cursor_get_string_length(src, &len) != 0 ||
         len <= 0 || len >= (long)sizeof(buf) || coda_cursor_read_string(src, buf, sizeof(buf)) != 0)
+    {
         return harp_set_error(HARP_ERROR_CODA, NULL), -1;
+    }
 
     /* 4. normalise and show */
     dash_to_underscore(buf);
@@ -760,8 +772,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_cld_band_options = 0;     /* CLD: BAND3A (default), or BAND3C */
     info->so2_column_type = 0;  /* 0=PBL (default)  1=1 km  2=7 km  3=15 km */
 
-
-
     if (get_product_type(info->product, &info->product_type) != 0)
     {
         ingestion_done(info);
@@ -977,9 +987,11 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 
     dimension[harp_dimension_time] = info->num_scanlines * info->num_pixels;
 
-    /* 2. vertical grid - only if available                                  */
+    /* 2. vertical grid - only if available */
     if (info->num_layers > 0)
+    {
         dimension[harp_dimension_vertical] = info->num_layers;
+    }
 
     switch (info->product_type)
     {
@@ -1600,26 +1612,36 @@ static int read_results_processing_quality_flags(void *user_data, harp_array dat
 
     /* inside PRODUCT, go to the variable */
     if (coda_cursor_goto_record_field_by_name(&cursor, "processing_quality_flags") != 0)
+    {
         return harp_set_error(HARP_ERROR_CODA, NULL), -1;
+    }
 
     /* sanity-check element count */
     long actual;
 
     if (coda_cursor_get_num_elements(&cursor, &actual) != 0 || actual != expected)
+    {
         return harp_set_error(HARP_ERROR_INGESTION,
                               "processing_quality_flags: expected %ld elements, got %ld", expected, actual), -1;
+    }
 
     /* read uint64 -> tmp */
     tmp = malloc(expected * sizeof(*tmp));
     if (!tmp)
+    {
         return harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "allocating %ld bytes", expected * sizeof(*tmp)), -1;
+    }
 
     if (coda_cursor_read_uint64_array(&cursor, tmp, coda_array_ordering_c) != 0)
+    {
         return free(tmp), harp_set_error(HARP_ERROR_CODA, NULL), -1;
+    }
 
     /* Cast to int32 in place */
     for (i = 0; i < expected; i++)
+    {
         data.int32_data[i] = (int32_t)tmp[i];
+    }
 
     free(tmp);
     return 0;
