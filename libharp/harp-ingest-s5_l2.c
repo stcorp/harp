@@ -60,14 +60,14 @@ typedef enum s5_product_type_enum
 
 typedef enum s5_dimension_type_enum
 {
-    s5_dim_time = 0,    /* flattened   scanline × pixel grid            */
-    s5_dim_scanline,    /* original along-track dimension               */
-    s5_dim_pixel,       /* original across-track dimension              */
-    s5_dim_corner,      /* 4 polygon corners per ground pixel           */
-    s5_dim_layer,       /* pressure / altitude layers                   */
-    s5_dim_level,       /* layer +1 (bounds)                            */
-    s5_dim_spectral,    /* extra wavelengths (e.g. reflectance pair)    */
-    s5_dim_profile      /* short profile axis (SO2 options, etc.)       */
+    s5_dim_time = 0,    /* flattened scanline x pixel grid */
+    s5_dim_scanline,    /* original along-track dimension */
+    s5_dim_pixel,       /* original across-track dimension */
+    s5_dim_corner,      /* 4 polygon corners per ground pixel */
+    s5_dim_layer,       /* pressure / altitude layers */
+    s5_dim_level,       /* layer +1 (bounds) */
+    s5_dim_spectral,    /* extra wavelengths (e.g. reflectance pair) */
+    s5_dim_profile      /* short profile axis (SO2 options, etc.) */
 } s5_dimension_type;
 
 /* handy constant: last enum value + 1 */
@@ -414,7 +414,7 @@ static int init_cursors(ingest_info *info)
         }
 
         /* Geolocation group (skip for O3-TCL): under SUPPORT_DATA
-         * '/…/SUPPORT_DATA/GEOLOCATIONS' for both layouts.
+         * '/.../SUPPORT_DATA/GEOLOCATIONS' for both layouts.
          */
         if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
         {
@@ -426,7 +426,7 @@ static int init_cursors(ingest_info *info)
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
 
-        /* Detailed results: '/…/SUPPORT_DATA/DETAILED_RESULTS' */
+        /* Detailed results: '/.../SUPPORT_DATA/DETAILED_RESULTS' */
         if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -437,7 +437,7 @@ static int init_cursors(ingest_info *info)
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
 
-        /* Input data group (skip for O3-TCL): '/…/SUPPORT_DATA/INPUT_DATA' */
+        /* Input data group (skip for O3-TCL): '/.../SUPPORT_DATA/INPUT_DATA' */
         if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -476,7 +476,7 @@ static int init_cursors(ingest_info *info)
         }
 
         /* Geolocation group (skip for O3-TCL): under SUPPORT_DATA
-         * '/…/SUPPORT_DATA/GEOLOCATIONS' for both layouts.
+         * '/.../SUPPORT_DATA/GEOLOCATIONS' for both layouts.
          */
         if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
         {
@@ -488,7 +488,7 @@ static int init_cursors(ingest_info *info)
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
 
-        /* Detailed results: '/…/SUPPORT_DATA/DETAILED_RESULTS' */
+        /* Detailed results: '/.../SUPPORT_DATA/DETAILED_RESULTS' */
         if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -498,7 +498,7 @@ static int init_cursors(ingest_info *info)
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
 
-        /* Input data group (skip for O3-TCL): '/…/SUPPORT_DATA/INPUT_DATA' */
+        /* Input data group (skip for O3-TCL): '/.../SUPPORT_DATA/INPUT_DATA' */
         if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -552,7 +552,7 @@ static int init_cursors(ingest_info *info)
         }
 
         /* Geolocation group (skip for O3-TCL): under SUPPORT_DATA
-         * '/…/SUPPORT_DATA/GEOLOCATIONS' for both layouts.
+         * '/.../SUPPORT_DATA/GEOLOCATIONS' for both layouts.
          */
         if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
         {
@@ -564,7 +564,7 @@ static int init_cursors(ingest_info *info)
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
 
-        /* Detailed results: '/…/SUPPORT_DATA/DETAILED_RESULTS' */
+        /* Detailed results: '/.../SUPPORT_DATA/DETAILED_RESULTS' */
         if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -575,7 +575,7 @@ static int init_cursors(ingest_info *info)
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
 
-        /* Input data group (skip for O3-TCL): '/…/SUPPORT_DATA/INPUT_DATA' */
+        /* Input data group (skip for O3-TCL): '/.../SUPPORT_DATA/INPUT_DATA' */
         if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
         {
             harp_set_error(HARP_ERROR_CODA, NULL);
@@ -672,7 +672,7 @@ static int init_dimensions(ingest_info *info)
 
 
 /* Extract Sentinel-5 L2 product collection and processor version
- * from the global “logical product name.”
+ * from the global "logical product name".
  */
 static int init_versions(ingest_info *info)
 {
@@ -977,7 +977,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 
     dimension[harp_dimension_time] = info->num_scanlines * info->num_pixels;
 
-    /* 2. vertical grid – only if available                                  */
+    /* 2. vertical grid - only if available                                  */
     if (info->num_layers > 0)
         dimension[harp_dimension_vertical] = info->num_layers;
 
@@ -992,7 +992,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
         case s5_type_so2:
             dimension[harp_dimension_time] = info->num_scanlines * info->num_pixels;
             break;
-            /* CLD, NO2, CO, … need no extra axes */
+            /* CLD, NO2, CO, ... need no extra axes */
         default:
             break;
     }
@@ -1375,7 +1375,7 @@ static int read_product_methane_dry_air_column_mixing_ratio(void *user_data, har
     const char *dataset_name = NULL;
     long count;
 
-    /* Total number of elements = scanlines × ground pixels */
+    /* Total number of elements = scanlines x ground pixels */
     count = info->num_scanlines * info->num_pixels;
 
     /* Pick the right HDF5 field based on the ch4 option */
@@ -1399,7 +1399,7 @@ static int read_product_methane_dry_air_column_mixing_ratio(void *user_data, har
         return -1;
     }
 
-    /* 1-D along time already ascending → nothing more to do */
+    /* 1-D along time already ascending -> nothing more to do */
     return 0;
 }
 
@@ -1410,7 +1410,7 @@ static int read_product_methane_dry_air_column_mixing_ratio_precision(void *user
     const char *dataset_name = NULL;
     long count;
 
-    /* Total number of elements = scanlines × ground pixels */
+    /* Total number of elements = scanlines x ground pixels */
     count = info->num_scanlines * info->num_pixels;
 
     /* Pick the right HDF5 field based on the ch4 option */
@@ -1434,7 +1434,7 @@ static int read_product_methane_dry_air_column_mixing_ratio_precision(void *user
         return -1;
     }
 
-    /* 1-D along time already ascending → nothing more to do */
+    /* 1-D along time already ascending -> nothing more to do */
     return 0;
 }
 
@@ -2893,7 +2893,7 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
             /* lower bound of layer j (= upper of j+1) */
             bounds[j * 2 + 1] = coef_a.double_data[j + 1] + coef_b.double_data[j + 1] * sp;
         }
-        /* Clamp TOA pressure to ≥ 1 mPa */
+        /* Clamp TOA pressure to >= 1 mPa */
         if (bounds[(num_layers - 1) * 2] < 1e-3)
             bounds[(num_layers - 1) * 2] = 1e-3;
     }
@@ -2904,7 +2904,7 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
     return 0;
 }
 
-/* See: Table 4.3.4 – Surface classification flags in S5 L2 products and generated auxiliary data.
+/* See: Table 4.3.4 - Surface classification flags in S5 L2 products and generated auxiliary data.
  * Source: EPS-SG S5 L2 PFS v4, 13-Jul-2023
  * Link: https://user.eumetsat.int/s3/eup-strapi-media/EPS_SG_Sentinel_5_Level_2_Product_Format_Specification_V4_1122b7fd75.pdf
  */
@@ -2912,7 +2912,7 @@ static int read_input_surface_classification(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->input_data_cursor, "surface_classification", harp_type_int8,      /* keep 0…255 codes */
+    return read_dataset(info->input_data_cursor, "surface_classification", harp_type_int8,      /* keep 0...255 codes */
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2991,7 +2991,7 @@ static void register_core_variables_cld(harp_product_definition *product_definit
     harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
                                          "/data/PRODUCT_BAND3A/time, /data/PRODUCT_BAND3A/delta_time[]",
                                          "time converted from milliseconds since a reference time to "
-                                         "seconds since 2010-01-01 (86400 s day⁻¹)");
+                                         "seconds since 2010-01-01 (86400 s / day)");
 
     harp_variable_definition_add_mapping(var, "band=band3c", NULL,
                                          "/data/PRODUCT_BAND3C/time, /data/PRODUCT_BAND3C/delta_time[]",
@@ -3220,8 +3220,8 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     const char *descr;
     harp_variable_definition *var;
-    const char *path_a; /* PRODUCT_BAND3A … */
-    const char *path_c; /* PRODUCT_BAND3C … */
+    const char *path_a; /* PRODUCT_BAND3A ... */
+    const char *path_c; /* PRODUCT_BAND3C ... */
 
     /* latitude_bounds (time, corner) */
     descr = "Four latitude boundaries of each ground pixel.";
@@ -3300,7 +3300,7 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
                                          NULL, path_c, "value for each scanline is repeated for every pixel");
 
     /* sensor_orbit_phase (scalar, double) */
-    descr = "Relative orbital phase (0 … 1).";
+    descr = "Relative orbital phase (0 ... 1).";
     var = harp_ingestion_register_variable_full_read(pd, "sensor_orbit_phase", harp_type_double,
                                                      1, t1, NULL, descr, HARP_UNIT_DIMENSIONLESS, NULL,
                                                      read_geolocation_satellite_orbit_phase);
@@ -3438,7 +3438,7 @@ static void register_surface_variables(harp_product_definition *product_definiti
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-/* CLD product – surface variables (BAND-3A / BAND-3C) */
+/* CLD product - surface variables (BAND-3A / BAND-3C) */
 static void register_surface_variables_cld(harp_product_definition *pd)
 {
     harp_dimension_type t1[1] = { harp_dimension_time };
@@ -3459,7 +3459,7 @@ static void register_surface_variables_cld(harp_product_definition *pd)
                                          "/data/PRODUCT_BAND3C/SUPPORT_DATA/INPUT_DATA/surface_altitude[]", NULL);
 
     /* surface_altitude_uncertainty  (file name: surface_altitude_precision) */
-    descr = "1-σ uncertainty of the surface altitude.";
+    descr = "1-sigma uncertainty of the surface altitude.";
     var = harp_ingestion_register_variable_full_read(pd, "surface_altitude_uncertainty", harp_type_float,
                                                      1, t1, NULL, descr, "m", NULL,
                                                      read_input_surface_altitude_precision);
@@ -3667,7 +3667,7 @@ static void register_aui_product(void)
 
     /* Add mappings for the variable 
      * (not strictly needed if read routine does
-     * all the work, but it’s good practice) 
+     * all the work, but it's good practice) 
      */
     harp_variable_definition_add_mapping(variable_definition,
                                          "wavelength_ratio=354_388nm or wavelength_ratio unset", NULL,
@@ -3757,7 +3757,7 @@ static void register_ch4_product(void)
                                             "Sentinel-5 L2 CH4 total column", ingestion_init, ingestion_done);
 
     description = "Choose which CH4 column to ingest: "
-        "“physics” (default physics-based column) or “proxy” (alternate proxy column)";
+        "'physics' (default physics-based column) or 'proxy' (alternate proxy column)";
     harp_ingestion_register_option(module, "ch4",       /* option name */
                                    description, 2,      /* number of values */
                                    ch4_option_values);  /* allowed values */
@@ -3991,7 +3991,7 @@ static void register_ch4_product(void)
                                                                      HARP_UNIT_DIMENSIONLESS,
                                                                      NULL, read_results_surface_albedo);
 
-    /* three mappings, each gated on band=… */
+    /* three mappings, each gated on band=... */
     path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_swir_1[]";
     harp_variable_definition_add_mapping(variable_definition, "band=SWIR-1", NULL, path, NULL);
 
@@ -4047,7 +4047,7 @@ static void register_no2_product(void)
                                             "SN5_02_NO2",
                                             "Sentinel-5 L2 NO2 total column", ingestion_init, ingestion_done);
 
-    description = "Choose which NO2 column to ingest: “total” (default) or “summed”";
+    description = "Choose which NO2 column to ingest: 'total' (default) or 'summed'";
     harp_ingestion_register_option(module, "total_column",      /* option name */
                                    description, 2,      /* number of values */
                                    no2_column_option_values);   /* allowed values */
@@ -4370,7 +4370,7 @@ static void register_no2_product(void)
      * harp-ingestion-module.c:472: product_definition_add_variable: Assertion
      * `!harp_product_definition_has_variable(product_definition,
      * variable->name)' failed.
-     * fish: Job 1, 'harpdump -l $HOME/D…' terminated by signal SIGABRT (Abort)
+     * fish: Job 1, 'harpdump -l $HOME/D...' terminated by signal SIGABRT (Abort)
 
      * which implies that cloud_fraction variable has been already registered (and indeed it was). 
      * so either need to change the name of this variable or add it to the one above (*_radiance)
@@ -4688,7 +4688,7 @@ static void register_o3_product(void)
 /* Read a SO2 scalar field with an extra 'profile' dimension           */
 /* and collapse that dimension according to info->so2_column_type.    */
 static int read_so2_scalar(void *user_data, const char *dataset_name,   /* e.g. "sulfur_dioxide_total_column" */
-                           harp_array data)     /* output: {time} = scanline×pixel   */
+                           harp_array data)     /* output: {time} = scanline x pixel   */
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -4701,16 +4701,16 @@ static int read_so2_scalar(void *user_data, const char *dataset_name,   /* e.g. 
     buffer.ptr = malloc(num_elements * sizeof(float));
     if (buffer.ptr == NULL)
     {
-        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "cannot allocate %ld-element SO₂ buffer", num_elements);
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "cannot allocate %ld-element SO2 buffer", num_elements);
         return -1;
     }
 
-    /* We first try under /data/PRODUCT/…                               */
+    /* We first try under /data/PRODUCT/... */
     int status = read_dataset(info->product_cursor,
                               dataset_name, harp_type_float,
                               num_elements, buffer);
 
-    /* If that failed, fall back to /data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/… */
+    /* If that failed, fall back to /data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/... */
     if (status != 0)
     {
         status = read_dataset(info->detailed_results_cursor, dataset_name, harp_type_float, num_elements, buffer);
@@ -4722,7 +4722,7 @@ static int read_so2_scalar(void *user_data, const char *dataset_name,   /* e.g. 
         return -1;      /* read_dataset set a HARP error for us */
     }
 
-    /* copy the requested profile (0…3) into the 1-D HARP array */
+    /* copy the requested profile (0...3) into the 1-D HARP array */
     long stride = info->num_profile;    /* profile dimension length   */
     long sel_idx = info->so2_column_type;       /* 0=PBL,1=1 km,2=7 km,3=15 km */
     long out_idx = 0;
@@ -4951,7 +4951,7 @@ static void register_so2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sulfur_dioxide_slant_column_precision */
-    description = "Random component of the uncertainty of the SO₂ slant column density";
+    description = "Random component of the uncertainty of the SO2 slant column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_slant_column_number_density_uncertainty_random",
@@ -4963,7 +4963,7 @@ static void register_so2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* sulfur_dioxide_slant_column_trueness */
-    description = "Systematic component of the uncertainty of the SO₂ slant column density";
+    description = "Systematic component of the uncertainty of the SO2 slant column density";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_slant_column_number_density_uncertainty_systematic",
