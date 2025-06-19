@@ -32,6 +32,7 @@ stamp-*
 /findtypedef
 /findtypedef.c
 /install-sh
+/install-sh~
 /harpcheck
 /harpcollocate
 /harpconvert
@@ -57,3 +58,45 @@ stamp-*
 /udunits2/utparser.h
 /udunits2/utscanner.c
 /ylwrap
+
+# Ignore CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+Makefile
+CTestTestfile.cmake
+
+# Ignore build output directories
+build/
+out/
+bin/
+lib/
+
+# Ignore CMake presets
+CMakeUserPresets.json
+CMakePresets.json
+
+# Ignore compile commands database
+compile_commands.json
+
+# Ignore testing artifacts
+Testing/
+Testing/Temporary/
+Testing/Logs/
+
+# IDE/editor specific
+.vscode/
+*.user
+*.VC.db
+*.VC.VC.opendb
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Nix dev env files 
+shell.nix 
+nix/
+.envrc
+.direnv/
