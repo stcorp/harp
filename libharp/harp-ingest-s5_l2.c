@@ -3412,19 +3412,14 @@ static void register_surface_variables(harp_product_definition *product_definiti
             harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_uncertainty",
                                                        harp_type_float, 1, dimension_type_1d, NULL, description, "m",
                                                        NULL, read_input_surface_altitude_precision);
-    }
-
-    if (strcmp(product_type, "SN5_02_NO2") == 0)
-    {
-        path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_uncertainty[]";
-    }
-    else
-    {
-        path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
-    }
-
-    if (strcmp(product_type, "SN5_02_O3") != 0)
-    {
+        if (strcmp(product_type, "SN5_02_NO2") == 0)
+        {
+            path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_uncertainty[]";
+        }
+        else
+        {
+            path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
+        }
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
     }
 
