@@ -161,15 +161,19 @@ static const char *get_product_type_name(s5_product_type product_type)
     exit(1);
 }
 
-/* tiny helper for get_product_type() */
+
+/* Tiny helper for get_product_type() */
 static void dash_to_underscore(char *s)
 {
+    /* use size_t for byte offsets into the char array */
+    size_t i; 
+
     /* Changing '-' to '_' */
-    for (; *s; ++s)
+    for (i = 0; s[i] != '\0'; ++i)
     {
-        if (*s == '-')
+        if (s[i] == '-')
         {
-            *s = '_';
+            s[i] = '_';
         }
     }
 }
@@ -184,13 +188,11 @@ static void broadcast_array_float(long num_scanlines, long num_pixels, float *da
      */
     for (i = num_scanlines - 1; i >= 0; i--)
     {
-        float *pixel = data + i * num_pixels;
-        float *pixel_end = pixel + num_pixels;
-        const float scanline_value = data[i];
+        long j;
 
-        for (; pixel != pixel_end; pixel++)
+        for (j = 0; j < num_pixels; j++)
         {
-            *pixel = scanline_value;
+            data[i * num_pixels + j] = data[i];
         }
     }
 }
@@ -204,13 +206,11 @@ static void broadcast_array_double(long num_scanlines, long num_pixels, double *
      */
     for (i = num_scanlines - 1; i >= 0; i--)
     {
-        double *pixel = data + i * num_pixels;
-        double *pixel_end = pixel + num_pixels;
-        const double scanline_value = data[i];
+        long j;
 
-        for (; pixel != pixel_end; pixel++)
+        for (j = 0; j < num_pixels; j++)
         {
-            *pixel = scanline_value;
+            data[i * num_pixels + j] = data[i];
         }
     }
 }
@@ -1686,6 +1686,12 @@ static int read_results_reflectance_measured(void *user_data, harp_array data)
 
     long num_elements = info->num_scanlines * info->num_pixels;
 
+    long i; 
+
+    /* Allocate temporary buffers */
+    harp_array refl_lower;
+    harp_array refl_upper;
+
     /* Determine reflectance variable names based on wavelength_ratio */
     switch (info->wavelength_ratio)
     {
@@ -1707,9 +1713,6 @@ static int read_results_reflectance_measured(void *user_data, harp_array data)
             exit(1);
     }
 
-    /* Allocate temporary buffers */
-    harp_array refl_lower;
-    harp_array refl_upper;
 
     refl_lower.float_data = malloc(num_elements * sizeof(float));
     if (refl_lower.float_data == NULL)
@@ -1767,7 +1770,7 @@ static int read_results_reflectance_measured(void *user_data, harp_array data)
     }
 
     /* Fill the final harp_array (2D: {time, spectral=2}) */
-    for (long i = 0; i < num_elements; i++)
+    for (i = 0; i < num_elements; i++)
     {
         data.float_data[i] = refl_lower.float_data[i];  /* spectral index 0 */
         data.float_data[num_elements + i] = refl_upper.float_data[i];   /* spectral index 1 */
@@ -1792,6 +1795,9 @@ static int read_results_reflectance_precision(void *user_data, harp_array data)
     const char *var_hi = NULL;
 
     long n = info->num_scanlines * info->num_pixels;
+    long i; 
+
+    harp_array prec_lo, prec_hi;
 
     /* 1) Map wavelength-ratio -> variable names */
     switch (info->wavelength_ratio)
@@ -1814,10 +1820,9 @@ static int read_results_reflectance_precision(void *user_data, harp_array data)
     }
 
     /* 2) Allocate temp buffers */
-    harp_array prec_lo, prec_hi;
-
     prec_lo.float_data = malloc(n * sizeof(float));
     prec_hi.float_data = malloc(n * sizeof(float));
+
     if (!prec_lo.float_data || !prec_hi.float_data)
     {
         free(prec_lo.float_data);
@@ -1837,7 +1842,7 @@ static int read_results_reflectance_precision(void *user_data, harp_array data)
     }
 
     /* 4) Interleave into output {time, spectral=2} */
-    for (long i = 0; i < n; i++)
+    for (i = 0; i < n; i++)
     {
         data.float_data[i] = prec_lo.float_data[i];     /* lambda_low  */
         data.float_data[n + i] = prec_hi.float_data[i]; /* lambda_high */
@@ -2603,6 +2608,7 @@ static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array dat
 
 
 /* Field: data/PRODUCT/SUPPORT_DATA/INPUT_DATA */
+
 static int read_input_surface_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2862,6 +2868,9 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
 
     /* Temporary buffers for a, b and surface-pressure */
     harp_array coef_a;
+    harp_array coef_b;
+
+    long p; 
 
     coef_a.ptr = malloc(num_levels * sizeof(double));
     if (coef_a.ptr == NULL)
@@ -2870,7 +2879,6 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
         return -1;
     }
 
-    harp_array coef_b;
 
     coef_b.ptr = malloc(num_levels * sizeof(double));
     if (coef_b.ptr == NULL)
@@ -2902,23 +2910,39 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
         return -1;
     }
 
-    /* Build the (layer, 2) pressure-bounds array */
-    for (long p = 0; p < num_profiles; p++)
+    /* Build the (layer,2) pressure-bounds array.
+     * Every access uses data.double_data[idx]; no helper pointer.
+     * Outer loop:    p = 0 .. num_profiles-1
+     * Inner loop:    j = 0 .. num_layers-1
+     */
+    for (p = 0; p < num_profiles; ++p)
     {
-        double *bounds = &data.double_data[p * num_layers * 2];
-        double sp = psurf.double_data[p];
-
-        for (long j = 0; j < num_layers; j++)
+        double sp = psurf.double_data[p];                /* surface pressure for profile p */
+    
+	long j; 
+        for (j = 0; j < num_layers; ++j)
         {
+            /* Flat index in the {profile, layer, upper/lower} layout */
+            long upper_idx = (p * num_layers * 2) + (j * 2);   /* upper boundary   */
+            long lower_idx = upper_idx + 1;                    /* lower boundary   */
+    
             /* upper bound of layer j */
-            bounds[j * 2] = coef_a.double_data[j] + coef_b.double_data[j] * sp;
-            /* lower bound of layer j (= upper of j+1) */
-            bounds[j * 2 + 1] = coef_a.double_data[j + 1] + coef_b.double_data[j + 1] * sp;
+            data.double_data[upper_idx] =
+                coef_a.double_data[j] + coef_b.double_data[j] * sp;
+    
+            /* lower bound of layer j (equal to upper of j+1) */
+            data.double_data[lower_idx] =
+                coef_a.double_data[j + 1] + coef_b.double_data[j + 1] * sp;
         }
-        /* Clamp TOA pressure to >= 1 mPa */
-        if (bounds[(num_layers - 1) * 2] < 1e-3)
-            bounds[(num_layers - 1) * 2] = 1e-3;
+    
+        /* Clamp top-of-atmosphere pressure to at least 1 mPa */
+        long toa_idx = (p * num_layers * 2) + ((num_layers - 1) * 2);
+        if (data.double_data[toa_idx] < 1e-3)
+        {
+            data.double_data[toa_idx] = 1e-3;
+        }
     }
+
 
     free(coef_a.ptr);
     free(coef_b.ptr);
@@ -2962,9 +2986,9 @@ static void register_core_variables(harp_product_definition *product_definition,
     if (delta_time_num_dims == 2)
     {
         description = "time converted from milliseconds since a reference time"
-            "(given as seconds since 2010-01-01) to " "seconds since"
-            "2010-01-01 (using 86400 seconds per day); the time associated"
-            "with a scanline is repeated " "for each pixel in the scanline";
+            "(given as seconds since 2010-01-01) to seconds since "
+            "2010-01-01 (using 86400 seconds per day); the time associated "
+            "with a scanline is repeated for each pixel in the scanline";
     }
     else
     {
@@ -4709,13 +4733,22 @@ static void register_o3_product(void)
 
 /* Read a SO2 scalar field with an extra 'profile' dimension           */
 /* and collapse that dimension according to info->so2_column_type.    */
-static int read_so2_scalar(void *user_data, const char *dataset_name,   /* e.g. "sulfur_dioxide_total_column" */
-                           harp_array data)     /* output: {time} = scanline x pixel   */
+static int read_so2_scalar(void *user_data, 
+		const char *dataset_name,   /* e.g. "sulfur_dioxide_total_column" */
+                harp_array data)     /* output: {time} = scanline x pixel   */
 {
     ingest_info *info = (ingest_info *)user_data;
 
     /* total elements in the 3-D variable on file */
     long num_elements = info->num_scanlines * info->num_pixels * info->num_profile;     /* 4 profiles */
+
+    /* copy the requested profile (0...3) into the 1-D HARP array */
+    long stride = info->num_profile;    /* profile dimension length   */
+    long sel_idx = info->so2_column_type;       /* 0=PBL,1=1 km,2=7 km,3=15 km */
+    long out_idx = 0;
+
+    int status; 
+    long i; 
 
     /* temporary buffer for the full 3-D variable */
     harp_array buffer;
@@ -4728,7 +4761,7 @@ static int read_so2_scalar(void *user_data, const char *dataset_name,   /* e.g. 
     }
 
     /* We first try under /data/PRODUCT/... */
-    int status = read_dataset(info->product_cursor,
+    status = read_dataset(info->product_cursor,
                               dataset_name, harp_type_float,
                               num_elements, buffer);
 
@@ -4744,13 +4777,11 @@ static int read_so2_scalar(void *user_data, const char *dataset_name,   /* e.g. 
         return -1;      /* read_dataset set a HARP error for us */
     }
 
-    /* copy the requested profile (0...3) into the 1-D HARP array */
-    long stride = info->num_profile;    /* profile dimension length   */
-    long sel_idx = info->so2_column_type;       /* 0=PBL,1=1 km,2=7 km,3=15 km */
-    long out_idx = 0;
 
-    for (long i = sel_idx; i < num_elements; i += stride)
+    for (i = sel_idx; i < num_elements; i += stride)
+    {
         data.float_data[out_idx++] = buffer.float_data[i];
+    }
 
     free(buffer.ptr);
     return 0;
