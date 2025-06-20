@@ -166,7 +166,7 @@ static const char *get_product_type_name(s5_product_type product_type)
 static void dash_to_underscore(char *s)
 {
     /* use size_t for byte offsets into the char array */
-    size_t i; 
+    size_t i;
 
     /* Changing '-' to '_' */
     for (i = 0; s[i] != '\0'; ++i)
@@ -1686,7 +1686,7 @@ static int read_results_reflectance_measured(void *user_data, harp_array data)
 
     long num_elements = info->num_scanlines * info->num_pixels;
 
-    long i; 
+    long i;
 
     /* Allocate temporary buffers */
     harp_array refl_lower;
@@ -1795,7 +1795,7 @@ static int read_results_reflectance_precision(void *user_data, harp_array data)
     const char *var_hi = NULL;
 
     long n = info->num_scanlines * info->num_pixels;
-    long i; 
+    long i;
 
     harp_array prec_lo, prec_hi;
 
@@ -2870,7 +2870,7 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
     harp_array coef_a;
     harp_array coef_b;
 
-    long p; 
+    long p;
 
     coef_a.ptr = malloc(num_levels * sizeof(double));
     if (coef_a.ptr == NULL)
@@ -2917,26 +2917,26 @@ static int read_no2_pressure_bounds(void *user_data, harp_array data)
      */
     for (p = 0; p < num_profiles; ++p)
     {
-        double sp = psurf.double_data[p];                /* surface pressure for profile p */
-    
-	long j; 
+        double sp = psurf.double_data[p];       /* surface pressure for profile p */
+
+        long j;
+
         for (j = 0; j < num_layers; ++j)
         {
             /* Flat index in the {profile, layer, upper/lower} layout */
-            long upper_idx = (p * num_layers * 2) + (j * 2);   /* upper boundary   */
-            long lower_idx = upper_idx + 1;                    /* lower boundary   */
-    
+            long upper_idx = (p * num_layers * 2) + (j * 2);    /* upper boundary   */
+            long lower_idx = upper_idx + 1;     /* lower boundary   */
+
             /* upper bound of layer j */
-            data.double_data[upper_idx] =
-                coef_a.double_data[j] + coef_b.double_data[j] * sp;
-    
+            data.double_data[upper_idx] = coef_a.double_data[j] + coef_b.double_data[j] * sp;
+
             /* lower bound of layer j (equal to upper of j+1) */
-            data.double_data[lower_idx] =
-                coef_a.double_data[j + 1] + coef_b.double_data[j + 1] * sp;
+            data.double_data[lower_idx] = coef_a.double_data[j + 1] + coef_b.double_data[j + 1] * sp;
         }
-    
+
         /* Clamp top-of-atmosphere pressure to at least 1 mPa */
         long toa_idx = (p * num_layers * 2) + ((num_layers - 1) * 2);
+
         if (data.double_data[toa_idx] < 1e-3)
         {
             data.double_data[toa_idx] = 1e-3;
@@ -4733,9 +4733,8 @@ static void register_o3_product(void)
 
 /* Read a SO2 scalar field with an extra 'profile' dimension           */
 /* and collapse that dimension according to info->so2_column_type.    */
-static int read_so2_scalar(void *user_data, 
-		const char *dataset_name,   /* e.g. "sulfur_dioxide_total_column" */
-                harp_array data)     /* output: {time} = scanline x pixel   */
+static int read_so2_scalar(void *user_data, const char *dataset_name,   /* e.g. "sulfur_dioxide_total_column" */
+                           harp_array data)     /* output: {time} = scanline x pixel   */
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -4747,8 +4746,8 @@ static int read_so2_scalar(void *user_data,
     long sel_idx = info->so2_column_type;       /* 0=PBL,1=1 km,2=7 km,3=15 km */
     long out_idx = 0;
 
-    int status; 
-    long i; 
+    int status;
+    long i;
 
     /* temporary buffer for the full 3-D variable */
     harp_array buffer;
@@ -4761,9 +4760,7 @@ static int read_so2_scalar(void *user_data,
     }
 
     /* We first try under /data/PRODUCT/... */
-    status = read_dataset(info->product_cursor,
-                              dataset_name, harp_type_float,
-                              num_elements, buffer);
+    status = read_dataset(info->product_cursor, dataset_name, harp_type_float, num_elements, buffer);
 
     /* If that failed, fall back to /data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/... */
     if (status != 0)
