@@ -548,6 +548,13 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_PAL_L2_SIF.html \
 	doc/html/ingestions/S5P_PAL_L2_SO2CBR.html \
 	doc/html/ingestions/S5P_PAL_L2_TCWV.html \
+	doc/html/ingestions/S5_L2_AUI.html \
+	doc/html/ingestions/S5_L2_CH4.html \
+	doc/html/ingestions/S5_L2_CLD.html \
+	doc/html/ingestions/S5_L2_CO.html \
+	doc/html/ingestions/S5_L2_NO2.html \
+	doc/html/ingestions/S5_L2_O3.html \
+	doc/html/ingestions/S5_L2_SO2.html \
 	doc/html/ingestions/SCIAMACHY_L1c.html \
 	doc/html/ingestions/SCIAMACHY_L1c_sun_reference.html \
 	doc/html/ingestions/SCIAMACHY_L2_CLOUDS_AEROSOL.html \
@@ -1703,6 +1710,20 @@ doc/html/ingestions/S5P_PAL_L2_SIF.html:
 doc/html/ingestions/S5P_PAL_L2_SO2CBR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_PAL_L2_TCWV.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L2_AUI.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L2_CH4.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L2_CLD.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L2_CO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L2_NO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L2_O3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L2_SO2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/SCIAMACHY_L1c.html:
 	$(MAKE) harp_doc
