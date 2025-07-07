@@ -1263,6 +1263,14 @@ static int execute_index_filter(ingest_info *info, harp_program *program)
     }
 
     dimension_mask = info->dimension_mask_set[operation->dimension_type];
+    if (info->dimension_mask_set[operation->dimension_type]->num_dimensions == 2)
+    {
+        /* create a reduced (1-D) temporary dimension mask from the 2-D dimension mask */
+        if (harp_dimension_mask_reduce(info->dimension_mask_set[operation->dimension_type], 1, &dimension_mask) != 0)
+        {
+            return -1;
+        }
+    }
 
     /* we only filter on the elements in the dimension that are still included */
     index = 0;
@@ -1275,6 +1283,10 @@ static int execute_index_filter(ingest_info *info, harp_program *program)
             result = operation->eval(operation, index);
             if (result < 0)
             {
+                if (info->dimension_mask_set[operation->dimension_type]->num_dimensions == 2)
+                {
+                    harp_dimension_mask_delete(dimension_mask);
+                }
                 return -1;
             }
             dimension_mask->mask[i] = result;
@@ -1284,6 +1296,17 @@ static int execute_index_filter(ingest_info *info, harp_program *program)
             }
             index++;
         }
+    }
+
+    if (info->dimension_mask_set[operation->dimension_type]->num_dimensions == 2)
+    {
+        /* propagate the reduced (1-D) temporary dimension mask to the 2-D dimension mask */
+        if (harp_dimension_mask_merge(dimension_mask, 1, info->dimension_mask_set[operation->dimension_type]) != 0)
+        {
+            harp_dimension_mask_delete(dimension_mask);
+            return -1;
+        }
+        harp_dimension_mask_delete(dimension_mask);
     }
 
     if (dimension_mask_set_has_empty_masks(info->dimension_mask_set))

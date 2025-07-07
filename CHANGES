@@ -1,5 +1,9 @@
 * Fixed memory corruption issue in rebinning algorithm.
 
+* Fixed issue where 'index(dimension)' operation would not get applied
+  correctly when reading data via an ingestion module, the dimension for
+  the index filter was not time, and it was combined with another filter.
+
 * Updates to product ingestions:
   - EarthCARE L1: fixed TIR band ingestion options for MSI_NOM_1B.
   - EarthCARE L2: fixed typo in variable name for MSI_AOT_2A.
