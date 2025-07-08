@@ -1,3 +1,9 @@
+* Added derivations to retrieve (dry) air column number density from
+  species column number density and species (dry air) volume mixing ratio.
+
+* Added derivations to treat vertical profiles of volume mixing ratios
+  and partial column profiles of column volume mixing ratios as equal.
+
 * Fixed memory corruption issue in rebinning algorithm.
 
 * Fixed issue where 'index(dimension)' operation would not get applied
