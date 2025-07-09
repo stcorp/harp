@@ -556,7 +556,7 @@ typedef struct harp_operation_valid_range_filter_struct
     int (*eval)(struct harp_operation_valid_range_filter_struct *, harp_data_type, void *);
     /* parameters */
     char *variable_name;
-    int invalid;    /* do we keep the valid or invalid values */
+    int invalid;        /* do we keep the valid or invalid values */
     /* extra */
     double valid_min;
     double valid_max;
