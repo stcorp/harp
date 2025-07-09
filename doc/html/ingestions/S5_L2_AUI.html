@@ -101,7 +101,7 @@
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[seconds since 2010-01-01]</p></td>
-<td><p>Start time of the measurement.</p></td>
+<td><p>start time of the measurement</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>orbit_index</strong></p></td>
 <td><p>int32</p></td>
@@ -119,7 +119,7 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_north]</p></td>
-<td><p>Latitude of the center of each ground pixel on the WGS84 reference ellipsoid.</p></td>
+<td><p>latitude of the ground pixel center (WGS84)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>longitude</strong></p></td>
 <td><p>float</p></td>
@@ -131,97 +131,97 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_north]</p></td>
-<td><p>The four latitude boundaries of each ground pixel.</p></td>
+<td><p>the four latitude boundaries of each ground pixel</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>longitude_bounds</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_east]</p></td>
-<td><p>The four longitude boundaries of each ground pixel.</p></td>
+<td><p>the four longitude boundaries of each ground pixel</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_latitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_north]</p></td>
-<td><p>Latitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid.</p></td>
+<td><p>latitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_longitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_east]</p></td>
-<td><p>Longitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid.</p></td>
+<td><p>longitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Altitude of the spacecraft relative to the WGS84 reference ellipsoid.</p></td>
+<td><p>altitude of the spacecraft relative to the WGS84 reference ellipsoid.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_orbit_phase</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Relative offset (0.0 … 1.0) of the measurement in the orbit.</p></td>
+<td><p>relative offset (0.0 … 1.0) of the measurement in the orbit.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Zenith angle of the sun measured from the ground pixel location on the WGS84 reference ellipsoid.</p></td>
+<td><p>zenith angle of the sun measured from the ground pixel location on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Azimuth angle of the sun measured from the ground pixel location on the WGS84 ellipsoid.</p></td>
+<td><p>azimuth angle of the sun measured from the ground pixel location on the WGS84 ellipsoid</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Zenith angle of the spacecraft measured from the ground pixel location on the WGS84 reference ellipsoid.</p></td>
+<td><p>zenith angle of the spacecraft measured from the ground pixel location on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Azimuth angle of the spacecraft measured from the ground pixel WGS84 reference ellipsoid.</p></td>
+<td><p>azimuth angle of the spacecraft measured from the ground pixel WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Height of the surface above WGS84 ellipsoid averaged over the S5 pixel.</p></td>
+<td><p>height of the surface above WGS84 ellipsoid averaged over the S5 pixel</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Standard deviation of the height of the surface above WGS84 ellipsoid averaged over the S5 pixel</p></td>
+<td><p>standard deviation of the height of the surface above WGS84 ellipsoid averaged over the S5 pixel</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>Surface pressure. From ECMWF and adjusted for surface elevation.</p></td>
+<td><p>surface pressure; from ECMWF and adjusted for surface elevation</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_type</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>Surface classification.</p></td>
+<td><p>surface classification</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>Surface condition (snow/ice).; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
+<td><p>surface condition (snow/ice); enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sea_ice_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Sea-ice concentration (as a fraction)</p></td>
+<td><p>sea-ice concentration (as a fraction)</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p>float</p></td>
@@ -245,19 +245,19 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Measured reflectance pair (lower, upper) for selected wavelength ratio</p></td>
+<td><p>measured reflectance pair (lower, upper) for selected wavelength ratio</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>reflectance_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Measured reflectance uncertainty</p></td>
+<td><p>measured reflectance uncertainty</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Scene albedo at 388nm (default), 380nm, or 367 nm based on the wavelenght_ratio option</p></td>
+<td><p>scene albedo</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -286,11 +286,7 @@
 <tbody>
 <tr class="row-even"><td><p>wavelength_ratio</p></td>
 <td><p>354_388nm, 340_380nm, 335_367nm</p></td>
-<td><p>Ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm</p></td>
-</tr>
-<tr class="row-odd"><td><p>surface_albedo</p></td>
-<td><p>388nm, 380nm, 367nm</p></td>
-<td><p>whether to ingest the surface albedo at 388 (default), surface albedo at 367 (surface_albedo=367nm), or the surface alebedo at 380 (surface_albedo=380nm)</p></td>
+<td><p>ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm</p></td>
 </tr>
 </tbody>
 </table>
@@ -310,7 +306,7 @@
 <td><p><strong>/data/PRODUCT/time, /data/PRODUCT/delta_time[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>time converted from milliseconds since a reference time(given as seconds since 2010-01-01) to seconds since2010-01-01 (using 86400 seconds per day)</p></td>
+<td><p>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>orbit_index</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -516,19 +512,19 @@
 </tr>
 <tr class="row-odd"><td rowspan="6"><p><strong>surface_albedo</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>surface_albedo=388nm (default)</p></td>
+<td><p>wavelength_ratio=354_388nm or wavelength_ratio unset</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_albedo_388[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>surface_albedo=380nm</p></td>
+<td><p>wavelength_ratio=340_380nm</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_albedo_380[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>surface_albedo=367nm</p></td>
+<td><p>wavelength_ratio=335_367nm</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_albedo_367[]</strong></p></td>

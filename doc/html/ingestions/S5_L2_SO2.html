@@ -101,7 +101,7 @@
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[seconds since 2010-01-01]</p></td>
-<td><p>Start time of the measurement.</p></td>
+<td><p>start time of the measurement</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>orbit_index</strong></p></td>
 <td><p>int32</p></td>
@@ -119,7 +119,7 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_north]</p></td>
-<td><p>Latitude of the center of each ground pixel on the WGS84 reference ellipsoid.</p></td>
+<td><p>latitude of the ground pixel center (WGS84)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>longitude</strong></p></td>
 <td><p>float</p></td>
@@ -131,97 +131,97 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_north]</p></td>
-<td><p>The four latitude boundaries of each ground pixel.</p></td>
+<td><p>the four latitude boundaries of each ground pixel</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>longitude_bounds</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_east]</p></td>
-<td><p>The four longitude boundaries of each ground pixel.</p></td>
+<td><p>the four longitude boundaries of each ground pixel</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_latitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_north]</p></td>
-<td><p>Latitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid.</p></td>
+<td><p>latitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_longitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_east]</p></td>
-<td><p>Longitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid.</p></td>
+<td><p>longitude of the spacecraft sub-satellite point on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Altitude of the spacecraft relative to the WGS84 reference ellipsoid.</p></td>
+<td><p>altitude of the spacecraft relative to the WGS84 reference ellipsoid.</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_orbit_phase</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Relative offset (0.0 … 1.0) of the measurement in the orbit.</p></td>
+<td><p>relative offset (0.0 … 1.0) of the measurement in the orbit.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Zenith angle of the sun measured from the ground pixel location on the WGS84 reference ellipsoid.</p></td>
+<td><p>zenith angle of the sun measured from the ground pixel location on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Azimuth angle of the sun measured from the ground pixel location on the WGS84 ellipsoid.</p></td>
+<td><p>azimuth angle of the sun measured from the ground pixel location on the WGS84 ellipsoid</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Zenith angle of the spacecraft measured from the ground pixel location on the WGS84 reference ellipsoid.</p></td>
+<td><p>zenith angle of the spacecraft measured from the ground pixel location on the WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Azimuth angle of the spacecraft measured from the ground pixel WGS84 reference ellipsoid.</p></td>
+<td><p>azimuth angle of the spacecraft measured from the ground pixel WGS84 reference ellipsoid</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Height of the surface above WGS84 ellipsoid averaged over the S5 pixel.</p></td>
+<td><p>height of the surface above WGS84 ellipsoid averaged over the S5 pixel</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Standard deviation of the height of the surface above WGS84 ellipsoid averaged over the S5 pixel</p></td>
+<td><p>standard deviation of the height of the surface above WGS84 ellipsoid averaged over the S5 pixel</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>Surface pressure. From ECMWF and adjusted for surface elevation.</p></td>
+<td><p>surface pressure; from ECMWF and adjusted for surface elevation</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_type</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>Surface classification.</p></td>
+<td><p>surface classification</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>Surface condition (snow/ice).; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
+<td><p>surface condition (snow/ice); enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sea_ice_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Sea-ice concentration (as a fraction)</p></td>
+<td><p>sea-ice concentration (as a fraction)</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density</strong></p></td>
 <td><p>float</p></td>
@@ -233,55 +233,55 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
-<td><p>Random uncertainty of SO2 column density</p></td>
+<td><p>random uncertainty of SO2 column density</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density_uncertainty_systematic</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
-<td><p>Systematic uncertainty of SO2 column density</p></td>
+<td><p>systematic uncertainty of SO2 column density</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_layer_height</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Retrieved layer height of SO2 above sea level</p></td>
+<td><p>retrieved layer height of SO2 above sea level</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_layer_height_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Uncertainty of the retrieved SO2 layer height</p></td>
+<td><p>uncertainty of the retrieved SO2 layer height</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_layer_height_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>Flag associated with SO2 layer-height retrieval quality</p></td>
+<td><p>flag associated with SO2 layer-height retrieval quality</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>Quality-assurance value describing the quality of the product</p></td>
+<td><p>quality-assurance value describing the quality of the product</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_column_number_density_amf</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Total air-mass factor of the SO2 column</p></td>
+<td><p>total air-mass factor of the SO2 column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density_amf_uncertainty_random</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Random uncertainty of SO2 air-mass factor</p></td>
+<td><p>random uncertainty of SO2 air-mass factor</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_column_number_density_amf_uncertainty_systematic</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Systematic uncertainty of SO2 air-mass factor</p></td>
+<td><p>systematic uncertainty of SO2 air-mass factor</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_slant_column_number_density</strong></p></td>
 <td><p>float</p></td>
@@ -293,49 +293,49 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
-<td><p>Random component of the uncertainty of the SO2 slant column density</p></td>
+<td><p>random component of the uncertainty of the SO2 slant column density</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_slant_column_number_density_uncertainty_systematic</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
-<td><p>Systematic component of the uncertainty of the SO2 slant column density</p></td>
+<td><p>systematic component of the uncertainty of the SO2 slant column density</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Cloud radiance fraction</p></td>
+<td><p>cloud radiance fraction</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density_avk</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Averaging kernel for the SO2 total column</p></td>
+<td><p>averaging kernel for the SO2 total column</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>SO2_layer_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>Retrieved layer pressure of SO2</p></td>
+<td><p>retrieved layer pressure of SO2</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_layer_pressure_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>Total error on retrieved layer pressure of SO2</p></td>
+<td><p>total error on retrieved layer pressure of SO2</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Surface albedo at 340 nm</p></td>
+<td><p>surface albedo at 340 nm</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SO2_column_number_density_apriori</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
-<td><p>A priori SO2 profile (CAMS)</p></td>
+<td><p>a priori SO2 profile (CAMS)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>pressure_bounds</strong></p></td>
 <td><p>double</p></td>
@@ -343,55 +343,49 @@
 <td><p>[Pa]</p></td>
 <td><p>pressure boundaries</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>effective_cloud_fraction</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>Cloud fraction</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>Cloud top pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Cloud centre height above the surface</p></td>
+<td><p>cloud centre height above the surface</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Cloud albedo</p></td>
+<td><p>cloud albedo</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Aerosol absorbing index 340/380 pair</p></td>
+<td><p>aerosol absorbing index 340/380 pair</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>O3 total column</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>scene_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>scene_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Effective scene albedo at 340 nm</p></td>
+<td><p>effective scene albedo at 340 nm</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>scene_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>scene_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>Effective scene pressure at 340 nm</p></td>
+<td><p>effective scene pressure at 340 nm</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -438,7 +432,7 @@
 <td><p><strong>/data/PRODUCT/time, /data/PRODUCT/delta_time[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>time converted from milliseconds since a reference time(given as seconds since 2010-01-01) to seconds since2010-01-01 (using 86400 seconds per day)</p></td>
+<td><p>time converted from milliseconds since a reference time (given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>orbit_index</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -669,35 +663,31 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>pressure in Pa at level k is derived from surface pressure in Pa as: pressure_coefficient_a[k] + pressure_coefficient_b[k] * surface_pressure[]; the top of atmosphere pressure is clamped to 1e-3 Pa</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>effective_cloud_fraction</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_cloud_fraction[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_albedo</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>O3_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/ozone_total_column</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>scene_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>scene_albedo</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/scene_albedo[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>scene_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>scene_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>data/PRODUCT/SUPPORT_DATA/INPUT_DATA/scene_pressure[]</strong></p></td>
 </tr>
