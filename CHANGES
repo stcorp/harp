@@ -1,7 +1,20 @@
+* Added derivations to retrieve (dry) air column number density from
+  species column number density and species (dry air) volume mixing ratio.
+
+* Added derivations to treat vertical profiles of volume mixing ratios
+  and partial column profiles of column volume mixing ratios as equal.
+
+* Added 'invalid()' operation to allow filtering on invalid values.
+
 * Fixed memory corruption issue in rebinning algorithm.
+
+* Fixed issue where 'index(dimension)' operation would not get applied
+  correctly when reading data via an ingestion module, the dimension for
+  the index filter was not time, and it was combined with another filter.
 
 * Updates to product ingestions:
   - EarthCARE L1: fixed TIR band ingestion options for MSI_NOM_1B.
+  - EarthCARE L2: fixed typo in variable name for MSI_AOT_2A.
   - S5P L1B: added systematic and random uncertainty variables.
   - S5P L2 O3 TCL: fixed unit of mixing ratios (ppbv -> ppv).
 

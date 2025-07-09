@@ -3744,21 +3744,21 @@ static void register_msi_aot_2a_product(void)
 
     dimension_type[0] = harp_dimension_time;
 
-    /* aorosol_optical_depth */
+    /* aerosol_optical_depth */
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aorosol_optical_depth", harp_type_float, 1,
-                                                   dimension_type, NULL, "aorosol optical thickness",
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, "aerosol optical thickness",
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_aerosol_optical_thickness_MSI);
     path = "/ScienceData/aerosol_optical_thickness_670nm";
     harp_variable_definition_add_mapping(variable_definition, NULL, "aot unset", path, NULL);
     path = "/ScienceData/aerosol_optical_thickness_865nm";
     harp_variable_definition_add_mapping(variable_definition, NULL, "aot=865", path, NULL);
 
-    /* aorosol_optical_depth_uncertainty */
+    /* aerosol_optical_depth_uncertainty */
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aorosol_optical_depth_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL,
-                                                   "aorosol optical thickness error", HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   "aerosol optical thickness error", HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_aerosol_optical_thickness_error_MSI);
     path = "/ScienceData/aerosol_optical_thickness_670nm_error";
     harp_variable_definition_add_mapping(variable_definition, NULL, "aot unset", path, NULL);

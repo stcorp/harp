@@ -411,6 +411,14 @@ Example:</p>
 </div></blockquote>
 </dd>
 </dl>
+<dl class="simple" id="operation-invalid">
+<dt><code class="docutils literal notranslate"><span class="pre">invalid(variable)</span></code></dt><dd><p>Filter a dimension for all variables in the product such that
+only invalid values for the variable provided as parameter are included
+(values outside the valid range of the variable, or NaN).
+This operation is executed similar to a comparison filter and provides
+the opposite result of the <code class="docutils literal notranslate"><span class="pre">valid(variable)</span></code> operation.</p>
+</dd>
+</dl>
 <dl id="operation-keep">
 <dt><code class="docutils literal notranslate"><span class="pre">keep(variable,</span> <span class="pre">...)</span></code></dt><dd><p>Mark the specified variable(s) for inclusion in the ingested product.
 All variables marked for inclusion will be kept in the ingested

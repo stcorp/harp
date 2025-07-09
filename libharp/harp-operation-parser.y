@@ -254,6 +254,7 @@ int harp_sized_array_add_int32(harp_sized_array *sized_array, int32_t value)
 %token                  FUNC_EXCLUDE
 %token                  FUNC_FLATTEN
 %token                  FUNC_INDEX
+%token                  FUNC_INVALID
 %token                  FUNC_KEEP
 %token                  FUNC_LONGITUDE_RANGE
 %token                  FUNC_POINT_DISTANCE
@@ -1250,6 +1251,14 @@ operation:
     | FUNC_FLATTEN '(' DIMENSION ')' {
             if (harp_operation_flatten_new($3, &$$) != 0) YYERROR;
         }
+    | FUNC_INVALID '(' identifier ')' {
+            if (harp_operation_valid_range_filter_new($3, 1, &$$) != 0)
+            {
+                free($3);
+                YYERROR;
+            }
+            free($3);
+        }
     | FUNC_KEEP '(' identifier_pattern_array ')' {
             if (harp_operation_keep_variable_new($3->num_elements, (const char **)$3->array.string_data, &$$) != 0)
             {
@@ -1709,7 +1718,7 @@ operation:
             harp_sized_array_delete($6);
         }
     | FUNC_VALID '(' identifier ')' {
-            if (harp_operation_valid_range_filter_new($3, &$$) != 0)
+            if (harp_operation_valid_range_filter_new($3, 0, &$$) != 0)
             {
                 free($3);
                 YYERROR;
