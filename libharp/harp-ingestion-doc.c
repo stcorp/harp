@@ -543,7 +543,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
             fprintf(fout, "\":ref:`%s`\", ", module->name);
         }
 
-        fputc('"', fout);
+        fputs("\"`", fout);
         if (module->product_class != NULL && module->product_type != NULL)
         {
             fprintf(fout, "%s/%s", module->product_class, module->product_type);
@@ -556,8 +556,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
         {
             fputs(module->product_type, fout);
         }
-        fputc('"', fout);
-        fputs(", ", fout);
+        fputs("`\", ", fout);
 
         fputc('"', fout);
         if (module->description != NULL)
@@ -590,7 +589,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
             fprintf(fout, "%s\n\n", module->description);
         }
 
-        fprintf(fout, "The table below lists the available product conversions for ``%s`` products.\n\n", module->name);
+        fprintf(fout, "The table below lists the available product conversions for `%s` products.\n\n", module->name);
         fputs(".. csv-table::\n", fout);
         fputs("   :header-rows: 1\n\n", fout);
         fputs("   \"name\", \"ingestion option\", \"description\"\n", fout);
@@ -622,8 +621,7 @@ static int generate_product_group(FILE *fout, const char *product_group, int num
 
         if (module->num_option_definitions > 0)
         {
-            fprintf(fout, "The table below lists the available ingestion options for ``%s`` products.\n\n",
-                    module->name);
+            fprintf(fout, "The table below lists the available ingestion options for `%s` products.\n\n", module->name);
             fputs(".. csv-table::\n", fout);
             fputs("   :widths: 15 25 60\n", fout);
             fputs("   :header-rows: 1\n\n", fout);
