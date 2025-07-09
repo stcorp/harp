@@ -61,7 +61,7 @@ author = u'S&T'
 # built documents.
 #
 # The short X.Y version.
-version = '1.25'
+version = '1.26'
 # The full version, including alpha/beta/rc tags.
 release = version
 
