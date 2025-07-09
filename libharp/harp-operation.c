@@ -543,6 +543,7 @@ static int eval_string_membership(harp_operation_string_membership_filter *opera
 static int eval_valid_range(harp_operation_valid_range_filter *operation, harp_data_type data_type, void *value)
 {
     double double_value;
+    int valid;
 
     switch (data_type)
     {
@@ -567,7 +568,12 @@ static int eval_valid_range(harp_operation_valid_range_filter *operation, harp_d
             return -1;
     }
 
-    return (!harp_isnan(double_value) && double_value >= operation->valid_min && double_value <= operation->valid_max);
+    valid = (!harp_isnan(double_value) && double_value >= operation->valid_min && double_value <= operation->valid_max);
+    if (operation->invalid)
+    {
+        return !valid;
+    }
+    return valid;
 }
 
 static void area_covers_area_filter_delete(harp_operation_area_covers_area_filter *operation)
@@ -3434,7 +3440,7 @@ int harp_operation_string_membership_filter_new(const char *variable_name, harp_
     return 0;
 }
 
-int harp_operation_valid_range_filter_new(const char *variable_name, harp_operation **new_operation)
+int harp_operation_valid_range_filter_new(const char *variable_name, int invalid, harp_operation **new_operation)
 {
     harp_operation_valid_range_filter *operation;
 
@@ -3448,6 +3454,7 @@ int harp_operation_valid_range_filter_new(const char *variable_name, harp_operat
     operation->type = operation_valid_range_filter;
     operation->eval = eval_valid_range;
     operation->variable_name = NULL;
+    operation->invalid = invalid;
     operation->valid_min = harp_mininf();
     operation->valid_max = harp_plusinf();
 

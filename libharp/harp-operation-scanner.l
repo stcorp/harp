@@ -104,6 +104,7 @@ WHITESPACE   [[:space:]]+
 "exclude"               return FUNC_EXCLUDE;
 "flatten"               return FUNC_FLATTEN;
 "index"                 return FUNC_INDEX;
+"invalid"               return FUNC_INVALID;
 "keep"                  return FUNC_KEEP;
 "longitude_range"       return FUNC_LONGITUDE_RANGE;
 "point_distance"        return FUNC_POINT_DISTANCE;

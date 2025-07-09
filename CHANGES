@@ -4,6 +4,8 @@
 * Added derivations to treat vertical profiles of volume mixing ratios
   and partial column profiles of column volume mixing ratios as equal.
 
+* Added 'invalid()' operation to allow filtering on invalid values.
+
 * Fixed memory corruption issue in rebinning algorithm.
 
 * Fixed issue where 'index(dimension)' operation would not get applied

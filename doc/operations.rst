@@ -317,6 +317,15 @@ Supported functions:
             | ``regrid(vertical, altitude [km], (20));flatten(vertical)``
             | (vertically slice the product at 20 km altitude)
 
+    .. _operation_invalid:
+
+    ``invalid(variable)``
+        Filter a dimension for all variables in the product such that
+        only invalid values for the variable provided as parameter are included
+        (values outside the valid range of the variable, or NaN).
+        This operation is executed similar to a comparison filter and provides
+        the opposite result of the ``valid(variable)`` operation.
+
     .. _operation_keep:
 
     ``keep(variable, ...)``
