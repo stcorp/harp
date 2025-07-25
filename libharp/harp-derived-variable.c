@@ -415,9 +415,10 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
         return 2;
     }
 
-    if (harp_product_get_variable_by_name(info->product, source_definition->variable_name, &variable) == 0)
+    if (harp_product_has_variable(info->product, source_definition->variable_name))
     {
-        if (has_dimension_types(variable, source_definition->num_dimensions, source_definition->dimension_type,
+        if (harp_product_get_variable_by_name(info->product, source_definition->variable_name, &variable) == 0 &&
+            has_dimension_types(variable, source_definition->num_dimensions, source_definition->dimension_type,
                                 source_definition->independent_dimension_length))
         {
             /* variable is present in the product */
