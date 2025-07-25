@@ -158,7 +158,7 @@ static int conversion_info_init(conversion_info *info, const harp_product *produ
     info->num_dimensions = 0;
     info->skip = NULL;
     info->depth = 0;
-    info->max_depth = 10;
+    info->max_depth = 8;
     info->variable = NULL;
 
     info->skip = malloc(harp_derived_variable_conversions->num_variables);
@@ -399,20 +399,21 @@ static int perform_conversion(conversion_info *info)
 static void print_source_variable(const harp_source_variable_definition *source_definition,
                                   int (*print)(const char *, ...), int indent);
 
-/* return: 0: possible, 1: not possible (no cycle), 2: not possible (cycle or out of budget) */
+/* return: 0: possible, 1: not possible (at all), 2: not possible (cycle), 3: not possible (out of budget) */
 static int find_source_variables(conversion_info *info, harp_source_variable_definition *source_definition,
                                  double total_budget, double *best_cost)
 {
     harp_variable *variable;
     harp_variable_conversion_list *conversion_list;
     harp_variable_conversion *best_conversion = NULL;
-    int has_cycle_or_oob = 0;   /* has cycle or out-of-budget */
+    int is_out_of_budget = 0;
+    int has_cycle = 0;
     int index;
     int i;
 
     if (total_budget < 0)
     {
-        return 2;
+        return 3;
     }
 
     if (harp_product_has_variable(info->product, source_definition->variable_name))
@@ -429,14 +430,14 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
 
     if (total_budget < 1)
     {
-        return 2;
+        return 3;
     }
 
     /* if we are at the maximum search depth then bail out */
     if (info->depth == info->max_depth)
     {
-        /* treat this as a cycle (since we don't want to prevent further searches for this variable at lower depths) */
-        return 2;
+        /* treat this as an out-of-budget (since we want to allow further searches for this variable at lower depths) */
+        return 3;
     }
 
     /* try to find a conversion for the variable */
@@ -449,10 +450,16 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
     }
     if (info->skip[index])
     {
-        return 1 + (info->skip[index] == 2);
+        if (info->skip[index] == 2)
+        {
+            /* this is a cycle */
+            return 2;
+        }
+        return 1;
     }
 
     conversion_list = harp_derived_variable_conversions->conversions_for_variable[index];
+
     for (i = 0; i < conversion_list->num_conversions; i++)
     {
         harp_variable_conversion *conversion = conversion_list->conversion[i];
@@ -491,9 +498,13 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
             if (result != 0)
             {
                 /* source not found */
-                if (result == 2)
+                if (result == 3)
                 {
-                    has_cycle_or_oob = 1;
+                    is_out_of_budget = 1;
+                }
+                else if (result == 2)
+                {
+                    has_cycle = 1;
                 }
                 break;
             }
@@ -520,14 +531,22 @@ static int find_source_variables(conversion_info *info, harp_source_variable_def
         return 0;
     }
 
-    if (!has_cycle_or_oob)
+    /* no conversion found */
+
+    if (is_out_of_budget)
     {
-        /* permanently mark this conversion as something that cannot be performed */
-        info->skip[index] = 1;
+        return 3;
     }
 
-    /* no conversion found */
-    return 1 + has_cycle_or_oob;
+    if (has_cycle)
+    {
+        return 2;
+    }
+
+    /* permanently mark this variable as something that cannot be derived */
+    info->skip[index] = 1;
+
+    return 1;
 }
 
 static int find_and_execute_conversion(conversion_info *info)
@@ -1097,19 +1116,33 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const cha
     {
         harp_variable_conversion_list *conversion_list = harp_derived_variable_conversions->conversions_for_variable[i];
         harp_variable_conversion *best_conversion = NULL;
+        harp_variable_conversion *first_conversion;
+        harp_variable *variable;
         double best_cost;
 
         assert(conversion_list->num_conversions > 0);
 
-        if (variable_name != NULL && strcmp(conversion_list->conversion[0]->variable_name, variable_name) != 0)
+        first_conversion = conversion_list->conversion[0];
+
+        if (variable_name != NULL && strcmp(first_conversion->variable_name, variable_name) != 0)
         {
             continue;
         }
 
+        if (harp_product_has_variable(product, first_conversion->variable_name))
+        {
+            if (harp_product_get_variable_by_name(product, first_conversion->variable_name, &variable) == 0 &&
+                harp_variable_has_dimension_types(variable, first_conversion->num_dimensions,
+                                                  first_conversion->dimension_type))
+            {
+                /* variable with same dimensions already exists -> skip conversions for this variable */
+                continue;
+            }
+        }
+
         /* initialize based on first conversion in the list */
-        if (conversion_info_set_variable(&info, conversion_list->conversion[0]->variable_name,
-                                         conversion_list->conversion[0]->num_dimensions,
-                                         conversion_list->conversion[0]->dimension_type) != 0)
+        if (conversion_info_set_variable(&info, first_conversion->variable_name, first_conversion->num_dimensions,
+                                         first_conversion->dimension_type) != 0)
         {
             return -1;
         }
@@ -1119,7 +1152,6 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const cha
         for (j = 0; j < conversion_list->num_conversions; j++)
         {
             harp_variable_conversion *conversion = conversion_list->conversion[j];
-            harp_variable *variable;
             double budget = best_conversion == NULL ? harp_plusinf() : best_cost;
             double total_cost = 0;
             int k;
@@ -1127,15 +1159,6 @@ LIBHARP_API int harp_doc_list_conversions(const harp_product *product, const cha
             if (conversion->enabled != NULL && !conversion->enabled())
             {
                 continue;
-            }
-
-            if (harp_product_get_variable_by_name(product, conversion->variable_name, &variable) == 0)
-            {
-                if (harp_variable_has_dimension_types(variable, conversion->num_dimensions, conversion->dimension_type))
-                {
-                    /* variable with same dimensions already exists -> skip conversions for this variable */
-                    continue;
-                }
             }
 
             for (k = 0; k < conversion->num_source_variables; k++)
