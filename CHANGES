@@ -1,6 +1,10 @@
 * Improve performance of derive() operations to compensate for the
   regression introduced in HARP 1.26.
 
+* harpdump --dataset and .pth files can now contain string values between
+  double quotes to store filenames with a comma in them (which is applicable
+  for Sentinel-4 and Sentinel-5 products).
+
 1.26 2025-07-09
 ~~~~~~~~~~~~~~~
 
