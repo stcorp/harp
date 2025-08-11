@@ -157,23 +157,6 @@ static const char *get_product_type_name(s5_product_type product_type)
 }
 
 
-/* helper function for get_product_type() */
-static void dash_to_underscore(char *s)
-{
-    /* use size_t for byte offsets into the char array */
-    size_t i;
-
-    /* Changing '-' to '_' */
-    for (i = 0; s[i] != '\0'; i++)
-    {
-        if (s[i] == '-')
-        {
-            s[i] = '_';
-        }
-    }
-}
-
-
 static void broadcast_array_float(long num_scanlines, long num_pixels, float *data)
 {
     long i;
@@ -194,71 +177,25 @@ static void broadcast_array_float(long num_scanlines, long num_pixels, float *da
 
 static int get_product_type(coda_product *product, s5_product_type *product_type)
 {
-    coda_cursor cursor, child, *src = NULL;
-    char buf[256];      /* plenty of room for long IDs   */
-    long len;
+    const char *coda_product_type;
     int i;
 
-    if (coda_cursor_set_product(&cursor, product) != 0)
+    if (coda_get_product_type(product, &coda_product_type) != 0)
     {
-        return harp_set_error(HARP_ERROR_CODA, NULL), -1;
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
     }
-
-    /* first try the clean ProductShortName */
-    if (coda_cursor_goto(&cursor, "/METADATA/GRANULE_DESCRIPTION@ProductShortName") == 0)
-    {
-        src = &cursor;
-    }
-    else if (coda_cursor_goto(&cursor, "/@product_name") == 0)
-    {
-        /* may be scalar or 1-D array */
-        coda_type_class tc;
-
-        if (coda_cursor_get_type_class(&cursor, &tc) != 0)
-        {
-            return harp_set_error(HARP_ERROR_CODA, NULL), -1;
-        }
-
-        if (tc == coda_array_class)
-        {
-            child = cursor;
-            if (coda_cursor_goto_first_array_element(&child) != 0)
-            {
-                return harp_set_error(HARP_ERROR_CODA, NULL), -1;
-            }
-            src = &child;
-        }
-        else
-        {
-            src = &cursor;
-        }
-    }
-    else
-    {
-        return harp_set_error(HARP_ERROR_INGESTION, "cannot find product identifier"), -1;
-    }
-
-    if (coda_cursor_get_string_length(src, &len) != 0 ||
-        len <= 0 || len >= (long)sizeof(buf) || coda_cursor_read_string(src, buf, sizeof(buf)) != 0)
-    {
-        return harp_set_error(HARP_ERROR_CODA, NULL), -1;
-    }
-
-    dash_to_underscore(buf);
-
-    /* search for any known short code */
     for (i = 0; i < S5_NUM_PRODUCT_TYPES; i++)
     {
-        const char *code = get_product_type_name((s5_product_type)i);   /* e.g. "SN5_02_CO_" */
-
-        if (strstr(buf, code) != NULL)
+        if (strcmp(get_product_type_name((s5_product_type)i), coda_product_type) == 0)
         {
-            *product_type = (s5_product_type)i;
+            *product_type = ((s5_product_type)i);
             return 0;
         }
     }
 
-    return harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", buf), -1;
+    harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", coda_product_type);
+    return -1;
 }
 
 
