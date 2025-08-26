@@ -548,6 +548,10 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S5P_PAL_L2_SIF.html \
 	doc/html/ingestions/S5P_PAL_L2_SO2CBR.html \
 	doc/html/ingestions/S5P_PAL_L2_TCWV.html \
+	doc/html/ingestions/S5_L1B_IRR.html \
+	doc/html/ingestions/S5_L1B_NIR.html \
+	doc/html/ingestions/S5_L1B_SWR.html \
+	doc/html/ingestions/S5_L1B_UVR.html \
 	doc/html/ingestions/S5_L2_AUI.html \
 	doc/html/ingestions/S5_L2_CH4.html \
 	doc/html/ingestions/S5_L2_CLD.html \
@@ -1710,6 +1714,14 @@ doc/html/ingestions/S5P_PAL_L2_SIF.html:
 doc/html/ingestions/S5P_PAL_L2_SO2CBR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_PAL_L2_TCWV.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L1B_IRR.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L1B_NIR.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L1B_SWR.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S5_L1B_UVR.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5_L2_AUI.html:
 	$(MAKE) harp_doc

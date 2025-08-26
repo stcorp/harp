@@ -85,6 +85,7 @@ int harp_ingestion_module_gosat_fts_l2_init(void);
 int harp_ingestion_module_hirdls_l2_init(void);
 int harp_ingestion_module_iasi_l1_init(void);
 int harp_ingestion_module_iasi_l2_init(void);
+int harp_ingestion_module_iasi_ng_l2_init(void);
 int harp_ingestion_module_mipas_l1_init(void);
 int harp_ingestion_module_mipas_l2_init(void);
 int harp_ingestion_module_mls_l2_init(void);
@@ -105,6 +106,7 @@ int harp_ingestion_module_sciamachy_l2_init(void);
 int harp_ingestion_module_s5p_l1b_init(void);
 int harp_ingestion_module_s5p_l2_init(void);
 int harp_ingestion_module_s5_l2_init(void);
+int harp_ingestion_module_s5_l1b_init(void);
 int harp_ingestion_module_smr_l2_init(void);
 int harp_ingestion_module_temis_init(void);
 int harp_ingestion_module_tes_l2_init(void);
@@ -157,6 +159,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_hirdls_l2_init,
     harp_ingestion_module_iasi_l1_init,
     harp_ingestion_module_iasi_l2_init,
+    harp_ingestion_module_iasi_ng_l2_init,
     harp_ingestion_module_mipas_l1_init,
     harp_ingestion_module_mipas_l2_init,
     harp_ingestion_module_mls_l2_init,
@@ -177,6 +180,7 @@ static module_init_func_t *module_init_func[] = {
     harp_ingestion_module_s5p_l1b_init,
     harp_ingestion_module_s5p_l2_init,
     harp_ingestion_module_s5_l2_init,
+    harp_ingestion_module_s5_l1b_init,
     harp_ingestion_module_smr_l2_init,
     harp_ingestion_module_temis_init,
     harp_ingestion_module_tes_l2_init
