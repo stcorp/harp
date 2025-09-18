@@ -83,9 +83,6 @@ static const char *s5_dimension_name[S5_NUM_PRODUCT_TYPES][S5_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* CO_ */
 };
 
-/* the array shape of delta_time variable for each data product */
-static const int s5_delta_time_num_dims[S5_NUM_PRODUCT_TYPES] = { 1, 1, 1, 1, 1, 1 };
-
 typedef struct ingest_info_struct
 {
     coda_product *product;
@@ -1005,7 +1002,7 @@ static int read_datetime(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     harp_array time_reference_array;
     double time_reference;
-    long i;
+    long i, j;
 
     time_reference_array.ptr = &time_reference;
     if (read_dataset(info->product_cursor, "time", harp_type_double, 1, time_reference_array) != 0)
@@ -1018,11 +1015,51 @@ static int read_datetime(void *user_data, harp_array data)
         return -1;
     }
 
-    /* Convert milliseconds to seconds and add to reference time */
-    for (i = 0; i < info->num_scanlines; i++)
+    for (i = info->num_scanlines - 1; i >= 0; i--)
     {
-        data.double_data[i] = time_reference + data.double_data[i] / 1e3;
+        data.double_data[i] += time_reference * 24 * 60 * 60;
+        /* replicate for each pixel in the scanline */
+        for (j = 0; j <= info->num_pixels; j++)
+        {
+            data.double_data[i * info->num_pixels + j] = data.double_data[i];
+        }
     }
+
+    return 0;
+}
+
+static int read_datetime_length(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor = info->product_cursor;
+    double first, second;
+
+    if (coda_cursor_goto_record_field_by_name(&cursor, "delta_time") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, &first) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_next_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, &second) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    *data.double_data = second - first;
 
     return 0;
 }
@@ -2795,38 +2832,33 @@ static int read_input_surface_classification(void *user_data, harp_array data)
  * Variables' Registration Routines
  */
 
-static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims,
-                                    int include_validity)
+static void register_core_variables(harp_product_definition *product_definition, int include_validity)
 {
     const char *path;
     const char *description;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
 
-    /* datetime_start */
-    description = "start time of the measurement";
+    /* datetime (center of scanline) */
+    description = "time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
-                                                   dimension_type_1d, NULL, description, "seconds since 2010-01-01",
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
+                                                   dimension_type_1d, NULL, description, "seconds since 2020-01-01",
                                                    NULL, read_datetime);
-
     path = "/data/PRODUCT/time, /data/PRODUCT/delta_time[]";
-
-    if (delta_time_num_dims == 2)
-    {
-        description = "time converted from milliseconds since a reference time"
-            "(given as seconds since 2010-01-01) to seconds since "
-            "2010-01-01 (using 86400 seconds per day); the time associated "
-            "with a scanline is repeated for each pixel in the scanline";
-    }
-    else
-    {
-        description = "time converted from milliseconds since a reference time "
-            "(given as seconds since 2010-01-01) to seconds since 2010-01-01 (using 86400 seconds per day)";
-    }
-
+    description = "time converted from days since 2020-01-01 to seconds since 2020-01-01 (using 86400 seconds per "
+        "day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
+    /* datetime_length */
+    description = "measurement duration";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0, NULL,
+                                                   NULL, description, "s", NULL, read_datetime_length);
+
+    /* two alternative paths, selected by the user option */
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/PRODUCT/delta_time[]",
+                                         "delta_time[1] - delta_time[0]");
 
     /* orbit_index */
     description = "absolute orbit number";
@@ -2857,21 +2889,34 @@ static void register_core_variables_cld(harp_product_definition *product_definit
     harp_variable_definition *var;
     harp_dimension_type dim_time[1] = { harp_dimension_time };
 
-    /* datetime_start */
-    description = "start time of the measurement";
-    var = harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
-                                                     dim_time, NULL, description, "seconds since 2010-01-01", NULL,
+    /* datetime (center of scanline) */
+    description = "time of the measurement";
+    var = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
+                                                     dim_time, NULL, description, "seconds since 2020-01-01", NULL,
                                                      read_datetime);
 
     /* two alternative paths, selected by the user option */
+    description = "time converted from days since 2020-01-01 to seconds since 2020-01-01 (using 86400 seconds per "
+        "day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
-                                         "/data/PRODUCT_BAND3A/time, /data/PRODUCT_BAND3A/delta_time[]",
-                                         "time converted from milliseconds since a reference time to "
-                                         "seconds since 2010-01-01 (86400 s / day)");
+                                         "/data/PRODUCT_BAND3A/time, /data/PRODUCT_BAND3A/delta_time[]", description);
 
     harp_variable_definition_add_mapping(var, "band=band3c", NULL,
-                                         "/data/PRODUCT_BAND3C/time, /data/PRODUCT_BAND3C/delta_time[]",
-                                         "as above but for BAND-3C");
+                                         "/data/PRODUCT_BAND3C/time, /data/PRODUCT_BAND3C/delta_time[]", description);
+
+    /* datetime_length */
+    description = "measurement duration";
+    var = harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
+                                                     NULL, NULL, description, "s", NULL, read_datetime_length);
+
+    /* two alternative paths, selected by the user option */
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
+                                         "/data/PRODUCT_BAND3A/delta_time[]",
+                                         "delta_time[1] - delta_time[0]");
+
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL,
+                                         "/data/PRODUCT_BAND3C/delta_time[]",
+                                         "delta_time[1] - delta_time[0]");
 
     /* orbit_index */
     description = "absolute orbit number";
@@ -3445,7 +3490,7 @@ static void register_aui_product(void)
 
     /* Variables' Registration Phase */
 
-    register_core_variables(product_definition, s5_delta_time_num_dims[s5_type_aui], 1);
+    register_core_variables(product_definition, 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, "SN5_02_AUI");
@@ -3588,7 +3633,7 @@ static void register_ch4_product(void)
     product_definition = harp_ingestion_register_product(module, "S5_L2_CH4", NULL, read_dimensions);
 
     /* Variables' Registration Phase */
-    register_core_variables(product_definition, s5_delta_time_num_dims[s5_type_ch4], include_validity);
+    register_core_variables(product_definition, include_validity);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, "SN5_02_CH4");
@@ -3837,7 +3882,7 @@ static void register_no2_product(void)
 
     /* Variables' Registration Phase */
 
-    register_core_variables(product_definition, s5_delta_time_num_dims[s5_type_no2], include_validity);
+    register_core_variables(product_definition, include_validity);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, "SN5_02_NO2");
@@ -4193,7 +4238,7 @@ static void register_o3_product(void)
 
     /* Variables' Registration Phase */
 
-    register_core_variables(product_definition, s5_delta_time_num_dims[s5_type_o3], include_validity);
+    register_core_variables(product_definition, include_validity);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, "SN5_02_O3");
@@ -4497,7 +4542,7 @@ static void register_so2_product(void)
 
     /* Variables' Registration Phase */
 
-    register_core_variables(product_definition, s5_delta_time_num_dims[s5_type_so2], include_validity);
+    register_core_variables(product_definition, include_validity);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, "SN5_02_SO2");
@@ -5050,7 +5095,7 @@ static void register_co_product(void)
 
     /* Variables' Registration Phase */
 
-    register_core_variables(product_definition, s5_delta_time_num_dims[s5_type_co], include_validity);
+    register_core_variables(product_definition, include_validity);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition, "SN5_02_CO_");

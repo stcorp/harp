@@ -5,6 +5,9 @@
   double quotes to store filenames with a comma in them (which is applicable
   for Sentinel-4 and Sentinel-5 products).
 
+* Updates to product ingestions:
+  - Sentinel-5 L2: fixed structure and values of datetime variables.
+
 1.26 2025-07-09
 ~~~~~~~~~~~~~~~
 
