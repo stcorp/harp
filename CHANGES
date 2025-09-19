@@ -6,6 +6,7 @@
   for Sentinel-4 and Sentinel-5 products).
 
 * Updates to product ingestions:
+  - GOSAT FTS L2: added XCH4/XCO2 variables to ingestion.
   - Sentinel-5 L2: fixed structure and values of datetime variables.
 
 1.26 2025-07-09

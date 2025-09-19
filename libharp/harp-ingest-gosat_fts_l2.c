@@ -349,6 +349,61 @@ static int read_corner_longitude(void *user_data, long index, harp_array data)
     return 0;
 }
 
+static int read_co2_mixing_ratio(void *user_data, long index, harp_array data)
+{
+    return read_float_dataset_value((ingest_info *)user_data, "Data/mixingRatio/XCO2", index, -1.0E30f,
+                                    data.double_data);
+}
+
+static int read_co2_mixing_ratio_error(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    double external_error;
+    double interference_error;
+    double retrieval_noise;
+    double smoothing_error;
+
+    *data.double_data = 0;
+    if (read_float_dataset_value(info, "Data/mixingRatio/XCO2ExternalError", index, -1.0E30f, &external_error)
+        != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(external_error))
+    {
+        *data.double_data += external_error;
+    }
+    if (read_float_dataset_value
+        (info, "Data/mixingRatio/XCO2InterferenceError", index, -1.0E30f, &interference_error) != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(interference_error))
+    {
+        *data.double_data += interference_error;
+    }
+    if (read_float_dataset_value
+        (info, "Data/mixingRatio/XCO2RetrievalNoise", index, -1.0E30f, &retrieval_noise) != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(retrieval_noise))
+    {
+        *data.double_data += retrieval_noise;
+    }
+    if (read_float_dataset_value
+        (info, "Data/mixingRatio/XCO2SmoothingError", index, -1.0E30f, &smoothing_error) != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(smoothing_error))
+    {
+        *data.double_data += smoothing_error;
+    }
+
+    return 0;
+}
+
 static int read_co2_column(void *user_data, long index, harp_array data)
 {
     return read_float_dataset_value((ingest_info *)user_data, "Data/totalColumn/CO2TotalColumn", index, -1.0E30f,
@@ -393,6 +448,61 @@ static int read_co2_column_error(void *user_data, long index, harp_array data)
     }
     if (read_float_dataset_value
         (info, "Data/totalColumn/CO2TotalColumnSmoothingError", index, -1.0E30f, &smoothing_error) != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(smoothing_error))
+    {
+        *data.double_data += smoothing_error;
+    }
+
+    return 0;
+}
+
+static int read_ch4_mixing_ratio(void *user_data, long index, harp_array data)
+{
+    return read_float_dataset_value((ingest_info *)user_data, "Data/mixingRatio/XCH4", index, -1.0E30f,
+                                    data.double_data);
+}
+
+static int read_ch4_mixing_ratio_error(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    double external_error;
+    double interference_error;
+    double retrieval_noise;
+    double smoothing_error;
+
+    *data.double_data = 0;
+    if (read_float_dataset_value(info, "Data/mixingRatio/XCH4ExternalError", index, -1.0E30f, &external_error)
+        != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(external_error))
+    {
+        *data.double_data += external_error;
+    }
+    if (read_float_dataset_value
+        (info, "Data/mixingRatio/XCH4InterferenceError", index, -1.0E30f, &interference_error) != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(interference_error))
+    {
+        *data.double_data += interference_error;
+    }
+    if (read_float_dataset_value
+        (info, "Data/mixingRatio/XCH4RetrievalNoise", index, -1.0E30f, &retrieval_noise) != 0)
+    {
+        return -1;
+    }
+    if (!coda_isNaN(retrieval_noise))
+    {
+        *data.double_data += retrieval_noise;
+    }
+    if (read_float_dataset_value
+        (info, "Data/mixingRatio/XCH4SmoothingError", index, -1.0E30f, &smoothing_error) != 0)
     {
         return -1;
     }
@@ -664,6 +774,27 @@ static void register_co2_product(void)
                                         read_dimensions);
     register_common_variables(product_definition);
 
+    /* CO2_column_volume_mixing_ratio */
+    description = "CO2 column volume mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "CO2_column_volume_mixing_ratio", harp_type_double,
+                                                    1, dimension_type, NULL, description, "ppmv", NULL,
+                                                    read_co2_mixing_ratio);
+    path = "/Data/mixingRatio/XCO2";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CO2_column_volume_mixing_ratio_uncertainty */
+    description = "uncertainty of the CO2 column volume mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "CO2_column_volume_mixing_ratio_uncertainty",
+                                                    harp_type_double, 1, dimension_type, NULL, description,
+                                                    "ppmv", NULL, read_co2_mixing_ratio_error);
+    path =
+        "/Data/mixingRatio/XCO2SmoothingError, /Data/mixingRatio/XCO2RetrievalNoise, "
+        "/Data/mixingRatio/XCO2InterferenceError, /Data/mixingRatio/XCO2ExternalNoise";
+    description = "the uncertainty returned is the sum of all four error components";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
     /* CO2_column_number_density */
     description = "CO2 column number density";
     variable_definition =
@@ -703,6 +834,27 @@ static void register_ch4_product(void)
         harp_ingestion_register_product(module, "GOSAT_FTS_L2_CH4_TC", "GOSAT FTS L2 CH4 total column density",
                                         read_dimensions);
     register_common_variables(product_definition);
+
+    /* CH4_column_volume_mixing_ratio */
+    description = "CH4 column volume mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "CH4_column_volume_mixing_ratio", harp_type_double,
+                                                    1, dimension_type, NULL, description, "ppmv", NULL,
+                                                    read_ch4_mixing_ratio);
+    path = "/Data/mixingRatio/XCH4";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CH4_column_volume_mixing_ratio_uncertainty */
+    description = "uncertainty of the CH4 column volume mixing ratio";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "CH4_column_volume_mixing_ratio_uncertainty",
+                                                    harp_type_double, 1, dimension_type, NULL, description,
+                                                    "ppmv", NULL, read_ch4_mixing_ratio_error);
+    path =
+        "/Data/mixingRatio/XCH4SmoothingError, /Data/mixingRatio/XCH4RetrievalNoise, "
+        "/Data/mixingRatio/XCH4InterferenceError, /Data/mixingRatio/XCH4ExternalNoise";
+    description = "the uncertainty returned is the sum of all four error components";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* CH4_column_number_density */
     description = "CH4 column number density";
