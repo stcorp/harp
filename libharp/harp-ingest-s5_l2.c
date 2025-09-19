@@ -2911,12 +2911,10 @@ static void register_core_variables_cld(harp_product_definition *product_definit
 
     /* two alternative paths, selected by the user option */
     harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
-                                         "/data/PRODUCT_BAND3A/delta_time[]",
-                                         "delta_time[1] - delta_time[0]");
+                                         "/data/PRODUCT_BAND3A/delta_time[]", "delta_time[1] - delta_time[0]");
 
     harp_variable_definition_add_mapping(var, "band=band3c", NULL,
-                                         "/data/PRODUCT_BAND3C/delta_time[]",
-                                         "delta_time[1] - delta_time[0]");
+                                         "/data/PRODUCT_BAND3C/delta_time[]", "delta_time[1] - delta_time[0]");
 
     /* orbit_index */
     description = "absolute orbit number";
