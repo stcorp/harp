@@ -104,7 +104,7 @@
 <td><p>absolute orbit number</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
-<td><p>int32</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>The altitude of the spacecraft relative to the WGS84 reference ellipsoid.</p></td>
@@ -140,16 +140,16 @@
 <td><p>Measured spectral photon irradiance for each spectral channel and cross track position.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>photon_irradiance_uncertainty_systematic</strong></p></td>
-<td><p>int8</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[mol/(s.m^2.nm)]</p></td>
-<td><p>Irradiance error, encoded as 20 times the natural logarithmic value of the absolute ratio between the irradiance and the estimation error.</p></td>
+<td><p>spectral irradiance systematic uncertainty</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>photon_irradiance_uncertainty_random</strong></p></td>
-<td><p>int8</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[mol/(s.m^2.nm.sr)]</p></td>
-<td><p>Random irradiance error, encoded as 20 times the natural logarithmic value of the absolute ratio between the irradiance and the random error.</p></td>
+<td><p>spectral irradiance random uncertainty</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>photon_irradiance_validity</strong></p></td>
 <td><p>int8</p></td>
@@ -635,18 +635,24 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band5/observation_data/irradiance[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="16"><p><strong>photon_irradiance_uncertainty_systematic</strong></p></td>
+<tr class="row-odd"><td rowspan="24"><p><strong>photon_irradiance_uncertainty_systematic</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/observation_data/irradiance_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/observation_data/irradiance_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
@@ -654,11 +660,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/observation_data/irradiance_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3a</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/observation_data/irradiance_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3b</p></td>
@@ -666,11 +678,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/observation_data/irradiance_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3c</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/observation_data/irradiance_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=4</p></td>
@@ -678,24 +696,36 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band4/observation_data/irradiance_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=5</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band5/observation_data/irradiance_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="16"><p><strong>photon_irradiance_uncertainty_random</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_error / 20))</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="24"><p><strong>photon_irradiance_uncertainty_random</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/observation_data/irradiance_noise[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/observation_data/irradiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
@@ -703,11 +733,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/observation_data/irradiance_noise[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3a</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/observation_data/irradiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3b</p></td>
@@ -715,11 +751,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/observation_data/irradiance_noise[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3c</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/observation_data/irradiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=4</p></td>
@@ -727,11 +769,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band4/observation_data/irradiance_noise[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=5</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band5/observation_data/irradiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(irradiance / exp(irradiance_noise / 20))</p></td>
 </tr>
 <tr class="row-odd"><td rowspan="16"><p><strong>photon_irradiance_validity</strong></p></td>
 <td><p><em>condition</em></p></td>

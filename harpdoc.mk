@@ -438,6 +438,14 @@ HARP_DOCFILES = \
 	doc/html/ingestions/HIRDLS_L2.html \
 	doc/html/ingestions/IASI_L1.html \
 	doc/html/ingestions/IASI_L2.html \
+	doc/html/ingestions/IAS_02_CLD.html \
+	doc/html/ingestions/IAS_02_CO.html \
+	doc/html/ingestions/IAS_02_GHG.html \
+	doc/html/ingestions/IAS_02_NAC.html \
+	doc/html/ingestions/IAS_02_O3.html \
+	doc/html/ingestions/IAS_02_SFC.html \
+	doc/html/ingestions/IAS_02_SO2.html \
+	doc/html/ingestions/IAS_02_TWV.html \
 	doc/html/ingestions/MIPAS_L1.html \
 	doc/html/ingestions/MIPAS_L2.html \
 	doc/html/ingestions/MLS_L2_BRO.html \
@@ -1494,6 +1502,22 @@ doc/html/ingestions/HIRDLS_L2.html:
 doc/html/ingestions/IASI_L1.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/IASI_L2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_CLD.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_CO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_GHG.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_NAC.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_O3.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_SFC.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_SO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/IAS_02_TWV.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/MIPAS_L1.html:
 	$(MAKE) harp_doc
