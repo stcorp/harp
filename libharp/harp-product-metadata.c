@@ -134,7 +134,14 @@ LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, in
     char datetime_string[16];
     int i;
 
-    print("%s,", metadata->filename);
+    if (strstr(metadata->filename, ",") != NULL)
+    {
+        print("\"%s\",", metadata->filename);
+    }
+    else
+    {
+        print("%s,", metadata->filename);
+    }
     if (coda_time_double_to_string(metadata->datetime_start * 86400, "yyyyMMdd'T'HHmmss", datetime_string) == 0)
     {
         print("%s,", datetime_string);
@@ -156,7 +163,14 @@ LIBHARP_API void harp_product_metadata_print(harp_product_metadata *metadata, in
         print("%ld", metadata->dimension[i]);
         print(",");
     }
-    print("%s\n", metadata->source_product);
+    if (strstr(metadata->source_product, ",") != NULL)
+    {
+        print("\"%s\"\n", metadata->source_product);
+    }
+    else
+    {
+        print("%s\n", metadata->source_product);
+    }
 }
 
 /** @} */

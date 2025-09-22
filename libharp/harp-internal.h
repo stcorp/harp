@@ -108,12 +108,17 @@ typedef struct harp_variable_conversion_struct
     char *source_description;
     harp_conversion_function set_variable_data;
     harp_conversion_enabled_function enabled;
+    /* when a variable can only be derived if the product already has a variable with
+     * that chemical species then we mark it as chemical species specific */
+    harp_chemical_species specific_species;
 } harp_variable_conversion;
 
 typedef struct harp_variable_conversion_list_struct
 {
     int num_conversions;
     harp_variable_conversion **conversion;
+    /* the conversion list is restricted to a species if all conversions in it are */
+    harp_chemical_species specific_species;
 } harp_variable_conversion_list;
 
 typedef struct harp_derived_variable_list_struct
@@ -234,8 +239,13 @@ void harp_unit_done(void);
 /* Variable conversions */
 int harp_variable_conversion_new(const char *variable_name, harp_data_type data_type, const char *unit,
                                  int num_dimensions, harp_dimension_type *dimension_type,
-                                 long independent_dimension_length, harp_conversion_function get_variable,
+                                 long independent_dimension_length, harp_conversion_function set_variable_data,
                                  harp_variable_conversion **new_conversion);
+int harp_variable_conversion_species_new(const char *variable_name, harp_data_type data_type, const char *unit,
+                                         int num_dimensions, harp_dimension_type *dimension_type,
+                                         long independent_dimension_length, harp_chemical_species specific_species,
+                                         harp_conversion_function set_variable_data,
+                                         harp_variable_conversion **new_conversion);
 int harp_variable_conversion_add_source(harp_variable_conversion *conversion, const char *variable_name,
                                         harp_data_type data_type, const char *unit, int num_dimensions,
                                         harp_dimension_type *dimension_type, long independent_dimension_length);

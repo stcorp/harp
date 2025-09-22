@@ -114,25 +114,52 @@ int harp_csv_parse_string(char **str, char **value)
     char *cursor = *str;
     int stringlength = 0;
 
-    /* Skip leading white space */
-    while (*cursor == ' ')
-    {
-        cursor++;
-    }
-
     /* Grab string */
-    while (cursor[stringlength] != ',' && cursor[stringlength] != '\0')
+    if (cursor[stringlength] == '"')
     {
         stringlength++;
-    }
-    if (cursor[stringlength] == '\0')
-    {
-        *str = &cursor[stringlength];
+
+        /* parse escaped string */
+        while (cursor[stringlength] != '"' && cursor[stringlength] != '\0')
+        {
+            stringlength++;
+        }
+        if (cursor[stringlength] == '\0')
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "missing closing '\"' in csv element '%s'", cursor);
+            return -1;
+        }
+        if (cursor[stringlength + 1] != ',')
+        {
+            harp_set_error(HARP_ERROR_INVALID_FORMAT, "trailing characters after closing '\"' in csv element '%s'",
+                           cursor);
+            return -1;
+        }
+        cursor[stringlength] = '\0';
+        *str = &cursor[stringlength + 2];       /* skip trailing quote and comma */
+        cursor++;       /* skip leading quote */
     }
     else
     {
-        cursor[stringlength] = '\0';
-        *str = &cursor[stringlength + 1];
+        /* Skip leading white space */
+        while (*cursor == ' ')
+        {
+            cursor++;
+        }
+
+        while (cursor[stringlength] != ',' && cursor[stringlength] != '\0')
+        {
+            stringlength++;
+        }
+        if (cursor[stringlength] == '\0')
+        {
+            *str = &cursor[stringlength];
+        }
+        else
+        {
+            cursor[stringlength] = '\0';
+            *str = &cursor[stringlength + 1];
+        }
     }
     *value = cursor;
 

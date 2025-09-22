@@ -380,13 +380,12 @@ you might encounter problems with e.g. the Python interface.
 For Python you will have to copy the ``C:\Program Files\HARP\python\harp``
 directory to the site-packages folder of your Python installation.
 However, if you want to use the Python interfaces on Windows, it is recommended
-to just install the Anaconda package of HARP.
+to just install the conda-forge package of HARP.
 
-For R you will either have to copy the ``C:\Program Files\HARP\R\harp``
-directory to the site-library folder of your R installation or you will have to
-add the ``C:\Program Files\HARP\R`` directory to your R library path.
-However, if you want to use the R interfaces on Windows, it is recommended
-to install the Anaconda package of HARP.
+The binary installer does not come with an R interface, since this requires
+HARP to be build with a more recent Visual Studio version. To use the R
+interface it is recommended to use the conda-forge package of the HARP R
+interface (r-harp).
 
 For IDL you will have to add ``<HARP installdir>\lib\harp\idl`` to your
 ``DLM_PATH``. You do this by setting an ``IDL_DLM_PATH`` environment variable.

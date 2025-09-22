@@ -477,6 +477,10 @@ def _get_c_library_filename():
         alt_library_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "../../../../lib", library_name))
         if os.path.exists(alt_library_path):
             return alt_library_path
+        # on Ubuntu the python prefix can be 'local/lib', but libraries get installed in 'lib'
+        alt_library_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "../../../../../lib", library_name))
+        if os.path.exists(alt_library_path):
+            return alt_library_path
     return library_path
 
 

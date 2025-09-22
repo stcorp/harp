@@ -205,65 +205,26 @@ static const char *get_product_type_name(s5p_product_type product_type)
     exit(1);
 }
 
-static int strendswith(const char *str, const char *suffix)
-{
-    size_t str_length;
-    size_t suffix_length;
-
-    str_length = strlen(str);
-    suffix_length = strlen(suffix);
-
-    if (str_length < suffix_length)
-    {
-        return 0;
-    }
-
-    return (strcmp(str + str_length - suffix_length, suffix) == 0);
-}
-
 static int get_product_type(coda_product *product, s5p_product_type *product_type)
 {
-    coda_cursor cursor;
-    char product_short_name[20];
-    long length;
+    const char *coda_product_type;
     int i;
 
-    if (coda_cursor_set_product(&cursor, product) != 0)
+    if (coda_get_product_type(product, &coda_product_type) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_goto(&cursor, "/METADATA/GRANULE_DESCRIPTION@ProductShortName") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_string_length(&cursor, &length) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (length > 19)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, product_short_name, 20) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
     for (i = 0; i < S5P_NUM_PRODUCT_TYPES; i++)
     {
-        if (strendswith(product_short_name, get_product_type_name((s5p_product_type)i)))
+        if (strcmp(get_product_type_name((s5p_product_type)i), coda_product_type) == 0)
         {
             *product_type = ((s5p_product_type)i);
             return 0;
         }
     }
 
-    harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", product_short_name);
+    harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", coda_product_type);
     return -1;
 }
 
