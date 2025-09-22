@@ -128,7 +128,7 @@
 <td><p>The four longitude boundaries of each ground pixel on the WGS84 reference ellipsoid.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_altitude</strong></p></td>
-<td><p>int32</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>The altitude of the spacecraft relative to the WGS84 reference ellipsoid.</p></td>
@@ -188,16 +188,16 @@
 <td><p>Measured spectral photon radiance for each spectral channel.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>photon_radiance_uncertainty_systematic</strong></p></td>
-<td><p>int8</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[mol/(s.m^2.nm.sr)]</p></td>
-<td><p>Radiance error, encoded as 20 times the natural logarithmic value of the absolute ratio between the radiance and the estimation error.</p></td>
+<td><p>spectral radiance systematic uncertainty</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>photon_radiance_uncertainty_random</strong></p></td>
-<td><p>int8</p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[mol/(s.m^2.nm.sr)]</p></td>
-<td><p>Random radiance error, encoded as 20 times the natural logarithmic value of the absolute ratio between the radiance and the random error.</p></td>
+<td><p>spectral radiance random uncertainty</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>photon_radiance_validity</strong></p></td>
 <td><p>int8</p></td>
@@ -580,18 +580,24 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/observation_data/radiance[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>photon_radiance_uncertainty_systematic</strong></p></td>
+<tr class="row-even"><td rowspan="9"><p><strong>photon_radiance_uncertainty_systematic</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=3a or band unset</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/observation_data/radiance_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_error / 20))</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3b</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/observation_data/radiance_error[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_error / 20))</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3c</p></td>
@@ -599,12 +605,18 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/observation_data/radiance_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>photon_radiance_uncertainty_random</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_error / 20))</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><p><strong>photon_radiance_uncertainty_random</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=3a or band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/observation_data/radiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3b</p></td>
@@ -612,11 +624,17 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/observation_data/radiance_noise[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3c</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/observation_data/radiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
 </tr>
 <tr class="row-even"><td rowspan="6"><p><strong>photon_radiance_validity</strong></p></td>
 <td><p><em>condition</em></p></td>
