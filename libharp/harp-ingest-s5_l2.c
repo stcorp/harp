@@ -4430,7 +4430,7 @@ static int read_so2_scalar(void *user_data, const char *dataset_name, harp_array
     long num_elements = info->num_scanlines * info->num_pixels * info->num_profile;     /* 4 profiles */
 
     /* copy the requested profile (0...3) into the 1-D HARP array */
-    long stride = info->num_profile;    /* profile dimension length   */
+    long stride = info->num_profile;    /* profile dimension length */
     long sel_idx = info->so2_column_type;       /* 0=PBL,1=1 km,2=7 km,3=15 km */
     long out_idx = 0;
 
