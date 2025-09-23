@@ -175,55 +175,61 @@
 <td></td>
 <td><p>Overall quality information for a measurement.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>datetime_start</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[seconds since 2010-01-01]</p></td>
-<td><p>Start time of the measurement.</p></td>
+<td><p>[seconds since 2020-01-01]</p></td>
+<td><p>time of the measurement</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>photon_radiance</strong></p></td>
+<tr class="row-even"><td><p><strong>datetime_length</strong></p></td>
+<td><p>double</p></td>
+<td></td>
+<td><p>[s]</p></td>
+<td><p>measurement duration</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>photon_radiance</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[mol/(s.m^2.nm.sr)]</p></td>
-<td><p>Measured spectral photon radiance for each spectral channel.</p></td>
+<td><p>measured spectral photon radiance for each spectral channel</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>photon_radiance_uncertainty_systematic</strong></p></td>
+<tr class="row-even"><td><p><strong>photon_radiance_uncertainty_systematic</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[mol/(s.m^2.nm.sr)]</p></td>
 <td><p>spectral radiance systematic uncertainty</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>photon_radiance_uncertainty_random</strong></p></td>
+<tr class="row-odd"><td><p><strong>photon_radiance_uncertainty_random</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[mol/(s.m^2.nm.sr)]</p></td>
 <td><p>spectral radiance random uncertainty</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>photon_radiance_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>photon_radiance_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td></td>
 <td><p>Quality assessment information for each (spectral) channel.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>wavelength</strong></p></td>
+<tr class="row-odd"><td><p><strong>wavelength</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[nm]</p></td>
 <td><p>Wavelength [nm] derived from 3rd-order Chebyshev polynomial coefficients stored per pixel (calibrated or nominal).</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>wavelength_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>wavelength_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[nm]</p></td>
 <td><p>1-sigma uncertainty of the wavelength [nm] propagated from the 3rd-order Chebyshev coefficient errors (calibrated or nominal).</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>wavelength_validity</strong></p></td>
+<tr class="row-odd"><td><p><strong>wavelength_validity</strong></p></td>
 <td><p>int16</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>Spectral calibration quality assessment information for each pixel.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -537,7 +543,7 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the measurement quality associated with a scanline is repeated for each pixel in the scanline</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="9"><p><strong>datetime_start</strong></p></td>
+<tr class="row-odd"><td rowspan="9"><p><strong>datetime</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
@@ -545,7 +551,7 @@
 <td><p><strong>/data/band1a/observation_data/time, /data/band1a/observation_data/delta_time[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>time converted from milliseconds since a reference time(given as seconds since 2010-01-01) to seconds since2010-01-01 (using 86400 seconds per day)</p></td>
+<td><p>time converted from days since 2020-01-01 to seconds since 2020-01-01 (using 86400 seconds per day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline</p></td>
 </tr>
 <tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
@@ -554,7 +560,7 @@
 <td><p><strong>/data/band1b/observation_data/time, /data/band1b/observation_data/delta_time[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>time converted from milliseconds since a reference time(given as seconds since 2010-01-01) to seconds since2010-01-01 (using 86400 seconds per day)</p></td>
+<td><p>time converted from days since 2020-01-01 to seconds since 2020-01-01 (using 86400 seconds per day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
@@ -563,211 +569,239 @@
 <td><p><strong>/data/band2/observation_data/time, /data/band2/observation_data/delta_time[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>time converted from milliseconds since a reference time(given as seconds since 2010-01-01) to seconds since2010-01-01 (using 86400 seconds per day)</p></td>
+<td><p>time converted from days since 2020-01-01 to seconds since 2020-01-01 (using 86400 seconds per day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline</p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>photon_radiance</strong></p></td>
+<tr class="row-even"><td rowspan="9"><p><strong>datetime_length</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/band1a/delta_time/time, /data/band1a/delta_time/delta_time[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>delta_time[1] - delta_time[0]</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band=1b</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/data/band1b/delta_time/time, /data/band1b/delta_time/delta_time[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>delta_time[1] - delta_time[0]</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=2</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/band2/delta_time/time, /data/band2/delta_time/delta_time[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>delta_time[1] - delta_time[0]</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><p><strong>photon_radiance</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band=1a or band unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/observation_data/radiance[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/observation_data/radiance[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/observation_data/radiance[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="9"><p><strong>photon_radiance_uncertainty_systematic</strong></p></td>
+<tr class="row-odd"><td rowspan="9"><p><strong>photon_radiance_uncertainty_systematic</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/observation_data/radiance_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>uncertainty = abs(radiance / exp(radiance_error / 20))</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/observation_data/radiance_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>uncertainty = abs(radiance / exp(radiance_error / 20))</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>band=2</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band2/observation_data/radiance_error[]</strong></p></td>
-</tr>
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>uncertainty = abs(radiance / exp(radiance_error / 20))</p></td>
-</tr>
-<tr class="row-odd"><td rowspan="9"><p><strong>photon_radiance_uncertainty_random</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band=1a or band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band1a/observation_data/radiance_noise[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>band=1b</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band1b/observation_data/radiance_noise[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band2/observation_data/radiance_noise[]</strong></p></td>
+<td><p><strong>/data/band2/observation_data/radiance_error[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_error / 20))</p></td>
+</tr>
+<tr class="row-even"><td rowspan="9"><p><strong>photon_radiance_uncertainty_random</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band=1a or band unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/band1a/observation_data/radiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band=1b</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/data/band1b/observation_data/radiance_noise[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>photon_radiance_validity</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=2</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/band2/observation_data/radiance_noise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>uncertainty = abs(radiance / exp(radiance_noise / 20))</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="6"><p><strong>photon_radiance_validity</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/observation_data/spectral_channel_quality[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/observation_data/spectral_channel_quality[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/observation_data/spectral_channel_quality[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="18"><p><strong>wavelength</strong></p></td>
+<tr class="row-odd"><td rowspan="18"><p><strong>wavelength</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=calibrated or lambda unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=nominal</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=calibrated or lambda unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=nominal</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=calibrated or lambda unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=nominal</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="12"><p><strong>wavelength_uncertainty</strong></p></td>
+<tr class="row-odd"><td rowspan="12"><p><strong>wavelength_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=calibrated or lambda unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=nominal</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=calibrated or lambda unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=nominal</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=calibrated or lambda unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=nominal</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="6"><p><strong>wavelength_validity</strong></p></td>
+<tr class="row-odd"><td rowspan="6"><p><strong>wavelength_validity</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/spectral_calibration_quality[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/spectral_calibration_quality[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/spectral_calibration_quality[]</strong></p></td>
 </tr>
 </tbody>
