@@ -107,37 +107,37 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Fraction of IFOV covered by sea ice</p></td>
+<td><p>fraction of IFOV covered by sea ice</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>land_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>Land fraction</p></td>
+<td><p>land fraction</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Surface elevation</p></td>
+<td><p>surface elevation</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
-<td><p>Standard deviation of surface elevation</p></td>
+<td><p>standard deviation of surface elevation</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>time</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[s]</p></td>
-<td><p>On-board time in UTC</p></td>
+<td><p>[s since 2020-01-01]</p></td>
+<td><p>on-board time in UTC</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>longitude</strong></p></td>
-<td><p>float</p></td>
+<td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_east]</p></td>
-<td><p>Geocentric longitude at sounder pixel centre</p></td>
+<td><p>geocentric longitude at sounder pixel centre</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>longitude_bounds</strong></p></td>
 <td><p>double</p></td>
@@ -146,10 +146,10 @@
 <td><p>corner longitudes of the measurement</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>latitude</strong></p></td>
-<td><p>float</p></td>
+<td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_north]</p></td>
-<td><p>Geodetic latitude at sounder pixel centre</p></td>
+<td><p>geodetic latitude at sounder pixel centre</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>latitude_bounds</strong></p></td>
 <td><p>double</p></td>
@@ -158,28 +158,28 @@
 <td><p>corner latitudes of the measurement</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
-<td><p>float</p></td>
+<td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Solar azimuth angle at sounder pixel centre</p></td>
+<td><p>solar azimuth angle at sounder pixel centre</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
-<td><p>float</p></td>
+<td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Solar zenith angle at sounder pixel centre</p></td>
+<td><p>solar zenith angle at sounder pixel centre</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
-<td><p>float</p></td>
+<td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Measurement azimuth angle at sounder pixel centre</p></td>
+<td><p>measurement azimuth angle at sounder pixel centre</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
-<td><p>float</p></td>
+<td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
-<td><p>Measurement zenith angle at sounder pixel centre</p></td>
+<td><p>measurement zenith angle at sounder pixel centre</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -220,7 +220,7 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/surface_info/height_std[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>time</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/geolocation_information/onboard_utc[]</strong></p></td>
 </tr>
