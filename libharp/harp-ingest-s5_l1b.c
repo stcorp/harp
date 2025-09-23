@@ -1128,7 +1128,7 @@ static int read_datetime(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     harp_array time_reference_array;
     double time_reference;
-    long i;
+    long i, j;
 
     time_reference_array.ptr = &time_reference;
     if (read_dataset(info->observation_cursor, "time", harp_type_double, 1, time_reference_array) != 0)
@@ -1141,11 +1141,51 @@ static int read_datetime(void *user_data, harp_array data)
         return -1;
     }
 
-    /* Convert milliseconds to seconds and add to reference time */
-    for (i = 0; i < info->num_scanlines; i++)
+    for (i = info->num_scanlines - 1; i >= 0; i--)
     {
-        data.double_data[i] = time_reference + data.double_data[i] / 1e3;
+        data.double_data[i] += time_reference * 24 * 60 * 60;
+        /* replicate for each pixel in the scanline */
+        for (j = 0; j <= info->num_pixels; j++)
+        {
+            data.double_data[i * info->num_pixels + j] = data.double_data[i];
+        }
     }
+
+    return 0;
+}
+
+static int read_datetime_length(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor = info->observation_cursor;
+    double first, second;
+
+    if (coda_cursor_goto_record_field_by_name(&cursor, "delta_time") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_first_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, &first) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_next_array_element(&cursor) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_double(&cursor, &second) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    *data.double_data = second - first;
 
     return 0;
 }
@@ -1642,7 +1682,7 @@ static void register_mapping_per_band(harp_variable_definition *variable_definit
 
     for (i = 0; i < num_bands; i++)
     {
-        if (strcmp(variable_name, "datetime_start[]") == 0)
+        if (strcmp(variable_name, "datetime[]") == 0)
         {
             snprintf(path, MAX_PATH_LENGTH, "/data/%s/%s/time, /data/%s/%s/delta_time[]", bands_list[i], dataset_name,
                      bands_list[i], dataset_name);
@@ -1832,30 +1872,36 @@ static void register_observation_variables(harp_product_definition
     register_mapping_per_band(variable_definition, var_name, "observation_data", bands_list, bands_list_map, num_bands,
                               description);
 
-    /* datetime_start */
-    description = "Start time of the measurement.";
+    /* datetime */
+    description = "time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_start", harp_type_double, 1,
-                                                   dimension_type_1d, NULL, description,
-                                                   "seconds since 2010-01-01", NULL, read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
+                                                   dimension_type_1d, NULL, description, "seconds since 2020-01-01",
+                                                   NULL, read_datetime);
 
-    var_name = "datetime_start[]";
-    description = "time converted from milliseconds since a reference time"
-        "(given as seconds since 2010-01-01) to " "seconds since" "2010-01-01 (using 86400 seconds per day)";
-
+    var_name = "datetime[]";
+    description = "time converted from days since 2020-01-01 to seconds since 2020-01-01 (using 86400 seconds per "
+        "day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline";
     register_mapping_per_band(variable_definition, var_name, "observation_data", bands_list, bands_list_map, num_bands,
                               description);
 
+    /* datetime_length */
+    description = "measurement duration";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0, NULL,
+                                                   NULL, description, "s", NULL, read_datetime_length);
+    register_mapping_per_band(variable_definition, var_name, "delta_time", bands_list, bands_list_map, num_bands,
+                              "delta_time[1] - delta_time[0]");
+
     /* photon_radiance */
-    description = "Measured spectral photon radiance for each spectral channel.";
+    description = "measured spectral photon radiance for each spectral channel";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "photon_radiance", harp_type_float, 2,
                                                    dimension_type_2d_spec, NULL, description, "mol/(s.m^2.nm.sr)", NULL,
                                                    read_observation_radiance);
     var_name = "radiance[]";
-    description = NULL;
     register_mapping_per_band(variable_definition, var_name, "observation_data", bands_list, bands_list_map, num_bands,
-                              description);
+                              NULL);
 
     /* photon_radiance_uncertainty_systematic */
     description = "spectral radiance systematic uncertainty";
@@ -2185,19 +2231,26 @@ static void register_irr_product(void)
     register_mapping_per_band(variable_definition, var_name, "observation_data", bands_list, bands_list_map, num_bands,
                               description);
 
-    /* datetime_start */
-    description = "Start time of the measurement.";
+    /* datetime */
+    description = "time of the measurement";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "datetime_start",
-                                                   harp_type_double, 1,
-                                                   dimension_type_1d, NULL, description,
-                                                   "seconds since 2010-01-01", NULL, read_datetime);
+        harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double, 1,
+                                                   dimension_type_1d, NULL, description, "seconds since 2020-01-01",
+                                                   NULL, read_datetime);
 
-    var_name = "datetime_start[]";
-    description = "time converted from milliseconds since a reference time"
-        "(given as seconds since 2010-01-01) to " "seconds since" "2010-01-01 (using 86400 seconds per day)";
+    var_name = "datetime[]";
+    description = "time converted from days since 20200-01-01 to seconds since 2020-01-01 (using 86400 seconds per "
+        "day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline";
     register_mapping_per_band(variable_definition, var_name, "observation_data", bands_list, bands_list_map, num_bands,
                               description);
+
+    /* datetime_length */
+    description = "measurement duration";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0, NULL,
+                                                   NULL, description, "s", NULL, read_datetime_length);
+    register_mapping_per_band(variable_definition, var_name, "delta_time", bands_list, bands_list_map, num_bands,
+                              "delta_time[1] - delta_time[0]");
 
     /* photon_irradiance */
     description = "Measured spectral photon irradiance for each spectral channel and cross track position.";
