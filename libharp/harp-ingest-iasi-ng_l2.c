@@ -1165,7 +1165,6 @@ static int read_geolocation_sensor_zenith_angle(void *user_data, harp_array data
                         info->num_lines * info->num_for * info->num_fov, data);
 }
 
-/* helper routine, updated version of the 'get_corner_coordinates' from the IASI L2 ingestion module */
 static void build_corners_2x2(const double lat_in[4], const double lon_in[4], double *lat_out, double *lon_out)
 {
     /* block centre */
@@ -1184,14 +1183,10 @@ static void build_corners_2x2(const double lat_in[4], const double lon_in[4], do
     double oc_lat[4];
     double oc_lon[4];
 
-    /* last set of corners */
-    double x_lat[4];
-    double x_lon[4];
-
     long i;
 
     /* 1. center of the 2 x 2 block (intersection of both diagonals) */
-    harp_geographic_intersection(lat_in[3], lon_in[3], lat_in[1], lon_in[1], lat_in[0], lon_in[0], lat_in[2], lon_in[2],
+    harp_geographic_intersection(lat_in[0], lon_in[0], lat_in[2], lon_in[2], lat_in[3], lon_in[3], lat_in[1], lon_in[1],
                                  &cen_lat, &cen_lon);
 
     /* 2. outer points: extrapolate the center point outwards to each of the four corners
@@ -1200,125 +1195,116 @@ static void build_corners_2x2(const double lat_in[4], const double lon_in[4], do
      */
     for (i = 0; i < 4; i++)
     {
-        /* order is: BL -> BR -> TR -> TL */
+        /* order of FOV is: TR -> TL -> BL -> BR
+         *
+         * P2 - P1     TL - TR     1  -  0
+         * |     |  =  |  C  |  =  |     |
+         * P6 - P5     BL - BR     2  -  3
+         */
         harp_geographic_extrapolation(lat_in[i], lon_in[i], cen_lat, cen_lon, &(o_lat[i]), &(o_lon[i]));
     }
 
-    /* 3. inner corners: 1/2 distance rule */
-    harp_geographic_average(o_lat[0], o_lon[0], lat_in[2], lon_in[2], &ic_lat[0], &ic_lon[0]);  /* BL */
-    harp_geographic_average(o_lat[1], o_lon[1], lat_in[3], lon_in[3], &ic_lat[1], &ic_lon[1]);  /* BR */
-    harp_geographic_average(o_lat[2], o_lon[2], lat_in[0], lon_in[0], &ic_lat[2], &ic_lon[2]);  /* TR */
-    harp_geographic_average(o_lat[3], o_lon[3], lat_in[1], lon_in[1], &ic_lat[3], &ic_lon[3]);  /* TL */
+    /* 3. inner corners:
+     * the inner corner coordinate (i.e. the one nearest to the center point of the scan) for each of the elements
+     * is chosen as the interpolation between the center point of the opposite element and the outer point of the
+     * current element:
+     *
+     *  outer_tl
+     *     \
+     *  outer_corner_tl
+     *        \
+     *      center_tl
+     *          \
+     *       inner_corner_tl
+     *             \
+     *          center_scan
+     *                \
+     *             inner_corner_br
+     *                   \
+     *                  center_br
+     *                      \
+     *                  outer_corner_br
+     *                         \
+     *                        outer_br
+     *
+     * In this case inner_corner_br is the interpolation of outer_br and center_tl and inner_corner_tl is the
+     * interpolation of outer_tl and center_br.
+     * The distance (center_scan, inner_corner_element) will then be half the distance (center_scan, center_element)
+     * and the distance (center_scan, outer_corner_element) will be 1.5 the distance (center_scan, center_element)
+     */
+
+    harp_geographic_average(o_lat[0], o_lon[0], lat_in[2], lon_in[2], &ic_lat[0], &ic_lon[0]);  /* TR */
+    harp_geographic_average(o_lat[1], o_lon[1], lat_in[3], lon_in[3], &ic_lat[1], &ic_lon[1]);  /* TL */
+    harp_geographic_average(o_lat[2], o_lon[2], lat_in[0], lon_in[0], &ic_lat[2], &ic_lon[2]);  /* BL */
+    harp_geographic_average(o_lat[3], o_lon[3], lat_in[1], lon_in[1], &ic_lat[3], &ic_lon[3]);  /* BR */
+
 
     /* 4. outer corner = average(outer_i, centre_i) */
     for (i = 0; i < 4; i++)
     {
-        /* order is: BL -> BR -> TR -> TL */
+        /* order is: TR -> TL -> BL -> BR  */
         harp_geographic_average(o_lat[i], o_lon[i], lat_in[i], lon_in[i], &oc_lat[i], &oc_lon[i]);
     }
 
-    /* 5. remaining corners by great-circle intersections */
+    /* 5. remaining corners by great-circle intersections:
+     * The remaining corner coordinates of a FOV are calculated by finding the intersection of the greatcircle through
+     * two innner corner coordinates and the greatcircle through two outer corner coordinates of FOVs
+     * Store corners of each FOV in BR -> TR -> TL -> BL order (i.e. start with first in time / first in flight)
+     */
 
-    /* BL outer corner = intersection( IC_BL-IC_TR, OC_BR-OC_TL ) */
-    harp_geographic_intersection(ic_lat[0], ic_lon[0], ic_lat[2], ic_lon[2], oc_lat[1], oc_lon[1], oc_lat[3], oc_lon[3],
-                                 &x_lat[0], &x_lon[0]);
-
-    /* BR outer corner = intersection( IC_BL-IC_TR, OC_BL-OC_TR ) */
-    harp_geographic_intersection(ic_lat[0], ic_lon[0], ic_lat[2], ic_lon[2], oc_lat[0], oc_lon[0], oc_lat[2], oc_lon[2],
-                                 &x_lat[1], &x_lon[1]);
-
-    /* TR outer corner = intersection( IC_TL-IC_BR, OC_BR-OC_TL ) */
-    harp_geographic_intersection(ic_lat[3], ic_lon[3], ic_lat[1], ic_lon[1], oc_lat[1], oc_lon[1], oc_lat[3], oc_lon[3],
-                                 &x_lat[2], &x_lon[2]);
-
-    /* TL outer corner = intersection( IC_TL-IC_BR, OC_BL-OC_TR ) */
-    harp_geographic_intersection(ic_lat[3], ic_lon[3], ic_lat[1], ic_lon[1], oc_lat[0], oc_lon[0], oc_lat[2], oc_lon[2],
-                                 &x_lat[3], &x_lon[3]);
-
-    /* 6. store in IASI order (4 corners per IFOV, 4 IFOVs) */
-
-    /* IFOV 0 : Bottom-Left */
-    lat_out[0] = x_lat[0];
-    lon_out[0] = x_lon[0];
+    /* TR FOV */
+    harp_geographic_intersection(ic_lat[1], ic_lon[1], ic_lat[0], ic_lon[0], oc_lat[0], oc_lon[0], oc_lat[3], oc_lon[3],
+                                 &lat_out[0], &lon_out[0]);
     lat_out[1] = oc_lat[0];
     lon_out[1] = oc_lon[0];
-    lat_out[2] = cen_lat;
-    lon_out[2] = cen_lon;
-    lat_out[3] = ic_lat[1];
-    lon_out[3] = ic_lon[1];
+    harp_geographic_intersection(ic_lat[3], ic_lon[3], ic_lat[0], ic_lon[0], oc_lat[1], oc_lon[1], oc_lat[0], oc_lon[0],
+                                 &lat_out[2], &lon_out[2]);
+    lat_out[3] = ic_lat[0];
+    lon_out[3] = ic_lon[0];
 
-    /* IFOV 1 : Bottom-Right */
+    /* TL FOV */
     lat_out[4] = ic_lat[1];
     lon_out[4] = ic_lon[1];
-    lat_out[5] = x_lat[1];
-    lon_out[5] = x_lon[1];
-    lat_out[6] = oc_lat[0];
-    lon_out[6] = oc_lon[0];
-    lat_out[7] = cen_lat;
-    lon_out[7] = cen_lon;
+    harp_geographic_intersection(ic_lat[2], ic_lon[2], ic_lat[1], ic_lon[1], oc_lat[1], oc_lon[1], oc_lat[0], oc_lon[0],
+                                 &lat_out[5], &lon_out[5]);
+    lat_out[6] = oc_lat[1];
+    lon_out[6] = oc_lon[1];
+    harp_geographic_intersection(ic_lat[0], ic_lon[0], ic_lat[1], ic_lon[1], oc_lat[2], oc_lon[2], oc_lat[1], oc_lon[1],
+                                 &lat_out[7], &lon_out[7]);
 
-    /* IFOV 2 : Top-Right */
-    lat_out[8] = cen_lat;
-    lon_out[8] = cen_lon;
-    lat_out[9] = oc_lat[2];
-    lon_out[9] = oc_lon[2];
-    lat_out[10] = x_lat[2];
-    lon_out[10] = x_lon[2];
-    lat_out[11] = ic_lat[1];
-    lon_out[11] = ic_lon[1];
+    /* BL FOV */
+    harp_geographic_intersection(ic_lat[1], ic_lon[1], ic_lat[2], ic_lon[2], oc_lat[3], oc_lon[3], oc_lat[2], oc_lon[2],
+                                 &lat_out[8], &lon_out[8]);
+    lat_out[9] = ic_lat[2];
+    lon_out[9] = ic_lon[2];
+    harp_geographic_intersection(ic_lat[3], ic_lon[3], ic_lat[2], ic_lon[2], oc_lat[2], oc_lon[2], oc_lat[1], oc_lon[1],
+                                 &lat_out[10], &lon_out[10]);
+    lat_out[11] = oc_lat[2];
+    lon_out[11] = oc_lon[2];
 
-    /* IFOV 3 : Top-Left */
-    lat_out[12] = ic_lat[3];
-    lon_out[12] = ic_lon[3];
-    lat_out[13] = cen_lat;
-    lon_out[13] = cen_lon;
-    lat_out[14] = oc_lat[3];
-    lon_out[14] = oc_lon[3];
-    lat_out[15] = x_lat[3];
-    lon_out[15] = x_lon[3];
+    /* BR FOV */
+    lat_out[12] = oc_lat[3];
+    lon_out[12] = oc_lon[3];
+    harp_geographic_intersection(ic_lat[2], ic_lon[2], ic_lat[3], ic_lon[3], oc_lat[0], oc_lon[0], oc_lat[3], oc_lon[3],
+                                 &lat_out[13], &lon_out[13]);
+    lat_out[14] = ic_lat[3];
+    lon_out[14] = ic_lon[3];
+    harp_geographic_intersection(ic_lat[0], ic_lon[0], ic_lat[3], ic_lon[3], oc_lat[3], oc_lon[3], oc_lat[2], oc_lon[2],
+                                 &lat_out[15], &lon_out[15]);
 }
 
 static int get_corner_coordinates(ingest_info *info)
 {
     /*
-     * According to Figure 2 of EPS-SG IASI-NG Level 1C Product Format
-     * Specification (see section 2.3.1 IASI-NG FOR), the pixels are
-     * distributed as follows 
+     * For EPS-SG IASI-NG the pixels are distributed as follows:
      *
      * P4  P3  P2  P1         ^ Satellite Velocity (Xsat)
      * P8  P7  P6  P5         |
      * P12 P11 P10 P9     <---: Scan Direction (Ysat)
      * P16 P15 P14 P13
      *
-     * Note: The figure here is rotated version of the one i
-     * that section
-     * 
-     * Lets take the first 16 elements of one of the datasets as an example: 
-     * W_XX-EUMETSAT-Darmstadt,SAT,SGA1-IAS-02-SFC_C_EUMT_20170616120000_G_O_
-     * 20070912084329_20070912084600_O_N____
-     * 
-     * sounder_pixel_longitude = 
-     * 6062, 5918, 5786, 5664, 
-     * 6102, 5955, 5821, 5698, 
-     * 6143, 5994, 5858, 5733, 
-     * 6187, 6034, 5896, 5769,
-     *
-     * and 
-     *
-     * sounder_pixel_latitude = 
-     * 15886, 15992, 16085, 16168, 
-     * 15996, 16097, 16186, 16266, 
-     * 16104, 16201, 16287, 16363, 
-     * 16212, 16305, 16387, 16460,
-     *
-     * In this case, the pixels will have the following values (lat, lon): 
-     * P4  = (16168, 5664)  P3 = (16085, 5785)  P2 = (15992, 5918)  P1 = (15886, 6062) 
-     * P8  = (16266, 5698)  P7 = (16168, 5821)  P6 = (16097, 5955)  P5 = (15996, 6102) 
-     * P12 = (16363, 5733) P11 = (16287, 5858) P10 = (16201, 5994)  P9 = (16104, 6143)
-     * P16 = (16460, 5769) P15 = (16387, 5896) P14 = (16305, 6034) P14 = (16212, 6187)
-     *
      * By splitting the 16 element square into 4 smaller ones with 2 x 2, it is
-     * possible to follow the same approach as in IASI L2 module (rotated view): 
+     * possible to follow the same approach as for IASI L2:
      *
      * P13 - P14 - P15 - P16 
      * |      |     |    |
@@ -1334,6 +1320,7 @@ static int get_corner_coordinates(ingest_info *info)
      * |     |    |     |     |     |      |     |
      * P1 - P2    P3 - P4    P9  - P10    P11 - P12
      *
+     * And then for each block of 2x2 we can use the IASI L2 algorithm to calculate the corner coordinates
      */
 
     /* loop counters */
@@ -1345,9 +1332,6 @@ static int get_corner_coordinates(ingest_info *info)
     harp_array a;
 
     size_t n_corner;
-
-    /* running output pointer */
-    long idx_out;
 
     /* first IFOV of current FOR */
     long base_ifov;
@@ -1377,7 +1361,6 @@ static int get_corner_coordinates(ingest_info *info)
 
     /* 1. read full centre grids only once */
 
-    /* harp_geographic_intersection and other routines take double, not float */
     lat = malloc(info->num_ifov * sizeof(double));
     if (lat == NULL)
     {
@@ -1409,7 +1392,6 @@ static int get_corner_coordinates(ingest_info *info)
     }
 
     /* 2. loop over every FOR and build its 64 corner values */
-    idx_out = 0;
     base_ifov = 0;
 
     for (i = 0; i < info->num_lines; i++)
@@ -1421,22 +1403,32 @@ static int get_corner_coordinates(ingest_info *info)
             {
                 for (c = 0; c < 4; c += 2)
                 {
-                    /* indices of the 4 centre points in BL, BR, TR, and TL order */
-                    int i0 = base_ifov + r * 4 + c;     /* Bottom Left  = BL (P1, P5, ...) */
-                    int i1 = i0 + 1;    /* Bottom Right = BR */
-                    int i2 = i0 + 4 + 1;        /* Top Right    = TR */
-                    int i3 = i0 + 4;    /* Top Left     = TL */
+                    double lat_out[16];
+                    double lon_out[16];
+                    int p;
+
+                    /* indices of the 4 centre points in TR, TL, BL, and BR order (e.g. P1, P2, P6, P5) */
+                    int i0 = base_ifov + r * 4 + c; /* Top Right */
+                    int i1 = i0 + 1;    /* Top Left */
+                    int i2 = i0 + 4 + 1;    /* Bottom Left */
+                    int i3 = i0 + 4;    /* Bottom Right */
 
                     double lat_in[4] = { lat[i0], lat[i1], lat[i2], lat[i3] };
                     double lon_in[4] = { lon[i0], lon[i1], lon[i2], lon[i3] };
 
-                    /* output pointers: 4 corners for 4 IFOVs = 16 doubles */
-                    double *lat_out = &info->corner_latitude[idx_out];
-                    double *lon_out = &info->corner_longitude[idx_out];
-
                     build_corners_2x2(lat_in, lon_in, lat_out, lon_out);
 
-                    idx_out += 16;      /* advance to next IFOV block */
+                    for (p = 0; p < 4; p++)
+                    {
+                        info->corner_latitude[i0 * 4 + p] = lat_out[0 + p];
+                        info->corner_longitude[i0 * 4 + p] = lon_out[0 + p];
+                        info->corner_latitude[i1 * 4 + p] = lat_out[4 + p];
+                        info->corner_longitude[i1 * 4 + p] = lon_out[4 + p];
+                        info->corner_latitude[i2 * 4 + p] = lat_out[8 + p];
+                        info->corner_longitude[i2 * 4 + p] = lon_out[8 + p];
+                        info->corner_latitude[i3 * 4 + p] = lat_out[12 + p];
+                        info->corner_longitude[i3 * 4 + p] = lon_out[12 + p];
+                    }
                 }
             }
         }
@@ -1453,9 +1445,6 @@ static int read_corner_latitude(void *user_data, long index, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     double *src;
 
-    /* identify FOR and IFOV within that FOR */
-    long ifov_id = index % 16;  /* 0 ... 15 */
-
     if (info->corner_latitude == NULL)
     {
         if (get_corner_coordinates(info) != 0)
@@ -1464,7 +1453,7 @@ static int read_corner_latitude(void *user_data, long index, harp_array data)
         }
     }
 
-    src = &info->corner_latitude[ifov_id * 4];
+    src = &info->corner_latitude[index * 4];
     data.double_data[0] = src[0];
     data.double_data[1] = src[1];
     data.double_data[2] = src[2];
@@ -1478,8 +1467,6 @@ static int read_corner_longitude(void *user_data, long index, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     double *src;
 
-    long ifov_id = index % 16;
-
     if (info->corner_longitude == NULL)
     {
         if (get_corner_coordinates(info) != 0)
@@ -1488,7 +1475,7 @@ static int read_corner_longitude(void *user_data, long index, harp_array data)
         }
     }
 
-    src = &info->corner_longitude[ifov_id * 4];
+    src = &info->corner_longitude[index * 4];
     data.double_data[0] = src[0];
     data.double_data[1] = src[1];
     data.double_data[2] = src[2];
