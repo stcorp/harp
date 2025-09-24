@@ -1408,9 +1408,9 @@ static int get_corner_coordinates(ingest_info *info)
                     int p;
 
                     /* indices of the 4 centre points in TR, TL, BL, and BR order (e.g. P1, P2, P6, P5) */
-                    int i0 = base_ifov + r * 4 + c; /* Top Right */
+                    int i0 = base_ifov + r * 4 + c;     /* Top Right */
                     int i1 = i0 + 1;    /* Top Left */
-                    int i2 = i0 + 4 + 1;    /* Bottom Left */
+                    int i2 = i0 + 4 + 1;        /* Bottom Left */
                     int i3 = i0 + 4;    /* Bottom Right */
 
                     double lat_in[4] = { lat[i0], lat[i1], lat[i2], lat[i3] };
@@ -1673,8 +1673,8 @@ static void register_geolocation_variables(harp_product_definition *product_defi
     harp_variable_definition_set_valid_range_double(variable_definition, -180.0, 180.0);
     path = "/data/geolocation_information/sounder_pixel_longitude_bounds[]";
     description = "the corner coordinates are rough estimates of the circle areas for the scan elements; the size of "
-        "a scan element (in a certain direction) is taken to be half the distance, from center to center, "
-        "from a scan element to its nearest neighboring scan element";
+        "a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan "
+        "element to its nearest neighboring scan element (within the same 2x2 subgrid inside a Field of Regard (FOR))";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
 
@@ -1697,8 +1697,8 @@ static void register_geolocation_variables(harp_product_definition *product_defi
     harp_variable_definition_set_valid_range_double(variable_definition, -90.0, 90.0);
     path = "/data/geolocation_information/sounder_pixel_latitude_bounds[]";
     description = "the corner coordinates are rough estimates of the circle areas for the scan elements; the size of "
-        "a scan element (in a certain direction) is taken to be half the distance, from center to center, "
-        "from a scan element to its nearest neighboring scan element";
+        "a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan "
+        "element to its nearest neighboring scan element (within the same 2x2 subgrid inside a Field of Regard (FOR))";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* solar_azimuth_angle */
