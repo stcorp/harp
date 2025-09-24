@@ -223,23 +223,47 @@
 <td><p>[m/s]</p></td>
 <td><p>eastward wind</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-odd"><td><p><strong>land_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>land fraction</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>aerosol index</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>absorbing_aerosol_index_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>absorbing_aerosol_index_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the aerosol index</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>absorbing_aerosol_index_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>cloud fraction</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>cloud height</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>surface albedo</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int8</p></td>
@@ -279,8 +303,8 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>wavelength_ratio</p></td>
-<td><p>354_388nm, 340_380nm, 335_367nm</p></td>
-<td><p>ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm</p></td>
+<td><p>354_388nm, 354_388nm_scm, 340_380nm, 335_367nm</p></td>
+<td><p>ingest aerosol index retrieved at wavelengths 354/388 nm (default), 354/388 nm with scattering cloud model (scm), 340/380 nm, or 335/367 nm</p></td>
 </tr>
 </tbody>
 </table>
@@ -409,27 +433,46 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>land_fraction</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.09.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/land_fraction[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="8"><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=354_388nm or wavelength_ratio unset</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_index_354_388</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>wavelength_ratio=340_380nm_scm and processor version &gt;= 02.09.01</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/aerosol_index_354_388_scm</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=340_380nm</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_index_340_380</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=335_367nm and processor version &gt;= 02.04.00</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_index_335_367</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="6"><p><strong>absorbing_aerosol_index_uncertainty</strong></p></td>
-<td><p><em>condition</em></p></td>
+<tr class="row-even"><td rowspan="7"><p><strong>absorbing_aerosol_index_uncertainty</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=354_388nm (default)</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
@@ -442,7 +485,7 @@
 <td><p><strong>/PRODUCT/aerosol_index_340_380_precision</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>wavelength_ratio=335_367nm</p></td>
+<td><p>wavelength_ratio=335_367nm and processor version &gt;= 02.04.00</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_index_335_367_precision</strong></p></td>
@@ -451,30 +494,60 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>snow_ice_type</strong></p></td>
+<tr class="row-even"><td rowspan="3"><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>processor version &gt;= 02.07.00</p></td>
+<td><p>wavelength_ratio=340_380nm_scm and processor version &gt;= 02.09.01</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p><strong>cloud_height</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>wavelength_ratio=340_380nm_scm and processor version &gt;= 02.09.01</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_altitude</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>surface_albedo</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>wavelength_ratio=340_380nm_scm and processor version &gt;= 02.09.01</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>snow_ice_type</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.07.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>sea_ice_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>sea_ice_fraction</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>processor version &gt;= 02.07.00</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</p></td>
 </tr>
 </tbody>

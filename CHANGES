@@ -7,6 +7,9 @@
 
 * Updates to product ingestions:
   - GOSAT FTS L2: added XCH4/XCO2 variables to ingestion.
+  - S5P L2: added land_fraction variable for AAI/ALH/CH4/CO/FRESCO/NO2/O3PR.
+  - S5P L2 AER_AI: added s354_388nm_scm option + cloud/albedo variables.
+  - S5P L2 FRESCO: added scene_height variables.
   - Sentinel-5 L2: fixed structure and values of datetime variables.
 
 1.26 2025-07-09

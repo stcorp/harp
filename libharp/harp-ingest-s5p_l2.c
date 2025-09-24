@@ -72,6 +72,14 @@ typedef enum s5p_dimension_type_enum
 
 #define S5P_NUM_DIM_TYPES (((int)s5p_dim_level) + 1)
 
+typedef enum s5p_wavelength_ratio_enum
+{
+    s5p_354_388nm,
+    s5p_354_388nm_scm,
+    s5p_340_380nm,
+    s5p_335_367nm,
+} s5p_wavelength_ratio;
+
 static const char *s5p_dimension_name[S5P_NUM_PRODUCT_TYPES][S5P_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", NULL, "level"},
     {"time", NULL, NULL, NULL, NULL, NULL},
@@ -125,7 +133,7 @@ typedef struct ingest_info_struct
 
     int processor_version;
     int collection_number;
-    int wavelength_ratio;
+    s5p_wavelength_ratio wavelength_ratio;
     int is_nrti;
 
     uint8_t *surface_layer_status;      /* used for O3; 0: use as-is, 1: remove */
@@ -577,7 +585,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->num_levels = 0;
     info->processor_version = -1;
     info->collection_number = -1;
-    info->wavelength_ratio = 354;
+    info->wavelength_ratio = s5p_354_388nm;
     info->is_nrti = 0;
     info->surface_layer_status = NULL;
 
@@ -805,7 +813,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         }
         if (strcmp(option_value, "335_367nm") == 0)
         {
-            info->wavelength_ratio = 335;
+            info->wavelength_ratio = s5p_335_367nm;
             if (info->processor_version < 20400)
             {
                 /* 335/367 is only available with processor version >= 02.04.00 */
@@ -813,17 +821,27 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
                 *user_data = info;
                 return 0;
             }
-
         }
         else if (strcmp(option_value, "354_388nm") == 0)
         {
-            info->wavelength_ratio = 354;
+            info->wavelength_ratio = s5p_354_388nm;
+        }
+        else if (strcmp(option_value, "354_388nm_scm") == 0)
+        {
+            info->wavelength_ratio = s5p_354_388nm_scm;
+            if (info->processor_version < 20901)
+            {
+                /* SCM is only available with processor version >= 02.09.01 */
+                /* return an empty product if the wavelength pair is not available */
+                *user_data = info;
+                return 0;
+            }
         }
         else
         {
             /* Option values are guaranteed to be legal if present. */
             assert(strcmp(option_value, "340_380nm") == 0);
-            info->wavelength_ratio = 340;
+            info->wavelength_ratio = s5p_340_380nm;
         }
     }
 
@@ -1478,6 +1496,14 @@ static int read_input_cloud_albedo_crb_precision(void *user_data, harp_array dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_input_cloud_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "cloud_altitude", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_input_cloud_base_height(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1618,6 +1644,14 @@ static int read_input_eastward_wind(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->input_data_cursor, "eastward_wind", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_land_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "land_fraction", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2035,13 +2069,16 @@ static int read_product_aerosol_index(void *user_data, harp_array data)
 
     switch (info->wavelength_ratio)
     {
-        case 354:
+        case s5p_354_388nm:
             variable_name = "aerosol_index_354_388";
             break;
-        case 340:
+        case s5p_354_388nm_scm:
+            variable_name = "aerosol_index_354_388_scm";
+            break;
+        case s5p_340_380nm:
             variable_name = "aerosol_index_340_380";
             break;
-        case 335:
+        case s5p_335_367nm:
             variable_name = "aerosol_index_335_367";
             break;
         default:
@@ -2060,16 +2097,17 @@ static int read_product_aerosol_index_precision(void *user_data, harp_array data
 
     switch (info->wavelength_ratio)
     {
-        case 354:
+        case s5p_354_388nm:
             variable_name = "aerosol_index_354_388_precision";
             break;
-        case 340:
+        case s5p_340_380nm:
             variable_name = "aerosol_index_340_380_precision";
             break;
-        case 335:
+        case s5p_335_367nm:
             variable_name = "aerosol_index_335_367_precision";
             break;
         default:
+            /* precision does not exist for s5p_354_388nm_scm */
             assert(0);
             exit(1);
     }
@@ -2102,6 +2140,22 @@ static int read_product_aerosol_mid_pressure_precision(void *user_data, harp_arr
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_product_apparent_scene_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "apparent_scene_height", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_apparent_scene_height_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "apparent_scene_height_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_product_apparent_scene_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2114,7 +2168,7 @@ static int read_product_apparent_scene_pressure_precision(void *user_data, harp_
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->product_cursor, "apparent_scene_pressure", harp_type_float,
+    return read_dataset(info->product_cursor, "apparent_scene_pressure_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -2780,6 +2834,14 @@ static int read_results_cloud_albedo_crb_precision_nir(void *user_data, harp_arr
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_albedo_crb_precision_nir", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -5161,6 +5223,16 @@ static int include_offl(void *user_data)
     return !((ingest_info *)user_data)->is_nrti;
 }
 
+static int include_aer_ai_precision(void *user_data)
+{
+    return ((ingest_info *)user_data)->wavelength_ratio != s5p_354_388nm_scm;
+}
+
+static int include_aer_ai_scm(void *user_data)
+{
+    return ((ingest_info *)user_data)->wavelength_ratio == s5p_354_388nm_scm;
+}
+
 static int include_aer_lh_aerosol_pressure(void *user_data)
 {
     return !((ingest_info *)user_data)->use_aerosol_pressure_not_clipped ||
@@ -5265,6 +5337,11 @@ static int include_from_020600(void *user_data)
 static int include_from_020700(void *user_data)
 {
     return ((ingest_info *)user_data)->processor_version >= 20700;
+}
+
+static int include_from_020900(void *user_data)
+{
+    return ((ingest_info *)user_data)->processor_version >= 20900;
 }
 
 static void register_core_variables(harp_product_definition *product_definition, int delta_time_num_dims,
@@ -5682,7 +5759,7 @@ static void register_cloud_variables(harp_product_definition *product_definition
 
 /* include_surface_winds=1: include from 01.03.00, include_surface_winds=2: include from 02.00.00 */
 static void register_surface_variables(harp_product_definition *product_definition, int include_surface_pressure,
-                                       int include_surface_winds)
+                                       int include_surface_winds, int include_land_fraction)
 {
     const char *path;
     const char *description;
@@ -5751,6 +5828,18 @@ static void register_surface_variables(harp_product_definition *product_definiti
                                                        include_func, read_input_eastward_wind);
         path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]";
         harp_variable_definition_add_mapping(variable_definition, NULL, processor_description, path, NULL);
+    }
+
+    /* land_fraction */
+    if (include_land_fraction)
+    {
+        description = "land fraction";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "land_fraction", harp_type_float, 1,
+                                                       dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                       include_from_020900, read_input_land_fraction);
+        path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/land_fraction[]";
+        harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.09.00", path, NULL);
     }
 }
 
@@ -5867,20 +5956,21 @@ static void register_aer_ai_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *wavelength_ratio_option_values[3] = { "354_388nm", "340_380nm", "335_367nm" };
+    const char *wavelength_ratio_option_values[4] = { "354_388nm", "354_388nm_scm", "340_380nm", "335_367nm" };
     const char *description;
 
     module = harp_ingestion_register_module("S5P_L2_AER_AI", "Sentinel-5P", "Sentinel5P", "L2__AER_AI",
                                             "Sentinel-5P L2 aerosol index", ingestion_init, ingestion_done);
 
-    description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm";
-    harp_ingestion_register_option(module, "wavelength_ratio", description, 3, wavelength_ratio_option_values);
+    description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), 354/388 nm with scattering "
+        "cloud model (scm), 340/380 nm, or 335/367 nm";
+    harp_ingestion_register_option(module, "wavelength_ratio", description, 4, wavelength_ratio_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S5P_L2_AER_AI", NULL, read_dimensions);
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_ai], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
-    register_surface_variables(product_definition, 1, 1);
+    register_surface_variables(product_definition, 1, 1, 1);
 
     /* absorbing_aerosol_index */
     description = "aerosol index";
@@ -5890,6 +5980,8 @@ static void register_aer_ai_product(void)
                                                    read_product_aerosol_index);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm or wavelength_ratio unset",
                                          NULL, "/PRODUCT/aerosol_index_354_388", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm_scm",
+                                         "processor version >= 02.09.01", "/PRODUCT/aerosol_index_354_388_scm", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=335_367nm",
@@ -5900,13 +5992,15 @@ static void register_aer_ai_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_product_aerosol_index_precision);
+                                                   HARP_UNIT_DIMENSIONLESS, include_aer_ai_precision,
+                                                   read_product_aerosol_index_precision);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm (default)", NULL,
                                          "/PRODUCT/aerosol_index_354_388_precision", NULL);
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380_precision", NULL);
-    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=335_367nm", NULL,
-                                         "/PRODUCT/aerosol_index_335_367_precision", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=335_367nm",
+                                         "processor version >= 02.04.00", "/PRODUCT/aerosol_index_335_367_precision",
+                                         NULL);
 
     /* absorbing_aerosol_index_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
@@ -5915,6 +6009,36 @@ static void register_aer_ai_product(void)
                                                    harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
                                                    read_product_qa_value);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+
+    /* cloud_fraction */
+    description = "cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, NULL, include_aer_ai_scm,
+                                                   read_results_cloud_fraction);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm_scm",
+                                         "processor version >= 02.09.01",
+                                         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction", NULL);
+
+    /* cloud_height */
+    description = "cloud height";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, NULL, include_aer_ai_scm,
+                                                   read_input_cloud_altitude);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm_scm",
+                                         "processor version >= 02.09.01",
+                                         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_altitude", NULL);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, NULL, include_aer_ai_scm,
+                                                   read_input_surface_albedo);
+    harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm_scm",
+                                         "processor version >= 02.09.01",
+                                         "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo", NULL);
 
     register_snow_ice_flag_variables(product_definition, 0, 1);
 }
@@ -5946,7 +6070,7 @@ static void register_aer_lh_product(void)
     register_core_variables(product_definition, s5p_delta_time_num_dims[s5p_type_aer_lh], 1);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
-    register_surface_variables(product_definition, 1, 1);
+    register_surface_variables(product_definition, 1, 1, 1);
 
     /* aerosol_height */
     description = "altitude of center of aerosol layer";
@@ -6119,7 +6243,7 @@ static void register_ch4_product(void)
         "surface_pressure - (k + 1) * pressure_interval); the vertical grid is inverted to make it ascending";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    register_surface_variables(product_definition, 1, 1);
+    register_surface_variables(product_definition, 1, 1, 1);
 
     /* CH4_column_volume_mixing_ratio_dry_air */
     description = "column averaged dry air mixing ratio of methane";
@@ -6314,7 +6438,7 @@ static void register_co_product(void)
         "most layer";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    register_surface_variables(product_definition, 0, 1);
+    register_surface_variables(product_definition, 0, 1, 1);
 
     /* surface_pressure */
     description = "surface pressure";
@@ -6621,7 +6745,7 @@ static void register_hcho_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1, 2);
+    register_surface_variables(product_definition, 1, 2, 0);
 
     /* tropopause_pressure */
     description = "tropopause pressure";
@@ -6981,7 +7105,7 @@ static void register_o3_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
-    register_surface_variables(product_definition, 1, 2);
+    register_surface_variables(product_definition, 1, 2, 0);
     register_snow_ice_flag_variables(product_definition, 1, 0);
 }
 
@@ -7198,7 +7322,7 @@ static void register_o3_pr_product(void)
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
-    register_surface_variables(product_definition, 1, 1);
+    register_surface_variables(product_definition, 1, 1, 1);
     register_snow_ice_flag_variables(product_definition, 0, 0);
 }
 
@@ -7791,7 +7915,7 @@ static void register_no2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_nitrogendioxide_window";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1, 1);
+    register_surface_variables(product_definition, 1, 1, 1);
     register_snow_ice_flag_variables(product_definition, 0, 0);
 
     /* tropopause_pressure */
@@ -8125,7 +8249,7 @@ static void register_so2_product(void)
         "selected_fitting_window_flag is 3 then use surface_albedo_376, else set to NaN";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    register_surface_variables(product_definition, 1, 2);
+    register_surface_variables(product_definition, 1, 2, 0);
 
     /* tropopause_pressure */
     description = "tropopause pressure";
@@ -8319,7 +8443,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1, 2);
+    register_surface_variables(product_definition, 1, 2, 0);
     register_snow_ice_flag_variables(product_definition, 1, 0);
 }
 
@@ -8553,7 +8677,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_fitted_crb_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_surface_variables(product_definition, 1, 2);
+    register_surface_variables(product_definition, 1, 2, 0);
     register_snow_ice_flag_variables(product_definition, 1, 0);
 }
 
@@ -8805,6 +8929,24 @@ static void register_fresco_product(void)
     path = "/PRODUCT/scene_albedo_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
+    /* scene_height */
+    description = "altitude of cloud optical centroid assuming completely cloudy sky";
+    path = "/PRODUCT/apparent_scene_height[]";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", include_from_020900,
+                                                   read_product_apparent_scene_height);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.09.00", path, NULL);
+
+    /* scene_height_uncertainty */
+    description = "uncertainty of the scene height";
+    path = "/PRODUCT/apparent_scene_height_precision[]";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_height_uncertainty", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", include_from_020900,
+                                                   read_product_apparent_scene_height_precision);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.09.00", path, NULL);
+
     /* scene_pressure */
     description = "air pressure at cloud optical centroid assuming completely cloudy sky";
     path = "/PRODUCT/apparent_scene_pressure[]";
@@ -8841,7 +8983,7 @@ static void register_fresco_product(void)
                                                    include_from_010000, read_input_surface_pressure);
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
 
-    register_surface_variables(product_definition, 0, 1);
+    register_surface_variables(product_definition, 0, 1, 1);
     register_snow_ice_flag_variables(product_definition, 0, 0);
 }
 

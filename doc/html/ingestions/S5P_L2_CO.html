@@ -229,85 +229,91 @@
 <td><p>[m/s]</p></td>
 <td><p>eastward wind</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>land_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>land fraction</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>surface pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>CO_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>CO_column_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>vertically integrated CO column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>CO_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>CO_column_number_density_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>uncertainty of the vertically integrated CO column density (standard error)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>CO_column_number_density_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>CO_column_number_density_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>CO_number_density_avk</strong></p></td>
+<tr class="row-odd"><td><p><strong>CO_number_density_avk</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>averaging kernel for the vertically integrated CO column density (for number density profiles)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>CO_column_number_density_avk</strong></p></td>
+<tr class="row-even"><td><p><strong>CO_column_number_density_avk</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>averaging kernel for the vertically integrated CO column density (for partial column number density profiles)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>CO_column_number_density_apriori</strong></p></td>
+<tr class="row-odd"><td><p><strong>CO_column_number_density_apriori</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>vertical</em>}</p></td>
 <td><p>[mol/m2]</p></td>
 <td><p>carbon monoxide apriori profile as partial column number densities</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>H2O_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>H2O_column_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>H2O total column density</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m^2]</p></td>
 <td><p>uncertainty of the H2O column density (standard error)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>Scattering layer height</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_optical_depth</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>Scattering optical thickness SWIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
+<tr class="row-even"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>sea_ice_fraction</strong></p></td>
+<tr class="row-odd"><td><p><strong>sea_ice_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>sea-ice concentration (as a fraction)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -477,128 +483,138 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>surface_pressure</strong></p></td>
+<tr class="row-even"><td rowspan="3"><p><strong>land_fraction</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.09.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/land_fraction[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>surface_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_levels[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the surface pressure is the pressure at the lowest pressure level</p></td>
 </tr>
-<tr class="row-even"><td rowspan="3"><p><strong>CO_column_number_density</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>CO_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/carbonmonoxide_total_column[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>co=corrected and processor version &gt;= 02.01.00</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/carbonmonoxide_total_column_corrected[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>CO_column_number_density_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>CO_column_number_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/carbonmonoxide_total_column_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>CO_column_number_density_validity</strong></p></td>
+<tr class="row-odd"><td><p><strong>CO_column_number_density_validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="7"><p><strong>CO_number_density_avk</strong></p></td>
+<tr class="row-even"><td rowspan="7"><p><strong>CO_number_density_avk</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>avk=number_density and processor version &lt; 02.04.00</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>avk=number_density and processor version &gt;= 02.04.00</p></td>
 </tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending and each element is multiplied by 1000 [m] so the column avk can be applied to number density profiles instead of partial column number density profiles</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="7"><p><strong>CO_column_number_density_avk</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>avk unset and processor version &lt; 02.04.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending and each element is divided by 1000 [m] so the column avk can be applied to partial column number density profiles instead of number density profiles</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>avk unset and processor version &gt;= 02.04.00</p></td>
+</tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>the vertical grid is inverted to make it ascending and each element is multiplied by 1000 [m] so the column avk can be applied to number density profiles instead of partial column number density profiles</p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><p><strong>CO_column_number_density_avk</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>CO_column_number_density_apriori</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>avk unset and processor version &lt; 02.04.00</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>the vertical grid is inverted to make it ascending and each element is divided by 1000 [m] so the column avk can be applied to partial column number density profiles instead of number density profiles</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>avk unset and processor version &gt;= 02.04.00</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/column_averaging_kernel[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>the vertical grid is inverted to make it ascending</p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>CO_column_number_density_apriori</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>processor version &gt;= 02.04.00</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/carbonmonoxide_profile_apriori[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>the vertical grid is inverted to make it ascending</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>H2O_column_number_density</strong></p></td>
+<tr class="row-even"><td><p><strong>H2O_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>H2O_column_number_density_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/water_total_column_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/height_scattering_layer[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_optical_depth</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scattering_optical_thickness_SWIR[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>snow_ice_type</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>snow_ice_type</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>processor version &gt;= 02.07.00</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>sea_ice_fraction</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>sea_ice_fraction</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>processor version &gt;= 02.07.00</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
 <td><p>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</p></td>
 </tr>
 </tbody>

@@ -223,85 +223,91 @@
 <td><p>[m/s]</p></td>
 <td><p>eastward wind</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_height</strong></p></td>
+<tr class="row-odd"><td><p><strong>land_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>land fraction</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_height</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>altitude of center of aerosol layer</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_height_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_height_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>uncertainty of altitude of center of aerosol layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_height_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_height_validity</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>pressure at center of aerosol layer</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>uncertainty of pressure at center of aerosol layer</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>aerosol optical thickness</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the aerosol optical thickness</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>surface albedo</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_albedo_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_albedo_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>uncertainty of the surface albedo</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud fraction from the cloud product</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>aerosol index</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>snow_ice_type</strong></p></td>
+<tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>sea_ice_fraction</strong></p></td>
+<tr class="row-even"><td><p><strong>sea_ice_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>sea-ice concentration (as a fraction)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -461,110 +467,120 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_height</strong></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>land_fraction</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 02.09.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/land_fraction[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>aerosol_height</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_mid_height[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_height_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_height_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_mid_height_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_height_validity</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_height_validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="5"><p><strong>aerosol_pressure</strong></p></td>
+<tr class="row-odd"><td rowspan="5"><p><strong>aerosol_pressure</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>aerosol_pressure unset</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_mid_pressure[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>aerosol_pressure=unclipped and processor version &gt;= 02.00.00</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mid_pressure_not_clipped[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_mid_pressure_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="7"><p><strong>surface_albedo</strong></p></td>
+<tr class="row-odd"><td rowspan="7"><p><strong>surface_albedo</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>processor version &gt;= 01.03.00 and processor version &lt; 02.06.00</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>surface_albedo unset and processor version &gt;= 02.06.00</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,0]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>surface_albedo=772 and processor version &gt;= 02.06.00</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,1]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="5"><p><strong>surface_albedo_uncertainty</strong></p></td>
-<td><p><em>available</em></p></td>
-<td><p>optional</p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>surface_albedo unset and processor version &gt;= 02.06.00</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[..,0]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
-<td><p>surface_albedo=772 and processor version &gt;= 02.06.00</p></td>
-</tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[..,1]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="3"><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-even"><td rowspan="5"><p><strong>surface_albedo_uncertainty</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>processor version &gt;= 01.03.00</p></td>
+<td><p>surface_albedo unset and processor version &gt;= 02.06.00</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[..,0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>surface_albedo=772 and processor version &gt;= 02.06.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[..,1]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p><strong>cloud_fraction</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 01.03.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>absorbing_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>snow_ice_type</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>snow_ice_type</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>sea_ice_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>sea_ice_fraction</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</p></td>
 </tr>
 </tbody>
