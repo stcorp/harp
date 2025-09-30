@@ -3,7 +3,7 @@
 
 * harpdump --dataset and .pth files can now contain string values between
   double quotes to store filenames with a comma in them (which is applicable
-  for Sentinel-4 and Sentinel-5 products).
+  for MTG and EPS-SG products such as Sentinel-4 and Sentinel-5).
 
 * Updates to product ingestions:
   - GOSAT FTS L2: added XCH4/XCO2 variables to ingestion.
