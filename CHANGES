@@ -6,6 +6,7 @@
   for MTG and EPS-SG products such as Sentinel-4 and Sentinel-5).
 
 * Updates to product ingestions:
+  - GEOMS SONDE: added support for GEOMS-TE-SONDE-O3-003.
   - GOSAT FTS L2: added XCH4/XCO2 variables to ingestion.
   - S5P L2: added land_fraction variable for AAI/ALH/CH4/CO/FRESCO/NO2/O3PR.
   - S5P L2 AER_AI: added s354_388nm_scm option + cloud/albedo variables.

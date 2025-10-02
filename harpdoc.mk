@@ -303,6 +303,8 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-PANDORA-DIRECTSUN-GAS-003-SO2.html \
 	doc/html/ingestions/GEOMS-TE-SONDE-002-points.html \
 	doc/html/ingestions/GEOMS-TE-SONDE-002-profile.html \
+	doc/html/ingestions/GEOMS-TE-SONDE-O3-003-points.html \
+	doc/html/ingestions/GEOMS-TE-SONDE-O3-003-profile.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-BREWER-TOTALCOL-001.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-DIRECTSUN-GAS-004-BrO.html \
 	doc/html/ingestions/GEOMS-TE-UVVIS-DOAS-DIRECTSUN-GAS-004-CHOCHO.html \
@@ -1232,6 +1234,10 @@ doc/html/ingestions/GEOMS-TE-PANDORA-DIRECTSUN-GAS-003-SO2.html:
 doc/html/ingestions/GEOMS-TE-SONDE-002-points.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-SONDE-002-profile.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-SONDE-O3-003-points.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-SONDE-O3-003-profile.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-UVVIS-BREWER-TOTALCOL-001.html:
 	$(MAKE) harp_doc

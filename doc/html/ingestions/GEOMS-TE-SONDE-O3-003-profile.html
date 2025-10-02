@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GEOMS-TE-SONDE-O3-003-profile &mdash; HARP 1.26 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            HARP
+          </a>
+              <div class="version">
+                1.26
+              </div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions/index.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">R interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GEOMS-TE-SONDE-O3-003-profile</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="geoms-te-sonde-o3-003-profile">
+<h1>GEOMS-TE-SONDE-O3-003-profile</h1>
+<section id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-SONDE-O3-003-profile</span></code> data.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 5.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>sensor_name</strong></p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+<td><p>name of the sensor</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>location_name</strong></p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+<td><p>name of the site at which the sensor is located</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>datetime_start</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[days since 2000-01-01]</p></td>
+<td><p>time of first measurement of the profile</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>datetime_stop</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[days since 2000-01-01]</p></td>
+<td><p>time of last measurement of the profile</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>latitude</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>latitude</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>longitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[hPa]</p></td>
+<td><p>pressure measurement from PTU sonde</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>geopotential_height</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>Geopotential height above mean sea level</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>temperature</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>temperature measurement from PTU sonde</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>relative_humidity</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[%]</p></td>
+<td><p>relative humidity from PTU sonde</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>O3_partial_pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[mPa]</p></td>
+<td><p>in situ partial pressure</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>O3_partial_pressure_uncertainty</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[mPa]</p></td>
+<td><p>1 sigma uncertainty estimate of the partial pressure</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>O3_partial_pressure_validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td></td>
+<td><p>FlagDataReliability (using the WMO Code 0-33-020 convention)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
+<td><p>float</p></td>
+<td></td>
+<td><p>[DU]</p></td>
+<td><p>ozone column sonde</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>wind_speed</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[m/s]</p></td>
+<td><p>wind speed from instrument package</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>wind_direction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>vertical</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>wind direction from instrument package</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">GEOMS-TE-SONDE</span></code> products.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>option name</p></th>
+<th class="head"><p>legal values</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>profile</p></td>
+<td><p>false</p></td>
+<td><p>whether to ingest the sonde profile as a vertical profile (default) or as a timeseries of points (profile=false)</p></td>
+</tr>
+</tbody>
+</table>
+<p>This definition is only applicable when: profile unset</p>
+</section>
+<section id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>sensor_name</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/&#64;DATA.SOURCE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>location_name</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/&#64;DATA.LOCATION</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>datetime_start</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/DATETIME[0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>datetime_stop</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/DATETIME[N-1]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/LATITUDE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>latitude</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/LONGITUDE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>longitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRESSURE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>geopotential_height</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ALTITUDE.GPH</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>temperature</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/TEMPERATURE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>relative_humidity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HUMIDITY.RELATIVE</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>O3_partial_pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/O3.PARTIAL.PRESSURE</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>O3_partial_pressure_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/O3.PARTIAL.PRESSURE_UNCERTAINTY.COMBINED.STANDARD</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>O3_partial_pressure_validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/O3.PARTIAL.PRESSURE_FLAG</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>O3_column_number_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/O3.COLUMN</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>wind_speed</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/WIND.SPEED</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>wind_direction</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/WIND.DIRECTION</strong></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025 S[&amp;]T, The Netherlands.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
