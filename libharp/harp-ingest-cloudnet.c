@@ -61,73 +61,6 @@ static void ingestion_done(void *user_data)
 
 /* General read functions */
 
-static int read_scalar_variable(ingest_info *info, const char *name, harp_array data)
-{
-    coda_cursor cursor;
-    coda_type_class type_class;
-    float fillValue = 9.96920996839e+36;
-    int result;
-
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto_record_field_by_name(&cursor, name) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_get_type_class(&cursor, &type_class) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (type_class == coda_array_class)
-    {
-        long actual_num_elements;
-
-        if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        if (actual_num_elements != 1)
-        {
-            harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected scalar)", name,
-                           actual_num_elements);
-            return -1;
-        }
-        if (coda_cursor_goto_first_array_element(&cursor) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-    }
-    if (coda_cursor_read_float(&cursor, data.float_data) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    /* filter for NaN */
-    result = coda_cursor_goto(&cursor, "@FillValue[0]");
-    if (result == 0)
-    {
-        if (coda_cursor_read_float(&cursor, &fillValue) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-    }
-    if (data.float_data[0] == fillValue)
-    {
-        data.float_data[0] = (float)coda_NaN();
-    }
-
-    return 0;
-}
-
 static int read_array_variable(ingest_info *info, const char *name, long num_elements, harp_data_type data_type,
                                harp_array data)
 {
@@ -242,6 +175,68 @@ static int read_array_variable(ingest_info *info, const char *name, long num_ele
     return 0;
 }
 
+static int read_variable_as_scalar(ingest_info *info, const char *name, harp_array data)
+{
+    coda_cursor cursor;
+    coda_type_class type_class;
+    float fillValue = 9.96920996839e+36;
+    int result;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto_record_field_by_name(&cursor, name) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_type_class(&cursor, &type_class) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (type_class == coda_array_class)
+    {
+        long num_elements;
+
+        /* if this is an array, using the midpoint for the scalar value */
+        if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_array_element_by_index(&cursor, num_elements / 2) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+    }
+    if (coda_cursor_read_float(&cursor, data.float_data) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    /* filter for NaN */
+    result = coda_cursor_goto(&cursor, "@FillValue[0]");
+    if (result == 0)
+    {
+        if (coda_cursor_read_float(&cursor, &fillValue) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+    }
+    if (data.float_data[0] == fillValue)
+    {
+        data.float_data[0] = (float)coda_NaN();
+    }
+
+    return 0;
+}
+
 /* Specific read functions */
 
 static int read_datetime(void *user_data, harp_array data)
@@ -302,17 +297,17 @@ static int read_datetime(void *user_data, harp_array data)
 
 static int read_sensor_latitude(void *user_data, harp_array data)
 {
-    return read_scalar_variable((ingest_info *)user_data, "latitude", data);
+    return read_variable_as_scalar((ingest_info *)user_data, "latitude", data);
 }
 
 static int read_sensor_longitude(void *user_data, harp_array data)
 {
-    return read_scalar_variable((ingest_info *)user_data, "longitude", data);
+    return read_variable_as_scalar((ingest_info *)user_data, "longitude", data);
 }
 
 static int read_sensor_altitude(void *user_data, harp_array data)
 {
-    return read_scalar_variable((ingest_info *)user_data, "altitude", data);
+    return read_variable_as_scalar((ingest_info *)user_data, "altitude", data);
 }
 
 static int read_cloud_base_height(void *user_data, harp_array data)
@@ -485,6 +480,7 @@ int harp_ingestion_module_cloudnet_init(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
+    const char *array_as_scalar_description;
     const char *description;
     const char *path;
 
@@ -511,7 +507,8 @@ int harp_ingestion_module_cloudnet_init(void)
                                                    read_sensor_latitude);
     harp_variable_definition_set_valid_range_float(variable_definition, -90.0, 90.0);
     path = "/latitude";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    array_as_scalar_description = "in case the variable is an array, the mid point will be taken";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, array_as_scalar_description);
 
     /* sensor_longitude */
     description = "longitude of the instrument";
@@ -521,7 +518,7 @@ int harp_ingestion_module_cloudnet_init(void)
                                                    read_sensor_longitude);
     harp_variable_definition_set_valid_range_float(variable_definition, 0, 360.0);
     path = "/longitude";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, array_as_scalar_description);
 
     /* sensor_altitude */
     description = "altitude of the instrument above mean sea level";
@@ -529,7 +526,7 @@ int harp_ingestion_module_cloudnet_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude", harp_type_float, 0,
                                                    dimension_type, NULL, description, "m", NULL, read_sensor_altitude);
     path = "/altitude";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, array_as_scalar_description);
 
     /* altitude */
     description = "altitude of the measurement";
@@ -537,8 +534,7 @@ int harp_ingestion_module_cloudnet_init(void)
         harp_ingestion_register_variable_full_read(product_definition, "altitude", harp_type_float, 1,
                                                    &(dimension_type[1]), NULL, description, "m", NULL, read_altitude);
     path = "/height";
-    description = "height above mean see level";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_type */
     description = "cloud classification type";
@@ -556,8 +552,7 @@ int harp_ingestion_module_cloudnet_init(void)
                                                    dimension_type, NULL, description, NULL, NULL,
                                                    read_detection_status);
     path = "/detection_status";
-    description = "radar and lidar detection status";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_base_height */
     description = "cloud_base_height";
