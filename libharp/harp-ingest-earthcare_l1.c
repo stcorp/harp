@@ -1283,8 +1283,9 @@ static void register_msi_nom_1b_product(void)
                                                    dimension_type, NULL, "radiance", "W/m2/sr/um", include_radiance_msi,
                                                    read_pixel_values_msi);
     path = "/ScienceData/pixel_values[<band>,*,*]";
+    description = "<band> is 0 (VIS), 1 (VNIR), 2 (SWIR1), or 3 (SWIR2)";
     harp_variable_definition_add_mapping(variable_definition, NULL, "band=VIS, band=VNIR, band=SWIR1, band=SWIR2", path,
-                                         band_description);
+                                         description);
 
     /* brightness_temperature */
     variable_definition =
@@ -1292,8 +1293,9 @@ static void register_msi_nom_1b_product(void)
                                                    dimension_type, NULL, "brightness temperature", "K",
                                                    include_brightness_temperature_msi, read_pixel_values_msi);
     path = "/ScienceData/pixel_values[<band>,*,*]";
+    description = "<band> is 4 (TIR1), 5 (TIR2), or 6 (TIR3)";
     harp_variable_definition_add_mapping(variable_definition, NULL, "band=TIR1, band=TIR2, band=TIR3", path,
-                                         band_description);
+                                         description);
 
     /* validity */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
