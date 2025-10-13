@@ -1,6 +1,6 @@
 Copyright (C) 2015-2025 S[&]T, The Netherlands
 
-                HARP 1.26 Release Notes
+                HARP 1.27 Release Notes
 
 
 HARP is a toolset for ingesting, processing and inter-comparing satellite or
@@ -21,17 +21,20 @@ The main functionalities of HARP are:
    - CALIPSO (Lidar L2)
    - CLOUDNET classification L2
    - AERLINET
+   - EarthCARE L1/L2
    - ECMF GRIB (includes CAMS global model data)
    - ENVISAT GOMOS/MIPAS/SCIAMACHY L1/L2
    - ERS GOME L1/L2
    - ESA CCI Aerosol/Cloud/GHG/Ozone
    - GEOMS FTIR/Lidar/MWR/Pandora/Sonde/UVVIS-DOAS data (NDACC/EVDC)
    - GOSAT FTS L1/L2
+   - IASI-NG L2
    - Metop GOME-2/IASI L1/L2
    - NPP Suomi (CrIS/OMPS/VIIRS) L2
    - ODIN OSIRIS/SMR L2
    - QA4ECV NO2/HCHO L2
-   - Sentinel 5P L1/L2
+   - Sentinel-5P L1/L2
+   - Sentinel-5 L1/L2
    - TEMIS ozone fields
  - import/export of data from/into HARP-specific data format
    The HARP data format standard is a convention on top of netCDF3/HDF4/HDF5

@@ -1,3 +1,8 @@
+1.27 2025-10-13
+~~~~~~~~~~~~~~~
+
+* Added support for Sentinel-5 L1B and IASI-NG L2.
+
 * Improve performance of derive() operations to compensate for the
   regression introduced in HARP 1.26.
 
