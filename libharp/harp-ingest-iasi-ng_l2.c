@@ -39,13 +39,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Macro to determine the number of elements in a one dimensional C array. */
-#define ARRAY_SIZE(X) (sizeof((X)) / sizeof((X)[0]))
-
-/* Maximum length of a path string in generated mapping descriptions. */
-#define MAX_PATH_LENGTH 256
-
-
 typedef enum iasi_ng_product_type_enum
 {
     iasi_ng_type_co,
@@ -68,7 +61,6 @@ typedef enum iasi_ng_dimension_type_enum
     iasi_ng_dim_level,
 } iasi_ng_dimension_type;
 
-/* handy constant: last enum value + 1 */
 #define IASI_NG_NUM_DIM_TYPES ((int)iasi_ng_dim_level + 1)
 
 static const char *iasi_ng_dimension_name[IASI_NG_NUM_PRODUCT_TYPES][IASI_NG_NUM_DIM_TYPES] = {
@@ -85,7 +77,6 @@ static const char *iasi_ng_dimension_name[IASI_NG_NUM_PRODUCT_TYPES][IASI_NG_NUM
 typedef struct ingest_info_struct
 {
     coda_product *product;
-
     iasi_ng_product_type product_type;
 
     /* dimensions */
@@ -98,8 +89,6 @@ typedef struct ingest_info_struct
     coda_cursor data_cursor;
     coda_cursor geolocation_cursor;
     coda_cursor surface_cursor;
-    coda_cursor stat_retrieval_cursor;
-    coda_cursor l2p_sst_cursor;
 
     /* number of IFOVs = lines x FOR x 16  (filled in init_dimensions) */
     long num_ifov;
@@ -107,16 +96,7 @@ typedef struct ingest_info_struct
     /* 4 corners per IFOV -> 4 x num_ifov doubles */
     double *corner_latitude;
     double *corner_longitude;
-
-    /* from S5 module */
-    int processor_version;
-    int collection_number;
-    uint8_t *surface_layer_status;
-
 } ingest_info;
-
-/* The routines start here
- */
 
 static const char *get_product_type_name(iasi_ng_product_type product_type)
 {
@@ -144,22 +124,6 @@ static const char *get_product_type_name(iasi_ng_product_type product_type)
     exit(1);
 }
 
-/* Tiny helper for get_product_type() */
-static void dash_to_underscore(char *s)
-{
-    /* use size_t for byte offsets into the char array */
-    size_t i;
-
-    /* Changing '-' to '_' */
-    for (i = 0; s[i] != '\0'; ++i)
-    {
-        if (s[i] == '-')
-        {
-            s[i] = '_';
-        }
-    }
-}
-
 static void broadcast_array_double(long num_lines, long num_for, long num_fov, double *data)
 {
     long i;
@@ -167,7 +131,7 @@ static void broadcast_array_double(long num_lines, long num_for, long num_fov, d
     /* last source element */
     long in_idx = num_lines * num_for - 1;
 
-    /* last destination element      */
+    /* last destination element */
     long out_idx = num_lines * num_for * num_fov - 1;
 
     for (i = num_lines - 1; i >= 0; i--)
@@ -190,87 +154,29 @@ static void broadcast_array_double(long num_lines, long num_for, long num_fov, d
     }
 }
 
-
 static int get_product_type(coda_product *product, iasi_ng_product_type *product_type)
 {
-    coda_cursor cursor, child, *src = NULL;
-    char buf[256];      /* plenty of room for long IDs   */
-    long len;
+    const char *coda_product_type;
     int i;
 
-    /* 1. bind root */
-    if (coda_cursor_set_product(&cursor, product) != 0)
+    if (coda_get_product_type(product, &coda_product_type) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-
-    /* 2. first try the clean ProductShortName */
-    if (coda_cursor_goto(&cursor, "/METADATA/GRANULE_DESCRIPTION@ProductShortName") == 0)
-    {
-        src = &cursor;
-    }
-    else if (coda_cursor_goto(&cursor, "/@product_name") == 0)
-    {
-        /* may be scalar or 1-D array */
-        coda_type_class tc;
-
-        if (coda_cursor_get_type_class(&cursor, &tc) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            harp_add_coda_cursor_path_to_error_message(&cursor);
-            return -1;
-        }
-
-        if (tc == coda_array_class)
-        {
-            child = cursor;
-            if (coda_cursor_goto_first_array_element(&child) != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                harp_add_coda_cursor_path_to_error_message(&cursor);
-                return -1;
-            }
-            src = &child;
-        }
-        else
-        {
-            src = &cursor;
-        }
-    }
-    else
-    {
-        return harp_set_error(HARP_ERROR_INGESTION, "cannot find product identifier"), -1;
-    }
-
-    /* 3. read the string */
-    if (coda_cursor_get_string_length(src, &len) != 0 ||
-        len <= 0 || len >= (long)sizeof(buf) || coda_cursor_read_string(src, buf, sizeof(buf)) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        harp_add_coda_cursor_path_to_error_message(&cursor);
-        return -1;
-    }
-
-    /* 4. normalise and show */
-    dash_to_underscore(buf);
-
-    /* 5. search for any known short code */
     for (i = 0; i < IASI_NG_NUM_PRODUCT_TYPES; i++)
     {
-        const char *code = get_product_type_name((iasi_ng_product_type)i);
-
-        if (strstr(buf, code) != NULL)
+        if (strcmp(get_product_type_name((iasi_ng_product_type)i), coda_product_type) == 0)
         {
-            *product_type = (iasi_ng_product_type)i;
+            *product_type = ((iasi_ng_product_type)i);
             return 0;
         }
     }
 
-    return harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", buf), -1;
+    harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", coda_product_type);
+    return -1;
 }
 
-/* Recursively search for the named 1D dimension field within a CODA structure. */
 static int find_dimension_length_recursive(coda_cursor *cursor, const char *name, long *length)
 {
     coda_type_class type_class;
@@ -286,7 +192,6 @@ static int find_dimension_length_recursive(coda_cursor *cursor, const char *name
     {
         coda_cursor sub_cursor = *cursor;
 
-        /* Navigate to the first field */
         if (coda_cursor_goto_first_record_field(&sub_cursor) == 0)
         {
             do
@@ -354,11 +259,11 @@ static int find_dimension_length_recursive(coda_cursor *cursor, const char *name
         }
     }
 
-    /* Not found in this branch */
+    /* not found */
     return -1;
 }
 
-/* Find dimension length by recursively searching under data/. */
+/* Find dimension length by recursively searching under /data */
 static int get_dimension_length(ingest_info *info, const char *name, long *length)
 {
     coda_cursor cursor = info->data_cursor;
@@ -372,15 +277,10 @@ static int get_dimension_length(ingest_info *info, const char *name, long *lengt
     return 0;
 }
 
-
-/* Init Routines */
-
-/* Initialize CODA cursors for main record groups with inline comments. */
 static int init_cursors(ingest_info *info)
 {
     coda_cursor cursor;
 
-    /* Bind a cursor to the root of the CODA product */
     if (coda_cursor_set_product(&cursor, info->product) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
@@ -393,7 +293,7 @@ static int init_cursors(ingest_info *info)
         harp_add_coda_cursor_path_to_error_message(&cursor);
         return -1;
     }
-    /* Save data/ cursor; subsequent navigation is relative to this. */
+
     info->data_cursor = cursor;
 
     /* Geolocation group */
@@ -404,55 +304,6 @@ static int init_cursors(ingest_info *info)
         return -1;
     }
     info->geolocation_cursor = cursor;
-
-    /* Back to data/ */
-    coda_cursor_goto_parent(&cursor);
-
-    /* Instrument data: '/data/surface_info'. Only TWV, SFC, CLD, and GHG have it. */
-    if (info->product_type == iasi_ng_type_twv || info->product_type == iasi_ng_type_sfc ||
-        info->product_type == iasi_ng_type_cld || info->product_type == iasi_ng_type_ghg)
-    {
-        if (coda_cursor_goto_record_field_by_name(&cursor, "surface_info") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            harp_add_coda_cursor_path_to_error_message(&cursor);
-            return -1;
-        }
-        info->surface_cursor = cursor;
-
-        /* Back to data/ */
-        coda_cursor_goto_parent(&cursor);
-    }
-
-    /* Statistical retrieval data: '/data/statistical_retrieval'. Only SFC and TWV have it. */
-    if (info->product_type == iasi_ng_type_twv || info->product_type == iasi_ng_type_sfc)
-    {
-        if (coda_cursor_goto_record_field_by_name(&cursor, "statistical_retrieval") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            harp_add_coda_cursor_path_to_error_message(&cursor);
-            return -1;
-        }
-        info->stat_retrieval_cursor = cursor;
-
-        /* Back to data/ */
-        coda_cursor_goto_parent(&cursor);
-    }
-
-    /* data/l2p_sst. Only SFC has it. */
-    if (info->product_type == iasi_ng_type_sfc)
-    {
-        if (coda_cursor_goto_record_field_by_name(&cursor, "l2p_sst") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            harp_add_coda_cursor_path_to_error_message(&cursor);
-            return -1;
-        }
-        info->l2p_sst_cursor = cursor;
-
-        /* Back to data/ */
-        coda_cursor_goto_parent(&cursor);
-    }
 
     return 0;
 }
@@ -503,51 +354,9 @@ static int init_dimensions(ingest_info *info)
     return 0;
 }
 
-/* Extract Sentinel-5 L1b product collection and processor version
- * from the global "logical product name".
- */
-static int init_versions(ingest_info *info)
-{
-    coda_cursor cursor;
-    char product_name[84];
-
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (coda_cursor_goto(&cursor, "/@id") != 0)
-    {
-        /* no global 'id' attribute */
-        return 0;
-    }
-    if (coda_cursor_read_string(&cursor, product_name, 84) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        harp_add_coda_cursor_path_to_error_message(&cursor);
-        return -1;
-    }
-    if (strlen(product_name) != 83)
-    {
-        /* 'id' attribute does not contain a valid logical product name */
-        return 0;
-    }
-
-    /* Populating the variables */
-    info->collection_number = (int)strtol(&product_name[58], NULL, 10);
-    info->processor_version = (int)strtol(&product_name[61], NULL, 10);
-
-    return 0;
-}
-
 static void ingestion_done(void *user_data)
 {
     ingest_info *info = (ingest_info *)user_data;
-
-    if (info->surface_layer_status != NULL)
-    {
-        free(info->surface_layer_status);
-    }
 
     /* freeing memory allocated to calculate corners */
     if (info->corner_latitude != NULL)
@@ -560,8 +369,6 @@ static void ingestion_done(void *user_data)
     }
 
     free(info);
-
-
 }
 
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
@@ -580,25 +387,16 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
 
     info->product = product;
-    info->surface_layer_status = NULL;
 
-    /* Dimensions */
     info->num_lines = 0;
     info->num_fov = 0;
     info->num_for = 0;
     info->num_levels = 0;
 
-    /* Variables to calculate corners */
     info->corner_latitude = NULL;
     info->corner_longitude = NULL;
 
     if (get_product_type(info->product, &info->product_type) != 0)
-    {
-        ingestion_done(info);
-        return -1;
-    }
-
-    if (init_versions(info) != 0)
     {
         ingestion_done(info);
         return -1;
@@ -612,7 +410,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
 
-    /* Getting input product dimensios */
     if (init_dimensions(info) != 0)
     {
         ingestion_done(info);
@@ -624,8 +421,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-/* Reading Routines */
-
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -636,12 +431,12 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
-static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_type data_type, long num_elements,
+static int read_dataset(coda_cursor cursor, const char *path, harp_data_type data_type, long num_elements,
                         harp_array data)
 {
     long coda_num_elements;
 
-    if (coda_cursor_goto_record_field_by_name(&cursor, dataset_name) != 0)
+    if (coda_cursor_goto(&cursor, path) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         harp_add_coda_cursor_path_to_error_message(&cursor);
@@ -797,284 +592,15 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
     return 0;
 }
 
-/* Read the absolute orbit number from the global attribute */
-static int read_orbit_index(void *user_data, harp_array data)
+static int read_percentage_fraction(coda_cursor cursor, const char *path, long num_elements, harp_array data)
 {
-    ingest_info *info = (ingest_info *)user_data;
-    coda_cursor cursor;
-    coda_native_type read_type;
-    uint32_t uval;
-    int32_t ival;
-
-    /* 1) Bind a cursor to the root product */
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-
-    /* 2) Try /@orbit_start first, then /@orbit */
-    if (coda_cursor_goto(&cursor, "/@orbit_start") != 0 && coda_cursor_goto(&cursor, "/@orbit") != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        harp_add_coda_cursor_path_to_error_message(&cursor);
-        return -1;
-    }
-
-    /* 3) If it's an array, move to its first element */
-    {
-        coda_type_class tc;
-
-        if (coda_cursor_get_type_class(&cursor, &tc) != 0)
-        {
-            return -1;
-        }
-        if (tc == coda_array_class)
-        {
-            if (coda_cursor_goto_first_array_element(&cursor) != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
-            }
-        }
-    }
-
-    /* 4) Determine the native storage type and read appropriately */
-    if (coda_cursor_get_read_type(&cursor, &read_type) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    if (read_type == coda_native_type_uint32)
-    {
-        /* Stored as an unsigned 32-bit */
-        if (coda_cursor_read_uint32(&cursor, &uval) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-        ival = (int32_t)uval;
-    }
-    else
-    {
-        /* Stored as a signed 32-bit (or other compatible) */
-        if (coda_cursor_read_int32(&cursor, &ival) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            harp_add_coda_cursor_path_to_error_message(&cursor);
-            return -1;
-        }
-    }
-
-    /* 5) Write back into the HARP buffer */
-    data.int32_data[0] = ival;
-    return 0;
-}
-
-/* Field: data */
-
-static int read_data_surface_altitude(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "surface_z", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-static int read_data_quality_flag(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    const char *var_name;
-
-    /* only CO, NAC, O3, and SO2 have this field */
-    if (info->product_type == iasi_ng_type_co)
-    {
-        var_name = "co_qflag";
-    }
-    else if (info->product_type == iasi_ng_type_nac)
-    {
-        var_name = "hno3_qflag";
-    }
-    else if (info->product_type == iasi_ng_type_o3)
-    {
-        var_name = "o3_qflag";
-    }
-    else if (info->product_type == iasi_ng_type_so2)
-    {
-        var_name = "so2_qflag";
-    }
-    else
-    {
-        harp_set_error(HARP_ERROR_CODA, "dataset %s does not contain *_qflag variable", info->product_type);
-        return -1;
-    }
-
-    return read_dataset(info->data_cursor, var_name, harp_type_int8, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
-static int read_data_bdiv(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    const char *var_name;
-
-    /* only CO, NAC, and O3 have this field */
-    if (info->product_type == iasi_ng_type_co)
-    {
-        var_name = "co_bdiv";
-    }
-    else if (info->product_type == iasi_ng_type_nac)
-    {
-        var_name = "hno3_bdiv";
-    }
-    else if (info->product_type == iasi_ng_type_o3)
-    {
-        var_name = "o3_bdiv";
-    }
-    else
-    {
-        harp_set_error(HARP_ERROR_CODA, "dataset %s does not contain *_bdiv variable", info->product_type);
-        return -1;
-    }
-
-    return read_dataset(info->data_cursor, var_name, harp_type_int32, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
-static int read_data_column_density(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    const char *var_name;
-
-    /* only CO, NAC, and O3 have this field */
-    if (info->product_type == iasi_ng_type_co)
-    {
-        var_name = "atmosphere_mass_content_of_carbon_monoxide";
-    }
-    else if (info->product_type == iasi_ng_type_nac)
-    {
-        var_name = "atmosphere_mass_content_of_nitric_acid";
-    }
-    else if (info->product_type == iasi_ng_type_o3)
-    {
-        var_name = "atmosphere_mass_content_of_ozone";
-    }
-    else
-    {
-        harp_set_error(HARP_ERROR_CODA, "dataset %s does not contain atmosphere_mass_content_of_ozone_* variable",
-                       info->product_type);
-        return -1;
-    }
-
-    return read_dataset(info->data_cursor, var_name, harp_type_float, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
-static int read_data_dust_indicator(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    if (info->product_type == iasi_ng_type_cld)
-    {
-        return read_dataset(info->data_cursor, "dust_indicator", harp_type_float,
-                            info->num_lines * info->num_for * info->num_fov, data);
-    }
-    else if (info->product_type == iasi_ng_type_sfc)
-    {
-        return read_dataset(info->l2p_sst_cursor, "dust_indicator", harp_type_float,
-                            info->num_lines * info->num_for * info->num_fov, data);
-    }
-
-    return -1;
-}
-
-static int read_data_nitrous_oxide_column_density(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    if (read_dataset(info->data_cursor, "atmosphere_mass_content_of_nitrous_oxide", harp_type_float,
-                     info->num_lines * info->num_for * info->num_fov * info->num_levels, data) != 0)
-    {
-        return -1;
-    }
-
-    return 0;
-}
-
-static int read_data_methane_column_density(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_methane", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
-}
-
-static int read_data_carbon_dioxide_column_density(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_carbon_dioxide", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
-}
-
-/* Field: data/statistical_retrieval */
-
-static int read_statistical_surface_temperature(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->stat_retrieval_cursor, "surface_temperature", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-static int read_statistical_surface_air_pressure(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->stat_retrieval_cursor, "surface_air_pressure", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-/* Field: data/l2p_sst */
-
-static int read_l2p_sst_wind_speed(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->l2p_sst_cursor, "wind_speed", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-/* Field: data/surface_info */
-
-static int read_surface_height(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->surface_cursor, "height", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-static int read_surface_height_std(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->surface_cursor, "height_std", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-/* Helper function */
-static int convert_percentage_fraction(void *user_data, const char *variable_name, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
     long i;
 
-    if (read_dataset(info->surface_cursor, variable_name, harp_type_float,
-                     info->num_lines * info->num_for * info->num_fov, data) != 0)
+    if (read_dataset(cursor, path, harp_type_float, num_elements, data) != 0)
     {
         return -1;
     }
-    for (i = 0; i < info->num_lines * info->num_for * info->num_fov; i++)
+    for (i = 0; i < num_elements; i++)
     {
         if (data.float_data[i] >= 0.0f && data.float_data[i] <= 100.0f)
         {
@@ -1085,17 +611,260 @@ static int convert_percentage_fraction(void *user_data, const char *variable_nam
     return 0;
 }
 
+static int read_orbit_index(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_native_type read_type;
+    coda_type_class type_class;
+    coda_cursor cursor;
+
+    if (coda_cursor_set_product(&cursor, info->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    if (coda_cursor_goto(&cursor, "/@orbit_start") != 0 && coda_cursor_goto(&cursor, "/@orbit") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        harp_add_coda_cursor_path_to_error_message(&cursor);
+        return -1;
+    }
+
+    /* if it's an array then move to its first element */
+    if (coda_cursor_get_type_class(&cursor, &type_class) != 0)
+    {
+        return -1;
+    }
+    if (type_class == coda_array_class)
+    {
+        if (coda_cursor_goto_first_array_element(&cursor) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+    }
+
+    if (coda_cursor_get_read_type(&cursor, &read_type) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (read_type == coda_native_type_uint32)
+    {
+        uint32_t uval;
+
+        if (coda_cursor_read_uint32(&cursor, &uval) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        data.int32_data[0] = (int32_t)uval;
+    }
+    else
+    {
+        if (coda_cursor_read_int32(&cursor, data.int32_data) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            harp_add_coda_cursor_path_to_error_message(&cursor);
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+static int read_data_surface_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "surface_z", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_co_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "co_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_hno3_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "hno3_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_o3_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "o3_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_so2_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "so2_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_co_bdiv(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "co_bdiv", harp_type_int32, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_hno3_bdiv(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "hno3_bdiv", harp_type_int32,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_o3_bdiv(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "o3_bdiv", harp_type_int32, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_atmosphere_mass_content_of_carbon_monoxide(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_carbon_monoxide", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_atmosphere_mass_content_of_nitric_acid(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_nitric_acid", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_atmosphere_mass_content_of_ozone(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_ozone", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_atmosphere_mass_content_of_nitrous_oxide(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_nitrous_oxide", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
+}
+
+static int read_data_atmosphere_mass_content_of_methane(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_methane", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
+}
+
+static int read_data_atmosphere_mass_content_of_carbon_dioxide(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_carbon_dioxide", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
+}
+
+static int read_data_dust_indicator(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "dust_indicator", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_optimal_estimation_atmosphere_mass_content_of_water(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "optimal_estimation/atmosphere_mass_content_of_water", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_statistical_surface_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "statistical_retrieval/surface_temperature", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_statistical_surface_air_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "statistical_retrieval/surface_air_pressure", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_l2p_sst_dust_indicator(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "l2p_sst/dust_indicator", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_l2p_sst_wind_speed(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "l2p_sst/wind_speed", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_surface_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "surface_info/height", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_surface_height_std(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "surface_info/height_std", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
 static int read_surface_ice_fraction(void *user_data, harp_array data)
 {
-    return convert_percentage_fraction(user_data, "ice_fraction", data);
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_percentage_fraction(info->data_cursor, "surface_info/ice_fraction",
+                                    info->num_lines * info->num_for * info->num_fov, data);
 }
 
 static int read_surface_land_fraction(void *user_data, harp_array data)
 {
-    return convert_percentage_fraction(user_data, "land_fraction", data);
-}
+    ingest_info *info = (ingest_info *)user_data;
 
-/* Field: data/geolocation_information */
+    return read_percentage_fraction(info->data_cursor, "surface_info/land_fraction",
+                                    info->num_lines * info->num_for * info->num_fov, data);
+}
 
 static int read_geolocation_time(void *user_data, harp_array data)
 {
@@ -1104,16 +873,15 @@ static int read_geolocation_time(void *user_data, harp_array data)
     /* original 2-D */
     long n_src = (long)info->num_lines * info->num_for;
 
-    /* step 1: read the [line,for] array into the 'front' of the buffer */
+    /* read the [line,for] array into the 'front' of the buffer */
     if (read_dataset(info->geolocation_cursor, "onboard_utc", harp_type_double, n_src, data) != 0)
     {
         return -1;
     }
 
-    /* step 2: broadcast in place to full [line,for,fov] */
+    /* broadcast in place to full [line,for,fov] */
     broadcast_array_double(info->num_lines, info->num_for, info->num_fov, data.double_data);
 
-    /* buffer now holds n_out samples; HARP flattening order is fine */
     return 0;
 }
 
@@ -1484,14 +1252,14 @@ static int read_corner_longitude(void *user_data, long index, harp_array data)
     return 0;
 }
 
-/*
- * Products' Registration Routines
- */
-
-static void register_core_variables(harp_product_definition *product_definition)
+static void register_common_variables(harp_product_definition *product_definition)
 {
-    const char *description;
     harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    harp_dimension_type dimension_type_bounds[2] = { harp_dimension_time, harp_dimension_independent };
+    long dimension_bounds[2] = { -1, 4 };
+    const char *description;
+    const char *path;
 
     /* orbit_index */
     description = "absolute orbit number";
@@ -1499,150 +1267,6 @@ static void register_core_variables(harp_product_definition *product_definition)
         harp_ingestion_register_variable_full_read(product_definition, "orbit_index", harp_type_int32, 0, NULL, NULL,
                                                    description, NULL, NULL, read_orbit_index);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/@orbit_start", NULL);
-}
-
-static void register_data_variables(harp_product_definition *product_definition, const char *product_type)
-{
-    char path[MAX_PATH_LENGTH];
-    const char *description;
-    const char *variable_name_in;
-    const char *variable_name_out;
-
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
-
-    /* surface_altitude */
-    if (strcmp(product_type, "IAS_02_CO_") == 0 || strcmp(product_type, "IAS_02_NAC") == 0 ||
-        strcmp(product_type, "IAS_02_O3_") == 0)
-    {
-        variable_name_in = "surface_z";
-        description = "Altitude of surface";
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
-                                                       dimension_type_1d, NULL, description, "m", NULL,
-                                                       read_data_surface_altitude);
-
-        snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-    }
-
-    /* validity */
-    if (strcmp(product_type, "IAS_02_CO_") == 0 || strcmp(product_type, "IAS_02_NAC") == 0 ||
-        strcmp(product_type, "IAS_02_O3_") == 0 || strcmp(product_type, "IAS_02_SO2") == 0)
-    {
-        if (strcmp(product_type, "IAS_02_CO_") == 0)
-        {
-            variable_name_in = "co_qflag";
-        }
-        else if (strcmp(product_type, "IAS_02_NAC") == 0)
-        {
-            variable_name_in = "hno3_qflag";
-        }
-        else if (strcmp(product_type, "IAS_02_O3_") == 0)
-        {
-            variable_name_in = "o3_qflag";
-        }
-        else if (strcmp(product_type, "IAS_02_SO2") == 0)
-        {
-            variable_name_in = "so2_qflag";
-        }
-        description = "General retrieval quality flag";
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
-                                                       dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                       NULL, read_data_quality_flag);
-        snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-        description = "the uint8 data is cast to int8";
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-    }
-
-    /* column_density_validity */
-    if (strcmp(product_type, "IAS_02_CO_") == 0 || strcmp(product_type, "IAS_02_NAC") == 0 ||
-        strcmp(product_type, "IAS_02_O3_") == 0)
-    {
-        if (strcmp(product_type, "IAS_02_CO_") == 0)
-        {
-            variable_name_in = "co_bdiv";
-            variable_name_out = "CO_column_density_validity";
-        }
-        else if (strcmp(product_type, "IAS_02_NAC") == 0)
-        {
-            variable_name_in = "hno3_bdiv";
-            variable_name_out = "HNO3_column_density_validity";
-        }
-        else if (strcmp(product_type, "IAS_02_O3_") == 0)
-        {
-            variable_name_in = "o3_bdiv";
-            variable_name_out = "O3_column_density_validity";
-        }
-        description = "Retrieval flags";
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_int32, 1,
-                                                       dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                       NULL, read_data_bdiv);
-        snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-        description = "the uint32 data is cast to int32";
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-    }
-
-    /* column_density */
-    if (strcmp(product_type, "IAS_02_CO_") == 0 || strcmp(product_type, "IAS_02_NAC") == 0 ||
-        strcmp(product_type, "IAS_02_O3_") == 0)
-    {
-        if (strcmp(product_type, "IAS_02_CO_") == 0)
-        {
-            variable_name_in = "atmosphere_mass_content_of_carbon_monoxide";
-            variable_name_out = "CO_column_density";
-            description = "integrated CO";
-        }
-        else if (strcmp(product_type, "IAS_02_NAC") == 0)
-        {
-            variable_name_in = "atmosphere_mass_content_of_nitric_acid";
-            variable_name_out = "HNO3_column_density";
-            description = "integrated HNO3";
-        }
-        else if (strcmp(product_type, "IAS_02_O3_") == 0)
-        {
-            variable_name_in = "atmosphere_mass_content_of_ozone";
-            variable_name_out = "O3_column_density";
-            description = "integrated ozone";
-        }
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_float, 1,
-                                                       dimension_type_1d, NULL, description, "kg/m2", NULL,
-                                                       read_data_column_density);
-        snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-        description = NULL;
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-    }
-
-    /* dust */
-    if (strcmp(product_type, "IAS_02_CLD") == 0 || strcmp(product_type, "IAS_02_SFC") == 0)
-    {
-        variable_name_in = "dust_indicator";
-        variable_name_out = "dust";
-        description = "Indicator of dust (more likely for higher values)";
-
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_float, 1,
-                                                       dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                       NULL, read_data_dust_indicator);
-        snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-        description = NULL;
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
-    }
-
-}
-
-static void register_geolocation_variables(harp_product_definition *product_definition)
-{
-    const char *path;
-    const char *description;
-    harp_variable_definition *variable_definition;
-
-    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
-    harp_dimension_type dimension_type_bounds[2] = { harp_dimension_time, harp_dimension_independent };
-    long dimension_bounds[2] = { -1, 4 };
 
     /* datetime */
     description = "on-board time in UTC";
@@ -1790,92 +1414,103 @@ static void register_surface_variables(harp_product_definition *product_definiti
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
-static void register_statistical_variables(harp_product_definition *product_definition, const char *product_type)
-{
-    char path[MAX_PATH_LENGTH];
-    const char *description;
-    const char *variable_name_in;
-    const char *variable_name_out;
-
-    harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
-
-    /* surface_temperature */
-    if (strcmp(product_type, "IAS_02_SFC") == 0)
-    {
-        variable_name_in = "surface_temperature";
-        variable_name_out = "surface_temperature";
-        description = "a-priori surface skin temperature";
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_float, 1,
-                                                       dimension_type_1d, NULL, description, "K", NULL,
-                                                       read_statistical_surface_temperature);
-
-        snprintf(path, MAX_PATH_LENGTH, "/data/statistical_retrieval/%s[]", variable_name_in);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-    }
-
-    /* surface_pressure */
-    if (strcmp(product_type, "IAS_02_SFC") == 0)
-    {
-        variable_name_in = "surface_air_pressure";
-        variable_name_out = "surface_pressure";
-        description = "surface pressure";
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_float, 1,
-                                                       dimension_type_1d, NULL, description, "hPa", NULL,
-                                                       read_statistical_surface_air_pressure);
-
-        snprintf(path, MAX_PATH_LENGTH, "/data/statistical_retrieval/%s[]", variable_name_in);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-    }
-
-}
-
 
 static void register_co_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    const char *description;
 
-    const char *product_type = "IAS_02_CO_";
+    module = harp_ingestion_register_module("IAS_02_CO", "IASI-NG", "EPS_SG", "IAS_02_CO_",
+                                            "IASI-NG L2 CO total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_CO", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 CO total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_CO", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
+    register_common_variables(product_definition);
 
-    register_core_variables(product_definition);
-    register_data_variables(product_definition, product_type);
-    register_geolocation_variables(product_definition);
+    /* surface_altitude */
+    description = "altitude of surface";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "m", NULL,
+                                                   read_data_surface_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/surface_z[]", NULL);
 
+    /* validity */
+    description = "general retrieval quality flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_co_qflag);
+    description = "the uint8 data is cast to int8";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/co_qflag[]", description);
+
+    /* CO_column_density */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CO_column_density", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, "integrated CO", "kg/m2", NULL,
+                                                   read_data_atmosphere_mass_content_of_carbon_monoxide);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/atmosphere_mass_content_of_carbon_monoxide[]", NULL);
+
+    /* CO_column_density_validity */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CO_column_density_validity", harp_type_int32, 1,
+                                                   dimension_type_1d, NULL, "retrieval flags", HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_co_bdiv);
+    description = "the uint32 data is cast to int32";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/co_bdiv[]", description);
 }
 
 static void register_nac_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    const char *description;
 
-    const char *product_type = "IAS_02_NAC";
+    module = harp_ingestion_register_module("IAS_02_NAC", "IASI-NG", "EPS_SG", "IAS_02_NAC",
+                                            "IASI-NG L2 NAC total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_NAC", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 NAC total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_NAC", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
+    register_common_variables(product_definition);
 
-    register_core_variables(product_definition);
-    register_data_variables(product_definition, product_type);
-    register_geolocation_variables(product_definition);
+    /* surface_altitude */
+    description = "altitude of surface";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "m", NULL,
+                                                   read_data_surface_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/surface_z[]", NULL);
+
+    /* validity */
+    description = "general retrieval quality flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_hno3_qflag);
+    description = "the uint8 data is cast to int8";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/hno3_qflag[]", description);
+
+    /* HNO3_column_density */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HNO3_column_density", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, "integrated HNO3", "kg/m2", NULL,
+                                                   read_data_atmosphere_mass_content_of_nitric_acid);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/atmosphere_mass_content_of_nitric_acid[]", NULL);
+
+    /* HNO3_column_density_validity */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HNO3_column_density_validity", harp_type_int32,
+                                                   1, dimension_type_1d, NULL, "retrieval flags",
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_data_hno3_bdiv);
+    description = "the uint32 data is cast to int32";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/hno3_bdiv[]", description);
 
 }
 
@@ -1883,45 +1518,74 @@ static void register_o3_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    const char *description;
 
-    const char *product_type = "IAS_02_O3_";
+    module = harp_ingestion_register_module("IAS_02_O3", "IASI-NG", "EPS_SG", "IAS_02_O3_",
+                                            "IASI-NG L2 O3 total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_O3", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 O3 total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_O3", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
+    register_common_variables(product_definition);
 
-    register_core_variables(product_definition);
-    register_data_variables(product_definition, product_type);
-    register_geolocation_variables(product_definition);
+    /* surface_altitude */
+    description = "altitude of surface";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "m", NULL,
+                                                   read_data_surface_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/surface_z[]", NULL);
 
+    /* validity */
+    description = "general retrieval quality flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_o3_qflag);
+    description = "the uint8 data is cast to int8";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/o3_qflag[]", description);
+
+    /* O3_column_density */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_density", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, "integrated O3", "kg/m2", NULL,
+                                                   read_data_atmosphere_mass_content_of_ozone);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/atmosphere_mass_content_of_ozone[]",
+                                         NULL);
+
+    /* O3_column_density_validity */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_density_validity", harp_type_int32, 1,
+                                                   dimension_type_1d, NULL, "retrieval flags", HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_o3_bdiv);
+    description = "the uint32 data is cast to int32";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/o3_bdiv[]", description);
 }
 
 static void register_so2_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    const char *description;
 
-    const char *product_type = "IAS_02_SO2";
+    module = harp_ingestion_register_module("IAS_02_SO2", "IASI-NG", "EPS_SG", "IAS_02_SO2",
+                                           "IASI-NG L2 SO2 total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_O3", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 SO2 total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_SO2", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
+    register_common_variables(product_definition);
 
-    register_core_variables(product_definition);
-    register_data_variables(product_definition, product_type);
-    register_geolocation_variables(product_definition);
+    /* validity */
+    description = "general retrieval quality flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_so2_qflag);
+    description = "the uint8 data is cast to int8";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/so2_qflag[]", description);
 
 }
 
@@ -1929,125 +1593,95 @@ static void register_cld_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    const char *description;
 
-    const char *product_type = "IAS_02_CLD";
+    module = harp_ingestion_register_module("IAS_02_CLD", "IASI-NG", "EPS_SG", "IAS_02_CLD",
+                                            "IASI-NG L2 CLD total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_CLD", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 CLD total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_CLD", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
-
-    register_core_variables(product_definition);
-    register_data_variables(product_definition, product_type);
+    register_common_variables(product_definition);
     register_surface_variables(product_definition);
-    register_geolocation_variables(product_definition);
+
+    /* dust_aerosol_index */
+    description = "indicator of dust (more likely for higher values)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_index", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_dust_indicator);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/dust_indicator[]", NULL);
 
 }
 
 static void register_ghg_product(void)
 {
-    char path[MAX_PATH_LENGTH];
-    const char *description;
-    const char *variable_name_in;
-    const char *variable_name_out;
-
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-
     harp_dimension_type dimension_type_2d[2] = { harp_dimension_time, harp_dimension_vertical };
+    const char *description;
 
-    const char *product_type = "IAS_02_GHG";
+    module = harp_ingestion_register_module("IAS_02_GHG", "IASI-NG", "EPS_SG", "IAS_02_GHG",
+                                            "IASI-NG L2 GHG total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_GHG", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 GHG total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_GHG", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
-
-    register_core_variables(product_definition);
-    register_data_variables(product_definition, product_type);
+    register_common_variables(product_definition);
     register_surface_variables(product_definition);
-    register_geolocation_variables(product_definition);
 
     /* NO2_column_density */
-    variable_name_in = "atmosphere_mass_content_of_nitrous_oxide";
-    variable_name_out = "NO2_column_density";
     description = "coarse N2O profile";
-
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_float, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_column_density", harp_type_float, 2,
                                                    dimension_type_2d, NULL, description, "kg/m2", NULL,
-                                                   read_data_nitrous_oxide_column_density);
-    snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-    description = NULL;
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+                                                   read_data_atmosphere_mass_content_of_nitrous_oxide);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/atmosphere_mass_content_of_nitrous_oxide[]", NULL);
 
     /* CH4_column_density */
-    variable_name_in = "atmosphere_mass_content_of_nitrous_oxide";
-    variable_name_out = "CH4_column_density";
     description = "coarse CH4 profile";
-
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_float, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "CH4_column_density", harp_type_float, 2,
                                                    dimension_type_2d, NULL, description, "kg/m2", NULL,
-                                                   read_data_methane_column_density);
-    snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-    description = NULL;
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+                                                   read_data_atmosphere_mass_content_of_methane);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/atmosphere_mass_content_of_methane[]", NULL);
 
     /* CO2_column_density */
-    variable_name_in = "atmosphere_mass_content_of_nitrous_oxide";
-    variable_name_out = "CO2_column_density";
     description = "coarse CO2 profile";
-
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, variable_name_out, harp_type_float, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "CO2_column_density", harp_type_float, 2,
                                                    dimension_type_2d, NULL, description, "kg/m2", NULL,
-                                                   read_data_carbon_dioxide_column_density);
-    snprintf(path, MAX_PATH_LENGTH, "/data/%s[]", variable_name_in);
-    description = NULL;
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+                                                   read_data_atmosphere_mass_content_of_carbon_dioxide);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/atmosphere_mass_content_of_carbon_dioxide[]", NULL);
 }
 
 static void register_sfc_product(void)
 {
-    const char *path;
-    const char *description;
-
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-
     harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    const char *description;
 
-    const char *product_type = "IAS_02_SFC";
+    module = harp_ingestion_register_module("IAS_02_SFC", "IASI-NG", "EPS_SG", "IAS_02_SFC",
+                                           "IASI-NG L2 SFC total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_SFC", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 SFC total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_SFC", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
-
-    register_core_variables(product_definition);
-    /* only dust is taken from this one */
-    register_data_variables(product_definition, product_type);
-    register_statistical_variables(product_definition, product_type);
+    register_common_variables(product_definition);
     register_surface_variables(product_definition);
-    register_geolocation_variables(product_definition);
+
+    /* dust_aerosol_index */
+    description = "indicator of dust (more likely for higher values)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "dust_aerosol_index", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_l2p_sst_dust_indicator);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/l2p_sst/dust_indicator[]", NULL);
 
     /* wind_speed */
     description = "10m wind speed";
@@ -2055,9 +1689,25 @@ static void register_sfc_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "wind_speed", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, "m/s", NULL,
                                                    read_l2p_sst_wind_speed);
-    path = "/data/l2p_sst/wind_speed[]";
-    description = NULL;
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/l2p_sst/wind_speed[]", NULL);
+
+    /* surface_temperature */
+    description = "a-priori surface skin temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "K", NULL,
+                                                   read_statistical_surface_temperature);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/statistical_retrieval/surface_temperature[]", NULL);
+
+    /* surface_pressure */
+    description = "surface pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "hPa", NULL,
+                                                   read_statistical_surface_air_pressure);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/statistical_retrieval/surface_air_pressure[]", NULL);
 
 }
 
@@ -2065,26 +1715,25 @@ static void register_twv_product(void)
 {
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
 
-    const char *product_type = "IAS_02_TWV";
+    module = harp_ingestion_register_module("IAS_02_TWV", "IASI-NG", "EPS_SG", "IAS_02_TWV",
+                                            "IASI-NG L2 TWV total column densities", ingestion_init, ingestion_done);
 
-    /* Product Registration Phase */
-    module =
-        harp_ingestion_register_module("IAS_02_TWV", "IASI-NG", "EPS_SG", product_type,
-                                       "IASI-NG L2 TWV total column densities", ingestion_init, ingestion_done);
-
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "IAS_02_TWV", NULL, read_dimensions);
 
-    /* Variables' Registration Phase */
 
-    register_core_variables(product_definition);
-    /* only dust is taken from this one */
-    register_data_variables(product_definition, product_type);
-    register_statistical_variables(product_definition, product_type);
+    register_common_variables(product_definition);
     register_surface_variables(product_definition);
-    register_geolocation_variables(product_definition);
 
+    /* water_vapor_column_density */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "water_vapor_column_density", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, "integrated water vapor", "kg/m2", NULL,
+                                                   read_optimal_estimation_atmosphere_mass_content_of_water);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/optimal_estimation/atmosphere_mass_content_of_water[]", NULL);
 }
 
 int harp_ingestion_module_iasi_ng_l2_init(void)

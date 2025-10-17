@@ -103,11 +103,59 @@
 <td></td>
 <td><p>absolute orbit number</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>dust</strong></p></td>
-<td><p>float</p></td>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>Indicator of dust (more likely for higher values)</p></td>
+<td><p>[s since 2020-01-01]</p></td>
+<td><p>on-board time in UTC</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>geocentric longitude at sounder pixel centre</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>longitude_bounds</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, 4}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>corner longitudes of the measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>geodetic latitude at sounder pixel centre</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude_bounds</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, 4}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>corner latitudes of the measurement</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar azimuth angle at sounder pixel centre</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>solar zenith angle at sounder pixel centre</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>measurement azimuth angle at sounder pixel centre</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree]</p></td>
+<td><p>measurement zenith angle at sounder pixel centre</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>ice_fraction</strong></p></td>
 <td><p>float</p></td>
@@ -133,59 +181,11 @@
 <td><p>[m]</p></td>
 <td><p>standard deviation of surface elevation</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>datetime</strong></p></td>
-<td><p>double</p></td>
+<tr class="row-even"><td><p><strong>dust_aerosol_index</strong></p></td>
+<td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
-<td><p>[s since 2020-01-01]</p></td>
-<td><p>on-board time in UTC</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[degree_east]</p></td>
-<td><p>geocentric longitude at sounder pixel centre</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>longitude_bounds</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>, 4}</p></td>
-<td><p>[degree_east]</p></td>
-<td><p>corner longitudes of the measurement</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[degree_north]</p></td>
-<td><p>geodetic latitude at sounder pixel centre</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>latitude_bounds</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>, 4}</p></td>
-<td><p>[degree_north]</p></td>
-<td><p>corner latitudes of the measurement</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[degree]</p></td>
-<td><p>solar azimuth angle at sounder pixel centre</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[degree]</p></td>
-<td><p>solar zenith angle at sounder pixel centre</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>sensor_azimuth_angle</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[degree]</p></td>
-<td><p>measurement azimuth angle at sounder pixel centre</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>sensor_zenith_angle</strong></p></td>
-<td><p>double</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[degree]</p></td>
-<td><p>measurement zenith angle at sounder pixel centre</p></td>
+<td><p>[]</p></td>
+<td><p>indicator of dust (more likely for higher values)</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -210,9 +210,47 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/&#64;orbit_start</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>dust</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/data/dust_indicator[]</strong></p></td>
+<td><p><strong>/data/geolocation_information/onboard_utc[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_longitude[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>longitude_bounds</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_longitude_bounds[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neighboring scan element (within the same 2x2 subgrid inside a Field of Regard (FOR))</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_latitude[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>latitude_bounds</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_latitude_bounds[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neighboring scan element (within the same 2x2 subgrid inside a Field of Regard (FOR))</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_sun_azimuth[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_sun_zenith[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_azimuth[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/geolocation_information/sounder_pixel_zenith[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>ice_fraction</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -230,47 +268,9 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/surface_info/height_std[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<tr class="row-even"><td><p><strong>dust_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/onboard_utc[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_longitude[]</strong></p></td>
-</tr>
-<tr class="row-even"><td rowspan="2"><p><strong>longitude_bounds</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_longitude_bounds[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neighboring scan element (within the same 2x2 subgrid inside a Field of Regard (FOR))</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>latitude</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_latitude[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><p><strong>latitude_bounds</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_latitude_bounds[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>the corner coordinates are rough estimates of the circle areas for the scan elements; the size of a scan element (in a certain direction) is taken to be half the distance, from center to center, from a scan element to its nearest neighboring scan element (within the same 2x2 subgrid inside a Field of Regard (FOR))</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_sun_azimuth[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_sun_zenith[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>sensor_azimuth_angle</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_azimuth[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>sensor_zenith_angle</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/geolocation_information/sounder_pixel_zenith[]</strong></p></td>
+<td><p><strong>/data/dust_indicator[]</strong></p></td>
 </tr>
 </tbody>
 </table>

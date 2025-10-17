@@ -103,65 +103,65 @@
 <td></td>
 <td><p>absolute orbit number</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>validity</strong></p></td>
-<td><p>int8</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>General retrieval quality flag</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[s since 2020-01-01]</p></td>
 <td><p>on-board time in UTC</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>longitude</strong></p></td>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_east]</p></td>
 <td><p>geocentric longitude at sounder pixel centre</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>longitude_bounds</strong></p></td>
+<tr class="row-odd"><td><p><strong>longitude_bounds</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_east]</p></td>
 <td><p>corner longitudes of the measurement</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<tr class="row-even"><td><p><strong>latitude</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree_north]</p></td>
 <td><p>geodetic latitude at sounder pixel centre</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>latitude_bounds</strong></p></td>
+<tr class="row-odd"><td><p><strong>latitude_bounds</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>, 4}</p></td>
 <td><p>[degree_north]</p></td>
 <td><p>corner latitudes of the measurement</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>solar azimuth angle at sounder pixel centre</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
+<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>solar zenith angle at sounder pixel centre</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>sensor_azimuth_angle</strong></p></td>
+<tr class="row-even"><td><p><strong>sensor_azimuth_angle</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>measurement azimuth angle at sounder pixel centre</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>sensor_zenith_angle</strong></p></td>
+<tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>measurement zenith angle at sounder pixel centre</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>general retrieval quality flag</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
@@ -185,13 +185,6 @@
 <tr class="row-even"><td><p><strong>orbit_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/&#64;orbit_start</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="2"><p><strong>validity</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/so2_qflag[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><em>description</em></p></td>
-<td><p>the uint8 data is cast to int8</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -234,6 +227,13 @@
 <tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/geolocation_information/sounder_pixel_zenith[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/so2_qflag[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the uint8 data is cast to int8</p></td>
 </tr>
 </tbody>
 </table>

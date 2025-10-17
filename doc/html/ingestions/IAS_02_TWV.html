@@ -103,30 +103,6 @@
 <td></td>
 <td><p>absolute orbit number</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>ice_fraction</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>fraction of IFOV covered by sea ice</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>land_fraction</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>land fraction</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>surface elevation</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>standard deviation of surface elevation</p></td>
-</tr>
 <tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
@@ -181,7 +157,37 @@
 <td><p>[degree]</p></td>
 <td><p>measurement zenith angle at sounder pixel centre</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>ice_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>fraction of IFOV covered by sea ice</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>land_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>land fraction</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>surface elevation</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>standard deviation of surface elevation</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>water_vapor_column_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[kg/m2]</p></td>
+<td><p>integrated water vapor</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -203,22 +209,6 @@
 <tr class="row-even"><td><p><strong>orbit_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/&#64;orbit_start</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>ice_fraction</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/surface_info/ice_fraction[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>land_fraction</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/surface_info/land_fraction[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/surface_info/height[]</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/data/surface_info/height_std[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>datetime</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -261,6 +251,26 @@
 <tr class="row-odd"><td><p><strong>sensor_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/geolocation_information/sounder_pixel_zenith[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ice_fraction</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/surface_info/ice_fraction[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>land_fraction</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/surface_info/land_fraction[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/surface_info/height[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/surface_info/height_std[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>water_vapor_column_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/optimal_estimation/atmosphere_mass_content_of_water[]</strong></p></td>
 </tr>
 </tbody>
 </table>
