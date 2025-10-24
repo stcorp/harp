@@ -1532,7 +1532,7 @@ static int read_instrument_wavelength(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     float *lambda = data.float_data;    /* end wavelengths' array */
     const long L = info->num_spectral - 1;      /* end counter    */
-    const float invL = 1.0f / (float)L; /* inverse of L */
+    const double invL = 1.0 / L;        /* inverse of L */
     long s, p, k;       /* loop counters */
     const long coeff_count = info->num_scanlines * info->num_pixels * 4;
     harp_array coeff_array;
@@ -1574,15 +1574,15 @@ static int read_instrument_wavelength(void *user_data, harp_array data)
 
             for (k = 0; k < info->num_spectral; k++)
             {
-                const float xi = 2.0f * (float)k * invL - 1.0f;
+                const double xi = 2.0 * (double)k * invL - 1.0;
 
                 /* Chebyshev basis (order-3) */
-                const float T0 = 1.0f;
-                const float T1 = xi;
-                const float T2 = 2.0f * xi * xi - 1.0f;
-                const float T3 = 4.0f * xi * xi * xi - 3.0f * xi;
+                const double T0 = 1.0;
+                const double T1 = xi;
+                const double T2 = 2.0 * xi * xi - 1.0;
+                const double T3 = (4.0 * xi * xi - 3.0) * xi;
 
-                lambda[base + k] = a[0] * T0 + a[1] * T1 + a[2] * T2 + a[3] * T3;
+                lambda[base + k] = (float)(a[0] * T0 + a[1] * T1 + a[2] * T2 + a[3] * T3);
             }
         }
     }
