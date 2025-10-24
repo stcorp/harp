@@ -694,8 +694,8 @@ static int read_data_hno3_qflag(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->data_cursor, "hno3_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
-                        data);
+    return read_dataset(info->data_cursor, "hno3_qflag", harp_type_int8,
+                        info->num_lines * info->num_for * info->num_fov, data);
 }
 
 static int read_data_o3_qflag(void *user_data, harp_array data)
@@ -1572,7 +1572,7 @@ static void register_so2_product(void)
     const char *description;
 
     module = harp_ingestion_register_module("IAS_02_SO2", "IASI-NG", "EPS_SG", "IAS_02_SO2",
-                                           "IASI-NG L2 SO2 total column densities", ingestion_init, ingestion_done);
+                                            "IASI-NG L2 SO2 total column densities", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "IAS_02_SO2", NULL, read_dimensions);
 
@@ -1668,7 +1668,7 @@ static void register_sfc_product(void)
     const char *description;
 
     module = harp_ingestion_register_module("IAS_02_SFC", "IASI-NG", "EPS_SG", "IAS_02_SFC",
-                                           "IASI-NG L2 SFC total column densities", ingestion_init, ingestion_done);
+                                            "IASI-NG L2 SFC total column densities", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "IAS_02_SFC", NULL, read_dimensions);
 
