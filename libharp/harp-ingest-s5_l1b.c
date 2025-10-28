@@ -1640,18 +1640,18 @@ static int read_instrument_wavelength_error(void *user_data, harp_array data)
 
             for (k = 0; k < info->num_spectral; k++)
             {
-                const float xi = 2.0f * (float)k * invL - 1.0f;
+                const double xi = 2.0 * (double)k * invL - 1.0;
 
-                const float T0 = 1.0f;
-                const float T1 = xi;
-                const float T2 = 2.0f * xi * xi - 1.0f;
-                const float T3 = 4.0f * xi * xi * xi - 3.0f * xi;
+                const double T0 = 1.0;
+                const double T1 = xi;
+                const double T2 = 2.0 * xi * xi - 1.0;
+                const double T3 = (4.0 * xi * xi - 3.0) * xi;
 
                 /* variance */
-                float var = T0 * T0 * sa[0] * sa[0] + T1 * T1 * sa[1] * sa[1] + T2 * T2 * sa[2] * sa[2] +
-                    T3 * T3 * sa[3] * sa[3];
+                double var = T0 * T0 * sa[0] * sa[0] + T1 * T1 * sa[1] * sa[1] + T2 * T2 * sa[2] * sa[2] +
+                             T3 * T3 * sa[3] * sa[3];
 
-                sig_l[base + k] = sqrtf(var);
+                sig_l[base + k] = (float)sqrt(var);
             }
         }
     }
@@ -1954,16 +1954,11 @@ static void register_instrument_variables(harp_product_definition
 
 
     /* wavelength */
-    description = "Wavelength [nm] derived from 3rd-order Chebyshev polynomial coefficients "
-        "stored per pixel (calibrated or nominal).";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_float, 2,
-                                                   dimension_type_2d_spec, NULL, description, "nm", NULL,
+                                                   dimension_type_2d_spec, NULL, "wavelength", "nm", NULL,
                                                    read_instrument_wavelength);
-    var_name = "nominal_wavelength_coefficients[]";
-    description = NULL;
-    register_mapping_per_band(variable_definition, var_name, "instrument_data", bands_list, bands_list_map,
-                              num_bands, description);
+    description = "evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index";
     for (int i = 0; i < num_bands; i++)
     {
         /* calibrated (default / lambda unset) */
@@ -1971,27 +1966,25 @@ static void register_instrument_variables(harp_product_definition
 
         snprintf(cond, MAX_PATH_LENGTH, "%s,lambda=calibrated or lambda unset", bands_list_map[i]);
 
-        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, description);
 
         /* nominal */
         snprintf(path, MAX_PATH_LENGTH, "/data/%s/instrument_data/nominal_wavelength_coefficients[]", bands_list[i]);
 
         snprintf(cond, MAX_PATH_LENGTH, "%s,lambda=nominal", bands_list_map[i]);
 
-        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, description);
     }
 
     /* wavelength_uncertainty */
-    description =
-        "1-sigma uncertainty of the wavelength [nm] propagated from the "
-        "3rd-order Chebyshev coefficient errors (calibrated or nominal).";
-
+    description = "1-sigma uncertainty of the wavelength";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength_uncertainty", harp_type_float, 2,
                                                    dimension_type_2d_spec, NULL, description, "nm", NULL,
                                                    read_instrument_wavelength_error);
 
     /* dataset mappings: one per band x lambda option */
+    description = "evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index";
     for (int i = 0; i < num_bands; i++)
     {
         /* calibrated (default / lambda unset) */
@@ -2000,7 +1993,7 @@ static void register_instrument_variables(harp_product_definition
 
         snprintf(cond, MAX_PATH_LENGTH, "%s,lambda=calibrated or lambda unset", bands_list_map[i]);
 
-        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, description);
 
         /* nominal */
         snprintf(path, MAX_PATH_LENGTH, "/data/%s/instrument_data/nominal_wavelength_coefficients_error[]",
@@ -2008,7 +2001,7 @@ static void register_instrument_variables(harp_product_definition
 
         snprintf(cond, MAX_PATH_LENGTH, "%s,lambda=nominal", bands_list_map[i]);
 
-        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, NULL);
+        harp_variable_definition_add_mapping(variable_definition, cond, NULL, path, description);
     }
 
     /* wavelength_validity */

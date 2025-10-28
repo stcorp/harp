@@ -167,13 +167,13 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[nm]</p></td>
-<td><p>Wavelength [nm] derived from 3rd-order Chebyshev polynomial coefficients stored per pixel (calibrated or nominal).</p></td>
+<td><p>wavelength</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>wavelength_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>, <em>spectral</em>}</p></td>
 <td><p>[nm]</p></td>
-<td><p>1-sigma uncertainty of the wavelength [nm] propagated from the 3rd-order Chebyshev coefficient errors (calibrated or nominal).</p></td>
+<td><p>1-sigma uncertainty of the wavelength</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>wavelength_validity</strong></p></td>
 <td><p>int16</p></td>
@@ -911,64 +911,22 @@
 </tr>
 <tr class="row-odd"><td rowspan="48"><p><strong>wavelength</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band=1a or band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band1a/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=1b</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band1b/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=2</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band2/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=3a</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band3a/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=3b</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band3b/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=3c</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band3c/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=4</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band4/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=5</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/data/band5/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=calibrated or lambda unset</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=calibrated or lambda unset</p></td>
@@ -976,11 +934,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=calibrated or lambda unset</p></td>
@@ -988,11 +952,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3a,lambda=calibrated or lambda unset</p></td>
@@ -1000,11 +970,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3a,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3b,lambda=calibrated or lambda unset</p></td>
@@ -1012,11 +988,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3b,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3c,lambda=calibrated or lambda unset</p></td>
@@ -1024,11 +1006,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3c,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=4,lambda=calibrated or lambda unset</p></td>
@@ -1036,11 +1024,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band4/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=4,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band4/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=5,lambda=calibrated or lambda unset</p></td>
@@ -1048,24 +1042,36 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band5/instrument_data/calibrated_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=5,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band5/instrument_data/nominal_wavelength_coefficients[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="32"><p><strong>wavelength_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="48"><p><strong>wavelength_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=calibrated or lambda unset</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1a or band unset,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1a/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=calibrated or lambda unset</p></td>
@@ -1073,11 +1079,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=1b,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band1b/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=calibrated or lambda unset</p></td>
@@ -1085,11 +1097,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=2,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band2/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3a,lambda=calibrated or lambda unset</p></td>
@@ -1097,11 +1115,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3a,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3a/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3b,lambda=calibrated or lambda unset</p></td>
@@ -1109,11 +1133,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3b,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3b/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=3c,lambda=calibrated or lambda unset</p></td>
@@ -1121,11 +1151,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=3c,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band3c/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=4,lambda=calibrated or lambda unset</p></td>
@@ -1133,11 +1169,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band4/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=4,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band4/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=5,lambda=calibrated or lambda unset</p></td>
@@ -1145,11 +1187,17 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band5/instrument_data/calibrated_wavelength_coefficients_error[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
 <td><p>band=5,lambda=nominal</p></td>
 </tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/band5/instrument_data/nominal_wavelength_coefficients_error[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>evaluation of the 3rd-order Chebyshev polynomial coefficients using the spectral index</p></td>
 </tr>
 <tr class="row-odd"><td rowspan="16"><p><strong>wavelength_validity</strong></p></td>
 <td><p><em>condition</em></p></td>
