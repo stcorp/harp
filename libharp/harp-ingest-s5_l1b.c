@@ -1649,7 +1649,7 @@ static int read_instrument_wavelength_error(void *user_data, harp_array data)
 
                 /* variance */
                 double var = T0 * T0 * sa[0] * sa[0] + T1 * T1 * sa[1] * sa[1] + T2 * T2 * sa[2] * sa[2] +
-                             T3 * T3 * sa[3] * sa[3];
+                    T3 * T3 * sa[3] * sa[3];
 
                 sig_l[base + k] = (float)sqrt(var);
             }
