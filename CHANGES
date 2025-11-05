@@ -1,3 +1,9 @@
+* Updates to product ingestions:
+  - IASI-NG L2 SFC: renamed dust variable to dust_aerosol_index.
+  - IASI-NG L2 TCWV: added missing water_vapor_column_density.
+  - S5 L1B: update description clarifying that wavelength values are
+    based on evaluating Chebyshev coefficients.
+
 1.27 2025-10-13
 ~~~~~~~~~~~~~~~
 
