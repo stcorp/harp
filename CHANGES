@@ -3,6 +3,9 @@
   - IASI-NG L2 TCWV: added missing water_vapor_column_density.
   - S5 L1B: update description clarifying that wavelength values are
     based on evaluating Chebyshev coefficients.
+  - S5P L2 HCHO/SO2: added scene_albedo and scene_pressure, and removed amf
+    precission.
+  - S5P L2 SO2: added 3km so2 type.
 
 1.27 2025-10-13
 ~~~~~~~~~~~~~~~

@@ -355,6 +355,18 @@
 <td><p>[m/s]</p></td>
 <td><p>eastward wind</p></td>
 </tr>
+<tr class="row-odd"><td><p><strong>scene_albedo</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>effective scene albedo</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scene_pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>scene pressure</p></td>
+</tr>
 <tr class="row-odd"><td><p><strong>tropopause_pressure</strong></p></td>
 <td><p>double</p></td>
 <td><p>{<em>time</em>}</p></td>
@@ -578,8 +590,14 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_clear_air_mass_factor[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_HCHO_column_number_density_amf_uncertainty_random</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-odd"><td rowspan="3"><p><strong>tropospheric_HCHO_column_number_density_amf_uncertainty_random</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &lt; 02.08.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_precision[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>tropospheric_HCHO_column_number_density_amf_uncertainty_systematic</strong></p></td>
@@ -689,6 +707,26 @@
 </tr>
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/eastward_wind[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p><strong>scene_albedo</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>OFFL and processor version &gt;= 02.08.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_albedo[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p><strong>scene_pressure</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>OFFL and processor version &gt;= 02.08.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/scene_pressure[]</strong></p></td>
 </tr>
 <tr class="row-even"><td rowspan="4"><p><strong>tropopause_pressure</strong></p></td>
 <td><p><em>available</em></p></td>
