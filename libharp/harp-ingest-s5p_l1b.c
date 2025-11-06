@@ -847,7 +847,15 @@ static int read_observable_error(void *user_data, long index, harp_array data)
     }
     for (i = 0; i < info->num_channels; i++)
     {
-        data.float_data[i] = fabs(pow(10, data.float_data[i] * 0.1) * obs.float_data[i]);
+        if (data.float_data[i] < 0)
+        {
+            /* in this case obs.float_data[i] will be -126, so we just set the error to NaN */
+            data.float_data[i] = harp_nan();
+        }
+        else
+        {
+            data.float_data[i] = fabs(pow(10, data.float_data[i] * 0.1) * obs.float_data[i]);
+        }
     }
 
     return 0;
@@ -880,7 +888,15 @@ static int read_observable_noise(void *user_data, long index, harp_array data)
     }
     for (i = 0; i < info->num_channels; i++)
     {
-        data.float_data[i] = fabs(pow(10, data.float_data[i] * 0.1) * obs.float_data[i]);
+        if (data.float_data[i] < 0)
+        {
+            /* in this case obs.float_data[i] will be -126, so we just set the error to NaN */
+            data.float_data[i] = harp_nan();
+        }
+        else
+        {
+            data.float_data[i] = fabs(pow(10, data.float_data[i] * 0.1) * obs.float_data[i]);
+        }
     }
 
     return 0;
