@@ -1466,7 +1466,7 @@ static int decode_uncertainty(ingest_info *info, const char *error_var_name, con
 
         if (E == fill_E || R == fill_R)
         {
-            sigma_out.float_data[i] = fill_E;   /* keep fill value */
+            sigma_out.float_data[i] = harp_nan();
         }
         else
         {
