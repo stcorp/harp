@@ -592,6 +592,36 @@ static int read_dataset(coda_cursor cursor, const char *path, harp_data_type dat
     return 0;
 }
 
+static int read_dataset_slice_float(coda_cursor cursor, const char *path, long num_elements, long subdim_length,
+                                    long subdim_index, harp_array data)
+{
+    harp_array buffer;
+    long i;
+
+    buffer.float_data = malloc(num_elements * subdim_length * sizeof(float));
+    if (buffer.float_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * subdim_length * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(cursor, path, harp_type_float, num_elements * subdim_length, buffer) != 0)
+    {
+        free(buffer.float_data);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.float_data[i] = buffer.float_data[i * 2 + subdim_index];
+    }
+
+    free(buffer.float_data);
+
+    return 0;
+}
+
 static int read_percentage_fraction(coda_cursor cursor, const char *path, long num_elements, harp_array data)
 {
     long i;
@@ -738,6 +768,22 @@ static int read_data_o3_bdiv(void *user_data, harp_array data)
                         data);
 }
 
+static int read_data_air_pressure_at_cloud_top(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset_slice_float(info->data_cursor, "air_pressure_at_cloud_top",
+                                    info->num_lines * info->num_for * info->num_fov, 2, 0, data);
+}
+
+static int read_data_air_temperature_at_cloud_top(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset_slice_float(info->data_cursor, "air_temperature_at_cloud_top",
+                                    info->num_lines * info->num_for * info->num_fov, 2, 0, data);
+}
+
 static int read_data_atmosphere_mass_content_of_carbon_monoxide(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -792,6 +838,14 @@ static int read_data_dust_indicator(void *user_data, harp_array data)
 
     return read_dataset(info->data_cursor, "dust_indicator", harp_type_float,
                         info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_effective_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset_slice_float(info->data_cursor, "effective_cloud_fraction",
+                                    info->num_lines * info->num_for * info->num_fov, 2, 0, data);
 }
 
 static int read_optimal_estimation_atmosphere_mass_content_of_water(void *user_data, harp_array data)
@@ -1604,6 +1658,33 @@ static void register_cld_product(void)
 
     register_common_variables(product_definition);
     register_surface_variables(product_definition);
+
+    /* cloud_top_pressure */
+    description = "cloud top pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "Pa", NULL,
+                                                   read_data_air_pressure_at_cloud_top);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/air_pressure_at_cloud_top[*,*,*,0]",
+                                         NULL);
+
+    /* cloud_top_temperature */
+    description = "cloud top temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "K",
+                                                   NULL, read_data_air_temperature_at_cloud_top);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/air_temperature_at_cloud_top[*,*,*,0]",
+                                         NULL);
+
+    /* cloud_fraction */
+    description = "effective cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_data_effective_cloud_fraction);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/effective_cloud_fraction[*,*,*,0]",
+                                         NULL);
 
     /* dust_aerosol_index */
     description = "indicator of dust (more likely for higher values)";

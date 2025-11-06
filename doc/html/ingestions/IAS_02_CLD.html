@@ -181,13 +181,31 @@
 <td><p>[m]</p></td>
 <td><p>standard deviation of surface elevation</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>dust_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>cloud top pressure</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_top_temperature</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[K]</p></td>
+<td><p>cloud top temperature</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>effective cloud fraction</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>dust_aerosol_index</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>indicator of dust (more likely for higher values)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -268,7 +286,19 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/surface_info/height_std[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>dust_aerosol_index</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/air_pressure_at_cloud_top[*,*,*,0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_top_temperature</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/air_temperature_at_cloud_top[*,*,*,0]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/effective_cloud_fraction[*,*,*,0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>dust_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/dust_indicator[]</strong></p></td>
 </tr>
