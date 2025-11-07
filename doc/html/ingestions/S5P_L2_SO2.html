@@ -409,6 +409,18 @@
 <td><p>[Pa]</p></td>
 <td><p>tropopause pressure</p></td>
 </tr>
+<tr class="row-even"><td><p><strong>snow_ice_type</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>surface snow/ice type; enumeration values: snow_free_land (0), sea_ice (1), permanent_ice (2), snow (3), ocean (4)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sea_ice_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>sea-ice concentration (as a fraction)</p></td>
+</tr>
 <tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
@@ -1025,6 +1037,32 @@
 </tr>
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>pressure in Pa at tropause is derived from the upper bound of the layer with tropopause layer index k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>snow_ice_type</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 01.00.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag_nise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>0: snow_free_land (0), 1-100: sea_ice (1), 101: permanent_ice (2), 103: snow (3), 255: ocean (4), other values map to -1</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>sea_ice_fraction</strong></p></td>
+<td><p><em>available</em></p></td>
+<td><p>optional</p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>processor version &gt;= 01.00.00</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag_nise[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>if 1 &lt;= snow_ice_flag &lt;= 100 then snow_ice_flag/100.0 else 0.0</p></td>
 </tr>
 </tbody>
 </table>

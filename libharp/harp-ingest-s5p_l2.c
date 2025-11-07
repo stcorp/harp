@@ -5940,7 +5940,7 @@ static void register_surface_variables_nir(harp_product_definition *product_defi
 }
 
 static void register_snow_ice_flag_variables(harp_product_definition *product_definition, int nise_extension,
-                                             int ipf_27_switch)
+                                             int ipf_1_switch, int ipf_27_switch)
 {
     const char *path;
     const char *description;
@@ -5962,6 +5962,11 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
         path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
         read_snow_ice_type_function = read_snow_ice_type;
         read_sea_ice_fraction_function = read_sea_ice_fraction;
+    }
+    if (ipf_1_switch)
+    {
+        mapping_condition = "processor version >= 01.00.00";
+        condition_function = include_from_010000;
     }
     if (ipf_27_switch)
     {
@@ -6110,7 +6115,7 @@ static void register_aer_ai_product(void)
                                          "processor version >= 02.09.01",
                                          "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo", NULL);
 
-    register_snow_ice_flag_variables(product_definition, 0, 1);
+    register_snow_ice_flag_variables(product_definition, 0, 0, 1);
 }
 
 static void register_aer_lh_product(void)
@@ -6255,7 +6260,7 @@ static void register_aer_lh_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388", NULL);
 
-    register_snow_ice_flag_variables(product_definition, 0, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0, 0);
 }
 
 static void register_ch4_product(void)
@@ -6452,7 +6457,7 @@ static void register_ch4_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_SWIR_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
 
-    register_snow_ice_flag_variables(product_definition, 0, 1);
+    register_snow_ice_flag_variables(product_definition, 0, 0, 1);
 }
 
 static void register_co_product(void)
@@ -6626,7 +6631,7 @@ static void register_co_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scattering_optical_thickness_SWIR[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    register_snow_ice_flag_variables(product_definition, 0, 1);
+    register_snow_ice_flag_variables(product_definition, 0, 0, 1);
 }
 
 static void register_hcho_product(void)
@@ -6850,6 +6855,8 @@ static void register_hcho_product(void)
         "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
         "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
+
+    register_snow_ice_flag_variables(product_definition, 1, 1, 0);
 }
 
 static void register_o3_product(void)
@@ -7196,7 +7203,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "OFFL", path, NULL);
 
     register_surface_variables(product_definition, 1, 2, 0);
-    register_snow_ice_flag_variables(product_definition, 1, 0);
+    register_snow_ice_flag_variables(product_definition, 1, 0, 0);
 }
 
 static void register_o3_profile_variables(harp_product_definition *product_definition)
@@ -7413,7 +7420,7 @@ static void register_o3_pr_product(void)
     register_additional_geolocation_variables(product_definition);
     register_o3_profile_variables(product_definition);
     register_surface_variables(product_definition, 1, 1, 1);
-    register_snow_ice_flag_variables(product_definition, 0, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0, 0);
 }
 
 static void register_o3_tcl_product(void)
@@ -8006,7 +8013,7 @@ static void register_no2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1, 1, 1);
-    register_snow_ice_flag_variables(product_definition, 0, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0, 0);
 
     /* tropopause_pressure */
     description = "tropopause pressure";
@@ -8391,6 +8398,8 @@ static void register_so2_product(void)
         "k: exp((log(tm5_constant_a[k] + tm5_constant_b[k] * surface_pressure[]) + "
         "log(tm5_constant_a[k + 1] + tm5_constant_b[k + 1] * surface_pressure[]))/2.0)";
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 02.00.00", path, description);
+
+    register_snow_ice_flag_variables(product_definition, 1, 1, 0);
 }
 
 static void register_cloud_cal_variables(harp_product_definition *product_definition)
@@ -8571,7 +8580,7 @@ static void register_cloud_cal_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1, 2, 0);
-    register_snow_ice_flag_variables(product_definition, 1, 0);
+    register_snow_ice_flag_variables(product_definition, 1, 0, 0);
 }
 
 static void register_cloud_cal_nir_variables(harp_product_definition *product_definition)
@@ -8805,7 +8814,7 @@ static void register_cloud_crb_variables(harp_product_definition *product_defini
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     register_surface_variables(product_definition, 1, 2, 0);
-    register_snow_ice_flag_variables(product_definition, 1, 0);
+    register_snow_ice_flag_variables(product_definition, 1, 0, 0);
 }
 
 static void register_cloud_crb_nir_variables(harp_product_definition *product_definition)
@@ -9111,7 +9120,7 @@ static void register_fresco_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "processor version >= 01.00.00", path, NULL);
 
     register_surface_variables(product_definition, 0, 1, 1);
-    register_snow_ice_flag_variables(product_definition, 0, 0);
+    register_snow_ice_flag_variables(product_definition, 0, 0, 0);
 }
 
 int harp_ingestion_module_s5p_l2_init(void)
