@@ -199,6 +199,30 @@
 <td><p>[]</p></td>
 <td><p>effective cloud fraction</p></td>
 </tr>
+<tr class="row-odd"><td><p><strong>ice_water_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[g/m2]</p></td>
+<td><p>cloud ice amount</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>liquid_water_density</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[g/m2]</p></td>
+<td><p>cloud liquid water amount</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_phase_type</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>cloud phase at cloud top; enumeration values: clear_sky (0), liquid (1), ice (2), mixed (3), supercooled (4)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>liquid_particle_effective_radius</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>effective radius of cloud condensed water particles at cloud top</p></td>
+</tr>
 <tr class="row-odd"><td><p><strong>dust_aerosol_index</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
@@ -297,6 +321,22 @@
 <tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/effective_cloud_fraction[*,*,*,0]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ice_water_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/atmosphere_mass_content_of_cloud_ice[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>liquid_water_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/atmosphere_mass_content_of_cloud_liquid[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_phase_type</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/thermodynamic_phase_of_cloud_water_particles_at_cloud_top</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>liquid_particle_effective_radius</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/data/effective_radius_of_cloud_condensed_water_particles_at_cloud_top[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>dust_aerosol_index</strong></p></td>
 <td><p><em>path</em></p></td>

@@ -592,6 +592,36 @@ static int read_dataset(coda_cursor cursor, const char *path, harp_data_type dat
     return 0;
 }
 
+static int read_dataset_slice_int8(coda_cursor cursor, const char *path, long num_elements, long subdim_length,
+                                   long subdim_index, harp_array data)
+{
+    harp_array buffer;
+    long i;
+
+    buffer.int8_data = malloc(num_elements * subdim_length * sizeof(int8_t));
+    if (buffer.int8_data == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * subdim_length * sizeof(int8_t), __FILE__, __LINE__);
+        return -1;
+    }
+
+    if (read_dataset(cursor, path, harp_type_int8, num_elements * subdim_length, buffer) != 0)
+    {
+        free(buffer.int8_data);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.int8_data[i] = buffer.int8_data[i * 2 + subdim_index];
+    }
+
+    free(buffer.int8_data);
+
+    return 0;
+}
+
 static int read_dataset_slice_float(coda_cursor cursor, const char *path, long num_elements, long subdim_length,
                                     long subdim_index, harp_array data)
 {
@@ -792,6 +822,22 @@ static int read_data_atmosphere_mass_content_of_carbon_monoxide(void *user_data,
                         info->num_lines * info->num_for * info->num_fov, data);
 }
 
+static int read_data_atmosphere_mass_content_of_cloud_ice(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_cloud_ice", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_atmosphere_mass_content_of_cloud_liquid(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_cloud_liquid", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
 static int read_data_atmosphere_mass_content_of_nitric_acid(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -832,6 +878,14 @@ static int read_data_atmosphere_mass_content_of_carbon_dioxide(void *user_data, 
                         info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
 }
 
+static int read_data_cloud_phase(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset_slice_int8(info->data_cursor, "thermodynamic_phase_of_cloud_water_particles_at_cloud_top",
+                                   info->num_lines * info->num_for * info->num_fov, 2, 0, data);
+}
+
 static int read_data_dust_indicator(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -846,6 +900,14 @@ static int read_data_effective_cloud_fraction(void *user_data, harp_array data)
 
     return read_dataset_slice_float(info->data_cursor, "effective_cloud_fraction",
                                     info->num_lines * info->num_for * info->num_fov, 2, 0, data);
+}
+
+static int read_data_effective_radius_of_cloud_particles(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "effective_radius_of_cloud_condensed_water_particles_at_cloud_top",
+                        harp_type_float, info->num_lines * info->num_for * info->num_fov, data);
 }
 
 static int read_optimal_estimation_atmosphere_mass_content_of_water(void *user_data, harp_array data)
@@ -1645,6 +1707,7 @@ static void register_so2_product(void)
 
 static void register_cld_product(void)
 {
+    const char *cloud_phase_type_values[] = { "clear_sky", "liquid", "ice", "mixed", "supercooled" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -1684,6 +1747,43 @@ static void register_cld_product(void)
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    NULL, read_data_effective_cloud_fraction);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/effective_cloud_fraction[*,*,*,0]",
+                                         NULL);
+
+    /* ice_water_density */
+    description = "cloud ice amount";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "ice_water_density", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "g/m2",
+                                                   NULL, read_data_atmosphere_mass_content_of_cloud_ice);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/atmosphere_mass_content_of_cloud_ice[]", NULL);
+
+    /* liquid_water_density */
+    description = "cloud liquid water amount";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "liquid_water_density", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "g/m2",
+                                                   NULL, read_data_atmosphere_mass_content_of_cloud_liquid);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/atmosphere_mass_content_of_cloud_liquid[]", NULL);
+
+    /* cloud_phase_type */
+    description = "cloud phase at cloud top";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "cloud_phase_type",
+                                                                     harp_type_int8, 1, dimension_type_1d, NULL,
+                                                                     description, NULL, NULL, read_data_cloud_phase);
+    harp_variable_definition_set_enumeration_values(variable_definition, 5, cloud_phase_type_values);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/thermodynamic_phase_of_cloud_water_particles_at_cloud_top", NULL);
+
+    /* liquid_particle_effective_radius */
+    description = "effective radius of cloud condensed water particles at cloud top";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "liquid_particle_effective_radius",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "m",
+                                                   NULL, read_data_effective_radius_of_cloud_particles);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/data/effective_radius_of_cloud_condensed_water_particles_at_cloud_top[]",
                                          NULL);
 
     /* dust_aerosol_index */
