@@ -767,70 +767,6 @@ static int read_orbit_index(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_data_surface_altitude(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "surface_z", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-static int read_data_co_qflag(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "co_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
-static int read_data_hno3_qflag(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "hno3_qflag", harp_type_int8,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-static int read_data_o3_qflag(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "o3_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
-static int read_data_so2_qflag(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "so2_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
-static int read_data_co_bdiv(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "co_bdiv", harp_type_int32, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
-static int read_data_hno3_bdiv(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "hno3_bdiv", harp_type_int32,
-                        info->num_lines * info->num_for * info->num_fov, data);
-}
-
-static int read_data_o3_bdiv(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "o3_bdiv", harp_type_int32, info->num_lines * info->num_for * info->num_fov,
-                        data);
-}
-
 static int read_data_air_pressure_at_cloud_top(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -845,6 +781,14 @@ static int read_data_air_temperature_at_cloud_top(void *user_data, harp_array da
 
     return read_dataset_slice_float(info->data_cursor, "air_temperature_at_cloud_top",
                                     info->num_lines * info->num_for * info->num_fov, 2, 0, data);
+}
+
+static int read_data_atmosphere_mass_content_of_carbon_dioxide(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_carbon_dioxide", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
 }
 
 static int read_data_atmosphere_mass_content_of_carbon_monoxide(void *user_data, harp_array data)
@@ -903,20 +847,28 @@ static int read_data_atmosphere_mass_content_of_methane(void *user_data, harp_ar
                         info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
 }
 
-static int read_data_atmosphere_mass_content_of_carbon_dioxide(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->data_cursor, "atmosphere_mass_content_of_carbon_dioxide", harp_type_float,
-                        info->num_lines * info->num_for * info->num_fov * info->num_levels, data);
-}
-
 static int read_data_cloud_phase(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset_slice_int8(info->data_cursor, "thermodynamic_phase_of_cloud_water_particles_at_cloud_top",
                                    info->num_lines * info->num_for * info->num_fov, 2, 0, data);
+}
+
+static int read_data_co_bdiv(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "co_bdiv", harp_type_int32, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_co_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "co_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
+                        data);
 }
 
 static int read_data_dust_indicator(void *user_data, harp_array data)
@@ -943,6 +895,38 @@ static int read_data_effective_radius_of_cloud_particles(void *user_data, harp_a
                         harp_type_float, info->num_lines * info->num_for * info->num_fov, data);
 }
 
+static int read_data_hno3_bdiv(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "hno3_bdiv", harp_type_int32,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_hno3_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "hno3_qflag", harp_type_int8,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_o3_bdiv(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "o3_bdiv", harp_type_int32, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
+static int read_data_o3_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "o3_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
 static int read_data_so2_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -966,6 +950,14 @@ static int read_data_so2_col(void *user_data, harp_array data)
                                     data);
 }
 
+static int read_data_so2_qflag(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "so2_qflag", harp_type_int8, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
 static int read_optimal_estimation_atmosphere_mass_content_of_water(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -987,6 +979,14 @@ static int read_statistical_surface_air_pressure(void *user_data, harp_array dat
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->data_cursor, "statistical_retrieval/surface_air_pressure", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_surface_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "surface_z", harp_type_float,
                         info->num_lines * info->num_for * info->num_fov, data);
 }
 
