@@ -910,6 +910,22 @@ static int read_data_effective_radius_of_cloud_particles(void *user_data, harp_a
                         harp_type_float, info->num_lines * info->num_for * info->num_fov, data);
 }
 
+static int read_data_so2_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "so2_altitude", harp_type_float,
+                        info->num_lines * info->num_for * info->num_fov, data);
+}
+
+static int read_data_so2_col(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->data_cursor, "so2_col", harp_type_float, info->num_lines * info->num_for * info->num_fov,
+                        data);
+}
+
 static int read_optimal_estimation_atmosphere_mass_content_of_water(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1693,6 +1709,21 @@ static void register_so2_product(void)
     product_definition = harp_ingestion_register_product(module, "IAS_02_SO2", NULL, read_dimensions);
 
     register_common_variables(product_definition);
+
+    /* SO2_column_number_density */
+    description = "SO2 column";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "DU", NULL, read_data_so2_col);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/so2_col[]", NULL);
+
+    /* SO2_layer_height */
+    description = "retrieved plume altitude";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_layer_height", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "m", NULL,
+                                                   read_data_so2_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/so2_altitude[]", NULL);
 
     /* validity */
     description = "general retrieval quality flag";
