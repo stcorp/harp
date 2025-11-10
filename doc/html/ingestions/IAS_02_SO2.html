@@ -184,6 +184,29 @@
 </tbody>
 </table>
 </section>
+<section id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">IAS_02_SO2</span></code> products.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>option name</p></th>
+<th class="head"><p>legal values</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>so2_column</p></td>
+<td><p>7km, 10km, 13km, 16km, 25km</p></td>
+<td><p>whether to ingest the SO2 column consistent with the SO2 layer height (default), the SO2 column from the 7km box profile (so2_column=7km), from the 10km box profile (so2_column=10km), from the 13km box profile (so2_column=13km), from the 16km box profile (so2_column=16km), or from the 25km box profile (so2_column=25km)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="mapping-description">
 <h2>Mapping description</h2>
 <p>The table below details where and how each variable was retrieved from the input product.</p>
@@ -240,19 +263,52 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/geolocation_information/sounder_pixel_zenith[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>SO2_column_number_density</strong></p></td>
-<td><p><em>path</em></p></td>
+<tr class="row-even"><td rowspan="12"><p><strong>SO2_column_number_density</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>so2_column unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/data/so2_col[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>SO2_layer_height</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=7km</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/so2_col_at_altitudes[0]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=10km</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/so2_col_at_altitudes[1]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=13km</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/so2_col_at_altitudes[2]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=16km</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/so2_col_at_altitudes[3]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>so2_column=25km</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/data/so2_col_at_altitudes[4]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SO2_layer_height</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/so2_altitude[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>validity</strong></p></td>
+<tr class="row-odd"><td rowspan="2"><p><strong>validity</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/data/so2_qflag[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
+<tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>the uint8 data is cast to int8</p></td>
 </tr>
 </tbody>

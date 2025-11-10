@@ -96,6 +96,9 @@ typedef struct ingest_info_struct
     /* 4 corners per IFOV -> 4 x num_ifov doubles */
     double *corner_latitude;
     double *corner_longitude;
+
+    /* so2 = 0: layer_height, 1: 7km box profile, 2: 10km bp, 3: 13km bp, 4: 16km bp, 5: 25km bp */
+    int so2_column_type;
 } ingest_info;
 
 static const char *get_product_type_name(iasi_ng_product_type product_type)
@@ -374,9 +377,8 @@ static void ingestion_done(void *user_data)
 static int ingestion_init(const harp_ingestion_module *module, coda_product *product,
                           const harp_ingestion_options *options, harp_product_definition **definition, void **user_data)
 {
+    const char *option_value;
     ingest_info *info;
-
-    (void)options;      /* prevent unused warning */
 
     info = (ingest_info *)malloc(sizeof(ingest_info));
     if (info == NULL)
@@ -396,6 +398,8 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->corner_latitude = NULL;
     info->corner_longitude = NULL;
 
+    info->so2_column_type = 0;
+
     if (get_product_type(info->product, &info->product_type) != 0)
     {
         ingestion_done(info);
@@ -414,6 +418,35 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         ingestion_done(info);
         return -1;
+    }
+
+    if (harp_ingestion_options_has_option(options, "so2_column"))
+    {
+        if (harp_ingestion_options_get_option(options, "so2_column", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "7km") == 0)
+        {
+            info->so2_column_type = 1;
+        }
+        else if (strcmp(option_value, "10km") == 0)
+        {
+            info->so2_column_type = 2;
+        }
+        else if (strcmp(option_value, "13km") == 0)
+        {
+            info->so2_column_type = 3;
+        }
+        else if (strcmp(option_value, "16km") == 0)
+        {
+            info->so2_column_type = 4;
+        }
+        else if (strcmp(option_value, "25km") == 0)
+        {
+            info->so2_column_type = 5;
+        }
     }
 
     *user_data = info;
@@ -922,8 +955,15 @@ static int read_data_so2_col(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->data_cursor, "so2_col", harp_type_float, info->num_lines * info->num_for * info->num_fov,
-                        data);
+    if (info->so2_column_type == 0)
+    {
+        return read_dataset(info->data_cursor, "so2_col", harp_type_float,
+                            info->num_lines * info->num_for * info->num_fov, data);
+    }
+
+    return read_dataset_slice_float(info->data_cursor, "so2_col_at_altitudes",
+                                    info->num_lines * info->num_for * info->num_fov, 5, info->so2_column_type - 1,
+                                    data);
 }
 
 static int read_optimal_estimation_atmosphere_mass_content_of_water(void *user_data, harp_array data)
@@ -1697,6 +1737,7 @@ static void register_o3_product(void)
 
 static void register_so2_product(void)
 {
+    const char *so2_column_options[] = { "7km", "10km", "13km", "16km", "25km" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
@@ -1705,6 +1746,12 @@ static void register_so2_product(void)
 
     module = harp_ingestion_register_module("IAS_02_SO2", "IASI-NG", "EPS_SG", "IAS_02_SO2",
                                             "IASI-NG L2 SO2 total column densities", ingestion_init, ingestion_done);
+
+    harp_ingestion_register_option(module, "so2_column", "whether to ingest the SO2 column consistent with the SO2 "
+                                   "layer height (default), the SO2 column from the 7km box profile (so2_column=7km), "
+                                   "from the 10km box profile (so2_column=10km), from the 13km box profile "
+                                   "(so2_column=13km), from the 16km box profile (so2_column=16km), or from the 25km "
+                                   "box profile (so2_column=25km)", 5, so2_column_options);
 
     product_definition = harp_ingestion_register_product(module, "IAS_02_SO2", NULL, read_dimensions);
 
@@ -1715,7 +1762,17 @@ static void register_so2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, "DU", NULL, read_data_so2_col);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/data/so2_col[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "so2_column unset", "/data/so2_col[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "so2_column=7km", "/data/so2_col_at_altitudes[0]",
+                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "so2_column=10km", "/data/so2_col_at_altitudes[1]",
+                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "so2_column=13km", "/data/so2_col_at_altitudes[2]",
+                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "so2_column=16km", "/data/so2_col_at_altitudes[3]",
+                                         NULL);
+    harp_variable_definition_add_mapping(variable_definition, NULL, "so2_column=25km", "/data/so2_col_at_altitudes[4]",
+                                         NULL);
 
     /* SO2_layer_height */
     description = "retrieved plume altitude";
