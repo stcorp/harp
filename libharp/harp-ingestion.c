@@ -1362,6 +1362,14 @@ static int execute_point_filter(ingest_info *info, harp_program *program)
         harp_variable_delete(longitude);
         return -1;
     }
+    if (harp_variable_convert_data_type(latitude, harp_type_double) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_convert_data_type(longitude, harp_type_double) != 0)
+    {
+        return -1;
+    }
 
     if (latitude->num_dimensions == 0)
     {
@@ -1517,6 +1525,14 @@ static int execute_polygon_filter(ingest_info *info, harp_program *program)
     {
         harp_variable_delete(latitude_bounds);
         harp_variable_delete(longitude_bounds);
+        return -1;
+    }
+    if (harp_variable_convert_data_type(latitude_bounds, harp_type_double) != 0)
+    {
+        return -1;
+    }
+    if (harp_variable_convert_data_type(longitude_bounds, harp_type_double) != 0)
+    {
         return -1;
     }
 
