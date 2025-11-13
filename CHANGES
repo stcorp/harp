@@ -1,3 +1,10 @@
+1.28.1 2025-11-13
+~~~~~~~~~~~~~~~~~
+
+* Fixed regression in HARP 1.25 where performing a point or polygon filter
+  during ingestion would result in a segmentation fault if the latitude /
+  longitude variables contained single precision floating point values.
+
 1.28 2025-11-10
 ~~~~~~~~~~~~~~~
 
