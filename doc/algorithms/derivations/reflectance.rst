@@ -24,14 +24,14 @@ reflectance derivations
 
 #. reflectance from wavelength radiance and wavelength solar irradiance
 
-   ================== ================== ================= ========================
+   ================== ================== ================= ===========================
    symbol             description        unit              variable name
-   ================== ================== ================= ========================
+   ================== ================== ================= ===========================
    :math:`\theta_{0}` solar zenith angle :math:`deg`       `solar_zenith_angle {:}`
    :math:`L(\lambda)` radiance           :math:`W/m2/sr/m` `wavelength_radiance {:}`
-   :math:`E(\lambda}` solar irradiance   :math:`W/m2/m`    `wavelength_irradiance {:}`
+   :math:`E(\lambda)` solar irradiance   :math:`W/m2/m`    `wavelength_irradiance {:}`
    :math:`R`          reflectance        :math:`-`         `reflectance {:}`
-   ================== ================== ================= ========================
+   ================== ================== ================= ===========================
 
    The pattern `:` for the dimensions can represent `{time}`, or no dimensions at all.
 
