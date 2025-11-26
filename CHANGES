@@ -1,5 +1,12 @@
+* Added conversion to derive reflectance from radiance, solar irradiance
+  and solar zenith angle.
+
+* Added HARP_UNIT_WAVELENGTH_RADIANCE and HARP_UNIT_WAVELENGTH_IRRADIANCE
+  to harp.h.
+
 * Updates to product ingestions:
-  - EarthCARE L1 MSI: added irradiance variable
+  - EarthCARE L1 MSI: added wavelength_irradiance variable and renamed
+    radiance to wavelength_radiance.
 
 1.28.1 2025-11-13
 ~~~~~~~~~~~~~~~~~

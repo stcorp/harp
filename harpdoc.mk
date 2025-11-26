@@ -72,6 +72,7 @@ HARP_DOCFILES = \
 	doc/html/algorithms/derivations/partial_pressure.html \
 	doc/html/algorithms/derivations/pressure.html \
 	doc/html/algorithms/derivations/pressure_bounds.html \
+	doc/html/algorithms/derivations/reflectance.html \
 	doc/html/algorithms/derivations/relative_azimuth_angle.html \
 	doc/html/algorithms/derivations/relative_humidity.html \
 	doc/html/algorithms/derivations/scattering_angle.html \
@@ -772,6 +773,8 @@ doc/html/algorithms/derivations/partial_pressure.html:
 doc/html/algorithms/derivations/pressure.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/pressure_bounds.html:
+	$(MAKE) harp_doc
+doc/html/algorithms/derivations/reflectance.html:
 	$(MAKE) harp_doc
 doc/html/algorithms/derivations/relative_azimuth_angle.html:
 	$(MAKE) harp_doc

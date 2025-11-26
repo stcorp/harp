@@ -53,6 +53,7 @@ Variable Conversions
    derivations/partial_pressure
    derivations/pressure
    derivations/pressure_bounds
+   derivations/reflectance
    derivations/relative_azimuth_angle
    derivations/relative_humidity
    derivations/scattering_angle

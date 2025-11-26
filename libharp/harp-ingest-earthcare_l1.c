@@ -1300,9 +1300,9 @@ static void register_msi_nom_1b_product(void)
     path = "/ScienceData/sensor_elevation_angle[<band>,*,*]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, band_description);
 
-    /* radiance */
+    /* wavelength_radiance */
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "radiance", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_radiance", harp_type_double, 1,
                                                    dimension_type, NULL, "radiance", "W/m2/sr/um", include_radiance_msi,
                                                    read_pixel_values_msi);
     path = "/ScienceData/pixel_values[<band>,*,*]";
@@ -1310,9 +1310,9 @@ static void register_msi_nom_1b_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, "band=VIS, band=VNIR, band=SWIR1, band=SWIR2", path,
                                          description);
 
-    /* irradiance */
+    /* wavelength_irradiance */
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "irradiance", harp_type_double, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength_irradiance", harp_type_double, 1,
                                                    dimension_type, NULL, "solar spectral irradiance", "W/m2/um",
                                                    include_radiance_msi, read_solar_spectral_irradiance_msi);
     path = "/ScienceData/solar_spectral_irradiance[<band>,*]";

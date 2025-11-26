@@ -189,8 +189,8 @@ double harp_normal_gravity_from_latitude(double latitude)
 }
 
 /** Convert radiance to normalized radiance
- * \param radiance  Radiance [mW m-2 sr-1]
- * \param solar_irradiance  Solar irradiance [mW m-2]
+ * \param radiance  Radiance [W m-2 sr-1]
+ * \param solar_irradiance  Solar irradiance [W m-2]
  * \return the normalized radiance [1]
  */
 double harp_normalized_radiance_from_radiance_and_solar_irradiance(double radiance, double solar_irradiance)
@@ -210,12 +210,12 @@ double harp_normalized_radiance_from_reflectance_and_solar_zenith_angle(double r
 
 /** Convert normalized radiance to radiance
  * \param normalized_radiance  Normalized radiance [1]
- * \param solar_irradiance  Solar irradiance [mW m-2]
- * \return the radiance [mW m-2 sr-1]
+ * \param solar_irradiance  Solar irradiance [W m-2]
+ * \return the radiance [W m-2 sr-1]
  */
 double harp_radiance_from_normalized_radiance_and_solar_irradiance(double normalized_radiance, double solar_irradiance)
 {
-    double radiance;    /* Radiance [mW m-2 sr-1] */
+    double radiance;    /* Radiance [W m-2 sr-1] */
     double pi = (double)M_PI;
 
     radiance = normalized_radiance * solar_irradiance / pi;
@@ -224,15 +224,15 @@ double harp_radiance_from_normalized_radiance_and_solar_irradiance(double normal
 
 /** Convert reflectance to radiance
  * \param reflectance  Reflectance [1]
- * \param solar_irradiance  Solar irradiance [mW m-2]
+ * \param solar_irradiance  Solar irradiance [W m-2]
  * \param solar_zenith_angle  Solar zenith angle [degree]
- * \return the radiance [mW m-2 sr-1]
+ * \return the radiance [W m-2 sr-1]
  */
 double harp_radiance_from_reflectance_solar_irradiance_and_solar_zenith_angle(double reflectance,
                                                                               double solar_irradiance,
                                                                               double solar_zenith_angle)
 {
-    double radiance;    /* Radiance [mW m-2 sr-1] */
+    double radiance;    /* Radiance [W m-2 sr-1] */
     double pi = (double)M_PI;
     double deg2rad = (double)CONST_DEG2RAD;
     double mu0 = cos(solar_zenith_angle * deg2rad);
@@ -242,8 +242,8 @@ double harp_radiance_from_reflectance_solar_irradiance_and_solar_zenith_angle(do
 }
 
 /** Convert radiance to reflectance
- * \param radiance  Radiance [mW m-2 sr-1]
- * \param solar_irradiance  Solar irradiance [mW m-2]
+ * \param radiance  Radiance [W m-2 sr-1]
+ * \param solar_irradiance  Solar irradiance [W m-2]
  * \param solar_zenith_angle  Solar zenith angle [degree]
  * \return the reflectance [1]
  */
@@ -261,7 +261,7 @@ double harp_reflectance_from_radiance_solar_irradiance_and_solar_zenith_angle(do
 }
 
 /** Convert normalized radiance to reflectance
- * \param normalized_radiance  Normalized radiance [mW m-2 sr-1]
+ * \param normalized_radiance  Normalized radiance [1]
  * \param solar_zenith_angle  Solar zenith angle [degree]
  * \return the reflectance [1]
  */
