@@ -626,6 +626,29 @@ static int read_solar_elevation_angle_msi(void *user_data, harp_array data)
     return read_array_msi((ingest_info *)user_data, "solar_elevation_angle", harp_type_double, data);
 }
 
+static int read_solar_spectral_irradiance_msi(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long i, j;
+
+    if (read_array_partial(info->science_data_cursor, "solar_spectral_irradiance", harp_type_double,
+                           4 * info->num_across_track, info->msi_band * info->num_across_track, info->num_across_track,
+                           data) != 0)
+    {
+        return -1;
+    }
+
+    for (i = 1; i < info->num_along_track; i++)
+    {
+        for (j = 0; j < info->num_across_track; j++)
+        {
+            data.double_data[i * info->num_across_track + j] = data.double_data[j];
+        }
+    }
+
+    return 0;
+}
+
 static int read_time(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1284,6 +1307,16 @@ static void register_msi_nom_1b_product(void)
                                                    read_pixel_values_msi);
     path = "/ScienceData/pixel_values[<band>,*,*]";
     description = "<band> is 0 (VIS), 1 (VNIR), 2 (SWIR1), or 3 (SWIR2)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, "band=VIS, band=VNIR, band=SWIR1, band=SWIR2", path,
+                                         description);
+
+    /* irradiance */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "irradiance", harp_type_double, 1,
+                                                   dimension_type, NULL, "solar spectral irradiance", "W/m2/um",
+                                                   include_radiance_msi, read_solar_spectral_irradiance_msi);
+    path = "/ScienceData/solar_spectral_irradiance[<band>,*]";
+    description = "<band> is 0 (VIS), 1 (VNIR), 2 (SWIR1), or 3 (SWIR2); data is replicated for all scanlines";
     harp_variable_definition_add_mapping(variable_definition, NULL, "band=VIS, band=VNIR, band=SWIR1, band=SWIR2", path,
                                          description);
 
