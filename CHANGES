@@ -1,3 +1,6 @@
+1.29 2025-11-28
+~~~~~~~~~~~~~~~
+
 * Added conversion to derive reflectance from radiance, solar irradiance
   and solar zenith angle.
 
