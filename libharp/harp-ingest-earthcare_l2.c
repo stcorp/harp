@@ -2216,7 +2216,7 @@ static void register_ac__tc__2b_product(void)
     const char *resolution_option_values[2] = { "medium", "low" };
     const char *description;
 
-    description = "ATLID/CPR synergetic lidar/radar classification";
+    description = "ATLID/CPR synergetic lidar/radar classification (ESA)";
     module = harp_ingestion_register_module("ECA_AC__TC__2B", "EarthCARE", "EARTHCARE", "AC__TC__2B", description,
                                             ingestion_init, ingestion_done);
 
@@ -2272,7 +2272,7 @@ static void register_acm_cap_2b_product(void)
     harp_dimension_type dimension_type[2];
     const char *description;
 
-    description = "ATLID/CPR/MSI cloud and aerosol properties";
+    description = "ATLID/CPR/MSI cloud and aerosol properties (ESA)";
     module = harp_ingestion_register_module("ECA_ACM_CAP_2B", "EarthCARE", "EARTHCARE", "ACM_CAP_2B", description,
                                             ingestion_init, ingestion_done);
 
@@ -2411,7 +2411,7 @@ static void register_am__acd_2b_product(void)
     const char *angstrom_option_values[1] = { "670/865" };
     const char *description;
 
-    description = "ATLID-MSI aerosol column descriptor";
+    description = "ATLID-MSI aerosol column descriptor (ESA)";
     module = harp_ingestion_register_module("ECA_AM__ACD_2B", "EarthCARE", "EARTHCARE", "AM__ACD_2B", description,
                                             ingestion_init, ingestion_done);
 
@@ -2496,7 +2496,7 @@ static void register_am__cth_2b_product(void)
     const char *description;
     const char *path;
 
-    description = "ATLID-MSI cloud top height";
+    description = "ATLID-MSI cloud top height (ESA)";
     module = harp_ingestion_register_module("ECA_AM__CTH_2B", "EarthCARE", "EARTHCARE", "AM__CTH_2B", description,
                                             ingestion_init, ingestion_done);
 
@@ -2544,7 +2544,7 @@ static void register_atl_aer_2a_product(void)
     harp_dimension_type dimension_type[2];
     const char *description;
 
-    description = "ATLID aerosol inversion";
+    description = "ATLID aerosol inversion (ESA)";
     module = harp_ingestion_register_module("ECA_ATL_AER_2A", "EarthCARE", "EARTHCARE", "ATL_AER_2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -2692,7 +2692,7 @@ static void register_atl_ald_2a_product(void)
     const char *path;
     long dimension[3];
 
-    description = "ATLID aerosol layers in cloud-free observations";
+    description = "ATLID aerosol layers in cloud-free observations (ESA)";
     module = harp_ingestion_register_module("ECA_ATL_ALD_2A", "EarthCARE", "EARTHCARE", "ATL_ALD_2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -2839,7 +2839,7 @@ static void register_atl_cth_2a_product(void)
     harp_dimension_type dimension_type[1];
     const char *description;
 
-    description = "ATLID uppermost cloud top height";
+    description = "ATLID uppermost cloud top height (ESA)";
     module = harp_ingestion_register_module("ECA_ATL_CTH_2A", "EarthCARE", "EARTHCARE", "ATL_CTH_2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -2889,7 +2889,7 @@ static void register_atl_ebd_2a_product(void)
     const char *resolution_option_values[3] = { "medium", "low" };
     const char *description;
 
-    description = "ATLID extinction, backscatter, and depolarization";
+    description = "ATLID extinction, backscatter, and depolarization (ESA)";
     module = harp_ingestion_register_module("ECA_ATL_EBD_2A", "EarthCARE", "EARTHCARE", "ATL_EBD_2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -3125,7 +3125,7 @@ static void register_atl_ice_2a_product(void)
     harp_dimension_type dimension_type[2];
     const char *description;
 
-    description = "ATLID ice water content and effictive radius";
+    description = "ATLID ice water content and effictive radius (ESA)";
     module = harp_ingestion_register_module("ECA_ATL_ICE_2A", "EarthCARE", "EARTHCARE", "ATL_ICE_2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -3229,7 +3229,7 @@ static void register_bm__rad_2b_product(void)
     const char *options;
     const char *path;
 
-    description = "BBR TOA radiances";
+    description = "BBR TOA radiances (ESA)";
     module = harp_ingestion_register_module("ECA_BM__RAD_2B", "EarthCARE", "EARTHCARE", "BM__RAD_2B", description,
                                             ingestion_init, ingestion_done);
 
@@ -3439,7 +3439,7 @@ static void register_bma_flx_2b_product(void)
     const char *description;
     const char *path;
 
-    description = "BBR TOA solar and thermal fluxes";
+    description = "BBR TOA solar and thermal fluxes (ESA)";
     module = harp_ingestion_register_module("ECA_BMA_FLX_2B", "EarthCARE", "EARTHCARE", "BMA_FLX_2B", description,
                                             ingestion_init, ingestion_done);
 
@@ -3592,7 +3592,7 @@ static void register_cpr_cld_2a_product(void)
     harp_dimension_type dimension_type[2];
     const char *description;
 
-    description = "CPR cloud profiles";
+    description = "CPR cloud profiles (ESA)";
     module = harp_ingestion_register_module("ECA_CPR_CLD_2A", "EarthCARE", "EARTHCARE", "CPR_CLD_2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -3727,7 +3727,7 @@ static void register_msi_aot_2a_product(void)
     const char *description;
     const char *path;
 
-    description = "MSI aerosol optical thickness";
+    description = "MSI aerosol optical thickness (ESA)";
     module = harp_ingestion_register_module("ECA_MSI_AOT_2A", "EarthCARE", "EARTHCARE", "MSI_AOT_2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -3815,7 +3815,7 @@ static void register_msi_cm__2a_product(void)
     harp_dimension_type dimension_type[2];
     const char *description;
 
-    description = "MSI cloud mask, type and phase";
+    description = "MSI cloud mask, type and phase (ESA)";
     module = harp_ingestion_register_module("ECA_MSI_CM__2A", "EarthCARE", "EARTHCARE", "MSI_CM__2A", description,
                                             ingestion_init, ingestion_done);
 
@@ -3887,7 +3887,7 @@ static void register_msi_cop_2a_product(void)
     const char *description;
 
     description = "MSI cloud optical thickness, cloud effective radius, ice crystal diameter, cloud water path, "
-        "and cloud top temperature, pressure and height";
+        "and cloud top temperature, pressure and height (ESA)";
     module = harp_ingestion_register_module("ECA_MSI_COP_2A", "EarthCARE", "EARTHCARE", "MSI_COP_2A", description,
                                             ingestion_init, ingestion_done);
 

@@ -309,6 +309,7 @@ set(LIBHARP_SOURCES
   libharp/harp-ingest-cci_l4_o3_np.c
   libharp/harp-ingest-cloudnet.c
   libharp/harp-ingest-earlinet.c
+  libharp/harp-ingest-earthcare_jaxa.c
   libharp/harp-ingest-earthcare_l1.c
   libharp/harp-ingest-earthcare_l2.c
   libharp/harp-ingest-ecmwf-grib.c

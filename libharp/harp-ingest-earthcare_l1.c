@@ -877,7 +877,7 @@ static void register_atl_nom_1b_product(void)
     const char *options;
     const char *path;
 
-    description = "ATLID L1 Nominal product";
+    description = "ATLID L1 Nominal product (ESA)";
     module = harp_ingestion_register_module("ECA_ATL_NOM_1B", "EarthCARE", "EARTHCARE", "ATL_NOM_1B", description,
                                             ingestion_init, ingestion_done);
     harp_ingestion_register_option(module, "data", "the type of backscatter profile to ingest; option values are "
@@ -970,7 +970,7 @@ static void register_bbr_nom_1b_product(void)
     const char *options;
     const char *path;
 
-    description = "BBR L1 Nominal Product";
+    description = "BBR L1 Nominal Product (ESA)";
     module = harp_ingestion_register_module("ECA_BBR_NOM_1B", "EarthCARE", "EARTHCARE", "BBR_NOM_1B", description,
                                             ingestion_init, ingestion_done);
 
@@ -1117,7 +1117,7 @@ static void register_bbr_sng_1b_product(void)
     const char *description;
     const char *path;
 
-    description = "BBR L1 Single Pixel Product";
+    description = "BBR L1 Single Pixel Product (ESA)";
     module = harp_ingestion_register_module("ECA_BBR_SNG_1B", "EarthCARE", "EARTHCARE", "BBR_SNG_1B", description,
                                             ingestion_init, ingestion_done);
 
@@ -1230,7 +1230,7 @@ static void register_msi_nom_1b_product(void)
     const char *description;
     const char *path;
 
-    description = "MSI L1b Nominal Product";
+    description = "MSI L1b Nominal Product (ESA)";
     module = harp_ingestion_register_module("ECA_MSI_NOM_1B", "EarthCARE", "EARTHCARE", "MSI_NOM_1B", description,
                                             ingestion_init, ingestion_done);
 

@@ -5,6 +5,8 @@
   to harp.h.
 
 * Updates to product ingestions:
+  - EarthCARE: added support for JAXA L1 and L2A products
+    (CPR_NOM_1B, ATL_CLA_2A, CPR_ECO_2A, MSI_CLP_2A, CPR_CLP_2A).
   - EarthCARE L1 MSI: added wavelength_irradiance variable and renamed
     radiance to wavelength_radiance.
 

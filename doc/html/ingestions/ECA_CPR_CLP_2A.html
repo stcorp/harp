@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ECA_CPR_CLP_2A &mdash; HARP 1.28.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            HARP
+          </a>
+              <div class="version">
+                1.28
+              </div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions/index.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Ingestion definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libharp.html">C library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../idl.html">IDL interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matlab.html">MATLAB interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python.html">Python interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R.html">R interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Command line tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HARP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ECA_CPR_CLP_2A</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="eca-cpr-clp-2a">
+<h1>ECA_CPR_CLP_2A</h1>
+<section id="variables">
+<h2>Variables</h2>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">ECA_CPR_CLP_2A</span></code> data.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 5.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>dimensions</p></th>
+<th class="head"><p>unit</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[seconds since 2000-01-01]</p></td>
+<td><p>UTC time</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_north]</p></td>
+<td><p>latitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[degree_east]</p></td>
+<td><p>longitude</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>altitude</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[m]</p></td>
+<td><p>altitude</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>orbit_index</strong></p></td>
+<td><p>int32</p></td>
+<td></td>
+<td></td>
+<td><p>absolute orbit number</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>vertical_wind_velocity</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[m/s]</p></td>
+<td><p>virtical air velocity</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ice_water_density</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[g/m3]</p></td>
+<td><p>ice water content</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ice_water_density_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[g/m3]</p></td>
+<td><p>uncertainty in ice water content</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ice_water_effective_radius</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[um]</p></td>
+<td><p>effective radius of ice cloud</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ice_water_effective_radius_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[um]</p></td>
+<td><p>uncertainty in effective radius of ice cloud</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>liquid_water_density</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[g/m3]</p></td>
+<td><p>liquid water content</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>liquid_water_density_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[g/m3]</p></td>
+<td><p>uncertainty in liquid water content</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>cloud_water_effective_radius</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[um]</p></td>
+<td><p>effective radius of liquid water cloud</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>cloud_water_effective_radius_uncertainty</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[um]</p></td>
+<td><p>uncertainty in effective radius of liquid water cloud</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>optical_depth</strong></p></td>
+<td><p>double</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>optical thickness</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<td><p>int32</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>zero-based index of the sample within the source product</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mapping-description">
+<h2>Mapping description</h2>
+<p>The table below details where and how each variable was retrieved from the input product.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>field name</p></th>
+<th class="head" colspan="2"><p>mapping description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>datetime</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Geo/time</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>latitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Geo/latitude</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>longitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Geo/longitude</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>altitude</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Geo/height</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>orbit_index</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>vertical_wind_velocity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_air_velocity_10km</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>ice_water_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_ice_content_10km</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>ice_water_density_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_ice_content_10km_uncertainty</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>ice_water_effective_radius</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_ice_effective_radius_10km</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>ice_water_effective_radius_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_ice_effective_radius_10km, /ScienceData/Data/cloud_ice_effective_radius_10km_uncertainty</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the relative error in % is turned into an absolute error; the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>liquid_water_density</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_water_content_10km</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>liquid_water_density_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_water_content_10km, /ScienceData/Data/cloud_water_content_10km_uncertainty</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the relative error in % is turned into an absolute error; the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>cloud_water_effective_radius</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_water_effective_radius_10km</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p><strong>cloud_water_effective_radius_uncertainty</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/cloud_water_effective_radius_10km, /ScienceData/Data/cloud_water_effective_radius_10km_uncertainty</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>the relative error in % is turned into an absolute error; the vertical grid is inverted to make it ascending</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>optical_depth</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/ScienceData/Data/optical_thickness_10km</strong></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2025 S[&amp;]T, The Netherlands.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
