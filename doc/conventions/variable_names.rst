@@ -179,6 +179,7 @@ tropopause_altitude                                                            X
 tropopause_pressure                                                            X            X             [hPa]                pressure level of the troposphere/stratosphere boundary location
 validity                                                                                                                       validity flag for each time sample or whole product;
                                                                                                                                only to be used if validity flag is for multiple variables combined
+vertical_air_velocity                                                          X       X    X             [m/s]
 viewing_azimuth_angle                                                          X                          [degree]
 viewing_elevation_angle                                                        X                          [degree]
 viewing_zenith_angle                                                           X                          [degree]

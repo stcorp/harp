@@ -930,10 +930,10 @@ static void register_cpr_clp_2a_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
                                          "/HeaderData/VariableProductHeader/MainProductHeader/orbitNumber", NULL);
 
-    /* vertical_wind_velocity */
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "vertical_wind_velocity",
+    /* vertical_air_velocity */
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "vertical_air_velocity",
                                                                      harp_type_double, 2, dimension_type, NULL,
-                                                                     "virtical air velocity", "m/s",
+                                                                     "vertical air velocity", "m/s",
                                                                      NULL, read_cloud_air_velocity_10km);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ScienceData/Data/cloud_air_velocity_10km",
                                          description);
