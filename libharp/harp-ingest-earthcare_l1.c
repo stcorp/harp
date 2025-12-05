@@ -1124,13 +1124,13 @@ static void register_bbr_sng_1b_product(void)
     description = "viewing direction: nadir (default), fore (direction=fore), aft (direction=aft)";
     harp_ingestion_register_option(module, "direction", description, 2, direction_option_values);
 
-    description = "band: SW (default), TW (band=TW)";
+    description = "band: SW (default), LW (band=LW)";
     harp_ingestion_register_option(module, "band", description, 1, band_option_values);
 
     product_definition = harp_ingestion_register_product(module, "ECA_BBR_SNG_1B", NULL, read_dimensions);
 
     dirbnd_description = "<direction> is 0 (Aft), 1 (Nadir), or 2 (Fore) based on direction option; "
-        "<band> is 0 (SW), or 1 (TW)";
+        "<band> is 0 (SW), or 1 (LW)";
 
     /* datetime */
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "datetime", harp_type_double,
