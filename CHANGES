@@ -1,3 +1,7 @@
+* Updates to product ingestions:
+  - EarthCARE CPR_CLP_2A: renamed vertical_wind_speed variable to
+    vertical_air_velocity.
+
 1.29 2025-11-28
 ~~~~~~~~~~~~~~~
 
