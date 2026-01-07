@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="MTG" last-modified="2026-01-07">
+  <cd:Description>>EUMETSAT Meteosat Third Generation (MTG) atmospheric products (Sentinel-4)</cd:Description>
+  <cd:ProductType name="UVN-1B-EARTH-NIR">
+    <cd:Description>Sentinel-4 Level 1 NIR radiance</cd:Description>
+    <cd:ProductDefinition id="UVN_1B_EARTH_NIR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,16,filename())=="UVN-1B-EARTH-NIR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-1B-EARTH-UVVIS">
+    <cd:Description>Sentinel-4 Level 1 UVVIS radiance</cd:Description>
+    <cd:ProductDefinition id="UVN_1B_EARTH_UVVIS" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,18,filename())=="UVN-1B-EARTH-UVVIS"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-1B-IRR">
+    <cd:Description>Sentinel-4 Level 1 irradiance</cd:Description>
+    <cd:ProductDefinition id="UVN_1B_IRR" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,10,filename())=="UVN-1B-IRR"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-ALH">
+    <cd:Description>Sentinel-4 Level 2 Aerosol Layer Height</cd:Description>
+    <cd:ProductDefinition id="UVN_2_ALH" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-ALH"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-AUI">
+    <cd:Description>Sentinel-4 Level 2 UV Aerosol Index</cd:Description>
+    <cd:ProductDefinition id="UVN_2_AUI" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-AUI"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-CLD">
+    <cd:Description>Sentinel-4 Level 2 Cloud</cd:Description>
+    <cd:ProductDefinition id="UVN_2_CLD" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-CLD"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-FCS-CMA">
+    <cd:Description>Sentinel-4 Level 2 FCI CMA Cloud Support Product</cd:Description>
+    <cd:ProductDefinition id="UVN_2_FCS_CMA" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,13,filename())=="UVN-2-FCS-CMA"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-FCS-HET">
+    <cd:Description>Sentinel-4 Level 2 FCI L1C Cloud Support Product</cd:Description>
+    <cd:ProductDefinition id="UVN_2_FCS_HET" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,13,filename())=="UVN-2-FCS-HET"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-FCS-OCA">
+    <cd:Description>Sentinel-4 Level 2 FCI OCA Cloud Support Product</cd:Description>
+    <cd:ProductDefinition id="UVN_2_FCS_OCA" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,13,filename())=="UVN-2-FCS-OCA"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-FDY">
+    <cd:Description>Sentinel-4 Level 2 Formaldehyde</cd:Description>
+    <cd:ProductDefinition id="UVN_2_FDY" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-FDY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-GLY">
+    <cd:Description>Sentinel-4 Level 2 Tropospheric Glyoxal</cd:Description>
+    <cd:ProductDefinition id="UVN_2_GLY" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-GLY"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-NO2">
+    <cd:Description>Sentinel-4 Level 2 Nitrogen Dioxide</cd:Description>
+    <cd:ProductDefinition id="UVN_2_NO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-NO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-O3">
+    <cd:Description>Sentinel-4 Level 2 Ozone Total Column</cd:Description>
+    <cd:ProductDefinition id="UVN_2_O3" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,8,filename())=="UVN-2-O3"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-O3-TSC">
+    <cd:Description>Sentinel-4 Level 2 Tropospheric Ozone</cd:Description>
+    <cd:ProductDefinition id="UVN_2_O3_TSC" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,12,filename())=="UVN-2-O3-TSC"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-RI-ECA">
+    <cd:Description>Sentinel-4 Level 2 ECA ECMWF/CAMS Atmospheric Product</cd:Description>
+    <cd:ProductDefinition id="UVN_2_RI_ECA" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,12,filename())=="UVN-2-RI-ECA"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+  <cd:ProductType name="UVN-2-SO2">
+    <cd:Description>Sentinel-4 Level 2 Sulphur Dioxide</cd:Description>
+    <cd:ProductDefinition id="UVN_2_SO2" format="hdf5" version="0">
+      <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
+      <cd:DetectionRule>
+        <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-SO2"</cd:MatchExpression>
+      </cd:DetectionRule>
+    </cd:ProductDefinition>
+  </cd:ProductType>
+</cd:ProductClass>
