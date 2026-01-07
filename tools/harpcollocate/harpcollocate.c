@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2025 S[&]T, The Netherlands.
+ * Copyright (C) 2015-2026 S[&]T, The Netherlands.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ static int print_warning(const char *message, va_list ap)
 static void print_version(void)
 {
     printf("harpcollocate version %s\n", libharp_version);
-    printf("Copyright (C) 2015-2025 S[&]T, The Netherlands.\n");
+    printf("Copyright (C) 2015-2026 S[&]T, The Netherlands.\n");
 }
 
 static void print_help(void)
