@@ -523,6 +523,15 @@ HARP_DOCFILES = \
 	doc/html/ingestions/OSIRIS_L2_O3_OE.html \
 	doc/html/ingestions/QA4ECV_L2_HCHO.html \
 	doc/html/ingestions/QA4ECV_L2_NO2.html \
+	doc/html/ingestions/S4-L2-ALH.html \
+	doc/html/ingestions/S4-L2-AUI.html \
+	doc/html/ingestions/S4-L2-CHO.html \
+	doc/html/ingestions/S4-L2-CLD.html \
+	doc/html/ingestions/S4-L2-HCH.html \
+	doc/html/ingestions/S4-L2-NO2.html \
+	doc/html/ingestions/S4-L2-OTO.html \
+	doc/html/ingestions/S4-L2-OTR.html \
+	doc/html/ingestions/S4-L2-SO2.html \
 	doc/html/ingestions/S5P_L1B_IR_SIR_BD7.html \
 	doc/html/ingestions/S5P_L1B_IR_SIR_BD8.html \
 	doc/html/ingestions/S5P_L1B_IR_UVN_BD1.html \
@@ -1680,6 +1689,24 @@ doc/html/ingestions/OSIRIS_L2_O3_OE.html:
 doc/html/ingestions/QA4ECV_L2_HCHO.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/QA4ECV_L2_NO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-ALH.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-AUI.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-CHO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-CLD.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-HCH.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-NO2.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-OTO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-OTR.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-SO2.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S5P_L1B_IR_SIR_BD7.html:
 	$(MAKE) harp_doc

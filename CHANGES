@@ -1,3 +1,5 @@
+* Added support for Sentinel-4 L2.
+
 * Updates to product ingestions:
   - EarthCARE CPR_CLP_2A: renamed vertical_wind_speed variable to
     vertical_air_velocity.
