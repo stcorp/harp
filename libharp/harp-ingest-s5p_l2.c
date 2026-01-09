@@ -7768,7 +7768,7 @@ static void register_no2_product(void)
                                    "(data=o22cld)", 1, dataset_options);
 
     harp_ingestion_register_option(module, "total_column", "whether to use nitrogendioxide_total_column (which is "
-                                   "derived from the total slant column diveded by the total amf) or "
+                                   "derived from the total slant column divided by the total amf) or "
                                    "nitrogendioxide_summed_total_column (which is the sum of the retrieved "
                                    "tropospheric and stratospheric columns); option values are 'summed' (default) and "
                                    "'total'", 2, total_column_options);
