@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="MTG" last-modified="2026-01-07">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="MTG" last-modified="2026-01-09">
   <cd:Description>>EUMETSAT Meteosat Third Generation (MTG) atmospheric products (Sentinel-4)</cd:Description>
   <cd:ProductType name="UVN-1B-EARTH-NIR">
     <cd:Description>Sentinel-4 Level 1 NIR radiance</cd:Description>
@@ -127,7 +127,7 @@
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
         <cd:MatchExpression>substr(0,31,filename())=="W_XX-EUMETSAT-Darmstadt,SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,8,filename())=="UVN-2-O3"</cd:MatchExpression>
+        <cd:MatchExpression>substr(37,10,filename())=="UVN-2-O3--"</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
