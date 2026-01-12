@@ -276,8 +276,8 @@ static int add_path_file(harp_dataset *dataset, const char *filename, const char
 
         if (first_line)
         {
-            if (strcmp(line, "filename,datetime_start,datetime_stop,time,latitude,longitude,vertical,spectral,"
-                       "source_product") == 0)
+            if (strncmp(line, "filename,datetime_start,datetime_stop,time,latitude,longitude,vertical,spectral,"
+                        "source_product", 94) == 0 && (line[94] == '\0' || line[94] == ','))
             {
                 /* this is a dataset csv file, import accordingly */
                 if (add_path_csv_file(dataset, filename, stream) != 0)

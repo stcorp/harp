@@ -1,5 +1,8 @@
 * Added support for Sentinel-4 L2.
 
+* Allow reading of .pth files in csv format containing additional columns.
+  (located after those produced by 'harpdump --dataset').
+
 * Updates to product ingestions:
   - EarthCARE CPR_CLP_2A: renamed vertical_wind_speed variable to
     vertical_air_velocity.
