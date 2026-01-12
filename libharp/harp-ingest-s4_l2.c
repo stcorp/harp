@@ -224,17 +224,17 @@ static int init_cursors(ingest_info *info)
 
 static int init_dimensions(ingest_info *info)
 {
-    if (get_dimension_length(info, "scanline",  &info->num_scanlines) != 0)
+    if (get_dimension_length(info, "scanline", &info->num_scanlines) != 0)
     {
         return -1;
     }
-    if (get_dimension_length(info, "ground_pixel",  &info->num_pixels) != 0)
+    if (get_dimension_length(info, "ground_pixel", &info->num_pixels) != 0)
     {
         return -1;
     }
     if (info->product_type == s4_type_o3_tsc)
     {
-        if (get_dimension_length(info, "subcolumn",  &info->num_layers) != 0)
+        if (get_dimension_length(info, "subcolumn", &info->num_layers) != 0)
         {
             return -1;
         }
@@ -259,7 +259,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
 {
     const char *option_value;
     ingest_info *info;
-    
+
     (void)options;
 
     info = (ingest_info *)malloc(sizeof(ingest_info));
@@ -932,8 +932,8 @@ static int read_results_nitrogen_dioxide_stratospheric_air_mass_factor(void *use
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_dataset(info->detailed_results_cursor, "nitrogen_dioxide_stratospheric_air_mass_factor", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
+    return read_dataset(info->detailed_results_cursor, "nitrogen_dioxide_stratospheric_air_mass_factor",
+                        harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_results_nitrogen_dioxide_tropospheric_air_mass_factor(void *user_data, harp_array data)
@@ -1081,7 +1081,7 @@ static int read_o3_tsc_subcolumn_bounds(void *user_data, harp_array data)
     {
         return -1;
     }
-    
+
     /* change {2,vertical} dimension ordering to {vertical,2} */
     dimension[0] = 2;
     dimension[1] = info->num_layers;
@@ -1191,8 +1191,9 @@ static int read_so2_total_air_mass_factor_precision(void *user_data, harp_array 
     switch (info->so2_column_type)
     {
         case 0:
-            return read_dataset(info->detailed_results_cursor, "sulfur_dioxide_total_air_mass_factor_polluted_precision",
-                                harp_type_float, info->num_scanlines * info->num_pixels, data);
+            return read_dataset(info->detailed_results_cursor,
+                                "sulfur_dioxide_total_air_mass_factor_polluted_precision", harp_type_float,
+                                info->num_scanlines * info->num_pixels, data);
         case 1:
             return read_dataset(info->detailed_results_cursor, "sulfur_dioxide_total_air_mass_factor_1km_precision",
                                 harp_type_float, info->num_scanlines * info->num_pixels, data);
@@ -1471,7 +1472,7 @@ static void register_cld_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-CLD", NULL, read_dimensions);
 
     register_core_variables(product_definition);
-    
+
     /* cloud_base_height */
     description = "cloud base height";
     variable_definition =
@@ -1493,7 +1494,7 @@ static void register_cld_product(void)
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_base_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-    
+
     /* cloud_base_pressure */
     description = "cloud base pressure";
     variable_definition =
@@ -1582,7 +1583,7 @@ static void register_cld_product(void)
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_top_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-    
+
     /* cloud_top_pressure */
     description = "cloud top pressure";
     variable_definition =
@@ -1907,7 +1908,7 @@ static void register_o3_tsc_product(void)
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
-    harp_dimension_type dimension_type[3] = \
+    harp_dimension_type dimension_type[3] =
         { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
     long bounds_dimension[2] = { -1, 2 };
 
