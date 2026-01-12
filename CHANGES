@@ -1,3 +1,6 @@
+1.30 2026-01-12
+~~~~~~~~~~~~~~~
+
 * Added support for Sentinel-4 L2.
 
 * Allow reading of .pth files in csv format containing additional columns.

@@ -1,6 +1,6 @@
 Copyright (C) 2015-2026 S[&]T, The Netherlands
 
-                HARP 1.29 Release Notes
+                HARP 1.30 Release Notes
 
 
 HARP is a toolset for ingesting, processing and inter-comparing satellite or
@@ -33,6 +33,7 @@ The main functionalities of HARP are:
    - NPP Suomi (CrIS/OMPS/VIIRS) L2
    - ODIN OSIRIS/SMR L2
    - QA4ECV NO2/HCHO L2
+   - Sentinel-4 L2
    - Sentinel-5P L1/L2
    - Sentinel-5 L1/L2
    - TEMIS ozone fields
