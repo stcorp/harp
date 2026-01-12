@@ -4,6 +4,7 @@
   (located after those produced by 'harpdump --dataset').
 
 * Updates to product ingestions:
+  - GEOMS Pandora: added support for GEOMS-TE-PANDORA-OFFAXIS-GAS-001.
   - EarthCARE CPR_CLP_2A: renamed vertical_wind_speed variable to
     vertical_air_velocity.
 

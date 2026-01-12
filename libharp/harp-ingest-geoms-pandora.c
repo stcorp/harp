@@ -45,6 +45,12 @@
 #define MAX_PATH_LENGTH 100
 #define MAX_MAPPING_LENGTH 100
 
+typedef enum doas_type_enum
+{
+    doas_directsun,
+    doas_offaxis
+} doas_type;
+
 typedef enum gas_enum
 {
     gas_NO2,
@@ -74,8 +80,10 @@ typedef struct ingest_info_struct
     int product_version;
     coda_product *product;
     gas_type gas;
+    doas_type template_type;
     const char *template;
     long num_time;
+    long num_vertical;
 } ingest_info;
 
 static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
@@ -83,6 +91,7 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     ingest_info *info = (ingest_info *)user_data;
 
     dimension[harp_dimension_time] = info->num_time;
+    dimension[harp_dimension_vertical] = info->num_vertical;
 
     return 0;
 }
@@ -179,6 +188,41 @@ static int read_variable_double(void *user_data, const char *path, long num_elem
     return 0;
 }
 
+static int read_variable_uint8(void *user_data, const char *path, long num_elements, harp_array data)
+{
+    coda_cursor cursor;
+    long actual_num_elements;
+
+    if (coda_cursor_set_product(&cursor, ((ingest_info *)user_data)->product) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_goto(&cursor, path) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_get_num_elements(&cursor, &actual_num_elements) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (actual_num_elements != num_elements)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "variable %s has %ld elements (expected %ld)", path, actual_num_elements,
+                       num_elements);
+        return -1;
+    }
+    if (coda_cursor_read_uint8_array(&cursor, (uint8_t *)data.int8_data, coda_array_ordering_c) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_variable_int32(void *user_data, const char *path, long num_elements, harp_array data)
 {
     coda_cursor cursor;
@@ -222,6 +266,20 @@ static int read_data_source(void *user_data, harp_array data)
 static int read_data_location(void *user_data, harp_array data)
 {
     return read_attribute(user_data, "@DATA_LOCATION", data);
+}
+
+static int read_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(user_data, "ALTITUDE", info->num_time * info->num_vertical, data);
+}
+
+static int read_altitude_bounds(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_double(user_data, "ALTITUDE_BOUNDARIES", info->num_time * info->num_vertical * 2, data);
 }
 
 static int read_datetime(void *user_data, harp_array data)
@@ -270,7 +328,7 @@ static int read_solar_zenith_angle(void *user_data, harp_array data)
                                 data);
 }
 
-static int read_column_solar(void *user_data, harp_array data)
+static int read_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -279,7 +337,7 @@ static int read_column_solar(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_column_solar_uncertainty_combined(void *user_data, harp_array data)
+static int read_column_uncertainty_combined(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -289,7 +347,7 @@ static int read_column_solar_uncertainty_combined(void *user_data, harp_array da
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_column_solar_uncertainty_random(void *user_data, harp_array data)
+static int read_column_uncertainty_random(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -299,7 +357,7 @@ static int read_column_solar_uncertainty_random(void *user_data, harp_array data
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_column_solar_uncertainty_systematic(void *user_data, harp_array data)
+static int read_column_uncertainty_systematic(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -309,7 +367,7 @@ static int read_column_solar_uncertainty_systematic(void *user_data, harp_array 
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_column_solar_amf(void *user_data, harp_array data)
+static int read_column_amf(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
@@ -318,13 +376,41 @@ static int read_column_solar_amf(void *user_data, harp_array data)
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
-static int read_column_solar_flag(void *user_data, harp_array data)
+static int read_column_flag(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     char path[MAX_PATH_LENGTH];
 
     snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_ABSORPTION_SOLAR_FLAG", geoms_gas_name[info->gas]);
     return read_variable_int32(user_data, path, info->num_time, data);
+}
+
+static int read_column_partial(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_PARTIAL_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time * info->num_vertical, data);
+}
+
+static int read_column_tropospheric(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
+static int read_column_tropospheric_uncertainty_random(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_COLUMN_TROPOSPHERIC_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_STANDARD",
+             geoms_gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
 }
 
 static int read_effective_temperature(void *user_data, harp_array data)
@@ -365,9 +451,49 @@ static int read_effective_temperature_uncertainty_systematic(void *user_data, ha
     return read_variable_double(user_data, path, info->num_time, data);
 }
 
+static int read_flag_measurement_quality(void *user_data, harp_array data)
+{
+    /* we read the uint8 data into a int8 array because HARP does not support unsigned integers */
+    return read_variable_uint8(user_data, "/FLAG_MEASUREMENT_QUALITY", ((ingest_info *)user_data)->num_time, data);
+}
+
+static int read_surface_density(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_NUMBER_DENSITY_SURFACE_SCATTER_SOLAR_OFFAXIS", geoms_gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
+static int read_surface_density_uncertainty_random(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    char path[MAX_PATH_LENGTH];
+
+    snprintf(path, MAX_PATH_LENGTH, "/%s_NUMBER_DENSITY_SURFACE_SCATTER_SOLAR_OFFAXIS_UNCERTAINTY_RANDOM_STANDARD",
+             geoms_gas_name[info->gas]);
+    return read_variable_double(user_data, path, info->num_time, data);
+}
+
 static void ingestion_done(void *user_data)
 {
     free(user_data);
+}
+
+static doas_type get_template_type_from_string(const char *str)
+{
+    if (strncmp(str, "DIRECTSUN", 9) == 0)
+    {
+        return doas_directsun;
+    }
+    if (strncmp(str, "OFFAXIS", 7) == 0)
+    {
+        return doas_offaxis;
+    }
+
+    assert(0);
+    exit(1);
 }
 
 static gas_type get_gas_from_string(const char *str)
@@ -411,44 +537,73 @@ static int get_product_definition(const harp_ingestion_module *module, coda_prod
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    /* template should match the pattern "GEOMS-TE-PANDORA-DIRECTSUN-GAS-xxx" */
+    /* template should match the pattern "GEOMS-TE-PANDORA-[DIRECTSUN|OFFAXIS]-GAS-xxx" */
     if (coda_cursor_read_string(&cursor, template_name, 36) != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
     length = strlen(template_name);
-    if (length != 34)
+    if (length == 34)
+    {
+        if (strncmp(template_name, "GEOMS-TE-PANDORA-DIRECTSUN-GAS-", 31) != 0)
+        {
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid GEOMS template name '%s", template_name);
+            return -1;
+        }
+
+        if (coda_cursor_goto(&cursor, "/@DATA_SOURCE") != 0)
+        {
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_SOURCE global attribute");
+            return -1;
+        }
+        if (coda_cursor_read_string(&cursor, data_source, 30) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        /* data source should match the pattern "UVVIS_DOAS.DIRECTSUN.<SPECIES>_xxxx" */
+        if (strncmp(data_source, "UVVIS.DOAS.DIRECTSUN.", 21) != 0)
+        {
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
+            return -1;
+        }
+        i = 21;
+    }
+    else if (length == 32)
+    {
+        if (strncmp(template_name, "GEOMS-TE-PANDORA-OFFAXIS-GAS-", 29) != 0)
+        {
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid GEOMS template name '%s", template_name);
+            return -1;
+        }
+
+        if (coda_cursor_goto(&cursor, "/@DATA_SOURCE") != 0)
+        {
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_SOURCE global attribute");
+            return -1;
+        }
+        if (coda_cursor_read_string(&cursor, data_source, 30) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        /* data source should match the pattern "UVVIS_DOAS.OFFAXIS.<SPECIES>_xxxx" */
+        if (strncmp(data_source, "UVVIS.DOAS.OFFAXIS.", 19) != 0)
+        {
+            harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
+            return -1;
+        }
+        i = 19;
+    }
+    else
     {
         harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid string length for DATA_TEMPLATE global attribute");
         return -1;
     }
-    if (strncmp(template_name, "GEOMS-TE-PANDORA-DIRECTSUN-GAS-", 31) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "invalid GEOMS template name '%s", template_name);
-        return -1;
-    }
-
-    if (coda_cursor_goto(&cursor, "/@DATA_SOURCE") != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "could not find DATA_SOURCE global attribute");
-        return -1;
-    }
-    if (coda_cursor_read_string(&cursor, data_source, 30) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
-    /* data source should match the pattern "UVVIS_DOAS.[DIRECTSUN|OFFAXIS|ZENITH].<SPECIES>_xxxx" */
-    if (strncmp(data_source, "UVVIS.DOAS.DIRECTSUN.", 21) != 0)
-    {
-        harp_set_error(HARP_ERROR_UNSUPPORTED_PRODUCT, "DATA_SOURCE global attribute has an invalid value");
-        return -1;
-    }
-    i = 21;
 
     /* truncate data_source at first '_' occurrence */
-    gas = &data_source[21];
+    gas = &data_source[i];
     while (data_source[i] != '\0')
     {
         if (data_source[i] == '_')
@@ -487,7 +642,7 @@ static int get_dimensions(ingest_info *info)
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
     }
-    if (coda_cursor_goto(&cursor, "/DATETIME") != 0)
+    if (coda_cursor_goto(&cursor, "DATETIME") != 0)
     {
         harp_set_error(HARP_ERROR_CODA, NULL);
         return -1;
@@ -509,6 +664,25 @@ static int get_dimensions(ingest_info *info)
             harp_set_error(HARP_ERROR_INGESTION, "time dimension should use a chronological ordering");
             return -1;
         }
+    }
+    coda_cursor_goto_root(&cursor);
+
+    info->num_vertical = 0;
+    if (info->template_type == doas_offaxis)
+    {
+        long num_elements;
+
+        if (coda_cursor_goto(&cursor, "ALTITUDE") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_get_num_elements(&cursor, &num_elements) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        info->num_vertical = num_elements / info->num_time;
     }
 
     return 0;
@@ -546,7 +720,16 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         return -1;
     }
     info->definition = *definition;
-    info->gas = get_gas_from_string(&info->definition->name[35]);
+    info->template_type = get_template_type_from_string(&info->definition->name[17]);
+    switch (info->template_type)
+    {
+        case doas_directsun:
+            info->gas = get_gas_from_string(&info->definition->name[35]);
+            break;
+        case doas_offaxis:
+            info->gas = get_gas_from_string(&info->definition->name[33]);
+            break;
+    }
 
     if (get_dimensions(info) != 0)
     {
@@ -558,34 +741,11 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     return 0;
 }
 
-static int init_product_definition(harp_ingestion_module *module, gas_type gas, int version)
+static void register_common_variables(harp_product_definition *product_definition)
 {
     harp_variable_definition *variable_definition;
-    harp_product_definition *product_definition;
-    harp_dimension_type dimension_type[4];
-    char product_name[MAX_NAME_LENGTH];
-    char product_description[MAX_DESCRIPTION_LENGTH];
-    char gas_var_name[MAX_NAME_LENGTH];
-    char gas_mapping_path[MAX_PATH_LENGTH];
-    char gas_description[MAX_DESCRIPTION_LENGTH];
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
     const char *description;
-    const char *gas_unit;
-
-    if (version < 3)
-    {
-        gas_unit = "DU";
-    }
-    else
-    {
-        gas_unit = "mol/m2";
-    }
-
-    snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-PANDORA-DIRECTSUN-GAS-%03d-%s", version, geoms_gas_name[gas]);
-    snprintf(product_description, MAX_NAME_LENGTH,
-             "GEOMS template for Pandora direct-sun measurements v%03d - %s", version, geoms_gas_name[gas]);
-    product_definition = harp_ingestion_register_product(module, product_name, product_description, read_dimensions);
-
-    dimension_type[0] = harp_dimension_time;
 
     /* sensor_name */
     description = "name of the sensor";
@@ -669,6 +829,35 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
                                                                      description, "degree", NULL,
                                                                      read_solar_azimuth_angle);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ANGLE.SOLAR_AZIMUTH", NULL);
+}
+
+static int init_product_definition_directsun(harp_ingestion_module *module, gas_type gas, int version)
+{
+    harp_variable_definition *variable_definition;
+    harp_product_definition *product_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    char product_name[MAX_NAME_LENGTH];
+    char product_description[MAX_DESCRIPTION_LENGTH];
+    char gas_var_name[MAX_NAME_LENGTH];
+    char gas_mapping_path[MAX_PATH_LENGTH];
+    char gas_description[MAX_DESCRIPTION_LENGTH];
+    const char *gas_unit;
+
+    if (version < 3)
+    {
+        gas_unit = "DU";
+    }
+    else
+    {
+        gas_unit = "mol/m2";
+    }
+
+    snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-PANDORA-DIRECTSUN-GAS-%03d-%s", version, geoms_gas_name[gas]);
+    snprintf(product_description, MAX_NAME_LENGTH,
+             "GEOMS template for Pandora direct-sun measurements v%03d - %s", version, geoms_gas_name[gas]);
+    product_definition = harp_ingestion_register_product(module, product_name, product_description, read_dimensions);
+
+    register_common_variables(product_definition);
 
     /* <gas>_column_number_density */
     snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", harp_gas_name[gas]);
@@ -676,7 +865,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR", geoms_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit, NULL,
-         read_column_solar);
+         read_column);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
     /* <gas>_column_number_density_uncertainty */
@@ -689,7 +878,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
-             NULL, read_column_solar_uncertainty_random);
+             NULL, read_column_uncertainty_random);
     }
     else
     {
@@ -699,7 +888,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
-             NULL, read_column_solar_uncertainty_combined);
+             NULL, read_column_uncertainty_combined);
     }
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
@@ -713,7 +902,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
-             NULL, read_column_solar_uncertainty_random);
+             NULL, read_column_uncertainty_random);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
         /* <gas>_column_number_density_uncertainty_systematic */
@@ -724,7 +913,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
                  geoms_gas_name[gas]);
         variable_definition = harp_ingestion_register_variable_full_read
             (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, gas_unit,
-             NULL, read_column_solar_uncertainty_systematic);
+             NULL, read_column_uncertainty_systematic);
         harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
     }
 
@@ -735,7 +924,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_AMF", geoms_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "1", NULL,
-         read_column_solar_amf);
+         read_column_amf);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
     /* <gas>_column_number_density_validity */
@@ -744,7 +933,7 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.ABSORPTION.SOLAR_FLAG", geoms_gas_name[gas]);
     variable_definition = harp_ingestion_register_variable_full_read
         (product_definition, gas_var_name, harp_type_int32, 1, dimension_type, NULL, gas_description, NULL, NULL,
-         read_column_solar_flag);
+         read_column_flag);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
 
     if (version >= 3)
@@ -795,6 +984,101 @@ static int init_product_definition(harp_ingestion_module *module, gas_type gas, 
     return 0;
 }
 
+static int init_product_definition_offaxis(harp_ingestion_module *module, gas_type gas, int version)
+{
+    harp_variable_definition *variable_definition;
+    harp_product_definition *product_definition;
+    harp_dimension_type dimension_type[3] =
+        { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
+    char product_name[MAX_NAME_LENGTH];
+    char product_description[MAX_DESCRIPTION_LENGTH];
+    char gas_var_name[MAX_NAME_LENGTH];
+    char gas_mapping_path[MAX_PATH_LENGTH];
+    char gas_description[MAX_DESCRIPTION_LENGTH];
+    const char *description;
+    long dimension[3] = { -1, -1, 2 };
+
+    snprintf(product_name, MAX_NAME_LENGTH, "GEOMS-TE-PANDORA-OFFAXIS-GAS-%03d-%s", version, geoms_gas_name[gas]);
+    snprintf(product_description, MAX_NAME_LENGTH,
+             "GEOMS template for Pandora off-axis measurements v%03d - %s", version, geoms_gas_name[gas]);
+    product_definition = harp_ingestion_register_product(module, product_name, product_description, read_dimensions);
+
+    register_common_variables(product_definition);
+
+    /* altitude */
+    description = "mid points of the height layers";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude",
+                                                                     harp_type_double, 2, dimension_type, NULL,
+                                                                     description, "km", NULL, read_altitude);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE", NULL);
+
+    /* altitude_bounds */
+    description = "lower and upper boundaries of the height layers";
+    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "altitude_bounds",
+                                                                     harp_type_double, 3, dimension_type, dimension,
+                                                                     description, "km", NULL, read_altitude_bounds);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.BOUNDARIES", NULL);
+
+    /* <gas>_column_number_density */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "%s_column_number_density", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s partial column number density profile", harp_gas_name[gas]);
+    snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.PARTIAL_SCATTER.SOLAR.OFFAXIS", geoms_gas_name[gas]);
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, gas_var_name, harp_type_double, 2, dimension_type, NULL, gas_description, "mol/m2", NULL,
+         read_column_partial);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+    /* tropospheric_<gas>_column_number_density */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s tropospheric column number density", harp_gas_name[gas]);
+    snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS", geoms_gas_name[gas]);
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "mol/m2", NULL,
+         read_column_tropospheric);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+    /* tropospheric_<gas>_column_number_density_uncertainty */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "tropospheric_%s_column_number_density_uncertainty", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s tropospheric column number density",
+             harp_gas_name[gas]);
+    snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+             "/%s.COLUMN.TROPOSPHERIC_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "mol/m2", NULL,
+         read_column_tropospheric_uncertainty_random);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+    /* surface_<gas>_number_density */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "surface_%s_number_density", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "%s surface number density", harp_gas_name[gas]);
+    snprintf(gas_mapping_path, MAX_PATH_LENGTH, "/%s.NUMBER.DENSITY.SURFACE_SCATTER.SOLAR.OFFAXIS",
+             geoms_gas_name[gas]);
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, gas_var_name, harp_type_double, 1,
+                                                   dimension_type, NULL, gas_description, "mol/m3", NULL,
+                                                   read_surface_density);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+    /* surface_<gas>_number_density_uncertainty */
+    snprintf(gas_var_name, MAX_NAME_LENGTH, "surface_%s_number_density_uncertainty", harp_gas_name[gas]);
+    snprintf(gas_description, MAX_DESCRIPTION_LENGTH, "random uncertainty of the %s column number density",
+             harp_gas_name[gas]);
+    snprintf(gas_mapping_path, MAX_PATH_LENGTH,
+             "/%s.NUMBER.DENSITY.SURFACE_SCATTER.SOLAR.OFFAXIS_UNCERTAINTY.RANDOM.STANDARD", geoms_gas_name[gas]);
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, gas_var_name, harp_type_double, 1, dimension_type, NULL, gas_description, "mol/m3",
+         NULL, read_surface_density_uncertainty_random);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, gas_mapping_path, NULL);
+
+    /* validity */
+    variable_definition = harp_ingestion_register_variable_full_read
+        (product_definition, "validity", harp_type_int8, 1, dimension_type, NULL, "measurement quality flag", NULL,
+         NULL, read_flag_measurement_quality);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/FLAG.MEASUREMENT.QUALITY", NULL);
+
+    return 0;
+}
+
 int harp_ingestion_module_geoms_pandora_init(void)
 {
     harp_ingestion_module *module;
@@ -809,10 +1093,18 @@ int harp_ingestion_module_geoms_pandora_init(void)
     {
         if (i == gas_NO2 || i == gas_O3)
         {
-            init_product_definition(module, i, 2);
+            init_product_definition_directsun(module, i, 2);
         }
-        init_product_definition(module, i, 3);
+        init_product_definition_directsun(module, i, 3);
     }
+
+    module = harp_ingestion_register_module("GEOMS-TE-PANDORA-OFFAXIS-GAS", "GEOMS", "GEOMS",
+                                            "PANDORA_OFFAXIS_GAS",
+                                            "GEOMS template for Pandora UVVIS-DOAS off-axis measurements",
+                                            ingestion_init, ingestion_done);
+
+    init_product_definition_offaxis(module, gas_NO2, 1);
+    init_product_definition_offaxis(module, gas_H2CO, 1);
 
     return 0;
 }
