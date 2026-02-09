@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+title: HARP
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - name: 'S[&]T'
+    website: 'https://www.stcorp.nl'
+repository-code: 'https://github.com/stcorp/harp'
+url: 'https://atmospherictoolbox.org/harp/'
+license: BSD-3-Clause
