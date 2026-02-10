@@ -1119,6 +1119,9 @@ LIBHARP_API int harp_dataset_prefilter(harp_dataset *dataset, const char *operat
                     return -1;
                 }
                 break;
+            case operation_set:
+                /* we can skip over set() calls (which might exist to set collocation_datetime) */
+                break;
             default:
                 /* unsupported -> terminate loop */
                 i = program->num_operations;
