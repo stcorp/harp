@@ -3,10 +3,13 @@ title: HARP
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
+abstract: Data harmonization toolset for scientific earth observation data
 type: software
 authors:
   - name: 'S[&]T'
     website: 'https://www.stcorp.nl'
+  - name: 'ESA'
+    website: 'https://www.esa.int'
 repository-code: 'https://github.com/stcorp/harp'
 url: 'https://atmospherictoolbox.org/harp/'
 license: BSD-3-Clause
