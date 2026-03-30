@@ -429,8 +429,15 @@ static int read_O3_partial_pressure_insitu_uncertainty(void *user_data, harp_arr
 
 static int read_O3_partial_pressure_flag(void *user_data, harp_array data)
 {
+    int result;
+
+    /* we don't want the fillvalue applied for the flag; we just want the raw 8bit value */
+    coda_set_option_perform_conversions(0);
     /* we read the uint8 data into a int8 array because HARP does not support unsigned integers */
-    return read_variable_uint8(user_data, "O3_PARTIAL_PRESSURE_FLAG", ((ingest_info *)user_data)->num_time, data);
+    result = read_variable_uint8(user_data, "O3_PARTIAL_PRESSURE_FLAG", ((ingest_info *)user_data)->num_time, data);
+    coda_set_option_perform_conversions(1);
+
+    return result;
 }
 
 static int read_O3_volume_mixing_ratio_insitu(void *user_data, harp_array data)
