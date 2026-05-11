@@ -52,10 +52,11 @@ typedef enum s5_product_type_enum
     s5_type_so2,
     s5_type_cld,
     s5_type_co,
+    s5_type_fdy
 } s5_product_type;
 
 
-#define S5_NUM_PRODUCT_TYPES (((int)s5_type_co) + 1)
+#define S5_NUM_PRODUCT_TYPES (((int)s5_type_fdy) + 1)
 
 
 typedef enum s5_dimension_type_enum
@@ -81,6 +82,7 @@ static const char *s5_dimension_name[S5_NUM_PRODUCT_TYPES][S5_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, "profile"},     /* SO2 */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL, NULL, NULL},     /* CLD */
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* CO_ */
+    {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* FDY */
 };
 
 typedef struct ingest_info_struct
@@ -92,6 +94,7 @@ typedef struct ingest_info_struct
     int use_ch4_band_options;   /* CH4: SWIR-1 (default), SWIR-3, or NIR-2 */
     int use_cld_band_options;   /* CLD: BAND3A (default), or BAND3C */
     int so2_column_type;        /* 0: PBL (anthropogenic), 1: 1km box profile, 2: 7km bp, 3: 15km bp, 4: layer height */
+    int use_hcho_clear_sky_amf;
 
     s5_product_type product_type;
     long num_times;
@@ -147,6 +150,8 @@ static const char *get_product_type_name(s5_product_type product_type)
             return "SN5_02_CLD";
         case s5_type_co:
             return "SN5_02_CO_";
+        case s5_type_fdy:
+            return "SN5_02_FDY";
     }
 
     assert(0);
@@ -626,6 +631,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->no2_column_option = 0;
     info->use_cld_band_options = 0;     /* CLD: BAND3A (default), or BAND3C */
     info->so2_column_type = 0;  /* 0=PBL (default)  1=1 km  2=7 km  3=15 km */
+    info->use_hcho_clear_sky_amf = 0;
 
     if (get_product_type(info->product, &info->product_type) != 0)
     {
@@ -771,6 +777,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             info->so2_column_type = 3;
         }
     }
+
+
+    /* HCHO: clear_sky_amf */
+    if (harp_ingestion_options_has_option(options, "amf"))
+    {
+        info->use_hcho_clear_sky_amf = 1;
+    }
+
 
     if (init_cursors(info) != 0)
     {
@@ -1458,6 +1472,128 @@ static int read_product_sulfur_dioxide_layer_height_flag(void *user_data, harp_a
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_product_formaldehyde_tropospheric_column_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "formaldehyde_tropospheric_column_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int scale_amf_hcho(ingest_info *info, harp_array data)
+{
+    harp_array amf;
+    harp_array amf_clear;
+    long num_elements = info->num_scanlines * info->num_pixels;
+    long i;
+
+    amf.ptr = malloc(num_elements * sizeof(float));
+    if (amf.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    amf_clear.ptr = malloc(num_elements * sizeof(float));
+    if (amf_clear.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       num_elements * sizeof(float), __FILE__, __LINE__);
+        free(amf.ptr);
+        return -1;
+    }
+    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor", harp_type_float,
+                     num_elements, amf) != 0)
+    {
+        free(amf.ptr);
+        free(amf_clear.ptr);
+        return -1;
+    }
+    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_clear_air_mass_factor", harp_type_float,
+                     num_elements, amf_clear) != 0)
+    {
+        free(amf.ptr);
+        free(amf_clear.ptr);
+        return -1;
+    }
+
+    for (i = 0; i < num_elements; i++)
+    {
+        data.float_data[i] = data.float_data[i] * amf.float_data[i] / amf_clear.float_data[i];
+    }
+
+    free(amf.ptr);
+    free(amf_clear.ptr);
+
+    return 0;
+}
+
+static int read_product_formaldehyde_tropospheric_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (read_dataset(info->product_cursor, "formaldehyde_tropospheric_column", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data) != 0) 
+    {
+        return -1;
+    }
+    /* Scale the vertical column by the air mass factor if the clear sky amf is used */
+    if (info->use_hcho_clear_sky_amf) {
+        return scale_amf_hcho(info, data);
+    }
+    return 0;
+}
+
+static int read_product_formaldehyde_tropospheric_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (read_dataset(info->product_cursor, "formaldehyde_tropospheric_column_precision", harp_type_float,
+                     info->num_scanlines * info->num_pixels, data) != 0)
+    {
+        return -1;
+    }
+    if (info->use_hcho_clear_sky_amf)
+    {
+        return scale_amf_hcho(info, data);
+    }
+    return 0;
+}
+
+static int read_product_formaldehyde_tropospheric_column_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+static int read_results_formaldehyde_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->input_data_cursor, "formaldehyde_profile_apriori", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+
+
 
 /* Field: data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS */
 
@@ -1860,6 +1996,20 @@ static int read_results_surface_albedo(void *user_data, harp_array data)
         variable_name = "surface_albedo";
         return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
+    }
+    else if (info->product_type == s5_type_fdy)
+    {
+        variable_name = "surface_albedo_342";
+
+        //printf("DEBUG FDY: Attempting to read %s from input_data_cursor...\n", variable_name); //debugging
+
+        int result = read_dataset(info->input_data_cursor, variable_name, harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+
+        // if (result != 0) {
+        //     printf("DEBUG FDY: Failed to read %s!\n", variable_name); //debugging
+        // }                            
+        return result;
     }
 
     harp_set_error(HARP_ERROR_CODA, NULL);
@@ -2379,6 +2529,61 @@ static int read_results_sulfur_dioxide_layer_pressure_uncertainty(void *user_dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_formaldehyde_tropospheric_amf(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_formaldehyde_tropospheric_amf_systematic(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor_systematic", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_formaldehyde_corrected_slant_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_corrected_slant_column", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+
+static int read_results_formaldehyde_corrected_slant_column_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_corrected_slant_column_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_formaldehyde_tropospheric_column_amf(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_hcho_clear_sky_amf)
+    {
+        return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_clear_sky_air_mass_factor", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_formaldehyde_tropospheric_column_amf_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+
 /* Field: data/PRODUCT/SUPPORT_DATA/GEOLOCATIONS */
 
 static int read_geolocation_latitude_bounds(void *user_data, harp_array data)
@@ -2522,7 +2727,7 @@ static int read_input_aerosol_index(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->product_type == s5_type_o3 || info->product_type == s5_type_so2)
+    if (info->product_type == s5_type_o3 || info->product_type == s5_type_so2 || info->product_type == s5_type_fdy)
     {
         return read_dataset(info->input_data_cursor, "aerosol_index_340_380", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
@@ -3276,8 +3481,8 @@ static void register_surface_variables(harp_product_definition *product_definiti
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
 
-    /* surface_altitude */
-    description = "height of the surface above WGS84 ellipsoid averaged over the S5 pixel";
+    /* surface_altitude (Now above MSL - Mean Sea Level for all species (Only documented for CH4)) */
+    description = "height of the surface above MSL averaged over the S5 pixel";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, "m", NULL,
@@ -3285,13 +3490,12 @@ static void register_surface_variables(harp_product_definition *product_definiti
     path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-
     /* surface_altitude_uncertainty */
     /* [Note]: O3 does not contain this record */
     if (strcmp(product_type, "SN5_02_O3") != 0)
     {
         description =
-            "standard deviation of the height of the surface above WGS84 ellipsoid averaged over the S5 pixel";
+            "standard deviation of the height of the surface above MSL averaged over the S5 pixel";
         variable_definition =
             harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_uncertainty",
                                                        harp_type_float, 1, dimension_type_1d, NULL, description, "m",
@@ -3801,7 +4005,7 @@ static void register_ch4_product(void)
 
 
     /* aerosol_size */
-    description = "aerosol particle size";
+    description = "aerosol size parameter";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "aerosol_effective_radius", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, "m", NULL,
@@ -3897,7 +4101,7 @@ static void register_no2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* nitrogen_dioxide_tropospheric_column_uncertainty */
-    description = "tropospheric NO2 vertical column density";
+    description = "tropospheric NO2 vertical column density uncertainty";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_NO2_column_number_density_uncertainty",
@@ -4410,7 +4614,7 @@ static void register_o3_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* tropopause_pressure */
-    description = "tropopause pressure (CAMS)";
+    description = "tropopause pressure (ECMWF)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, "Pa", NULL,
@@ -4503,7 +4707,6 @@ static int read_so2_total_amf_trueness(void *u, harp_array d)
 {
     return read_so2_scalar(u, "sulfur_dioxide_total_column_air_mass_factor_trueness", d);
 }
-
 
 /* SO2 */
 static void register_so2_product(void)
@@ -5221,6 +5424,236 @@ static void register_co_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
+/* FDY (Formaldehyde) */
+static void register_fdy_product(void)
+{
+    const char *path;
+    const char *description;
+
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+
+    int include_validity = 1;
+
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    harp_dimension_type dimension_type_2d_vert[2] = { harp_dimension_time, harp_dimension_vertical };
+
+    harp_dimension_type pressure_bounds_dimension_type[3] =
+        { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
+    long pressure_bounds_dimension[3] = { -1, -1, 2 };
+
+    const char *amf_options[] = { "clear_sky" };
+    //const char *cloud_fraction_options[] = { "radiance" };
+
+    /* Product Registration Phase */
+    module = harp_ingestion_register_module("S5_L2_FDY", "Sentinel-5", "EPS_SG", "SN5_02_FDY",
+                                            "Sentinel-5 FDY total column", ingestion_init, ingestion_done);
+
+    description = "whether to ingest the default amf, vertical column and avk (default)"
+        " or the clear sky amf, scaled vertical column, and omit the avk (amf=clear_sky)";
+    harp_ingestion_register_option(module, "amf", description, 1, amf_options);
+    
+    //description = "whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)";
+    //harp_ingestion_register_option(module, "cloud_fraction", description, 1, cloud_fraction_options);
+
+    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
+    product_definition = harp_ingestion_register_product(module, "S5_L2_FDY", NULL, read_dimensions);
+
+    /* Variables' Registration Phase */
+
+    register_core_variables(product_definition, include_validity);
+    register_geolocation_variables(product_definition);
+    register_additional_geolocation_variables(product_definition);
+    register_surface_variables(product_definition, "SN5_02_FDY");
+    register_snow_ice_flag_variables(product_definition, "SN5_02_FDY");
+
+    /* tropospheric_HCHO_column_number_density */
+    description = "tropospheric HCHO column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_product_formaldehyde_tropospheric_column);
+    path = "data/PRODUCT/formaldehyde_tropospheric_column[]";
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    /* Mapping when amf=clear_sky */
+    path = "data/PRODUCT/formaldehyde_tropospheric_column[], "
+        "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_air_mass_factor[], "
+        "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_clear_air_mass_factor[]";
+    description = "vertical_column = formaldehyde_tropospheric_column * "
+        "formaldehyde_tropospheric_column_air_mass_factor / formaldehyde_tropospheric_column_clear_air_mass_factor";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, description);
+
+    /* tropospheric_HCHO_column_number_density_uncertainty_random */
+    description = "tropospheric HCHO vertical column density random uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_uncertainty_random",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_product_formaldehyde_tropospheric_column_precision);
+    path = "data/PRODUCT/formaldehyde_tropospheric_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    /* Mapping when amf=clear_sky */
+    path = "data/PRODUCT/formaldehyde_tropospheric_column_precision[], "
+        "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_air_mass_factor[], "
+        "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_clear_air_mass_factor[]";
+    description = "uncertainty_random = formaldehyde_tropospheric_column_precision * "
+        "formaldehyde_tropospheric_column_air_mass_factor / formaldehyde_tropospheric_column_clear_air_mass_factor";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path, description);
+
+    /* tropospheric_HCHO_column_number_density_uncertainty_systematic */
+    description = "tropospheric HCHO vertical column density systematic uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_uncertainty_systematic",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_product_formaldehyde_tropospheric_column_trueness);
+    path = "data/PRODUCT/formaldehyde_tropospheric_column_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_HCHO_column_number_density_amf */
+    description = "tropospheric air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "1",
+                                                   NULL,
+                                                   read_results_formaldehyde_tropospheric_column_amf);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_air_mass_factor[]";
+    harp_variable_definition_add_mapping(variable_definition, "amf unset", NULL, path, NULL);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_clear_air_mass_factor[]";
+    harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path,
+                                         "tropospheric clear-sky air mass factor");
+
+    /* tropospheric_HCHO_column_number_density_avk */
+    description = "averaging kernel for the tropospheric HCHO column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_avk",
+                                                   harp_type_float, 2, dimension_type_2d_vert, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_product_formaldehyde_tropospheric_column_avk);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_averaging_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* qa_value */
+    description = "quality assurance value describing the quality of the product";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_validity",
+                                                   harp_type_int32, 1, dimension_type_1d, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_product_qa_value);
+    path = "data/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_HCHO_column_number_density_amf_trueness */
+    description = "systematic error of the tropospheric air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf_trueness",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "1",
+                                                   NULL, read_results_formaldehyde_tropospheric_column_amf_trueness);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_air_mass_factor_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* effective_cloud_fraction (auxiliary INPUT_DATA; exposed as cloud_fraction) */
+    description = "cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_effective_cloud_fraction);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_cloud_fraction[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* HCHO_slant_column_number_density */
+    description = "HCHO slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_results_formaldehyde_corrected_slant_column);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_corrected_slant_column[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* HCHO_slant_column_number_density_uncertainty */
+    description = "uncertainty of the HCHO slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_slant_column_number_density_uncertainty",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_results_formaldehyde_corrected_slant_column_trueness);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_corrected_slant_column_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* HCHO_mass_mixing_ratio_apriori */
+    description = "HCHO apriori profile in mass mixing ratios";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "HCHO_mass_mixing_ratio_apriori",
+                                                   harp_type_float, 2, dimension_type_2d_vert, NULL, description, "kg/kg",
+                                                   NULL, read_results_formaldehyde_profile_apriori);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/formaldehyde_profile_apriori[]";
+    description = "the vertical grid is inverted to make it ascending";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* surface_albedo */
+    description = "surface albedo at 342 nm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "surface_albedo", harp_type_float, 1, dimension_type_1d,
+                                                   NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_surface_albedo);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* pressure_bounds */
+    description = "pressure boundaries";
+    /* Note: reusing logic from NO2 */
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_double, 3,
+                                                    pressure_bounds_dimension_type, pressure_bounds_dimension,
+                                                    description, "Pa", NULL, read_no2_pressure_bounds);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_coefficient_a[], "
+        "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/pressure_coefficient_b[], "
+        "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description =
+        "pressure in Pa at level k is derived from surface pressure in Pa as: pressure_coefficient_a[k] + "
+        "pressure_coefficient_b[k] * surface_pressure[]; the top of atmosphere pressure is clamped to 1e-3 Pa";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* aerosol_index_340_380 */
+    description = "aerosol absorbing index at 340 and 380 nm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_albedo */
+    description = "cloud albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_cloud_albedo);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_pressure */
+    description = "cloud pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "Pa", NULL,
+                                                   read_input_cloud_pressure);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_radiance_fraction */
+    description = "cloud radiance fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_radiance_fraction", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_results_cloud_radiance_fraction);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_radiance_fraction[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+}
+
+
+
+
+
 
 int harp_ingestion_module_s5_l2_init(void)
 {
@@ -5231,6 +5664,7 @@ int harp_ingestion_module_s5_l2_init(void)
     register_so2_product();
     register_cld_product();
     register_co_product();
+    register_fdy_product();
 
     return 0;
 }
