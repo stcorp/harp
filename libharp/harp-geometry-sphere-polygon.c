@@ -375,7 +375,7 @@ int harp_spherical_polygon_centre(harp_vector3d *vector_centre, const harp_spher
 
         if (rotation < 0)
         {
-            /* invert the centroid vector of the polygon was ordered clockwise */
+            /* invert the centroid vector if the polygon was ordered clockwise */
             vector_centre->x = -vector_centre->x;
             vector_centre->y = -vector_centre->y;
             vector_centre->z = -vector_centre->z;
