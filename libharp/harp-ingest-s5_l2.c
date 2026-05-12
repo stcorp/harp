@@ -52,11 +52,12 @@ typedef enum s5_product_type_enum
     s5_type_so2,
     s5_type_cld,
     s5_type_co,
-    s5_type_fdy
+    s5_type_fdy,
+    s5_type_gly
 } s5_product_type;
 
 
-#define S5_NUM_PRODUCT_TYPES (((int)s5_type_fdy) + 1)
+#define S5_NUM_PRODUCT_TYPES (((int)s5_type_gly) + 1)
 
 
 typedef enum s5_dimension_type_enum
@@ -83,6 +84,7 @@ static const char *s5_dimension_name[S5_NUM_PRODUCT_TYPES][S5_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL, NULL, NULL},     /* CLD */
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* CO_ */
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* FDY */
+    {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* GLY */
 };
 
 typedef struct ingest_info_struct
@@ -152,6 +154,8 @@ static const char *get_product_type_name(s5_product_type product_type)
             return "SN5_02_CO_";
         case s5_type_fdy:
             return "SN5_02_FDY";
+        case s5_type_gly:
+            return "SN5_02_GLY";
     }
 
     assert(0);
@@ -1151,6 +1155,16 @@ static int read_orbit_index(void *user_data, harp_array data)
 }
 
 
+
+
+
+
+
+
+
+
+
+
 /* Field: data/PRODUCT */
 
 static int read_product_latitude(void *user_data, harp_array data)
@@ -1176,7 +1190,7 @@ static int read_product_qa_value(void *user_data, harp_array data)
 
     /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
     coda_set_option_perform_conversions(0);
-    result = read_dataset(info->product_cursor, "qa_value", harp_type_int8,
+    result = read_dataset(info->product_cursor, "qa_value", harp_type_int32,
                           info->num_scanlines * info->num_pixels, data);
     coda_set_option_perform_conversions(1);
 
@@ -1480,6 +1494,8 @@ static int read_product_formaldehyde_tropospheric_column_trueness(void *user_dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
+
+/* Helper function to scale the tropospheric formaldehyde column by the air mass factor */
 static int scale_amf_hcho(ingest_info *info, harp_array data)
 {
     harp_array amf;
@@ -1560,37 +1576,37 @@ static int read_product_formaldehyde_tropospheric_column_precision(void *user_da
     return 0;
 }
 
-static int read_product_formaldehyde_tropospheric_column_avk(void *user_data, harp_array data)
+static int read_product_glyoxal_tropospheric_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[2];
 
-    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_averaging_kernel", harp_type_float,
-                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
-    {
-        return -1;
-    }
-    dimension[0] = info->num_scanlines * info->num_pixels;
-    dimension[1] = info->num_layers;
-    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+    return read_dataset(info->product_cursor, "glyoxal_tropospheric_column", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_results_formaldehyde_profile_apriori(void *user_data, harp_array data)
+static int read_product_glyoxal_tropospheric_column_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
-    long dimension[2];
 
-    if (read_dataset(info->input_data_cursor, "formaldehyde_profile_apriori", harp_type_float,
-                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
-    {
-        return -1;
-    }
-
-    dimension[0] = info->num_scanlines * info->num_pixels;
-    dimension[1] = info->num_layers;
-
-    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+    return read_dataset(info->product_cursor, "glyoxal_tropospheric_column_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
+
+static int read_product_glyoxal_tropospheric_column_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "glyoxal_tropospheric_column_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -2010,6 +2026,12 @@ static int read_results_surface_albedo(void *user_data, harp_array data)
         //     printf("DEBUG FDY: Failed to read %s!\n", variable_name); //debugging
         // }                            
         return result;
+    }
+    else if (info->product_type == s5_type_gly)
+    {
+        variable_name = "surface_albedo_452";
+        return read_dataset(info->input_data_cursor, variable_name, harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
     }
 
     harp_set_error(HARP_ERROR_CODA, NULL);
@@ -2583,6 +2605,85 @@ static int read_results_formaldehyde_tropospheric_column_amf_trueness(void *user
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_product_formaldehyde_tropospheric_column_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+static int read_results_glyoxal_tropospheric_column_amf(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "glyoxal_tropospheric_column_air_mass_factor", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_glyoxal_tropospheric_column_amf_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "glyoxal_tropospheric_column_air_mass_factor_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_glyoxal_tropospheric_column_avk(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->detailed_results_cursor, "glyoxal_tropospheric_column_averaging_kernel", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+static int read_results_glyoxal_slant_column(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "glyoxal_slant_column", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_glyoxal_slant_column_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "glyoxal_slant_column_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_glyoxal_slant_column_trueness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "glyoxal_slant_column_trueness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+
+
+
+
+
+
+
+
 
 /* Field: data/PRODUCT/SUPPORT_DATA/GEOLOCATIONS */
 
@@ -2688,6 +2789,18 @@ static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array dat
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 /* Field: data/PRODUCT/SUPPORT_DATA/INPUT_DATA */
 
 static int read_input_surface_altitude(void *user_data, harp_array data)
@@ -2727,7 +2840,8 @@ static int read_input_aerosol_index(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->product_type == s5_type_o3 || info->product_type == s5_type_so2 || info->product_type == s5_type_fdy)
+    if (info->product_type == s5_type_o3 || info->product_type == s5_type_so2 || info->product_type == s5_type_fdy ||
+        info->product_type == s5_type_gly)
     {
         return read_dataset(info->input_data_cursor, "aerosol_index_340_380", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
@@ -3032,6 +3146,59 @@ static int read_input_surface_classification(void *user_data, harp_array data)
     return read_dataset(info->input_data_cursor, "surface_classification", harp_type_int8,
                         info->num_scanlines * info->num_pixels, data);
 }
+
+static int read_input_formaldehyde_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->input_data_cursor, "formaldehyde_profile_apriori", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+static int read_input_glyoxal_profile_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->input_data_cursor, "glyoxal_profile_apriori", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+
+static int read_input_glyoxal_profile_apriori_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    long dimension[2];
+
+    if (read_dataset(info->input_data_cursor, "glyoxal_profile_apriori_pressure", harp_type_float,
+                     info->num_scanlines * info->num_pixels * info->num_layers, data) != 0)
+    {
+        return -1;
+    }
+
+    /* Just like the other profiles, invert the vertical grid so it ascends from surface to TOA */
+    dimension[0] = info->num_scanlines * info->num_pixels;
+    dimension[1] = info->num_layers;
+    return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+
 
 /*
  * Variables' Registration Routines
@@ -4820,7 +4987,7 @@ static void register_so2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "SO2_column_number_density_validity",
-                                                   harp_type_int8, 1, dimension_type_1d, NULL,
+                                                   harp_type_int32, 1, dimension_type_1d, NULL,
                                                    description, NULL, NULL, read_product_qa_value);
 
     path = "data/PRODUCT/qa_value[]";
@@ -5444,7 +5611,6 @@ static void register_fdy_product(void)
     long pressure_bounds_dimension[3] = { -1, -1, 2 };
 
     const char *amf_options[] = { "clear_sky" };
-    //const char *cloud_fraction_options[] = { "radiance" };
 
     /* Product Registration Phase */
     module = harp_ingestion_register_module("S5_L2_FDY", "Sentinel-5", "EPS_SG", "SN5_02_FDY",
@@ -5453,15 +5619,10 @@ static void register_fdy_product(void)
     description = "whether to ingest the default amf, vertical column and avk (default)"
         " or the clear sky amf, scaled vertical column, and omit the avk (amf=clear_sky)";
     harp_ingestion_register_option(module, "amf", description, 1, amf_options);
-    
-    //description = "whether to ingest the cloud fraction (default) or the radiance cloud fraction (cloud_fraction=radiance)";
-    //harp_ingestion_register_option(module, "cloud_fraction", description, 1, cloud_fraction_options);
 
-    /* harp_ingestion_register_product( module ptr, "ProductShortName", options table (NULL), dimension-callback ) */
     product_definition = harp_ingestion_register_product(module, "S5_L2_FDY", NULL, read_dimensions);
 
     /* Variables' Registration Phase */
-
     register_core_variables(product_definition, include_validity);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
@@ -5513,7 +5674,7 @@ static void register_fdy_product(void)
     description = "tropospheric air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf",
-                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "1",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    NULL,
                                                    read_results_formaldehyde_tropospheric_column_amf);
     path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_air_mass_factor[]";
@@ -5521,6 +5682,16 @@ static void register_fdy_product(void)
     path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_clear_air_mass_factor[]";
     harp_variable_definition_add_mapping(variable_definition, "amf=clear_sky", NULL, path,
                                          "tropospheric clear-sky air mass factor");
+
+
+    /* tropospheric_HCHO_column_number_density_amf_trueness */
+    description = "systematic error of the tropospheric air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf_trueness",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_results_formaldehyde_tropospheric_column_amf_trueness);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_air_mass_factor_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* tropospheric_HCHO_column_number_density_avk */
     description = "averaging kernel for the tropospheric HCHO column number density";
@@ -5539,24 +5710,6 @@ static void register_fdy_product(void)
                                                    harp_type_int32, 1, dimension_type_1d, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_product_qa_value);
     path = "data/PRODUCT/qa_value[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* tropospheric_HCHO_column_number_density_amf_trueness */
-    description = "systematic error of the tropospheric air mass factor";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_HCHO_column_number_density_amf_trueness",
-                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "1",
-                                                   NULL, read_results_formaldehyde_tropospheric_column_amf_trueness);
-    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_air_mass_factor_trueness[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-    /* effective_cloud_fraction (auxiliary INPUT_DATA; exposed as cloud_fraction) */
-    description = "cloud fraction";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
-                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_effective_cloud_fraction);
-    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_cloud_fraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* HCHO_slant_column_number_density */
@@ -5582,10 +5735,9 @@ static void register_fdy_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "HCHO_mass_mixing_ratio_apriori",
                                                    harp_type_float, 2, dimension_type_2d_vert, NULL, description, "kg/kg",
-                                                   NULL, read_results_formaldehyde_profile_apriori);
+                                                   NULL, read_input_formaldehyde_profile_apriori);
     path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/formaldehyde_profile_apriori[]";
-    description = "the vertical grid is inverted to make it ascending";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* surface_albedo */
     description = "surface albedo at 342 nm";
@@ -5594,7 +5746,7 @@ static void register_fdy_product(void)
                                                    "surface_albedo", harp_type_float, 1, dimension_type_1d,
                                                    NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_results_surface_albedo);
-    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo[]";
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_342[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* pressure_bounds */
@@ -5619,6 +5771,15 @@ static void register_fdy_product(void)
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_aerosol_index);
     path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* effective_cloud_fraction (auxiliary INPUT_DATA; exposed as cloud_fraction) */
+    description = "cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_effective_cloud_fraction);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_cloud_fraction[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* cloud_albedo */
@@ -5650,6 +5811,190 @@ static void register_fdy_product(void)
 
 }
 
+/* GLY (Glyoxal / CHOCHO) */
+static void register_gly_product(void)
+{
+    const char *path;
+    const char *description;
+
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+
+    int include_validity = 1;
+
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    harp_dimension_type dimension_type_2d_vert[2] = { harp_dimension_time, harp_dimension_vertical };
+
+    /* Product Registration Phase */
+    module = harp_ingestion_register_module("S5_L2_GLY", "Sentinel-5", "EPS_SG", "SN5_02_GLY",
+                                            "Sentinel-5 Glyoxal total column", ingestion_init, ingestion_done);
+    
+    product_definition = harp_ingestion_register_product(module, "S5_L2_GLY", NULL, read_dimensions);
+
+    /* Variables' Registration Phase */
+    register_core_variables(product_definition, include_validity);
+    register_geolocation_variables(product_definition);
+    register_additional_geolocation_variables(product_definition);
+    register_surface_variables(product_definition, "SN5_02_GLY");
+    register_snow_ice_flag_variables(product_definition, "SN5_02_GLY");
+
+    /* tropospheric_CHOCHO_column_number_density */
+    description = "tropospheric CHOCHO column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_CHOCHO_column_number_density",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_product_glyoxal_tropospheric_column);
+    path = "data/PRODUCT/glyoxal_tropospheric_column[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_CHOCHO_column_number_density_uncertainty_random */
+    description = "tropospheric CHOCHO vertical column density random uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_CHOCHO_column_number_density_uncertainty_random",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_product_glyoxal_tropospheric_column_precision);
+    path = "data/PRODUCT/glyoxal_tropospheric_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_CHOCHO_column_number_density_uncertainty_systematic */
+    description = "tropospheric CHOCHO vertical column density systematic uncertainty";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_CHOCHO_column_number_density_uncertainty_systematic",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_product_glyoxal_tropospheric_column_trueness);
+    path = "data/PRODUCT/glyoxal_tropospheric_column_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_CHOCHO_column_number_density_amf */
+    description = "tropospheric air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_CHOCHO_column_number_density_amf",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_results_glyoxal_tropospheric_column_amf);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_tropospheric_column_air_mass_factor[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_CHOCHO_column_number_density_amf_trueness */
+    description = "systematic error of the tropospheric air mass factor";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_CHOCHO_column_number_density_amf_trueness",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_results_glyoxal_tropospheric_column_amf_trueness);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_tropospheric_column_air_mass_factor_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_CHOCHO_column_number_density_avk */
+    description = "averaging kernel for the tropospheric CHOCHO column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropospheric_CHOCHO_column_number_density_avk",
+                                                   harp_type_float, 2, dimension_type_2d_vert, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_glyoxal_tropospheric_column_avk);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_tropospheric_column_averaging_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* qa_value */
+    description = "quality assurance value describing the quality of the product";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_CHOCHO_column_number_density_validity",
+                                                   harp_type_int32, 1, dimension_type_1d, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_product_qa_value);
+    path = "data/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CHOCHO_slant_column_number_density */
+    description = "CHOCHO slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CHOCHO_slant_column_number_density",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_results_glyoxal_slant_column);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_slant_column[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CHOCHO_slant_column_number_density_uncertainty_random */
+    description = "random uncertainty of the CHOCHO slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CHOCHO_slant_column_number_density_uncertainty_random",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_results_glyoxal_slant_column_precision);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_slant_column_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CHOCHO_slant_column_number_density_uncertainty_systematic */
+    description = "systematic uncertainty of the CHOCHO slant column number density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CHOCHO_slant_column_number_density_uncertainty_systematic",
+                                                   harp_type_float, 1, dimension_type_1d, NULL, description, "mol/m^2",
+                                                   NULL, read_results_glyoxal_slant_column_trueness);
+    path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_slant_column_trueness[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo at 452 nm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                    "surface_albedo", harp_type_float, 1, dimension_type_1d,
+                                                    NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                    read_results_surface_albedo);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_albedo_452[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* CHOCHO_mass_mixing_ratio_apriori */
+    description = "CHOCHO apriori profile in mass mixing ratios";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "CHOCHO_mass_mixing_ratio_apriori",
+                                                   harp_type_float, 2, dimension_type_2d_vert, NULL, description, "kg/kg",
+                                                   NULL, read_input_glyoxal_profile_apriori);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/glyoxal_profile_apriori[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* apriori_pressure */
+    description = "pressure grid of the apriori profile";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure",
+                                                    harp_type_float, 2, dimension_type_2d_vert, NULL, description, "Pa",
+                                                    NULL, read_input_glyoxal_profile_apriori_pressure);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/glyoxal_profile_apriori_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_index_340_380 */
+    description = "aerosol absorbing index at 340 and 380 nm";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* effective_cloud_fraction (auxiliary INPUT_DATA; exposed as cloud_fraction) */
+    description = "cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_effective_cloud_fraction);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_cloud_fraction[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* cloud_pressure */
+    description = "cloud pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "Pa", NULL,
+                                                   read_input_cloud_pressure);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropopause_pressure */
+    description = "tropopause pressure (ECMWF)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "tropopause_pressure", harp_type_float, 1,
+                                                    dimension_type_1d, NULL, description, "Pa", NULL,
+                                                    read_input_tropopause_pressure);
+    path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/tropopause_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+}
 
 
 
@@ -5665,6 +6010,7 @@ int harp_ingestion_module_s5_l2_init(void)
     register_cld_product();
     register_co_product();
     register_fdy_product();
+    register_gly_product();
 
     return 0;
 }
