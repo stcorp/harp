@@ -2568,7 +2568,7 @@ static int read_results_formaldehyde_tropospheric_column_amf(void *user_data, ha
 
     if (info->use_hcho_clear_sky_amf)
     {
-        return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_clear_sky_air_mass_factor", harp_type_float,
+        return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_clear_air_mass_factor", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
     }
     return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor", harp_type_float,
