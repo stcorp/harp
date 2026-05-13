@@ -53,11 +53,12 @@ typedef enum s5_product_type_enum
     s5_type_cld,
     s5_type_co,
     s5_type_fdy,
-    s5_type_gly
+    s5_type_gly,
+    s5_type_cla
 } s5_product_type;
 
 
-#define S5_NUM_PRODUCT_TYPES (((int)s5_type_gly) + 1)
+#define S5_NUM_PRODUCT_TYPES (((int)s5_type_cla) + 1)
 
 
 typedef enum s5_dimension_type_enum
@@ -85,6 +86,7 @@ static const char *s5_dimension_name[S5_NUM_PRODUCT_TYPES][S5_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* CO_ */
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* FDY */
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* GLY */
+    {"time", "scanline", "ground_pixel", "corner", NULL, NULL, NULL, NULL},  /* CLA */
 };
 
 typedef struct ingest_info_struct
@@ -97,6 +99,7 @@ typedef struct ingest_info_struct
     int use_cld_band_options;   /* CLD: BAND3A (default), or BAND3C */
     int so2_column_type;        /* 0: PBL (anthropogenic), 1: 1km box profile, 2: 7km bp, 3: 15km bp, 4: layer height */
     int use_hcho_clear_sky_amf;
+    int use_cla_band_options;   /* CLA: BAND3A (default), or BAND1B, BAND2, BAND3B, BAND3C, BAND4, BAND5 */
 
     s5_product_type product_type;
     long num_times;
@@ -124,6 +127,24 @@ typedef struct ingest_info_struct
     coda_cursor b3c_geolocation_cursor;
     coda_cursor b3c_detailed_results_cursor;
     coda_cursor b3c_input_data_cursor;
+
+    /* Additional cursors for CLA band options */
+    coda_cursor b1b_product_cursor;
+    coda_cursor b1b_geolocation_cursor;
+    coda_cursor b1b_input_data_cursor;
+    coda_cursor b2_product_cursor;
+    coda_cursor b2_geolocation_cursor;
+    coda_cursor b2_input_data_cursor;
+    coda_cursor b3b_product_cursor;
+    coda_cursor b3b_geolocation_cursor;
+    coda_cursor b3b_input_data_cursor;
+    coda_cursor b4_product_cursor;
+    coda_cursor b4_geolocation_cursor;
+    coda_cursor b4_input_data_cursor;
+    coda_cursor b5_product_cursor;
+    coda_cursor b5_geolocation_cursor;
+    coda_cursor b5_input_data_cursor;
+
 
     int wavelength_ratio;
     int ch4_option;     /* CH4: physics (default) or precision */
@@ -156,6 +177,8 @@ static const char *get_product_type_name(s5_product_type product_type)
             return "SN5_02_FDY";
         case s5_type_gly:
             return "SN5_02_GLY";
+        case s5_type_cla:
+            return "SN5_02_CLA";
     }
 
     assert(0);
@@ -311,12 +334,9 @@ static int init_cursors(ingest_info *info)
 {
     coda_cursor cursor;
 
-    /* Bind a cursor to the root of the CODA product */
-    if (coda_cursor_set_product(&cursor, info->product) != 0)
-    {
-        harp_set_error(HARP_ERROR_CODA, NULL);
-        return -1;
-    }
+    /* Bind a cursor to the root of the CODA product, returns error if failed */
+    if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+
     /* CLD product has to set of bands each containing its own product type */
     if (info->product_type == s5_type_cld)
     {
@@ -324,115 +344,62 @@ static int init_cursors(ingest_info *info)
         {
             /* Fallback to data/PRODUCT for simulated files */
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
-            }
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         }
         /* Save PRODUCT_BAND3A cursor; subsequent navigation is relative to this. */
         info->b3a_product_cursor = cursor;
 
-        /* Enter SUPPORT_DATA under PRODUCT (same location for both layouts):
-         * '/PRODUCT/SUPPORT_DATA' or '/data/PRODUCT/SUPPORT_DATA'
-         */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-
+        /* Enter '/PRODUCT/SUPPORT_DATA' or '/data/PRODUCT/SUPPORT_DATA' */
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         /* Geolocation group (skip for O3-TCL): under SUPPORT_DATA
          * '/.../SUPPORT_DATA/GEOLOCATIONS' for both layouts.
          */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         info->b3a_geolocation_cursor = cursor;
 
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
-
         /* Detailed results: '/.../SUPPORT_DATA/DETAILED_RESULTS' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         info->b3a_detailed_results_cursor = cursor;
 
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
-
         /* Input data group (skip for O3-TCL): '/.../SUPPORT_DATA/INPUT_DATA' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         info->b3a_input_data_cursor = cursor;
 
-        /* (Again) Bind a cursor to the root of the CODA product
-         * (to repeat the procedure above for BAND3B). */
-        if (coda_cursor_set_product(&cursor, info->product) != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-
+        /* Bind a cursor to the root of the CODA product (repeat the procedure above for BAND3C). */
+        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0)
         {
             /* fallback to data/PRODUCT for simulated files */
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0)
-            {
-                harp_set_error(HARP_ERROR_CODA, NULL);
-                return -1;
-            }
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         }
-        /* Save PRODUCT_BAND3A cursor; subsequent navigation is relative to this. */
+        /* Save PRODUCT_BAND3C cursor; subsequent navigation is relative to this. */
         info->b3c_product_cursor = cursor;
 
-        /* Enter SUPPORT_DATA under PRODUCT (same location for both layouts):
+        /* Enter SUPPORT_DATA under PRODUCT:
          * '/PRODUCT/SUPPORT_DATA' or '/data/PRODUCT/SUPPORT_DATA'
          */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
-
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         /* Geolocation group (skip for O3-TCL): under SUPPORT_DATA
          * '/.../SUPPORT_DATA/GEOLOCATIONS' for both layouts.
          */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         info->b3c_geolocation_cursor = cursor;
 
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
-
         /* Detailed results: '/.../SUPPORT_DATA/DETAILED_RESULTS' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         info->b3c_detailed_results_cursor = cursor;
+
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
-
         /* Input data group (skip for O3-TCL): '/.../SUPPORT_DATA/INPUT_DATA' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
-        {
-            harp_set_error(HARP_ERROR_CODA, NULL);
-            return -1;
-        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
         info->b3c_input_data_cursor = cursor;
 
         /* Make the cursors point to BAND3A by default */
@@ -451,6 +418,144 @@ static int init_cursors(ingest_info *info)
             info->input_data_cursor = info->b3c_input_data_cursor;
         }
     }
+
+
+    else if (info->product_type == s5_type_cla)
+    {
+        /* --- BAND 3A --- 
+        Structure is:
+        PRODUCT_BANDX/PRODUCT &
+        PRODUCT_BANDX/SUPPORT_DATA/GEOLOCATIONS &
+        PRODUCT_BANDX/SUPPORT_DATA/INPUT_DATA
+        */
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0)
+        {
+            /* Always include data/ directory parsing */
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        }
+        info->b3a_product_cursor = cursor;
+
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        info->b3a_geolocation_cursor = cursor;
+
+        /* --- BAND 1B --- */
+        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+            if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND1B") != 0) {
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND1B") != 0) {
+                harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+            }
+        }
+        info->b1b_product_cursor = cursor;
+
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        info->b1b_geolocation_cursor = cursor;
+
+        /* --- BAND 2 --- */
+        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND2") != 0) {
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND2") != 0) {
+                harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+            }
+        }
+        info->b2_product_cursor = cursor;
+
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        info->b2_geolocation_cursor = cursor;
+
+        /* --- BAND 3B --- */
+        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3B") != 0) {
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3B") != 0) {
+                harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+            }
+        }
+        info->b3b_product_cursor = cursor;
+
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        info->b3b_geolocation_cursor = cursor;
+
+        /* --- BAND 3C --- */
+        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0) {
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0) {
+                harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+            }
+        }
+        info->b3c_product_cursor = cursor;
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        info->b3c_geolocation_cursor = cursor;
+
+        /* --- BAND 4 --- */
+        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND4") != 0) {
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND4") != 0) {
+                harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+            }
+        }
+        info->b4_product_cursor = cursor;
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        info->b4_geolocation_cursor = cursor;
+
+        /* --- BAND 5 --- */
+        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND5") != 0) {
+            if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND5") != 0) {
+                harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+            }
+        }
+        info->b5_product_cursor = cursor;
+
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        info->b5_geolocation_cursor = cursor;
+
+        /* Now bind the default generic cursors based on the user's band choice */
+        switch (info->use_cla_band_options)
+        {
+            case 2: /* band1b */
+                info->product_cursor = info->b1b_product_cursor;
+                info->geolocation_cursor = info->b1b_geolocation_cursor;
+                break;
+            case 3: /* band2 */
+                info->product_cursor = info->b2_product_cursor;
+                info->geolocation_cursor = info->b2_geolocation_cursor;
+                break;
+            case 4: /* band3b */
+                info->product_cursor = info->b3b_product_cursor;
+                info->geolocation_cursor = info->b3b_geolocation_cursor;
+                break;
+            case 5: /* band3c */
+                info->product_cursor = info->b3c_product_cursor;
+                info->geolocation_cursor = info->b3c_geolocation_cursor;
+                break;
+            case 6: /* band4 */
+                info->product_cursor = info->b4_product_cursor;
+                info->geolocation_cursor = info->b4_geolocation_cursor;
+                break;
+            case 7: /* band5 */
+                info->product_cursor = info->b5_product_cursor;
+                info->geolocation_cursor = info->b5_geolocation_cursor;
+                break;
+            default: /* 0 (band3a) */
+                info->product_cursor = info->b3a_product_cursor;
+                info->geolocation_cursor = info->b3a_geolocation_cursor;
+                break;
+        }
+    }
+
     else
     {
         if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
@@ -636,6 +741,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_cld_band_options = 0;     /* CLD: BAND3A (default), or BAND3C */
     info->so2_column_type = 0;  /* 0=PBL (default)  1=1 km  2=7 km  3=15 km */
     info->use_hcho_clear_sky_amf = 0;
+    info->use_cla_band_options = 0; /* CLA: BAND3A (default), or BAND1B, BAND2, BAND3B, BAND3C, BAND4, BAND5 */
 
     if (get_product_type(info->product, &info->product_type) != 0)
     {
@@ -735,6 +841,50 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
                 /* Must be BAND3A */
                 assert(strcmp(option_value, "band3a") == 0);
                 info->use_cld_band_options = 0;
+            }
+        }
+    }
+
+    /* CLA: BAND3A (default), or BAND1B, BAND2, BAND3B, BAND3C, BAND4, BAND5 */
+    if (info->product_type == s5_type_cla)
+    {
+        /* Only if option was provided, otherwise use the dafult value, provided above */
+        if (harp_ingestion_options_has_option(options, "band"))
+        {
+            if (harp_ingestion_options_get_option(options, "band", &option_value) != 0)
+            {
+                ingestion_done(info);
+                return -1;
+            }
+            if (strcmp(option_value, "band1b") == 0)
+            {
+                info->use_cla_band_options = 2;
+            }
+            else if (strcmp(option_value, "band2") == 0)
+            {
+                info->use_cla_band_options = 3;
+            }
+            else if (strcmp(option_value, "band3b") == 0)
+            {
+                info->use_cla_band_options = 4;
+            }
+            else if (strcmp(option_value, "band3c") == 0)
+            {
+                info->use_cla_band_options = 5;
+            }
+            else if (strcmp(option_value, "band4") == 0)
+            {
+                info->use_cla_band_options = 6;
+            }
+            else if (strcmp(option_value, "band5") == 0)
+            {
+                info->use_cla_band_options = 7;
+            }
+            else
+            {
+                /* Must be BAND3A */
+                assert(strcmp(option_value, "band3a") == 0);
+                info->use_cla_band_options = 0;
             }
         }
     }
@@ -1156,15 +1306,6 @@ static int read_orbit_index(void *user_data, harp_array data)
 
 
 
-
-
-
-
-
-
-
-
-
 /* Field: data/PRODUCT */
 
 static int read_product_latitude(void *user_data, harp_array data)
@@ -1195,6 +1336,31 @@ static int read_product_qa_value(void *user_data, harp_array data)
     coda_set_option_perform_conversions(1);
 
     return result;
+}
+
+/* CLA (SN5_02_CLA): METimage O2-Cloud product fields under the selected PRODUCT_BAND group */
+static int read_moxy_cloud_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "moxy_cfr_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_moxy_cloud_optical_thickness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "moxy_cot_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_moxy_cloud_top_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "moxy_ctp_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_product_carbon_monoxide_total_column(void *user_data, harp_array data)
@@ -1599,15 +1765,6 @@ static int read_product_glyoxal_tropospheric_column_trueness(void *user_data, ha
     return read_dataset(info->product_cursor, "glyoxal_tropospheric_column_trueness", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2678,13 +2835,6 @@ static int read_results_glyoxal_slant_column_trueness(void *user_data, harp_arra
 
 
 
-
-
-
-
-
-
-
 /* Field: data/PRODUCT/SUPPORT_DATA/GEOLOCATIONS */
 
 static int read_geolocation_latitude_bounds(void *user_data, harp_array data)
@@ -2787,17 +2937,6 @@ static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array dat
     return read_dataset(info->geolocation_cursor, "viewing_zenith_angle", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3275,18 +3414,34 @@ static void register_core_variables_cld(harp_product_definition *product_definit
 
     harp_variable_definition_add_mapping(var, "band=band3c", NULL,
                                          "/data/PRODUCT_BAND3C/time, /data/PRODUCT_BAND3C/delta_time[]", description);
-
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL,
+                                         "/data/PRODUCT_BAND1B/time, /data/PRODUCT_BAND1B/delta_time[]", description);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL,
+                                         "/data/PRODUCT_BAND2/time, /data/PRODUCT_BAND2/delta_time[]", description);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL,
+                                         "/data/PRODUCT_BAND3B/time, /data/PRODUCT_BAND3B/delta_time[]", description);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL,
+                                         "/data/PRODUCT_BAND4/time, /data/PRODUCT_BAND4/delta_time[]", description);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL,
+                                         "/data/PRODUCT_BAND5/time, /data/PRODUCT_BAND5/delta_time[]", description);
     /* datetime_length */
     description = "measurement duration";
     var = harp_ingestion_register_variable_full_read(product_definition, "datetime_length", harp_type_double, 0,
                                                      NULL, NULL, description, "s", NULL, read_datetime_length);
-
-    /* two alternative paths, selected by the user option */
     harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
                                          "/data/PRODUCT_BAND3A/delta_time[]", "delta_time[1] - delta_time[0]");
-
     harp_variable_definition_add_mapping(var, "band=band3c", NULL,
                                          "/data/PRODUCT_BAND3C/delta_time[]", "delta_time[1] - delta_time[0]");
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL,
+                                        "/data/PRODUCT_BAND1B/delta_time[]", "delta_time[1] - delta_time[0]");
+    harp_variable_definition_add_mapping(var, "band=band2", NULL,
+                                        "/data/PRODUCT_BAND2/delta_time[]", "delta_time[1] - delta_time[0]");
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL,
+                                        "/data/PRODUCT_BAND3B/delta_time[]", "delta_time[1] - delta_time[0]");
+    harp_variable_definition_add_mapping(var, "band=band4", NULL,
+                                        "/data/PRODUCT_BAND4/delta_time[]", "delta_time[1] - delta_time[0]");
+    harp_variable_definition_add_mapping(var, "band=band5", NULL,
+                                        "/data/PRODUCT_BAND5/delta_time[]", "delta_time[1] - delta_time[0]");
 
     /* orbit_index */
     description = "absolute orbit number";
@@ -3303,12 +3458,19 @@ static void register_core_variables_cld(harp_product_definition *product_definit
                                                          read_results_processing_quality_flags);
 
         harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
-                                             "/data/PRODUCT_BAND3A/processing_quality_flags[]",
-                                             "the uint64 data is cast to int32");
-
+                                             "/data/PRODUCT_BAND3A/processing_quality_flags[]","the uint64 data is cast to int32");
         harp_variable_definition_add_mapping(var, "band=band3c", NULL,
-                                             "/data/PRODUCT_BAND3C/processing_quality_flags[]",
-                                             "the uint64 data is cast to int32");
+                                            "/data/PRODUCT_BAND3C/processing_quality_flags[]", "the uint64 data is cast to int32");
+        harp_variable_definition_add_mapping(var, "band=band1b", NULL,
+                                            "/data/PRODUCT_BAND1B/processing_quality_flags[]", "the uint64 data is cast to int32");
+        harp_variable_definition_add_mapping(var, "band=band2", NULL,
+                                            "/data/PRODUCT_BAND2/processing_quality_flags[]", "the uint64 data is cast to int32");
+        harp_variable_definition_add_mapping(var, "band=band3b", NULL,
+                                            "/data/PRODUCT_BAND3B/processing_quality_flags[]", "the uint64 data is cast to int32");
+        harp_variable_definition_add_mapping(var, "band=band4", NULL,
+                                            "/data/PRODUCT_BAND4/processing_quality_flags[]", "the uint64 data is cast to int32");
+        harp_variable_definition_add_mapping(var, "band=band5", NULL,
+                                            "/data/PRODUCT_BAND5/processing_quality_flags[]", "the uint64 data is cast to int32");
     }
 }
 
@@ -3340,7 +3502,7 @@ static void register_geolocation_variables(harp_product_definition *product_defi
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-/* CLD product: geolocation (BAND-3A / BAND-3C) */
+/* CLD product: geolocation for band-specific products */
 static void register_geolocation_variables_cld(harp_product_definition *product_definition)
 {
     const char *description;
@@ -3356,9 +3518,19 @@ static void register_geolocation_variables_cld(harp_product_definition *product_
 
     harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
                                          "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
-
     harp_variable_definition_add_mapping(var, "band=band3c", NULL,
                                          "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL,
+                                         "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL,
+                                         "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL,
+                                         "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL,
+                                         "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL,
+                                         "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
+
 
     /* longitude */
     description = "longitude of the ground-pixel centre (WGS-84)";
@@ -3369,9 +3541,18 @@ static void register_geolocation_variables_cld(harp_product_definition *product_
 
     harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL,
                                          "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
-
     harp_variable_definition_add_mapping(var, "band=band3c", NULL,
                                          "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL,
+                                         "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL,
+                                         "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL,
+                                         "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL,
+                                         "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL,
+                                         "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
 }
 
 
@@ -3489,7 +3670,7 @@ static void register_additional_geolocation_variables(harp_product_definition *p
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
-/*  CLD product: full geolocation set (BAND-3A / BAND-3C) */
+/*  CLD product: full geolocation set for band-specific products */
 static void register_additional_geolocation_variables_cld(harp_product_definition *pd)
 {
     /* common helpers */
@@ -3499,8 +3680,13 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     const char *description;
     harp_variable_definition *var;
-    const char *path_a; /* PRODUCT_BAND3A ... */
-    const char *path_c; /* PRODUCT_BAND3C ... */
+    const char *path_3a;  /* PRODUCT_BAND3A ...*/
+    const char *path_1b; /* PRODUCT_BAND1B ...*/
+    const char *path_2;  /* PRODUCT_BAND2 ... */
+    const char *path_3c; /* PRODUCT_BAND3C ...*/
+    const char *path_4;  /* PRODUCT_BAND4 ... */
+    const char *path_5;  /* PRODUCT_BAND5 ... */
+    const char *path_3b; /* PRODUCT_BAND3B ...*/
 
     /* latitude_bounds (time, corner) */
     description = "four latitude boundaries of each ground pixel";
@@ -3509,11 +3695,21 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, -90.f, 90.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a, NULL);
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, NULL);
 
     /* longitude_bounds (time, corner) */
     description = "four longitude boundaries of each ground pixel";
@@ -3522,11 +3718,21 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, -180.f, 180.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a, NULL);
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, NULL);
 
     /* sensor_latitude (scalar) */
     description = "sub-satellite latitude";
@@ -3535,13 +3741,22 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, -90.f, 90.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a,
-                                         "value for each scanline is repeated for every pixel");
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c,
-                                         "value for each scanline is repeated for every pixel");
+    description = "value for each scanline is repeated for every pixel";
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, description);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, description);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, description);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, description);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, description);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, description);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, description);
 
     /* sensor_longitude (scalar) */
     description = "sub-satellite longitude";
@@ -3550,13 +3765,22 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, -180.f, 180.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a,
-                                         "value for each scanline is repeated for every pixel");
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c,
-                                         "value for each scanline is repeated for every pixel");
+    description = "value for each scanline is repeated for every pixel";
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, description);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, description);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, description);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, description);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, description);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, description);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, description);
 
     /* sensor_altitude (scalar) */
     description = "space-craft altitude (WGS-84)";
@@ -3565,13 +3789,22 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, 700000.f, 900000.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/satellite_altitude[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a,
-                                         "value for each scanline is repeated for every pixel");
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c,
-                                         "value for each scanline is repeated for every pixel");
+    description = "value for each scanline is repeated for every pixel";
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, description);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, description);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, description);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, description);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, description);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, description);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, description);
 
     /* sensor_orbit_phase (scalar, double) */
     description = "relative orbital phase (0 ... 1)";
@@ -3579,11 +3812,21 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
                                                      description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                      read_geolocation_satellite_orbit_phase);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/satellite_orbit_phase[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a, NULL);
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, NULL);
 
     /* solar_zenith_angle (scalar) */
     description = "solar zenith angle";
@@ -3592,11 +3835,21 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, 0.f, 180.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a, NULL);
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, NULL);
 
     /* solar_azimuth_angle (scalar) */
     description = "Solar azimuth angle.";
@@ -3605,11 +3858,21 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, -180.f, 180.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a, NULL);
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, NULL);
 
     /* sensor_zenith_angle (scalar) */
     description = "space-craft zenith angle";
@@ -3619,11 +3882,21 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, 0.f, 180.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a, NULL);
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, NULL);
 
     /* sensor_azimuth_angle (scalar) */
     description = "space-craft azimuth angle";
@@ -3633,11 +3906,21 @@ static void register_additional_geolocation_variables_cld(harp_product_definitio
 
     harp_variable_definition_set_valid_range_float(var, -180.f, 180.f);
 
-    path_a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
-    path_c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    path_3a = "/data/PRODUCT_BAND3A/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    path_3c = "/data/PRODUCT_BAND3C/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    path_1b = "/data/PRODUCT_BAND1B/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    path_2 = "/data/PRODUCT_BAND2/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    path_4 = "/data/PRODUCT_BAND4/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    path_5 = "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    path_3b = "/data/PRODUCT_BAND3B/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
 
-    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_a, NULL);
-    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3a or band unset", NULL, path_3a, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3c", NULL, path_3c, NULL);
+    harp_variable_definition_add_mapping(var, "band=band1b", NULL, path_1b, NULL);
+    harp_variable_definition_add_mapping(var, "band=band2", NULL, path_2, NULL);
+    harp_variable_definition_add_mapping(var, "band=band4", NULL, path_4, NULL);
+    harp_variable_definition_add_mapping(var, "band=band5", NULL, path_5, NULL);
+    harp_variable_definition_add_mapping(var, "band=band3b", NULL, path_3b, NULL);
 }
 
 static void register_surface_variables(harp_product_definition *product_definition, const char *product_type)
@@ -5229,7 +5512,7 @@ static void register_cld_product(void)
 
     /* Product Registration Phase */
     module = harp_ingestion_register_module("S5_L2_CLD", "Sentinel-5", "EPS_SG", "SN5_02_CLD",
-                                            "Sentinel-5 L2 CLD total column", ingestion_init, ingestion_done);
+                                            "Sentinel-5 L2 Cloud Product", ingestion_init, ingestion_done);
 
     description = "which CLD band values to ingest: `band3a` (default) or `band3c`";
     harp_ingestion_register_option(module, "band", description, 2, cld_band_option_values);
@@ -5996,6 +6279,98 @@ static void register_gly_product(void)
 
 }
 
+/* CLA (Auxiliary Cloud Product) */
+static void register_cla_product(void)
+{
+    const char *path;
+    const char *description;
+
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+
+    int include_validity = 1;
+
+    harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
+    
+    /* All 7 bands, with 3a first so it acts as the default */
+    const char *cla_band_option_values[7] = { "band3a", "band1b", "band2", "band3b", "band3c", "band4", "band5" };
+
+    /* Product Registration Phase */
+    module = harp_ingestion_register_module("S5_L2_CLA", "Sentinel-5", "EPS_SG", "SN5_02_CLA",
+                                            "Sentinel-5 Auxiliary Cloud Product", ingestion_init, ingestion_done);
+    
+    description = "which CLA band values to ingest: `band3a` (default), `band1b`, `band2`, `band3b`, `band3c`, `band4`, or `band5`";
+    harp_ingestion_register_option(module, "band", description, 7, cla_band_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "S5_L2_CLA", NULL, read_dimensions);
+
+    /* Variables' Registration Phase. Reusing improved CLD logic */
+    register_core_variables_cld(product_definition, include_validity); 
+    register_geolocation_variables_cld(product_definition);
+    register_additional_geolocation_variables_cld(product_definition);
+
+    /* cloud_fraction */
+    description = "PSF weighted cloud fraction from METimage O2-Cloud";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_moxy_cloud_fraction);
+
+    /* default (BAND-3A) */
+    harp_variable_definition_add_mapping(variable_definition, "band=band3a or band unset", NULL, "/data/PRODUCT_BAND3A/moxy_cfr_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band1b", NULL, "/data/PRODUCT_BAND1B/moxy_cfr_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band2", NULL, "/data/PRODUCT_BAND2/moxy_cfr_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3b", NULL, "/data/PRODUCT_BAND3B/moxy_cfr_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3c", NULL, "/data/PRODUCT_BAND3C/moxy_cfr_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band4", NULL, "/data/PRODUCT_BAND4/moxy_cfr_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band5", NULL, "/data/PRODUCT_BAND5/moxy_cfr_psf_mean[]", NULL);
+
+    /* cloud_optical_depth */
+    description = "PSF weighted cloud optical thickness from METimage O2-Cloud";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_moxy_cloud_optical_thickness);
+
+    harp_variable_definition_add_mapping(variable_definition, "band=band3a or band unset", NULL, "/data/PRODUCT_BAND3A/moxy_cot_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band1b", NULL, "/data/PRODUCT_BAND1B/moxy_cot_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band2", NULL, "/data/PRODUCT_BAND2/moxy_cot_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3b", NULL, "/data/PRODUCT_BAND3B/moxy_cot_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3c", NULL, "/data/PRODUCT_BAND3C/moxy_cot_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band4", NULL, "/data/PRODUCT_BAND4/moxy_cot_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band5", NULL, "/data/PRODUCT_BAND5/moxy_cot_psf_mean[]", NULL);
+
+    /* cloud_top_pressure */
+    description = "PSF weighted cloud top pressure from METimage O2-Cloud";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type_1d, NULL, description, "hPa", NULL,
+                                                   read_moxy_cloud_top_pressure);
+
+    harp_variable_definition_add_mapping(variable_definition, "band=band3a or band unset", NULL, "/data/PRODUCT_BAND3A/moxy_ctp_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band1b", NULL, "/data/PRODUCT_BAND1B/moxy_ctp_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band2", NULL, "/data/PRODUCT_BAND2/moxy_ctp_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3b", NULL, "/data/PRODUCT_BAND3B/moxy_ctp_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3c", NULL, "/data/PRODUCT_BAND3C/moxy_ctp_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band4", NULL, "/data/PRODUCT_BAND4/moxy_ctp_psf_mean[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band5", NULL, "/data/PRODUCT_BAND5/moxy_ctp_psf_mean[]", NULL);
+
+    /* qa_value */
+    description = "quality assurance value describing the quality of the product";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int32, 1,
+                                                   dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_qa_value);
+
+    harp_variable_definition_add_mapping(variable_definition, "band=band3a or band unset", NULL, "/data/PRODUCT_BAND3A/qa_value[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band1b", NULL, "/data/PRODUCT_BAND1B/qa_value[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band2", NULL, "/data/PRODUCT_BAND2/qa_value[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3b", NULL, "/data/PRODUCT_BAND3B/qa_value[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band3c", NULL, "/data/PRODUCT_BAND3C/qa_value[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band4", NULL, "/data/PRODUCT_BAND4/qa_value[]", NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=band5", NULL, "/data/PRODUCT_BAND5/qa_value[]", NULL);
+}
 
 
 
@@ -6011,6 +6386,7 @@ int harp_ingestion_module_s5_l2_init(void)
     register_co_product();
     register_fdy_product();
     register_gly_product();
+    register_cla_product();
 
     return 0;
 }
