@@ -54,11 +54,12 @@ typedef enum s5_product_type_enum
     s5_type_co,
     s5_type_fdy,
     s5_type_gly,
-    s5_type_cla
+    s5_type_cla,
+    s5_type_aod
 } s5_product_type;
 
 
-#define S5_NUM_PRODUCT_TYPES (((int)s5_type_cla) + 1)
+#define S5_NUM_PRODUCT_TYPES (((int)s5_type_aod) + 1)
 
 
 typedef enum s5_dimension_type_enum
@@ -87,6 +88,7 @@ static const char *s5_dimension_name[S5_NUM_PRODUCT_TYPES][S5_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* FDY */
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* GLY */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL, NULL, NULL},  /* CLA */
+    {"time", "scanline", "ground_pixel", "corner", NULL, NULL, "wavelength", NULL},  /* AOD */
 };
 
 typedef struct ingest_info_struct
@@ -179,6 +181,8 @@ static const char *get_product_type_name(s5_product_type product_type)
             return "SN5_02_GLY";
         case s5_type_cla:
             return "SN5_02_CLA";
+        case s5_type_aod:
+            return "SN5_02_AOD";
     }
 
     assert(0);
@@ -909,7 +913,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         }
     }
 
-
     /* SO2 */
     if (harp_ingestion_options_has_option(options, "so2_column"))
     {
@@ -932,20 +935,17 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         }
     }
 
-
     /* HCHO: clear_sky_amf */
     if (harp_ingestion_options_has_option(options, "amf"))
     {
         info->use_hcho_clear_sky_amf = 1;
     }
 
-
     if (init_cursors(info) != 0)
     {
         ingestion_done(info);
         return -1;
     }
-
 
     if (init_dimensions(info) != 0)
     {
@@ -961,6 +961,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     else if (info->product_type == s5_type_ch4)
     {
         info->num_spectral = 4; /*  sif_wavelengths  */
+    }
+    else if (info->product_type == s5_type_aod)
+    {
+        /* AOD needs to be mapped to the wavelength dimension */
+        if (get_dimension_length(info, "wavelength", &info->num_spectral) != 0)
+        {
+            return -1;
+        }
     }
 
     if (info->product_type == s5_type_so2)
@@ -1764,6 +1772,14 @@ static int read_product_glyoxal_tropospheric_column_trueness(void *user_data, ha
 
     return read_dataset(info->product_cursor, "glyoxal_tropospheric_column_trueness", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_wavelength(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "wavelength", harp_type_float,
+                        info->num_spectral, data);
 }
 
 
@@ -2833,6 +2849,15 @@ static int read_results_glyoxal_slant_column_trueness(void *user_data, harp_arra
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_detailed_results_aerosol_model_indicator(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->detailed_results_cursor, "aerosol_model_indicator", harp_type_int32,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+
 
 
 /* Field: data/PRODUCT/SUPPORT_DATA/GEOLOCATIONS */
@@ -3335,6 +3360,27 @@ static int read_input_glyoxal_profile_apriori_pressure(void *user_data, harp_arr
     dimension[0] = info->num_scanlines * info->num_pixels;
     dimension[1] = info->num_layers;
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
+}
+
+static int read_input_aerosol_index_354_388(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    return read_dataset(info->input_data_cursor, "aerosol_index_354_388", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_wind_u_velocity(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    return read_dataset(info->input_data_cursor, "wind_u_velocity", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_input_wind_v_velocity(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    return read_dataset(info->input_data_cursor, "wind_v_velocity", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 
@@ -6372,6 +6418,187 @@ static void register_cla_product(void)
     harp_variable_definition_add_mapping(variable_definition, "band=band5", NULL, "/data/PRODUCT_BAND5/qa_value[]", NULL);
 }
 
+static void register_aod_product(void)
+{
+    const char *path;
+    const char *description;
+
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    
+    int include_validity = 1;
+
+    /* Using spectral dimension for wavelength */
+    harp_dimension_type dimension_type_2d_spec[2] = { harp_dimension_time, harp_dimension_spectral };
+
+    /* Product Registration Phase */
+    module = harp_ingestion_register_module("S5_L2_AOD", "Sentinel-5", "EPS-SG", "SN5-02-AOD",
+                                            "Sentinel-5 L2 Aerosol Optical Depth", ingestion_init, ingestion_done);
+
+    product_definition = harp_ingestion_register_product(module, "S5_L2_AOD", NULL, read_dimensions);
+
+    /* Variables Registration Phase */
+    register_core_variables(product_definition, include_validity);
+    register_geolocation_variables(product_definition);
+    register_additional_geolocation_variables(product_definition);
+    register_surface_variables(product_definition, "SN5-02-AOD");
+    register_snow_ice_flag_variables(product_definition, "SN5-02-AOD");
+
+    /* --- PRODUCT VARIABLES --- */
+
+    /* wavelength pointed to spectral dimension */
+    description = "wavelength";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_float, 1,
+                                                   &dimension_type_2d_spec[1], NULL, description, "nm", NULL,
+                                                   read_product_wavelength);
+    path = "/data/PRODUCT/wavelength";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_optical_depth */
+    description = "aerosol optical depth";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_aerosol_optical_depth);
+    path = "/data/PRODUCT/aerosol_optical_depth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_optical_depth_uncertainty */
+    description = "aerosol optical depth error";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_aerosol_optical_depth_precision);
+    path = "/data/PRODUCT/aerosol_optical_depth_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* absorbing_aerosol_optical_depth */
+    description = "absorbing aerosol optical depth";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_optical_depth", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_absorbing_aerosol_optical_depth);
+    path = "/data/PRODUCT/absorbing_aerosol_optical_depth";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* absorbing_aerosol_optical_depth_uncertainty */
+    description = "absorbing aerosol optical depth error";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_optical_depth_uncertainty", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_absorbing_aerosol_optical_depth_precision);
+    path = "/data/PRODUCT/absorbing_aerosol_optical_depth_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+
+    /* qa_value */
+    description = "quality assurance value describing the quality of the product";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "qa_value", harp_type_int32, 1,
+                                                   &dimension_type_2d_spec[0], NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_qa_value);
+    path = "/data/PRODUCT/qa_value";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* single_scattering_albedo */
+    description = "single scattering albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "single_scattering_albedo", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_single_scattering_albedo);
+    path = "/data/PRODUCT/single_scattering_albedo";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+
+    /* --- DETAILED RESULTS VARIABLES --- */
+
+    /* single_scattering_albedo_precision */
+    description = "single scattering albedo error";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_single_scattering_albedo_uncertainty", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_detailed_results_single_scattering_albedo_precision);
+    path = "/data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/single_scattering_albedo_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_mean_height */
+    description = "aerosol mean height";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height", harp_type_float, 1,
+                                                   &dimension_type_2d_spec[0], NULL, description, "km", NULL,
+                                                   read_detailed_results_aerosol_mean_height);
+    path = "/data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_mean_height";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* direct_surface_reflectance */
+    description = "direct surface reflectance";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_detailed_results_direct_surface_reflectance);
+    path = "/data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/direct_surface_reflectance";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    
+    /* diffuse_surface_reflectance */
+    description = "diffuse surface reflectance";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "diffuse_surface_albedo", harp_type_float, 2,
+                                                   dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_detailed_results_diffuse_surface_reflectance);
+    path = "/data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/diffuse_surface_reflectance";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_model_indicator */
+    description = "aerosol model indicator";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_model_indicator", harp_type_int32, 1,
+                                                   &dimension_type_2d_spec[0], NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_detailed_results_aerosol_model_indicator);
+    path = "/data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_model_indicator";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* --- INPUT DATA VARIABLES --- */
+
+    /* cloud_fraction */
+    description = "effective cloud fraction";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   &dimension_type_2d_spec[0], NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_effective_cloud_fraction);
+    path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/effective_cloud_fraction";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* absorbing_aerosol_index */
+    description = "aerosol absorbing index 354/388 pair";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   &dimension_type_2d_spec[0], NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index);
+    path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* wind_u_velocity */
+    description = "surface zonal wind velocity";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_zonal_wind_velocity", harp_type_float, 1,
+                                                   &dimension_type_2d_spec[0], NULL, description, "m/s", NULL,
+                                                   read_input_wind_u_velocity);
+    path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/wind_u_velocity";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* wind_v_velocity */
+    description = "surface meridional wind velocity";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_meridional_wind_velocity", harp_type_float, 1,
+                                                   &dimension_type_2d_spec[0], NULL, description, "m/s", NULL,
+                                                   read_input_wind_v_velocity);
+    path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/wind_v_velocity";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+
+}
 
 
 
@@ -6387,6 +6614,7 @@ int harp_ingestion_module_s5_l2_init(void)
     register_fdy_product();
     register_gly_product();
     register_cla_product();
+    register_aod_product();
 
     return 0;
 }
