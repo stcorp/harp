@@ -692,6 +692,15 @@ static int init_dimensions(ingest_info *info)
         info->num_layers = info->num_levels - 1;
     }
 
+    if (s5_dimension_name[info->product_type][s5_dim_spectral] != NULL)
+    {
+        if (get_dimension_length(info, s5_dimension_name[info->product_type][s5_dim_spectral], 
+                                 &info->num_spectral) != 0)
+        {
+            return -1;
+        }
+    }
+
     return 0;
 }
 
@@ -962,14 +971,14 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         info->num_spectral = 4; /*  sif_wavelengths  */
     }
-    else if (info->product_type == s5_type_aod)
-    {
-        /* AOD needs to be mapped to the wavelength dimension */
-        if (get_dimension_length(info, "wavelength", &info->num_spectral) != 0)
-        {
-            return -1;
-        }
-    }
+    // else if (info->product_type == s5_type_aod)
+    // {
+    //     /* AOD needs to be mapped to the wavelength dimension */
+    //     if (get_dimension_length(info, "wavelength", &info->num_spectral) != 0)
+    //     {
+    //         return -1;
+    //     }
+    // }
 
     if (info->product_type == s5_type_so2)
     {
@@ -1027,6 +1036,9 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
             dimension[harp_dimension_time] = info->num_scanlines * info->num_pixels;
             break;
             /* CLD, NO2, CO, ... need no extra axes */
+        case s5_type_aod:
+            dimension[harp_dimension_spectral] = info->num_spectral;
+            break;
         default:
             break;
     }
@@ -1781,6 +1793,43 @@ static int read_product_wavelength(void *user_data, harp_array data)
     return read_dataset(info->product_cursor, "wavelength", harp_type_float,
                         info->num_spectral, data);
 }
+
+static int read_product_aerosol_optical_depth(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_optical_depth", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_product_aerosol_optical_depth_precision(void *user_data, harp_array data)
+
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_optical_depth_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_product_absorbing_aerosol_optical_depth(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "absorbing_aerosol_optical_depth", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_product_absorbing_aerosol_optical_depth_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "absorbing_aerosol_optical_depth_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+
+
+
 
 
 
@@ -2724,22 +2773,6 @@ static int read_results_sulfur_dioxide_layer_pressure_uncertainty(void *user_dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_results_formaldehyde_tropospheric_amf(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-static int read_results_formaldehyde_tropospheric_amf_systematic(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_air_mass_factor_systematic", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
 static int read_results_formaldehyde_corrected_slant_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2857,7 +2890,45 @@ static int read_detailed_results_aerosol_model_indicator(void *user_data, harp_a
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_detailed_results_single_scattering_albedo_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
 
+    return read_dataset(info->detailed_results_cursor, "single_scattering_albedo_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_detailed_results_aerosol_mean_height(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->detailed_results_cursor, "aerosol_mean_height", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_detailed_results_direct_surface_reflectance(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->detailed_results_cursor, "direct_surface_reflectance", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_detailed_results_diffuse_surface_reflectance(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->detailed_results_cursor, "diffuse_surface_reflectance", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
+
+static int read_detailed_results_single_scattering_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->detailed_results_cursor, "single_scattering_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_spectral, data);
+}
 
 
 /* Field: data/PRODUCT/SUPPORT_DATA/GEOLOCATIONS */
@@ -3360,13 +3431,6 @@ static int read_input_glyoxal_profile_apriori_pressure(void *user_data, harp_arr
     dimension[0] = info->num_scanlines * info->num_pixels;
     dimension[1] = info->num_layers;
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
-}
-
-static int read_input_aerosol_index_354_388(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    return read_dataset(info->input_data_cursor, "aerosol_index_354_388", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_input_wind_u_velocity(void *user_data, harp_array data)
@@ -6328,7 +6392,6 @@ static void register_gly_product(void)
 /* CLA (Auxiliary Cloud Product) */
 static void register_cla_product(void)
 {
-    const char *path;
     const char *description;
 
     harp_ingestion_module *module;
@@ -6433,7 +6496,7 @@ static void register_aod_product(void)
     harp_dimension_type dimension_type_2d_spec[2] = { harp_dimension_time, harp_dimension_spectral };
 
     /* Product Registration Phase */
-    module = harp_ingestion_register_module("S5_L2_AOD", "Sentinel-5", "EPS-SG", "SN5-02-AOD",
+    module = harp_ingestion_register_module("S5_L2_AOD", "Sentinel-5", "EPS_SG", "SN5_02_AOD",
                                             "Sentinel-5 L2 Aerosol Optical Depth", ingestion_init, ingestion_done);
 
     product_definition = harp_ingestion_register_product(module, "S5_L2_AOD", NULL, read_dimensions);
@@ -6442,8 +6505,8 @@ static void register_aod_product(void)
     register_core_variables(product_definition, include_validity);
     register_geolocation_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
-    register_surface_variables(product_definition, "SN5-02-AOD");
-    register_snow_ice_flag_variables(product_definition, "SN5-02-AOD");
+    register_surface_variables(product_definition, "SN5_02_AOD");
+    register_snow_ice_flag_variables(product_definition, "SN5_02_AOD");
 
     /* --- PRODUCT VARIABLES --- */
 
@@ -6465,10 +6528,10 @@ static void register_aod_product(void)
     path = "/data/PRODUCT/aerosol_optical_depth";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* aerosol_optical_depth_uncertainty */
+    /* aerosol_optical_depth_precision */
     description = "aerosol optical depth error";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_uncertainty", harp_type_float, 2,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_precision", harp_type_float, 2,
                                                    dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_aerosol_optical_depth_precision);
     path = "/data/PRODUCT/aerosol_optical_depth_precision";
@@ -6496,7 +6559,7 @@ static void register_aod_product(void)
     /* qa_value */
     description = "quality assurance value describing the quality of the product";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "qa_value", harp_type_int32, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth_validity", harp_type_int32, 1,
                                                    &dimension_type_2d_spec[0], NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_qa_value);
     path = "/data/PRODUCT/qa_value";
@@ -6507,8 +6570,8 @@ static void register_aod_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "single_scattering_albedo", harp_type_float, 2,
                                                    dimension_type_2d_spec, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_product_single_scattering_albedo);
-    path = "/data/PRODUCT/single_scattering_albedo";
+                                                   read_detailed_results_single_scattering_albedo);
+    path = "/data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/single_scattering_albedo";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
 
@@ -6596,8 +6659,6 @@ static void register_aod_product(void)
                                                    read_input_wind_v_velocity);
     path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/wind_v_velocity";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
-
-
 }
 
 
