@@ -55,11 +55,12 @@ typedef enum s5_product_type_enum
     s5_type_fdy,
     s5_type_gly,
     s5_type_cla,
-    s5_type_aod
+    s5_type_aod,
+    s5_type_alh
 } s5_product_type;
 
 
-#define S5_NUM_PRODUCT_TYPES (((int)s5_type_aod) + 1)
+#define S5_NUM_PRODUCT_TYPES (((int)s5_type_alh) + 1)
 
 
 typedef enum s5_dimension_type_enum
@@ -89,6 +90,7 @@ static const char *s5_dimension_name[S5_NUM_PRODUCT_TYPES][S5_NUM_DIM_TYPES] = {
     {"time", "scanline", "ground_pixel", "corner", "layer", NULL, NULL, NULL},  /* GLY */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL, NULL, NULL},  /* CLA */
     {"time", "scanline", "ground_pixel", "corner", NULL, NULL, "wavelength", NULL},  /* AOD */
+    {"time", "scanline", "ground_pixel", "corner", NULL, NULL, NULL, NULL},  /* ALH */
 };
 
 typedef struct ingest_info_struct
@@ -102,6 +104,7 @@ typedef struct ingest_info_struct
     int so2_column_type;        /* 0: PBL (anthropogenic), 1: 1km box profile, 2: 7km bp, 3: 15km bp, 4: layer height */
     int use_hcho_clear_sky_amf;
     int use_cla_band_options;   /* CLA: BAND3A (default), or BAND1B, BAND2, BAND3B, BAND3C, BAND4, BAND5 */
+    int use_alh_surface_albedo_772;
 
     s5_product_type product_type;
     long num_times;
@@ -183,12 +186,13 @@ static const char *get_product_type_name(s5_product_type product_type)
             return "SN5_02_CLA";
         case s5_type_aod:
             return "SN5_02_AOD";
+        case s5_type_alh:
+            return "SN5_02_ALH";
     }
 
     assert(0);
     exit(1);
 }
-
 
 static void broadcast_array_float(long num_scanlines, long num_pixels, float *data)
 {
@@ -230,7 +234,6 @@ static int get_product_type(coda_product *product, s5_product_type *product_type
     harp_set_error(HARP_ERROR_INGESTION, "unsupported product type '%s'", coda_product_type);
     return -1;
 }
-
 
 /* Recursively search for the named 1D dimension field within a CODA structure. */
 static int find_dimension_length_recursive(coda_cursor *cursor, const char *name, long *length)
@@ -330,7 +333,6 @@ static int get_dimension_length(ingest_info *info, const char *name, long *lengt
     return 0;
 }
 
-
 /* Init Routines */
 
 /* Initialize CODA cursors for main record groups with inline comments. */
@@ -339,7 +341,11 @@ static int init_cursors(ingest_info *info)
     coda_cursor cursor;
 
     /* Bind a cursor to the root of the CODA product, returns error if failed */
-    if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+    if (coda_cursor_set_product(&cursor, info->product) != 0) 
+    { 
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
 
     /* CLD product has to set of bands each containing its own product type */
     if (info->product_type == s5_type_cld)
@@ -348,38 +354,66 @@ static int init_cursors(ingest_info *info)
         {
             /* Fallback to data/PRODUCT for simulated files */
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0) 
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
         }
         /* Save PRODUCT_BAND3A cursor; subsequent navigation is relative to this. */
         info->b3a_product_cursor = cursor;
 
         /* Enter '/PRODUCT/SUPPORT_DATA' or '/data/PRODUCT/SUPPORT_DATA' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         /* Geolocation group (skip for O3-TCL): under SUPPORT_DATA
          * '/.../SUPPORT_DATA/GEOLOCATIONS' for both layouts.
          */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        { 
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3a_geolocation_cursor = cursor;
 
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
         /* Detailed results: '/.../SUPPORT_DATA/DETAILED_RESULTS' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
+        { 
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3a_detailed_results_cursor = cursor;
 
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
         /* Input data group (skip for O3-TCL): '/.../SUPPORT_DATA/INPUT_DATA' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
+        { 
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3a_input_data_cursor = cursor;
 
         /* Bind a cursor to the root of the CODA product (repeat the procedure above for BAND3C). */
-        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_set_product(&cursor, info->product) != 0)
+        { 
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0)
         {
             /* fallback to data/PRODUCT for simulated files */
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
         }
         /* Save PRODUCT_BAND3C cursor; subsequent navigation is relative to this. */
         info->b3c_product_cursor = cursor;
@@ -387,23 +421,39 @@ static int init_cursors(ingest_info *info)
         /* Enter SUPPORT_DATA under PRODUCT:
          * '/PRODUCT/SUPPORT_DATA' or '/data/PRODUCT/SUPPORT_DATA'
          */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         /* Geolocation group (skip for O3-TCL): under SUPPORT_DATA
          * '/.../SUPPORT_DATA/GEOLOCATIONS' for both layouts.
          */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3c_geolocation_cursor = cursor;
 
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
         /* Detailed results: '/.../SUPPORT_DATA/DETAILED_RESULTS' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "DETAILED_RESULTS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3c_detailed_results_cursor = cursor;
 
         /* Back to SUPPORT_DATA */
         coda_cursor_goto_parent(&cursor);
         /* Input data group (skip for O3-TCL): '/.../SUPPORT_DATA/INPUT_DATA' */
-        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "INPUT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3c_input_data_cursor = cursor;
 
         /* Make the cursors point to BAND3A by default */
@@ -436,94 +486,190 @@ static int init_cursors(ingest_info *info)
         {
             /* Always include data/ directory parsing */
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3A") != 0)
+                {
+                    harp_set_error(HARP_ERROR_CODA, NULL);
+                    return -1;
+                }
         }
         info->b3a_product_cursor = cursor;
 
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3a_geolocation_cursor = cursor;
 
         /* --- BAND 1B --- */
-        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-            if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND1B") != 0) {
+        if (coda_cursor_set_product(&cursor, info->product) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+            if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND1B") != 0) 
+            {
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND1B") != 0) {
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND1B") != 0) 
+            {
                 harp_set_error(HARP_ERROR_CODA, NULL); return -1;
             }
         }
         info->b1b_product_cursor = cursor;
 
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) 
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b1b_geolocation_cursor = cursor;
 
         /* --- BAND 2 --- */
-        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND2") != 0) {
+        if (coda_cursor_set_product(&cursor, info->product) != 0)
+        { 
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND2") != 0)
+        {
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND2") != 0) {
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND2") != 0)
+            {
                 harp_set_error(HARP_ERROR_CODA, NULL); return -1;
             }
         }
         info->b2_product_cursor = cursor;
 
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b2_geolocation_cursor = cursor;
 
         /* --- BAND 3B --- */
-        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3B") != 0) {
+        if (coda_cursor_set_product(&cursor, info->product) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3B") != 0)
+        {
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3B") != 0) {
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3B") != 0)
+            {
                 harp_set_error(HARP_ERROR_CODA, NULL); return -1;
             }
         }
         info->b3b_product_cursor = cursor;
 
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3b_geolocation_cursor = cursor;
 
         /* --- BAND 3C --- */
-        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0) {
+        if (coda_cursor_set_product(&cursor, info->product) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0)
+        {
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0) {
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND3C") != 0)
+            {
                 harp_set_error(HARP_ERROR_CODA, NULL); return -1;
             }
         }
         info->b3c_product_cursor = cursor;
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b3c_geolocation_cursor = cursor;
 
         /* --- BAND 4 --- */
-        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND4") != 0) {
+        if (coda_cursor_set_product(&cursor, info->product) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND4") != 0)
+        {
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND4") != 0) {
-                harp_set_error(HARP_ERROR_CODA, NULL); return -1;
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND4") != 0)
+            {
+                harp_set_error(HARP_ERROR_CODA, NULL);
+                return -1;
             }
         }
         info->b4_product_cursor = cursor;
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b4_geolocation_cursor = cursor;
 
         /* --- BAND 5 --- */
-        if (coda_cursor_set_product(&cursor, info->product) != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND5") != 0) {
+        if (coda_cursor_set_product(&cursor, info->product) != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND5") != 0) 
+        {
             if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
-                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND5") != 0) {
+                coda_cursor_goto_record_field_by_name(&cursor, "PRODUCT_BAND5") != 0)
+            {
                 harp_set_error(HARP_ERROR_CODA, NULL); return -1;
             }
         }
         info->b5_product_cursor = cursor;
 
-        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
-        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0) { harp_set_error(HARP_ERROR_CODA, NULL); return -1; }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "SUPPORT_DATA") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
+        if (coda_cursor_goto_record_field_by_name(&cursor, "GEOLOCATIONS") != 0)
+        {
+            harp_set_error(HARP_ERROR_CODA, NULL);
+            return -1;
+        }
         info->b5_geolocation_cursor = cursor;
 
         /* Now bind the default generic cursors based on the user's band choice */
@@ -559,7 +705,6 @@ static int init_cursors(ingest_info *info)
                 break;
         }
     }
-
     else
     {
         if (coda_cursor_goto_record_field_by_name(&cursor, "data") != 0 ||
@@ -755,6 +900,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->so2_column_type = 0;  /* 0=PBL (default)  1=1 km  2=7 km  3=15 km */
     info->use_hcho_clear_sky_amf = 0;
     info->use_cla_band_options = 0; /* CLA: BAND3A (default), or BAND1B, BAND2, BAND3B, BAND3C, BAND4, BAND5 */
+    info->use_alh_surface_albedo_772 = 0;
 
     if (get_product_type(info->product, &info->product_type) != 0)
     {
@@ -786,7 +932,6 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             info->wavelength_ratio = 340;
         }
     }
-
 
     if (info->product_type == s5_type_ch4)
     {
@@ -971,19 +1116,17 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     {
         info->num_spectral = 4; /*  sif_wavelengths  */
     }
-    // else if (info->product_type == s5_type_aod)
-    // {
-    //     /* AOD needs to be mapped to the wavelength dimension */
-    //     if (get_dimension_length(info, "wavelength", &info->num_spectral) != 0)
-    //     {
-    //         return -1;
-    //     }
-    // }
 
     if (info->product_type == s5_type_so2)
     {
         info->num_profile = 4;
     }
+
+    if (harp_ingestion_options_has_option(options, "surface_albedo"))
+    {
+        info->use_alh_surface_albedo_772 = 1;
+    }
+
 
     *user_data = info;
 
@@ -1014,7 +1157,6 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
      * an error to have two variables within the same product that both have a
      * time dimension, yet of a different length.
      */
-
 
     dimension[harp_dimension_time] = info->num_scanlines * info->num_pixels;
 
@@ -1184,7 +1326,6 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
     return 0;
 }
 
-
 static int read_datetime(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1324,10 +1465,7 @@ static int read_orbit_index(void *user_data, harp_array data)
     return 0;
 }
 
-
-
 /* Field: data/PRODUCT */
-
 static int read_product_latitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1359,7 +1497,7 @@ static int read_product_qa_value(void *user_data, harp_array data)
 }
 
 /* CLA (SN5_02_CLA): METimage O2-Cloud product fields under the selected PRODUCT_BAND group */
-static int read_moxy_cloud_fraction(void *user_data, harp_array data)
+static int read_product_moxy_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1367,7 +1505,7 @@ static int read_moxy_cloud_fraction(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_moxy_cloud_optical_thickness(void *user_data, harp_array data)
+static int read_product_moxy_cloud_optical_thickness(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1375,7 +1513,7 @@ static int read_moxy_cloud_optical_thickness(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_moxy_cloud_top_pressure(void *user_data, harp_array data)
+static int read_product_moxy_cloud_top_pressure(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1491,7 +1629,6 @@ static int read_product_methane_dry_air_column_mixing_ratio(void *user_data, har
     return 0;
 }
 
-
 static int read_product_methane_dry_air_column_mixing_ratio_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1526,7 +1663,6 @@ static int read_product_methane_dry_air_column_mixing_ratio_precision(void *user
     return 0;
 }
 
-
 static int read_product_nitrogen_dioxide_tropospheric_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1551,7 +1687,6 @@ static int read_product_nitrogen_dioxide_tropospheric_column_air_mass_factor(voi
                         info->num_scanlines * info->num_pixels, data);
 }
 
-
 static int read_product_nitrogen_dioxide_total_column_air_mass_factor(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1574,7 +1709,6 @@ static int read_product_nitrogen_dioxide_total_column_avk(void *user_data, harp_
     dimension[1] = info->num_layers;
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
-
 
 static int read_product_ozone_total_column(void *user_data, harp_array data)
 {
@@ -1679,7 +1813,6 @@ static int read_product_formaldehyde_tropospheric_column_trueness(void *user_dat
     return read_dataset(info->product_cursor, "formaldehyde_tropospheric_column_trueness", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
 
 /* Helper function to scale the tropospheric formaldehyde column by the air mass factor */
 static int scale_amf_hcho(ingest_info *info, harp_array data)
@@ -1827,14 +1960,102 @@ static int read_product_absorbing_aerosol_optical_depth_precision(void *user_dat
                         info->num_scanlines * info->num_pixels * info->num_spectral, data);
 }
 
+static int read_product_aerosol_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_mid_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
 
+static int read_product_aerosol_pressure_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_mid_pressure_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
 
+static int read_product_aerosol_mid_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_mid_altitude", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
 
+static int read_product_aerosol_mid_altitude_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_mid_altitude_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
 
+static int read_product_aerosol_optical_thickness(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_optical_thickness", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
 
+static int read_product_aerosol_optical_thickness_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    
+    return read_dataset(info->product_cursor, "aerosol_optical_thickness_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_product_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name = NULL;
+
+    /* Not in actual test data, but included in specification documents*/
+    if (info->product_type == s5_type_alh)
+    {
+        if (info->use_alh_surface_albedo_772)
+        {
+            variable_name = "surface_albedo_772";
+        }
+        else
+        {
+            variable_name = "surface_albedo_758";
+        }
+        return read_dataset(info->product_cursor, variable_name, harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+    
+    harp_set_error(HARP_ERROR_CODA, NULL);
+    return -1;
+}
+
+static int read_product_surface_albedo_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name = NULL;
+
+    if (info->product_type == s5_type_alh)
+    {
+        if (info->use_alh_surface_albedo_772)
+        {   
+            variable_name = "surface_albedo_772_precision";
+        }
+        else
+        {
+            variable_name = "surface_albedo_758_precision";
+        }
+        return read_dataset(info->product_cursor, variable_name, harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
+    harp_set_error(HARP_ERROR_CODA, NULL);
+    return -1;
+}
 
 /* Field: data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS */
-
 /* Convert **processing-quality flags** from the file to the type/shape
  * expected by HARP.
  */
@@ -1889,7 +2110,6 @@ static int read_results_processing_quality_flags(void *user_data, harp_array dat
     return 0;
 }
 
-
 static int read_results_water_total_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1913,8 +2133,6 @@ static int read_results_carbon_dioxide_total_column(void *user_data, harp_array 
     return read_dataset(info->detailed_results_cursor, "carbon_dioxide_total_column", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
-
 
 /* Read the **measured TOA reflectances** that form the Aerosol-Index
  * wavelength pair and pack them into a 2-column HARP array.
@@ -1953,7 +2171,6 @@ static int read_results_reflectance_measured(void *user_data, harp_array data)
             assert(0);
             exit(1);
     }
-
 
     refl_lower.float_data = malloc(num_elements * sizeof(float));
     if (refl_lower.float_data == NULL)
@@ -2038,7 +2255,6 @@ static int read_results_reflectance_measured(void *user_data, harp_array data)
     return 0;
 }
 
-
 /* Read the **measured-reflectance precisions** for the two
  * wavelengths that form the Aerosol-Index pair.
  */
@@ -2113,8 +2329,7 @@ static int read_results_reflectance_precision(void *user_data, harp_array data)
     return 0;
 }
 
-
-static int read_co_column_number_density_avk(void *user_data, harp_array data)
+static int read_results_co_column_number_density_avk(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     long dimension[2];
@@ -2162,7 +2377,7 @@ static int read_results_cloud_optical_depth(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_results_surface_albedo(void *user_data, harp_array data)
+static int read_results_scene_albedo(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
     const char *variable_name = NULL;
@@ -2184,11 +2399,27 @@ static int read_results_surface_albedo(void *user_data, harp_array data)
                 assert(0);
                 exit(1);
         }
-
         return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
     }
-    else if (info->product_type == s5_type_ch4)
+    else
+    {
+        variable_name = "scene_albedo";
+        return read_dataset(info->detailed_results_cursor, variable_name, harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
+    harp_set_error(HARP_ERROR_CODA, NULL);
+    return -1;
+
+}
+
+static int read_results_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name = NULL;
+
+    if (info->product_type == s5_type_ch4)
     {
 
         switch (info->use_ch4_band_options)
@@ -2238,16 +2469,8 @@ static int read_results_surface_albedo(void *user_data, harp_array data)
     else if (info->product_type == s5_type_fdy)
     {
         variable_name = "surface_albedo_342";
-
-        //printf("DEBUG FDY: Attempting to read %s from input_data_cursor...\n", variable_name); //debugging
-
-        int result = read_dataset(info->input_data_cursor, variable_name, harp_type_float,
-                            info->num_scanlines * info->num_pixels, data);
-
-        // if (result != 0) {
-        //     printf("DEBUG FDY: Failed to read %s!\n", variable_name); //debugging
-        // }                            
-        return result;
+        return read_dataset(info->input_data_cursor, variable_name, harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);                         
     }
     else if (info->product_type == s5_type_gly)
     {
@@ -2261,7 +2484,6 @@ static int read_results_surface_albedo(void *user_data, harp_array data)
 
 }
 
-
 static int read_results_methane_total_column_prefit(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2269,7 +2491,6 @@ static int read_results_methane_total_column_prefit(void *user_data, harp_array 
     return read_dataset(info->detailed_results_cursor, "methane_total_column_prefit", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
 
 static int read_results_methane_profile_apriori(void *user_data, harp_array data)
 {
@@ -2285,7 +2506,6 @@ static int read_results_methane_profile_apriori(void *user_data, harp_array data
     dimension[1] = info->num_layers;
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
-
 
 static int read_results_carbon_monoxide_profile_apriori(void *user_data, harp_array data)
 {
@@ -2303,7 +2523,6 @@ static int read_results_carbon_monoxide_profile_apriori(void *user_data, harp_ar
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
-
 static int read_results_carbon_dioxide_profile_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2319,7 +2538,6 @@ static int read_results_carbon_dioxide_profile_apriori(void *user_data, harp_arr
     dimension[1] = info->num_layers;
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
-
 
 static int read_results_oxygen_total_column_apriori(void *user_data, harp_array data)
 {
@@ -2397,7 +2615,6 @@ static int read_results_aerosol_size(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-
 static int read_results_aerosol_particle_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2431,7 +2648,6 @@ static int read_results_cloud_radiance_fraction(void *user_data, harp_array data
                         info->num_scanlines * info->num_pixels, data);
 }
 
-
 static int read_results_nitrogen_dioxide_slant_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2449,7 +2665,6 @@ static int read_results_nitrogen_dioxide_slant_column_uncertainty(void *user_dat
                         info->num_scanlines * info->num_pixels, data);
 }
 
-
 static int read_results_ozone_slant_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2457,7 +2672,6 @@ static int read_results_ozone_slant_column(void *user_data, harp_array data)
     return read_dataset(info->detailed_results_cursor, "ozone_slant_column", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
 
 static int read_results_ozone_slant_column_uncertainty(void *user_data, harp_array data)
 {
@@ -2509,7 +2723,6 @@ static int read_results_nitrogen_dioxide_stratospheric_column(void *user_data, h
     return read_dataset(info->detailed_results_cursor, "nitrogen_dioxide_stratospheric_column", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
 
 static int read_results_nitrogen_dioxide_stratospheric_column_uncertainty(void *user_data, harp_array data)
 {
@@ -2650,15 +2863,6 @@ static int read_results_pressure_grid(void *user_data, harp_array data)
     return harp_array_invert(harp_type_float, 1, 2, dimension, data);
 }
 
-static int read_results_scene_albedo(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-
-    return read_dataset(info->detailed_results_cursor, "scene_albedo", harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
-}
-
-
 static int read_results_scene_albedo_uncertainty(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2674,7 +2878,6 @@ static int read_results_scene_pressure(void *user_data, harp_array data)
     return read_dataset(info->detailed_results_cursor, "scene_pressure", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
 
 static int read_results_scene_pressure_uncertainty(void *user_data, harp_array data)
 {
@@ -2930,9 +3133,7 @@ static int read_detailed_results_single_scattering_albedo(void *user_data, harp_
                         info->num_scanlines * info->num_pixels * info->num_spectral, data);
 }
 
-
 /* Field: data/PRODUCT/SUPPORT_DATA/GEOLOCATIONS */
-
 static int read_geolocation_latitude_bounds(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2977,7 +3178,6 @@ static int read_geolocation_satellite_latitude(void *user_data, harp_array data)
     return 0;
 }
 
-
 static int read_geolocation_satellite_longitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -2999,7 +3199,6 @@ static int read_geolocation_satellite_orbit_phase(void *user_data, harp_array da
     return read_dataset(info->geolocation_cursor, "satellite_orbit_phase", harp_type_double, info->num_scanlines, data);
 }
 
-
 static int read_geolocation_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3016,7 +3215,6 @@ static int read_geolocation_solar_azimuth_angle(void *user_data, harp_array data
                         info->num_scanlines * info->num_pixels, data);
 }
 
-
 static int read_geolocation_viewing_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3024,7 +3222,6 @@ static int read_geolocation_viewing_azimuth_angle(void *user_data, harp_array da
     return read_dataset(info->geolocation_cursor, "viewing_azimuth_angle", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
-
 
 static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array data)
 {
@@ -3037,7 +3234,6 @@ static int read_geolocation_viewing_zenith_angle(void *user_data, harp_array dat
 
 
 /* Field: data/PRODUCT/SUPPORT_DATA/INPUT_DATA */
-
 static int read_input_surface_altitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -3123,8 +3319,17 @@ static int read_input_effective_cloud_fraction(void *user_data, harp_array data)
 static int read_input_scene_albedo(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name = NULL;
 
-    return read_dataset(info->input_data_cursor, "scene_albedo", harp_type_float,
+    if (info->product_type == s5_type_alh)
+    {
+        variable_name = "scene_albedo_380";
+    }
+    else
+    {
+        variable_name = "scene_albedo";
+    }
+    return read_dataset(info->input_data_cursor, variable_name, harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -3265,7 +3470,6 @@ static int read_snow_ice_type_from_flag(void *user_data, const char *variable_na
 
     return 0;
 }
-
 
 static int read_snow_ice_type(void *user_data, harp_array data)
 {
@@ -3447,12 +3651,9 @@ static int read_input_wind_v_velocity(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-
-
 /*
  * Variables' Registration Routines
  */
-
 static void register_core_variables(harp_product_definition *product_definition, int include_validity)
 {
     const char *path;
@@ -3584,8 +3785,6 @@ static void register_core_variables_cld(harp_product_definition *product_definit
     }
 }
 
-
-
 static void register_geolocation_variables(harp_product_definition *product_definition)
 {
     const char *path;
@@ -3641,7 +3840,6 @@ static void register_geolocation_variables_cld(harp_product_definition *product_
     harp_variable_definition_add_mapping(var, "band=band5", NULL,
                                          "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/latitude[]", NULL);
 
-
     /* longitude */
     description = "longitude of the ground-pixel centre (WGS-84)";
     var = harp_ingestion_register_variable_full_read(product_definition, "longitude", harp_type_float, 1, dim_time,
@@ -3664,8 +3862,6 @@ static void register_geolocation_variables_cld(harp_product_definition *product_
     harp_variable_definition_add_mapping(var, "band=band5", NULL,
                                          "/data/PRODUCT_BAND5/SUPPORT_DATA/GEOLOCATIONS/longitude[]", NULL);
 }
-
-
 
 static void register_additional_geolocation_variables(harp_product_definition *product_definition)
 {
@@ -4219,12 +4415,9 @@ static void register_snow_ice_flag_variables(harp_product_definition *product_de
     }
 }
 
-
 /*
  * Product Registration Routines
  */
-
-
 /* Aerosol */
 static void register_aui_product(void)
 {
@@ -4242,7 +4435,7 @@ static void register_aui_product(void)
 
     /* Product Registration Phase */
     module = harp_ingestion_register_module("S5_L2_AUI", "Sentinel-5", "EPS_SG", "SN5_02_AUI",
-                                            "Sentinel-5 L2 AUI total column", ingestion_init, ingestion_done);
+                                            "Sentinel-5 L2 UV Aerosol Index", ingestion_init, ingestion_done);
 
     /* wavelength_ratio */
     description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default), 340/380 nm, or 335/367 nm";
@@ -4343,12 +4536,12 @@ static void register_aui_product(void)
                                          "/data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/reflectance_precision_367_measured[]",
                                          NULL);
 
-    /* surface_albedo */
+    /* scene_albedo */
     description = "scene albedo";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo", harp_type_float, 1,
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   NULL, read_results_surface_albedo);
+                                                   NULL, read_results_scene_albedo);
     path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_albedo_388[]";
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=354_388nm or wavelength_ratio unset",
                                          NULL, path, NULL);
@@ -4593,7 +4786,7 @@ static void register_ch4_product(void)
     path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_layer_height[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* surface_albedo */
+    /* surface_albedo */   
     description = "surface albedo in the selected band";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
@@ -4886,7 +5079,7 @@ static void register_no2_product(void)
     /* aerosol_index_354_388 */
     description = "aerosol absorbing index 354/388 pair";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_aerosol_index);
     path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388[]";
@@ -5167,7 +5360,7 @@ static void register_o3_product(void)
     /* aerosol_index_340_380 */
     description = "aerosol absorbing index 340/380 pair";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_aerosol_index);
     path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380[]";
@@ -5894,7 +6087,7 @@ static void register_co_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "CO_column_number_density_avk", harp_type_float,
                                                    2, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_co_column_number_density_avk);
+                                                   read_results_co_column_number_density_avk);
     path = "data/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/carbon_monoxide_total_column_averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -6160,7 +6353,7 @@ static void register_fdy_product(void)
     /* aerosol_index_340_380 */
     description = "aerosol absorbing index at 340 and 380 nm";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_aerosol_index);
     path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380[]";
@@ -6354,7 +6547,7 @@ static void register_gly_product(void)
     /* aerosol_index_340_380 */
     description = "aerosol absorbing index at 340 and 380 nm";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "aerosol_index", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_input_aerosol_index);
     path = "data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_340_380[]";
@@ -6424,7 +6617,7 @@ static void register_cla_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_moxy_cloud_fraction);
+                                                   read_product_moxy_cloud_fraction);
 
     /* default (BAND-3A) */
     harp_variable_definition_add_mapping(variable_definition, "band=band3a or band unset", NULL, "/data/PRODUCT_BAND3A/moxy_cfr_psf_mean[]", NULL);
@@ -6440,7 +6633,7 @@ static void register_cla_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_optical_depth", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_moxy_cloud_optical_thickness);
+                                                   read_product_moxy_cloud_optical_thickness);
 
     harp_variable_definition_add_mapping(variable_definition, "band=band3a or band unset", NULL, "/data/PRODUCT_BAND3A/moxy_cot_psf_mean[]", NULL);
     harp_variable_definition_add_mapping(variable_definition, "band=band1b", NULL, "/data/PRODUCT_BAND1B/moxy_cot_psf_mean[]", NULL);
@@ -6455,7 +6648,7 @@ static void register_cla_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
                                                    dimension_type_1d, NULL, description, "hPa", NULL,
-                                                   read_moxy_cloud_top_pressure);
+                                                   read_product_moxy_cloud_top_pressure);
 
     harp_variable_definition_add_mapping(variable_definition, "band=band3a or band unset", NULL, "/data/PRODUCT_BAND3A/moxy_ctp_psf_mean[]", NULL);
     harp_variable_definition_add_mapping(variable_definition, "band=band1b", NULL, "/data/PRODUCT_BAND1B/moxy_ctp_psf_mean[]", NULL);
@@ -6514,7 +6707,7 @@ static void register_aod_product(void)
     description = "wavelength";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "wavelength", harp_type_float, 1,
-                                                   &dimension_type_2d_spec[1], NULL, description, "nm", NULL,
+                                                   &dimension_type_2d_spec[1], NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_wavelength);
     path = "/data/PRODUCT/wavelength";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
@@ -6661,6 +6854,144 @@ static void register_aod_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
+static void register_alh_product(void)
+{
+    const char *path;
+    const char *description;
+
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+
+    int include_validity = 1;
+
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    const char *surface_albedo_option_values[1] = { "772" };
+    
+    module = harp_ingestion_register_module("S5_L2_ALH", "Sentinel-5", "EPS_SG", "SN5_02_ALH",
+                                            "Sentinel-5 L2 Aerosol Layer Height", ingestion_init, ingestion_done);
+
+    description = "whether to ingest the surface albedo at 758nm (default) or the surface alebedo at 772nm ";
+    harp_ingestion_register_option(module, "surface_albedo", description, 1, surface_albedo_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "S5_L2_ALH", NULL, read_dimensions);
+
+    register_core_variables(product_definition, include_validity);
+    register_geolocation_variables(product_definition);
+    register_additional_geolocation_variables(product_definition);
+    register_surface_variables(product_definition, "SN5_02_ALH");
+    register_snow_ice_flag_variables(product_definition, "SN5_02_ALH");
+
+     /* --- PRODUCT VARIABLES --- */
+
+    /* aerosol_mid_pressure */
+    description = "Mid pressure of an aerosol layer with constant thickness of 50 hPa. Constant aerosol optical thickness and single scattering albedo.";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_product_aerosol_pressure);
+    path = "/data/PRODUCT/aerosol_mid_pressure";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_mid_pressure_precision */
+    description = "Precision of the aerosol mid pressure.";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_pressure_uncertainty_random", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_product_aerosol_pressure_precision);
+    path = "/data/PRODUCT/aerosol_mid_pressure_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_mid_altitude */
+    description = "Aerosol layer mid height above WGS84 ellipsoid derived from aerosol mid pressure and a priori temperature profile.";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_product_aerosol_mid_altitude);
+    path = "/data/PRODUCT/aerosol_mid_altitude";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_mid_altitude_precision */
+    description = "precision of the aerosol mid altitude.";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_uncertainty_random", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_product_aerosol_mid_altitude_precision);
+    path = "/data/PRODUCT/aerosol_mid_altitude_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_optical_thickness */
+    description = "aerosol optical thickness for the assumed aerosol layer and aerosol model at 760 nm.";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_depth", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_aerosol_optical_thickness);
+    path = "/data/PRODUCT/aerosol_optical_thickness";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    
+    /* aerosol_optical_thickness_precision */
+    description = "precision of the aerosol optical thickness.";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_optical_thickness_uncertainty_random", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_aerosol_optical_thickness_precision);
+    path = "/data/PRODUCT/aerosol_optical_thickness_precision";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* qa_value */
+    description = "quality assurance value describing the quality of the product";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_validity", harp_type_int32, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_product_qa_value);
+    path = "/data/PRODUCT/qa_value";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* DISABLED FOR TEST DATA (surface_albedo not in test data but included in specification documents) */
+    /* surface_albedo */
+
+    // description = "surface albedo";
+    // variable_definition =
+    //     harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+    //                                             dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+    //                                             read_product_surface_albedo);
+    // harp_variable_definition_add_mapping(variable_definition, "surface_albedo unset", NULL, "/data/PRODUCT/surface_albedo_758", NULL);
+    // harp_variable_definition_add_mapping(variable_definition, "surface_albedo=772", NULL, "/data/PRODUCT/surface_albedo_772", NULL);   
+
+    /* surface_albedo_uncertainty */
+    // description = "precision of fitted surface albedo";
+    // variable_definition =
+    //     harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty_random", harp_type_float, 1,
+    //                                                 dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+    //                                                 read_product_surface_albedo_precision);
+    // harp_variable_definition_add_mapping(variable_definition, "surface_albedo unset", NULL, "/data/PRODUCT/surface_albedo_758_precision", NULL);
+    // harp_variable_definition_add_mapping(variable_definition, "surface_albedo=772", NULL, "/data/PRODUCT/surface_albedo_772_precision", NULL);
+
+    /* --- INPUT DATA VARIABLES --- */
+
+    /* scene_albedo */
+    /* Specification documents have scene_albedo_388, but test data has scene_albedo_380*/
+    description = "effective scene albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "scene_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_scene_albedo);
+    path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/scene_albedo_380";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_index_354_388 */
+    description = "aerosol index 354/388 pair";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_input_aerosol_index);
+    path = "/data/PRODUCT/SUPPORT_DATA/INPUT_DATA/aerosol_index_354_388";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+
+}
+
 
 
 int harp_ingestion_module_s5_l2_init(void)
@@ -6676,6 +7007,7 @@ int harp_ingestion_module_s5_l2_init(void)
     register_gly_product();
     register_cla_product();
     register_aod_product();
+    register_alh_product();
 
     return 0;
 }
