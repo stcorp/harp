@@ -1188,6 +1188,16 @@ static int read_dimensions(void *user_data, long dimension[HARP_NUM_DIM_TYPES])
     return 0;
 }
 
+static int read_scan_subindex(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    index = index - (index / info->num_pixels) * info->num_pixels;
+    *data.int16_data = (int16_t)index;
+
+    return 0;
+}
+
 /* Copied from the s5p l2 module */
 static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_type data_type, long num_elements,
                         harp_array data)
@@ -3663,6 +3673,16 @@ static void register_core_variables(harp_product_definition *product_definition,
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type_1d[1] = { harp_dimension_time };
 
+    /* scan_subindex */
+    description = "pixel index (0-based) within the scanline";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "scan_subindex", harp_type_int16, 1,
+                                                    dimension_type_1d, NULL, description, NULL, NULL, read_scan_subindex);
+    description =
+        "the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
+        "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+
     /* datetime (center of scanline) */
     description = "time of the measurement";
     variable_definition =
@@ -3673,6 +3693,8 @@ static void register_core_variables(harp_product_definition *product_definition,
     description = "time converted from days since 2020-01-01 to seconds since 2020-01-01 (using 86400 seconds per "
         "day) and delta_time added; the time associated with a scanline is repeated for each pixel in the scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+
 
     /* datetime_length */
     description = "measurement duration";
@@ -3712,6 +3734,15 @@ static void register_core_variables_cld(harp_product_definition *product_definit
     const char *description;
     harp_variable_definition *var;
     harp_dimension_type dim_time[1] = { harp_dimension_time };
+
+    /* scan_subindex */
+    description = "pixel index (0-based) within the scanline";
+    var = harp_ingestion_register_variable_block_read(product_definition, "scan_subindex", harp_type_int16, 1,
+                                                     dim_time, NULL, description, NULL, NULL, read_scan_subindex);
+    description =
+        "the scanline and pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
+        "scanline is computed as the index on the temporal dimension modulo the number of scanlines";
+    harp_variable_definition_add_mapping(var, NULL, NULL, NULL, description);
 
     /* datetime (center of scanline) */
     description = "time of the measurement";
@@ -6024,9 +6055,6 @@ static void register_cld_product(void)
     path = "/data/PRODUCT_BAND3C/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=band3c", NULL, path, NULL);
 }
-
-
-
 
 /* CO */
 static void register_co_product(void)
