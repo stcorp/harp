@@ -18,6 +18,8 @@ Name                                           Prefixes        Postfixes       Q
 ============================================== =============== =============== ======= ==== ======= ===== ==================== =======================================================================
 absolute_vorticity                                                             X       X    X             [1/s]
 absorbing_aerosol_index                                                        X            X             []
+absorbing_<particle_type>_optical_depth        stratospheric,                  X       X    X       X     []
+                                               tropospheric
 altitude                                       sensor,                         X       X    X             [m]
                                                surface
 altitude_bounds                                                                X       X    X             [m]
@@ -126,6 +128,8 @@ relative_vorticity                                                             X
 scan_direction_type
 scan_subindex
 scattering_angle                                                               X                          [degree]
+scattering_<particle_type>_optical_depth       stratospheric,                  X       X    X       X     []
+                                               tropospheric
 scene_albedo                                                                   X            X             []
 scene_pressure                                                                 X            X             [Pa]
 scene_type                                                                     X            X
@@ -133,6 +137,7 @@ sensor_azimuth_angle                                                           X
 sensor_elevation_angle                                                         X                          [degree]
 sensor_name                                                                                                                    used mainly for ground based networks to provide a unique sensor id
 sensor_zenith_angle                                                            X                          [degree]
+single_scattering_albedo                                                       X                          []
 <species>_column_density                       stratospheric,  amf, apriori,   X       X    X             [kg/m2]
                                                tropospheric    avk, dfs, sic
 <species>_column_number_density                stratospheric,  amf, apriori,   X       X    X             [molec/m2]
