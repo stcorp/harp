@@ -1041,7 +1041,7 @@ static int init_product_definition_v3(harp_ingestion_module *module, int convert
     description = "temperature measurement from PTU sonde";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "temperature", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "K", NULL, read_temperature);
+                                                   dimension_type, NULL, description, "degC", NULL, read_temperature);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/TEMPERATURE", NULL);
 
     /* relative_humidity */
