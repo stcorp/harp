@@ -1451,8 +1451,9 @@ static int decode_uncertainty(ingest_info *info, const char *error_var_name, con
     {
         fill_E = info->observable_error_fill_value.int8_data;
     }
-    else if (strcmp(error_var_name, "radiance_noise") == 0 || strcmp(error_var_name, "irradiance_noise") == 0)
+    else
     {
+        assert(strcmp(error_var_name, "radiance_noise") == 0 || strcmp(error_var_name, "irradiance_noise") == 0);
         fill_E = info->observable_noise_fill_value.int8_data;
     }
 
