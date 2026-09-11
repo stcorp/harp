@@ -508,6 +508,13 @@ static int read_ch4_avk(void *user_data, harp_array data)
     return read_variable_float(user_data, "CH4_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
+static int read_o2_amf(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR_AMF", info->num_time, data);
+}
+
 static int read_o2_apriori(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -522,11 +529,26 @@ static int read_o2_avk(void *user_data, harp_array data)
     return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR_AVK", info->num_time * info->num_vertical, data);
 }
 
-static int read_o2_amf(void *user_data, harp_array data)
+static int read_o2_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR_AMF", info->num_time, data);
+    return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR", info->num_time, data);
+}
+
+static int read_o2_column_apriori(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR_APRIORI", info->num_time, data);
+}
+
+static int read_o2_column_uncertainty(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_variable_float(user_data, "O2_COLUMN_ABSORPTION_SOLAR_UNCERTAINTY_RANDOM_STANDARD", info->num_time,
+                               data);
 }
 
 static int read_solar_zenith_angle(void *user_data, harp_array data)
@@ -983,17 +1005,45 @@ static int init_product_definition(harp_ingestion_module *module, int version)
 
     if (version >= 6)
     {
-        /* O2_volume_mixing_ratio_apriori */
-        variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, "O2_volume_mixing_ratio_apriori", harp_type_float, 2, dimension_type, NULL,
-             "apriori profile of O2 volume mixing ratios", "ppv", NULL, read_o2_apriori);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.MIXING.RATIO.VOLUME_APRIORI", NULL);
+        if (version == 6)
+        {
+            /* O2_volume_mixing_ratio_apriori */
+            variable_definition = harp_ingestion_register_variable_full_read
+                (product_definition, "O2_volume_mixing_ratio_apriori", harp_type_float, 2, dimension_type, NULL,
+                 "apriori profile of O2 volume mixing ratios", "ppv", NULL, read_o2_apriori);
+            harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.MIXING.RATIO.VOLUME_APRIORI",
+                                                 NULL);
 
-        /* O2_column_number_density_avk */
-        variable_definition = harp_ingestion_register_variable_full_read
-            (product_definition, "O2_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
-             "averaging kernel matrix for the total O2 vertical column", HARP_UNIT_DIMENSIONLESS, NULL, read_o2_avk);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.COLUMN_ABSORPTION.SOLAR_AVK", NULL);
+            /* O2_column_number_density_avk */
+            variable_definition = harp_ingestion_register_variable_full_read
+                (product_definition, "O2_column_number_density_avk", harp_type_float, 2, dimension_type, NULL,
+                 "averaging kernel matrix for the total O2 vertical column", HARP_UNIT_DIMENSIONLESS, NULL,
+                 read_o2_avk);
+            harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.COLUMN_ABSORPTION.SOLAR_AVK",
+                                                 NULL);
+        }
+        else
+        {
+            /* O2_column_number_density */
+            variable_definition = harp_ingestion_register_variable_full_read
+                (product_definition, "O2_column_number_density", harp_type_float, 1, dimension_type, NULL,
+                 "O2 column density", "molec/cm2", NULL, read_o2_column);
+            harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.COLUMN_ABSORPTION.SOLAR", NULL);
+
+            /* O2_column_number_density_uncertainty */
+            variable_definition = harp_ingestion_register_variable_full_read
+                (product_definition, "O2_column_number_density_uncertainty", harp_type_float, 1, dimension_type, NULL,
+                 "One-sigma precision of the oxygen column density", "molec/cm2", NULL, read_o2_column_uncertainty);
+            harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                                 "/O2.COLUMN_ABSORPTION.SOLAR_UNCERTAINTY.RANDOM.STANDARD", NULL);
+
+            /* O2_column_number_density_apriori */
+            variable_definition = harp_ingestion_register_variable_full_read
+                (product_definition, "O2_column_number_density_apriori", harp_type_float, 1, dimension_type, NULL,
+                 "O2 column density", "molec/cm2", NULL, read_o2_column_apriori);
+            harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/O2.COLUMN_ABSORPTION.SOLAR_APRIORI",
+                                                 NULL);
+        }
 
         /* O2_column_number_density_amf */
         variable_definition = harp_ingestion_register_variable_full_read
@@ -1105,6 +1155,7 @@ int harp_ingestion_module_geoms_tccon_init(void)
 
     init_product_definition(module, 5);
     init_product_definition(module, 6);
+    init_product_definition(module, 7);
 
     return 0;
 }

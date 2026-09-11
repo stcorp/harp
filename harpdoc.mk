@@ -272,6 +272,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/GEOMS-TE-FTIR-003-SF6.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-TCCON-005.html \
 	doc/html/ingestions/GEOMS-TE-FTIR-TCCON-006.html \
+	doc/html/ingestions/GEOMS-TE-FTIR-TCCON-007.html \
 	doc/html/ingestions/GEOMS-TE-LIDAR-H2O-004.html \
 	doc/html/ingestions/GEOMS-TE-LIDAR-H2O-005.html \
 	doc/html/ingestions/GEOMS-TE-LIDAR-O3-003.html \
@@ -1194,6 +1195,8 @@ doc/html/ingestions/GEOMS-TE-FTIR-003-SF6.html:
 doc/html/ingestions/GEOMS-TE-FTIR-TCCON-005.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-FTIR-TCCON-006.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/GEOMS-TE-FTIR-TCCON-007.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/GEOMS-TE-LIDAR-H2O-004.html:
 	$(MAKE) harp_doc

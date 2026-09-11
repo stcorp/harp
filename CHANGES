@@ -1,6 +1,7 @@
 * Fixed wrong temperature unit in GEOMS-TE-SONDE-O3-003 ingestion.
 
 * Updates to product ingestions:
+  - GEOMS TCCON: added support for template V7.
   - S5 L2: update for V5 format (and added ALH, AOD, CLA, FDY, and GLY).
 
 1.30 2026-01-12
