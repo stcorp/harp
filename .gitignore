@@ -21,7 +21,6 @@ stamp-*
 /config.status
 /config.sub
 /configure
-/data
 /definitions/*.codadef
 /depcomp
 /doc/Doxyfile
