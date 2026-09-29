@@ -864,6 +864,14 @@ static int read_cld_viewing_azimuth_angle(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_cld_validity(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "processing_errors", harp_type_int8,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_product_formaldehyde_tropospheric_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1342,7 +1350,7 @@ static int include_no2_total_column_precision(void *user_data)
     return !((ingest_info *)user_data)->use_summed_total_column;
 }
 
-static void register_core_variables(harp_product_definition *product_definition)
+static void register_core_variables(harp_product_definition *product_definition, int include_validity)
 {
     const char *path;
     const char *description;
@@ -1405,12 +1413,15 @@ static void register_core_variables(harp_product_definition *product_definition)
     path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* validity */
-    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1, dimension_type,
-                                                   NULL, description, NULL, NULL, read_qa_value);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+    if (include_validity)
+    {
+        /* validity */
+        description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+        variable_definition =
+            harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                       dimension_type, NULL, description, NULL, NULL, read_qa_value);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
+    }
 }
 
 static void register_alh_product(void)
@@ -1432,7 +1443,7 @@ static void register_alh_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-ALH", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* aerosol_height */
     description = "height at center of aerosol layer";
@@ -1520,7 +1531,7 @@ static void register_aui_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-AUI", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* absorbing_aerosol_index */
     description = "aerosol index";
@@ -1577,7 +1588,7 @@ static void register_cld_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-CLD", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 0);
 
     /* cloud_base_height */
     description = "cloud base height";
@@ -1860,6 +1871,26 @@ static void register_cld_product(void)
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_fraction_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* validity */
+    description = "processing error flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1, dimension_type,
+                                                   NULL, description, NULL, NULL, read_cld_validity);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 }
 
 static void register_fdy_product(void)
@@ -1876,7 +1907,7 @@ static void register_fdy_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-HCH", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* tropospheric_HCHO_column_number_density */
     description = "HCHO tropospheric column density";
@@ -1954,7 +1985,7 @@ static void register_gly_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-CHO", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* tropospheric_C2H2O2_column_number_density */
     description = "troposphere mole content of glyoxal";
@@ -2017,7 +2048,7 @@ static void register_no2_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-NO2", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* NO2_column_number_density */
     description = "mole content of nitrogen dioxide";
@@ -2105,7 +2136,7 @@ static void register_o3_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-OTO", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* O3_column_number_density */
     description = "mole content of ozone";
@@ -2172,7 +2203,7 @@ static void register_o3_tsc_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-OTR", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* pressure_bounds */
     description = "mole content of ozone";
@@ -2222,7 +2253,7 @@ static void register_so2_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-SO2", NULL, read_dimensions);
 
-    register_core_variables(product_definition);
+    register_core_variables(product_definition, 1);
 
     /* SO2_column_number_density */
     description = "sulphur dioxide column density";
