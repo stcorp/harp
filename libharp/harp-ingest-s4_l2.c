@@ -760,6 +760,110 @@ static int read_product_cloud_top_pressure_precision(void *user_data, harp_array
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_surface_altitude(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "surface_altitude", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_surface_altitude_uncertainty(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "surface_altitude_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_surface_pressure(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "surface_pressure", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_snow_ice_type(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "snow_ice_flag", harp_type_int8,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_surface_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->input_data_cursor, "surface_temperature", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cld_surface_albedo(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cld_surface_albedo_uncertainty(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "surface_albedo_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cloud_top_temperature(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_top_temperature", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cloud_type(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_phase", harp_type_int8,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cld_solar_zenith_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "solar_zenith_angle", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cld_solar_azimuth_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "solar_azimuth_angle", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cld_viewing_zenith_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "viewing_zenith_angle", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cld_viewing_azimuth_angle(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->geolocation_cursor, "viewing_azimuth_angle", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
 static int read_product_formaldehyde_tropospheric_column(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1462,6 +1566,8 @@ static void register_cld_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
     const char *band_option_values[1] = { "NIR" };
+    const char *snow_ice_type_values[2] = { "snow_free_land", "snow_ice" };
+    const char *cloud_type_values[3] = { "cloud_free", "water_cloud", "ice_cloud" };
 
     module = harp_ingestion_register_module("S4-L2-CLD", "Sentinel-4", "MTG", "UVN-2-CLD",
                                             "Sentinel-4 L2 Cloud", ingestion_init, ingestion_done);
@@ -1604,6 +1710,155 @@ static void register_cld_product(void)
     path = "/PRODUCT/cloud_top_pressure_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_top_pressure_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_altitude */
+    description = "surface altitude";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL,
+                                                   read_surface_altitude);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_altitude_uncertainty */
+    description = "standard error of surface altitude";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_surface_altitude_uncertainty);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_pressure */
+    description = "surface pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_surface_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* snow_ice_type */
+    description = "surface snow/ice type";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_snow_ice_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, snow_ice_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
+    description = "0: snow_free_land, 1: snow_ice";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, description);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, description);
+
+    /* surface_temperature */
+    description = "surface temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "K", NULL,
+                                                   read_surface_temperature);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cld_surface_albedo);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_albedo_uncertainty */
+    description = "standard error of surface albedo";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cld_surface_albedo_uncertainty);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_top_temperature */
+    description = "cloud top temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_temperature", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "K", NULL,
+                                                   read_cloud_top_temperature);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_type */
+    description = "cloud phase";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_cloud_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, cloud_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
+    description = "0: cloud_free, 1: water_cloud, 2: ice_cloud";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, description);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, description);
+
+    /* solar_zenith_angle */
+    description = "zenith angle of the Sun at the ground pixel location; angle measured away from the vertical";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_cld_solar_zenith_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* solar_azimuth_angle */
+    description = "azimuth angle of the Sun at the ground pixel location; angle measured East-of-North";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_cld_solar_azimuth_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* viewing_zenith_angle */
+    description = "zenith angle of the satellite at the ground pixel location; angle measured away from the vertical";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_cld_viewing_zenith_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* viewing_azimuth_angle */
+    description = "azimuth angle of the satellite at the ground pixel location; angle measured East-of-North";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_cld_viewing_azimuth_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 }
 
