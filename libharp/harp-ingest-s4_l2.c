@@ -563,7 +563,7 @@ static int read_datetime(void *user_data, harp_array data)
 
     for (i = 0; i < info->num_scanlines * info->num_pixels; i++)
     {
-        data.double_data[i] = data.double_data[i] * 0.001 + time_reference;
+        data.double_data[i] = data.double_data[i] + time_reference;
     }
 
     return 0;
@@ -1537,7 +1537,7 @@ static void register_core_variables(harp_product_definition *product_definition,
                                                    dimension_type, NULL, description, "seconds since 2000-01-01",
                                                    NULL, read_datetime);
     path = "/@time_reference_days_since_1950, /PRODUCT/delta_time[]";
-    description = "time reference converted from days since 1950-01-01 to seconds since 2020-01-01 (using 86400 "
+    description = "time reference converted from days since 1950-01-01 to seconds since 2000-01-01 (using 86400 "
         "seconds per day) and delta_time added";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
