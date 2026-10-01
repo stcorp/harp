@@ -886,7 +886,7 @@ static int read_cloud_type(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_cld_solar_zenith_angle(void *user_data, harp_array data)
+static int read_solar_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -894,7 +894,7 @@ static int read_cld_solar_zenith_angle(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_cld_solar_azimuth_angle(void *user_data, harp_array data)
+static int read_solar_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -902,7 +902,7 @@ static int read_cld_solar_azimuth_angle(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_cld_viewing_zenith_angle(void *user_data, harp_array data)
+static int read_viewing_zenith_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -910,7 +910,7 @@ static int read_cld_viewing_zenith_angle(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_cld_viewing_azimuth_angle(void *user_data, harp_array data)
+static int read_viewing_azimuth_angle(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
@@ -1596,6 +1596,53 @@ static void register_core_variables(harp_product_definition *product_definition,
     }
 }
 
+static void register_additional_geolocation_variables(harp_product_definition *product_definition)
+{
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    /* solar_zenith_angle */
+    description = "zenith angle of the Sun at the ground pixel location; angle measured away from the vertical";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_zenith_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]", NULL);
+
+    /* solar_azimuth_angle */
+    description = "azimuth angle of the Sun at the ground pixel location; angle measured clockwise from North";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_solar_azimuth_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]", NULL);
+
+    /* viewing_zenith_angle */
+    description = "zenith angle of the satellite at the ground pixel location; angle measured away from the vertical";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_viewing_zenith_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]", NULL);
+
+    /* viewing_azimuth_angle */
+    description = "azimuth angle of the satellite at the ground pixel location; angle measured clockwise from North";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "degree", NULL,
+                                                   read_viewing_azimuth_angle);
+    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]", NULL);
+}
+
 static void register_alh_product(void)
 {
     const char *path;
@@ -1616,6 +1663,7 @@ static void register_alh_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-ALH", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* aerosol_height */
     description = "height at center of aerosol layer";
@@ -1704,6 +1752,7 @@ static void register_aui_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-AUI", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* absorbing_aerosol_index */
     description = "aerosol index";
@@ -1765,6 +1814,7 @@ static void register_cld_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-CLD", NULL, read_dimensions);
 
     register_core_variables(product_definition, 0);
+    register_additional_geolocation_variables(product_definition);
 
     /* cloud_base_height */
     description = "cloud base height";
@@ -2024,54 +2074,6 @@ static void register_cld_product(void)
     path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, description);
 
-    /* solar_zenith_angle */
-    description = "zenith angle of the Sun at the ground pixel location; angle measured away from the vertical";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_zenith_angle", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_cld_solar_zenith_angle);
-    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
-    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* solar_azimuth_angle */
-    description = "azimuth angle of the Sun at the ground pixel location; angle measured clockwise from North";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "solar_azimuth_angle", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_cld_solar_azimuth_angle);
-    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
-    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* viewing_zenith_angle */
-    description = "zenith angle of the satellite at the ground pixel location; angle measured away from the vertical";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_zenith_angle", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_cld_viewing_zenith_angle);
-    harp_variable_definition_set_valid_range_float(variable_definition, 0.0f, 180.0f);
-    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* viewing_azimuth_angle */
-    description = "azimuth angle of the satellite at the ground pixel location; angle measured clockwise from North";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "viewing_azimuth_angle", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "degree", NULL,
-                                                   read_cld_viewing_azimuth_angle);
-    harp_variable_definition_set_valid_range_float(variable_definition, -180.0f, 180.0f);
-    path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
     /* cloud_fraction_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
     variable_definition =
@@ -2215,7 +2217,7 @@ static void register_cld_product(void)
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
     /* ice_particle_top_pressure */
-    description = "FCS-OCA ice cloud top pressure";
+    description = "ice cloud top pressure";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "ice_particle_top_pressure", harp_type_float,
                                                    1, dimension_type, NULL, description, "Pa", NULL,
@@ -2263,6 +2265,7 @@ static void register_fdy_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-HCH", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* tropospheric_HCHO_column_number_density */
     description = "HCHO tropospheric column density";
@@ -2341,6 +2344,7 @@ static void register_gly_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-CHO", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* tropospheric_C2H2O2_column_number_density */
     description = "troposphere mole content of glyoxal";
@@ -2404,6 +2408,7 @@ static void register_no2_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-NO2", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* NO2_column_number_density */
     description = "mole content of nitrogen dioxide";
@@ -2492,6 +2497,7 @@ static void register_o3_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-OTO", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* O3_column_number_density */
     description = "mole content of ozone";
@@ -2559,6 +2565,7 @@ static void register_o3_tsc_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-OTR", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* pressure_bounds */
     description = "mole content of ozone";
@@ -2609,6 +2616,7 @@ static void register_so2_product(void)
     product_definition = harp_ingestion_register_product(module, "S4-L2-SO2", NULL, read_dimensions);
 
     register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
 
     /* SO2_column_number_density */
     description = "sulphur dioxide column density";
