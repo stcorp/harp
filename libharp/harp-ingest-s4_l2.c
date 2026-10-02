@@ -540,6 +540,16 @@ static int read_dataset(coda_cursor cursor, const char *dataset_name, harp_data_
     return 0;
 }
 
+static int read_scan_subindex(void *user_data, long index, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    index = index - (index / info->num_pixels) * info->num_pixels;
+    *data.int16_data = (int16_t)index;
+
+    return 0;
+}
+
 static int read_datetime(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1688,6 +1698,17 @@ static void register_core_variables(harp_product_definition *product_definition,
     harp_dimension_type dimension_type[2] = { harp_dimension_time, harp_dimension_independent };
     long bounds_dimension[2] = { -1, 4 };
 
+    /* scan_subindex */
+    description = "pixel index (0-based) within the scanline";
+    variable_definition =
+        harp_ingestion_register_variable_block_read(product_definition, "scan_subindex", harp_type_int16, 1,
+                                                    dimension_type, NULL, description, NULL, NULL,
+                                                    read_scan_subindex);
+    description =
+        "the scanline and ground_pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
+        "scanline is computed as the index on the temporal dimension modulo the number of pixels per scanline";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+
     /* datetime */
     description = "time of the measurement";
     variable_definition =
@@ -1877,7 +1898,7 @@ static void register_alh_product(void)
     description = "0: snow_free_land, 1: snow_ice";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* cloud_fraction */
+    /* cloud_fraction; source: CLD */
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
@@ -2583,7 +2604,7 @@ static void register_fdy_product(void)
     description = "0: snow_free_land, 1: snow_ice";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* cloud_fraction */
+    /* cloud_fraction; source: CLD */
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
@@ -2755,7 +2776,7 @@ static void register_gly_product(void)
     description = "0: snow_free_land, 1: snow_ice";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* cloud_fraction */
+    /* cloud_fraction; source: CLD */
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
@@ -2903,7 +2924,7 @@ static void register_no2_product(void)
     description = "0: snow_free_land, 1: snow_ice";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* cloud_fraction */
+    /* cloud_fraction; source: CLD */
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
@@ -3076,7 +3097,7 @@ static void register_o3_product(void)
     description = "0: snow_free_land, 1: snow_ice";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* cloud_fraction */
+    /* cloud_fraction; source: CLD */
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
@@ -3349,7 +3370,7 @@ static void register_so2_product(void)
     description = "0: snow_free_land, 1: snow_ice";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
-    /* cloud_fraction */
+    /* cloud_fraction; source: CLD */
     description = "cloud fraction";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
