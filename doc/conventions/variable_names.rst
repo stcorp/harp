@@ -52,6 +52,7 @@ column_density                                 stratospheric,  amf, apriori,   X
 column_number_density                          stratospheric,  amf, apriori,   X       X    X             [molec/m2]
                                                tropospheric    avk, dfs, sic
 count                                                                                                                          number of samples per bin for binning/averaging
+cycle_index                                                                                                                    cycle number for cyclic repeating measurements
 datetime                                                                                                  [s since 2000-01-01]
 datetime_bounds                                                                                           [s since 2000-01-01]
 datetime_length                                                                                           [s]
