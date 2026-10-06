@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="EPS_SG" last-modified="2025-05-22">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="EPS_SG" last-modified="2026-10-05">
   <cd:Description>>EUMETSAT Polar System Second Generation atmospheric products (Sentinel-5 and IASI-NG)</cd:Description>
   <cd:ProductType name="IAS_02_CO_">
     <cd:Description>IASI L2 Carbon Monoxide</cd:Description>
     <cd:ProductDefinition id="IAS_02_CO_" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-CO_"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-CO_", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -16,8 +16,8 @@
     <cd:ProductDefinition id="IAS_02_NAC" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-NAC"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-NAC", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -26,8 +26,8 @@
     <cd:ProductDefinition id="IAS_02_O3_" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-O3_"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-O3_", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -36,8 +36,8 @@
     <cd:ProductDefinition id="IAS_02_SO2" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-SO2"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-SO2", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -46,8 +46,8 @@
     <cd:ProductDefinition id="IAS_02_CLD" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-CLD"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-CLD", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -56,8 +56,8 @@
     <cd:ProductDefinition id="IAS_02_GHG" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-GHG"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-GHG", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -66,8 +66,8 @@
     <cd:ProductDefinition id="IAS_02_SFC" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-SFC"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-SFC", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -76,8 +76,8 @@
     <cd:ProductDefinition id="IAS_02_TWV" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="IAS-02-TWV"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"IAS-02-TWV", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -86,8 +86,8 @@
     <cd:ProductDefinition id="NAV_00_SRC" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="NAV-00-SRC"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"NAV-00-SRC", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -96,8 +96,8 @@
     <cd:ProductDefinition id="SN5_00_SMP" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-00-SMP"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-00-SMP", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -106,8 +106,8 @@
     <cd:ProductDefinition id="SN5_00_SRC" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-00-SRC"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-00-SRC", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -116,8 +116,8 @@
     <cd:ProductDefinition id="SN5_1B_UVR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-UVR"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-1B-UVR", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -126,8 +126,8 @@
     <cd:ProductDefinition id="SN5_1B_NIR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-NIR"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-1B-NIR", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -136,8 +136,8 @@
     <cd:ProductDefinition id="SN5_1B_SWR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-SWR"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-1B-SWR", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -146,8 +146,8 @@
     <cd:ProductDefinition id="SN5_1B_IRR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-1B-IRR"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-1B-IRR", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -156,8 +156,8 @@
     <cd:ProductDefinition id="SN5_02_FDY" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-FDY"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-FDY", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -166,8 +166,8 @@
     <cd:ProductDefinition id="SN5_02_GLY" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-GLY"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-GLY", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -176,8 +176,8 @@
     <cd:ProductDefinition id="SN5_02_SO2" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-SO2"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-SO2", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -186,8 +186,8 @@
     <cd:ProductDefinition id="SN5_02_NO2" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-NO2"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-NO2", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -196,8 +196,8 @@
     <cd:ProductDefinition id="SN5_02_O3_" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-O3_"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-O3_", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -206,8 +206,8 @@
     <cd:ProductDefinition id="SN5_02_O3P" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-O3P"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-O3P", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -216,8 +216,8 @@
     <cd:ProductDefinition id="SN5_02_AOD" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-AOD"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-AOD", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -226,8 +226,8 @@
     <cd:ProductDefinition id="SN5_02_AUI" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-AUI"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-AUI", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -236,8 +236,8 @@
     <cd:ProductDefinition id="SN5_02_ALH" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-ALH"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-ALH", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -246,8 +246,8 @@
     <cd:ProductDefinition id="SN5_02_CLD" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CLD"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-CLD", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -256,8 +256,8 @@
     <cd:ProductDefinition id="SN5_02_RFL" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-RFL"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-RFL", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -266,8 +266,8 @@
     <cd:ProductDefinition id="SN5_02_UV_" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-UV_"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-UV_", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -276,8 +276,8 @@
     <cd:ProductDefinition id="SN5_02_CH4" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CH4"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-CH4", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -286,8 +286,8 @@
     <cd:ProductDefinition id="SN5_02_CO_" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CO_"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-CO_", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -296,8 +296,8 @@
     <cd:ProductDefinition id="SN5_02_HET" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-HET"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-HET", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -306,8 +306,8 @@
     <cd:ProductDefinition id="SN5_02_CLA" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,30,filename())=="W_XX-EUMETSAT-Darmstadt,SAT,SG"</cd:MatchExpression>
-        <cd:MatchExpression>substr(33,10,filename())=="SN5-02-CLA"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SAT,SG[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"SN5-02-CLA", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
