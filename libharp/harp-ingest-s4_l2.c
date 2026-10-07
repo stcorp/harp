@@ -1329,8 +1329,7 @@ static int read_so2_surface_albedo(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
     const char *name = info->use_so2_surface_albedo_376 ? "surface_albedo_376" : "surface_albedo_328";
 
-    return read_dataset(info->input_data_cursor, name, harp_type_float,
-                        info->num_scanlines * info->num_pixels, data);
+    return read_dataset(info->input_data_cursor, name, harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_aui_aerosol_index(void *user_data, harp_array data)
@@ -1778,8 +1777,7 @@ static void register_core_variables(harp_product_definition *product_definition,
     description = "pixel index (0-based) within the scanline";
     variable_definition =
         harp_ingestion_register_variable_block_read(product_definition, "scan_subindex", harp_type_int16, 1,
-                                                    dimension_type, NULL, description, NULL, NULL,
-                                                    read_scan_subindex);
+                                                    dimension_type, NULL, description, NULL, NULL, read_scan_subindex);
     description =
         "the scanline and ground_pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
         "scanline is computed as the index on the temporal dimension modulo the number of pixels per scanline";
@@ -1918,8 +1916,7 @@ static void register_surface_variables(harp_product_definition *product_definiti
     description = "surface altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL,
-                                                   read_surface_altitude);
+                                                   dimension_type, NULL, description, "m", NULL, read_surface_altitude);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -1997,8 +1994,7 @@ static void register_alh_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_fraction_precision);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2378,8 +2374,7 @@ static void register_cld_product(void)
     description = "surface altitude";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL,
-                                                   read_surface_altitude);
+                                                   dimension_type, NULL, description, "m", NULL, read_surface_altitude);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
@@ -2509,8 +2504,7 @@ static void register_cld_product(void)
     description = "atmospheric height at the level of cloud using the ROCINN CRB model";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_height_crb", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL,
-                                                   read_cloud_height_crb);
+                                                   dimension_type, NULL, description, "m", NULL, read_cloud_height_crb);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]";
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]";
@@ -2554,8 +2548,7 @@ static void register_cld_product(void)
         "quality data)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity_crb", harp_type_int8,
-                                                   1, dimension_type, NULL, description, NULL, NULL,
-                                                   read_qa_value_crb);
+                                                   1, dimension_type, NULL, description, NULL, NULL, read_qa_value_crb);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]";
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]";
@@ -2791,8 +2784,7 @@ static void register_fdy_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_fraction_precision);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -2963,8 +2955,7 @@ static void register_gly_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_fraction_precision);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -3111,8 +3102,7 @@ static void register_no2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_fraction_precision);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -3284,8 +3274,7 @@ static void register_o3_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_fraction_precision);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
@@ -3557,8 +3546,7 @@ static void register_so2_product(void)
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_input_cloud_fraction_precision);
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_input_cloud_fraction_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 

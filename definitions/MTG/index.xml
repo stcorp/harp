@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
-<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="MTG" last-modified="2026-01-09">
+<cd:ProductClass xmlns:cd="http://www.stcorp.nl/coda/definition/2008/07" name="MTG" last-modified="2026-10-06">
   <cd:Description>>EUMETSAT Meteosat Third Generation (MTG) atmospheric products (Sentinel-4)</cd:Description>
   <cd:ProductType name="UVN-1B-EARTH-NIR">
     <cd:Description>Sentinel-4 Level 1 NIR radiance</cd:Description>
     <cd:ProductDefinition id="UVN_1B_EARTH_NIR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,16,filename())=="UVN-1B-EARTH-NIR"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-1B-EARTH-NIR", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -17,9 +16,8 @@
     <cd:ProductDefinition id="UVN_1B_EARTH_UVVIS" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,18,filename())=="UVN-1B-EARTH-UVVIS"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-1B-EARTH-UVVIS", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -28,9 +26,8 @@
     <cd:ProductDefinition id="UVN_1B_IRR" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,10,filename())=="UVN-1B-IRR"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-1B-IRR", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -39,9 +36,8 @@
     <cd:ProductDefinition id="UVN_2_ALH" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-ALH"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-ALH", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -50,9 +46,8 @@
     <cd:ProductDefinition id="UVN_2_AUI" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-AUI"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-AUI", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -61,9 +56,8 @@
     <cd:ProductDefinition id="UVN_2_CLD" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-CLD"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-CLD", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -72,9 +66,8 @@
     <cd:ProductDefinition id="UVN_2_FCS_CMA" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,13,filename())=="UVN-2-FCS-CMA"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-FCS-CMA", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -83,9 +76,8 @@
     <cd:ProductDefinition id="UVN_2_FCS_HET" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,13,filename())=="UVN-2-FCS-HET"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-FCS-HET", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -94,9 +86,8 @@
     <cd:ProductDefinition id="UVN_2_FCS_OCA" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,13,filename())=="UVN-2-FCS-OCA"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-FCS-OCA", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -105,9 +96,8 @@
     <cd:ProductDefinition id="UVN_2_FDY" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-FDY"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-FDY", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -116,9 +106,8 @@
     <cd:ProductDefinition id="UVN_2_GLY" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-GLY"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-GLY", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -127,9 +116,8 @@
     <cd:ProductDefinition id="UVN_2_NO2" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-NO2"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-NO2", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -138,9 +126,8 @@
     <cd:ProductDefinition id="UVN_2_O3" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,10,filename())=="UVN-2-O3--"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-O3--", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -149,9 +136,8 @@
     <cd:ProductDefinition id="UVN_2_O3_TSC" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,12,filename())=="UVN-2-O3-TSC"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-O3-TSC", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -160,9 +146,8 @@
     <cd:ProductDefinition id="UVN_2_RI_ECA" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,12,filename())=="UVN-2-RI-ECA"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-RI-ECA", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
@@ -171,9 +156,8 @@
     <cd:ProductDefinition id="UVN_2_SO2" format="hdf5" version="0">
       <cd:Description>The format definition for this product is taken from the netCDF4 file itself.</cd:Description>
       <cd:DetectionRule>
-        <cd:MatchExpression>substr(0,4,filename())=="W_XX"</cd:MatchExpression>
-        <cd:MatchExpression>substr(24,7,filename())=="SND+SAT"</cd:MatchExpression>
-        <cd:MatchExpression>substr(37,9,filename())=="UVN-2-SO2"</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"^W_[^\/]*,SND\+SAT,MTS[^\/]*\.nc$", filename())</cd:MatchExpression>
+        <cd:MatchExpression>regex(r"UVN-2-SO2", filename())</cd:MatchExpression>
       </cd:DetectionRule>
     </cd:ProductDefinition>
   </cd:ProductType>
