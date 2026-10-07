@@ -240,6 +240,10 @@
 <td><p>735</p></td>
 <td><p>whether to ingest the SIF retrieved at 743nm (default) or at 735nm (sif=735)</p></td>
 </tr>
+<tr class="row-odd"><td><p>corrected</p></td>
+<td><p>true</p></td>
+<td><p>whether to ingest the uncorrected SIF data (default) or the SIF data corrected by means of the day-length scaling factor (corrected=true)</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -332,18 +336,30 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_L2[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>solar_induced_fluorescence</strong></p></td>
+<tr class="row-odd"><td rowspan="8"><p><strong>solar_induced_fluorescence</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>sif unset</p></td>
+<td><p>sif unset and corrected unset</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SIF_743</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>sif=735</p></td>
+<td><p>sif unset and corrected=true</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SIF_Corr_743</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>sif=735 and corrected unset</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SIF_735</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>sif=735 and corrected=true</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SIF_Corr_735</strong></p></td>
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>solar_induced_fluorescence_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>

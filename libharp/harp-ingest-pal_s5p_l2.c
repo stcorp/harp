@@ -90,6 +90,7 @@ typedef struct ingest_info_struct
 
     int so2_column_type;        /* 0: total (tm5 profile), 1: 1km box profile, 2: 7km box profile, 3: 15km box profile */
     int use_sif_735;    /* 0: sif_743 (default), 1: sif_735 */
+    int use_sif_corrected;      /* 0: uncorrected (default), 1: corrected using the day-length scaling factor */
     int use_radiance_cloud_fraction;
     int use_custom_qa_filter;
 
@@ -644,6 +645,7 @@ static int ingestion_init(const harp_ingestion_module *module,
     info->product = product;
     info->so2_column_type = 0;
     info->use_sif_735 = 0;
+    info->use_sif_corrected = 0;
     info->use_radiance_cloud_fraction = 0;
     info->use_custom_qa_filter = 0;
     info->num_times = 0;
@@ -667,6 +669,10 @@ static int ingestion_init(const harp_ingestion_module *module,
     if (harp_ingestion_options_has_option(options, "735"))
     {
         info->use_sif_735 = 1;
+    }
+    if (harp_ingestion_options_has_option(options, "corrected"))
+    {
+        info->use_sif_corrected = 1;
     }
 
     if (harp_ingestion_options_has_option(options, "cloud_fraction"))
@@ -1906,14 +1912,32 @@ static int read_kd_qa_value(void *user_data, harp_array data)
 static int read_sif(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+    const char *variable_name;
 
     if (info->use_sif_735)
     {
-        return read_dataset(info->product_cursor, "SIF_735", harp_type_float, info->num_scanlines * info->num_pixels,
-                            data);
+        if (info->use_sif_corrected)
+        {
+            variable_name = "SIF_Corr_735";
+        }
+        else
+        {
+            variable_name = "SIF_735";
+        }
+    }
+    else
+    {
+        if (info->use_sif_corrected)
+        {
+            variable_name = "SIF_Corr_743";
+        }
+        else
+        {
+            variable_name = "SIF_743";
+        }
     }
 
-    return read_dataset(info->product_cursor, "SIF_743", harp_type_float, info->num_scanlines * info->num_pixels, data);
+    return read_dataset(info->product_cursor, variable_name, harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
 static int read_sif_error(void *user_data, harp_array data)
@@ -3517,6 +3541,7 @@ static void register_oclo_product(void)
 static void register_sif_product(void)
 {
     const char *sif_options[] = { "735" };
+    const char *corrected_options[] = { "true" };
     harp_ingestion_module *module;
     harp_product_definition *product_definition;
     const char *path;
@@ -3530,6 +3555,9 @@ static void register_sif_product(void)
 
     harp_ingestion_register_option(module, "sif", "whether to ingest the SIF retrieved at 743nm (default) or at "
                                    "735nm (sif=735)", 1, sif_options);
+    harp_ingestion_register_option(module, "corrected", "whether to ingest the uncorrected SIF data (default) or the "
+                                   "SIF data corrected by means of the day-length scaling factor (corrected=true)", 1,
+                                   corrected_options);
     product_definition = harp_ingestion_register_product(module, "S5P_PAL_L2_SIF", NULL, read_dimensions);
 
     register_common_variables(product_definition, 1);
@@ -3549,9 +3577,13 @@ static void register_sif_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "solar_induced_fluorescence", harp_type_float, 1,
                                                    dimension_type, NULL, description, "mW/m2/sr/nm", NULL, read_sif);
     path = "/PRODUCT/SIF_743";
-    harp_variable_definition_add_mapping(variable_definition, "sif unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "sif unset and corrected unset", NULL, path, NULL);
+    path = "/PRODUCT/SIF_Corr_743";
+    harp_variable_definition_add_mapping(variable_definition, "sif unset and corrected=true", NULL, path, NULL);
     path = "/PRODUCT/SIF_735";
-    harp_variable_definition_add_mapping(variable_definition, "sif=735", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "sif=735 and corrected unset", NULL, path, NULL);
+    path = "/PRODUCT/SIF_Corr_735";
+    harp_variable_definition_add_mapping(variable_definition, "sif=735 and corrected=true", NULL, path, NULL);
 
     /* solar_induced_fluorescence_uncertainty */
     description = "retrieved SIF";
