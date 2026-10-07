@@ -624,6 +624,32 @@ static int read_datetime_length(void *user_data, harp_array data)
     return 0;
 }
 
+static int read_cycle_index(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    coda_cursor cursor = info->product_cursor;
+    char string_value[16];
+
+    if (coda_cursor_goto(&cursor, "/@repeat_cycle_in_day[0]") != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (coda_cursor_read_string(&cursor, string_value, 16) != 0)
+    {
+        harp_set_error(HARP_ERROR_CODA, NULL);
+        return -1;
+    }
+    if (sscanf(string_value, "%d", data.int32_data) != 1)
+    {
+        harp_set_error(HARP_ERROR_INGESTION, "could not extract value from repeat_cycle_in_day attribute ('%s')",
+                       string_value);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int read_latitude(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1758,6 +1784,15 @@ static void register_core_variables(harp_product_definition *product_definition,
         "the scanline and ground_pixel dimensions are collapsed into a temporal dimension; the index of the pixel within the "
         "scanline is computed as the index on the temporal dimension modulo the number of pixels per scanline";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, NULL, description);
+
+    /* cycle_index */
+    description = "repeat cycle number within the day";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cycle_index", harp_type_int32, 0, NULL,
+                                                   NULL, description, NULL, NULL, read_cycle_index);
+    path = "/@repeat_cycle_in_day[0]";
+    description = "parsed from the string attribute repeat_cycle_in_day";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* datetime */
     description = "time of the measurement";
