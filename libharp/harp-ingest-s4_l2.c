@@ -45,6 +45,7 @@ typedef enum s4_product_type_enum
     s4_type_alh,
     s4_type_aui,
     s4_type_cld,
+    s4_type_fcs_cma,
     s4_type_fdy,
     s4_type_gly,
     s4_type_no2,
@@ -99,6 +100,8 @@ static const char *get_product_type_name(s4_product_type product_type)
             return "UVN-2-AUI";
         case s4_type_cld:
             return "UVN-2-CLD";
+        case s4_type_fcs_cma:
+            return "UVN-2-FCS-CMA";
         case s4_type_fdy:
             return "UVN-2-FDY";
         case s4_type_gly:
@@ -941,7 +944,6 @@ static int read_cld_validity(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-
 static int read_cloud_height_crb(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1105,6 +1107,11 @@ static int read_product_glyoxal_tropospheric_column_trueness(void *user_data, ha
 
     return read_dataset(info->product_cursor, "glyoxal_tropospheric_column_trueness", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int include_no2_total_column_precision(void *user_data)
+{
+    return !((ingest_info *)user_data)->use_summed_total_column;
 }
 
 static int read_product_nitrogen_dioxide_doas_total_column_precision(void *user_data, harp_array data)
@@ -1685,9 +1692,52 @@ static int read_so2_total_air_mass_factor_trueness(void *user_data, harp_array d
     exit(1);
 }
 
-static int include_no2_total_column_precision(void *user_data)
+static int read_fcs_cma_cloud_free_fraction(void *user_data, harp_array data)
 {
-    return !((ingest_info *)user_data)->use_summed_total_column;
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cma_cloud_free_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_fcs_cma_cloud_contaminated_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cma_cloud_contaminated_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_fcs_cma_cloud_filled_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cma_cloud_filled_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_fcs_cma_desert_dust_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cma_desert_dust_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_fcs_cma_snow_ice_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cma_snow_ice_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_fcs_cma_volcanic_ash_fraction(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->product_cursor, "cma_volcanic_ash_psf_mean", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
 }
 
 static void register_core_variables(harp_product_definition *product_definition, int include_validity)
@@ -2573,6 +2623,94 @@ static void register_cld_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_ctp_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_ctp_psf[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+}
+
+static void register_fcs_cma_product(void)
+{
+    const char *path;
+    const char *description;
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    const char *band_option_values[1] = { "NIR" };
+
+    module = harp_ingestion_register_module("S4-L2-FCS-CMA", "Sentinel-4", "MTG", "UVN-2-FCS-CMA",
+                                            "Sentinel-4 Cloud Mask", ingestion_init, ingestion_done);
+
+    description = "ingest the cloud mask in the UV/VIS (default) or NIR (band=NIR)";
+    harp_ingestion_register_option(module, "band", description, 1, band_option_values);
+
+    product_definition = harp_ingestion_register_product(module, "S4-L2-FCS-CMA", NULL, read_dimensions);
+
+    register_core_variables(product_definition, 1);
+    register_additional_geolocation_variables(product_definition);
+
+    /* cloud_free_fraction */
+    description = "fraction of pixels classified as cloud free";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_free_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_fcs_cma_cloud_free_fraction);
+    path = "/PRODUCT/cma_cloud_free_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/cma_cloud_free_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_contaminated_fraction */
+    description = "fraction of pixels classified as cloud contaminated";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_contaminated_fraction", harp_type_float,
+                                                   1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_fcs_cma_cloud_contaminated_fraction);
+    path = "/PRODUCT/cma_cloud_contaminated_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/cma_cloud_contaminated_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_filled_fraction */
+    description = "fraction of pixels classified as cloud filled";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_filled_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_fcs_cma_cloud_filled_fraction);
+    path = "/PRODUCT/cma_cloud_filled_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/cma_cloud_filled_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* desert_dust_fraction */
+    description = "fraction of pixels classified as desert dust";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "desert_dust_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_fcs_cma_desert_dust_fraction);
+    path = "/PRODUCT/cma_desert_dust_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/cma_desert_dust_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* snow_ice_fraction */
+    description = "fraction of pixels classified as snow or ice";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "snow_ice_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_fcs_cma_snow_ice_fraction);
+    path = "/PRODUCT/cma_snow_ice_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/cma_snow_ice_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* volcanic_ash_fraction */
+    description = "fraction of pixels classified as volcanic ash";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "volcanic_ash_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_fcs_cma_volcanic_ash_fraction);
+    path = "/PRODUCT/cma_volcanic_ash_psf_mean[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/cma_volcanic_ash_psf_mean[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 }
 
@@ -3554,6 +3692,7 @@ int harp_ingestion_module_s4_l2_init(void)
     register_alh_product();
     register_aui_product();
     register_cld_product();
+    register_fcs_cma_product();
     register_fdy_product();
     register_gly_product();
     register_no2_product();
