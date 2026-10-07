@@ -335,21 +335,33 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/ozone_upper_tropospheric_mixing_ratio_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="5"><p><strong>tropospheric_O3_column_volume_mixing_ratio_dry_air_validity</strong></p></td>
+<tr class="row-even"><td rowspan="9"><p><strong>tropospheric_O3_column_volume_mixing_ratio_dry_air_validity</strong></p></td>
 <td><p><em>available</em></p></td>
 <td><p>optional</p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>(o3=ccd or o3 unset) and processor version &gt;= 01.00.00</p></td>
+<td><p>(o3=ccd or o3 unset) and processor version &gt;= 01.00.00 and processor version &lt; 03.00.00</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>o3=csa</p></td>
+<td><p>(o3=ccd or o3 unset) and processor version &gt;= 03.00.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/qa_value_ccd[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>o3=csa and processor version &lt; 03.00.00</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/ozone_upper_tropospheric_mixing_ratio_flag[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>o3=csa and processor version &gt;= 03.00.00</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/qa_value_csa[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td rowspan="3"><p><strong>tropospheric_O3_column_volume_mixing_ratio_dry_air_count</strong></p></td>
 <td><p><em>available</em></p></td>
