@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>S4-L2-CHO &mdash; HARP 1.29 documentation</title>
+  <title>S4-L2-FCS-CMA &mdash; HARP 1.29 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
@@ -66,7 +66,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">S4-L2-CHO</li>
+      <li class="breadcrumb-item active">S4-L2-FCS-CMA</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -75,11 +75,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="s4-l2-cho">
-<h1>S4-L2-CHO</h1>
+  <section id="s4-l2-fcs-cma">
+<h1>S4-L2-FCS-CMA</h1>
 <section id="variables">
 <h2>Variables</h2>
-<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">S4-L2-CHO</span></code> data.</p>
+<p>The table below lists the variables that are present in the HARP product that results from an ingestion of <code class="docutils literal notranslate"><span class="pre">S4-L2-FCS-CMA</span></code> data.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25.0%" />
@@ -175,113 +175,70 @@
 <td><p>[degree]</p></td>
 <td><p>azimuth angle of the satellite at the ground pixel location; angle measured clockwise from North</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_altitude</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>surface altitude</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>standard error of surface altitude</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>surface_pressure</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[Pa]</p></td>
-<td><p>surface pressure</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_type</strong></p></td>
-<td><p>int32</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td></td>
-<td><p>surface type classification</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
-<td><p>int8</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td></td>
-<td><p>surface snow/ice type; enumeration values: snow_free_land (0), snow_ice (1)</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_free_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>cloud fraction</p></td>
+<td><p>fraction of pixels classified as cloud free</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_contaminated_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>standard error of cloud fraction</p></td>
+<td><p>fraction of pixels classified as cloud contaminated</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[Pa]</p></td>
-<td><p>cloud top pressure</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[Pa]</p></td>
-<td><p>standard error of cloud top pressure</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>cloud height</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>cloud_height_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>standard error of cloud height</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_filled_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>cloud albedo</p></td>
+<td><p>fraction of pixels classified as cloud filled</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>desert_dust_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>standard error of cloud albedo</p></td>
+<td><p>fraction of pixels classified as desert dust</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_C2H2O2_column_number_density</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[mol/m2]</p></td>
-<td><p>troposphere mole content of glyoxal</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>tropospheric_C2H2O2_column_number_density_uncertainty_random</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[mol/m2]</p></td>
-<td><p>random error of troposphere mole content of glyoxal</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>tropospheric_C2H2O2_column_number_density_uncertainty_systematic</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[mol/m2]</p></td>
-<td><p>systematic error of troposphere mole content of glyoxal</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>tropospheric_C2H2O2_column_number_density_amf</strong></p></td>
+<tr class="row-odd"><td><p><strong>snow_ice_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
-<td><p>tropospheric air mass factor</p></td>
+<td><p>fraction of pixels classified as snow or ice</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>volcanic_ash_fraction</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>fraction of pixels classified as volcanic ash</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>zero-based index of the sample within the source product</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ingestion-options">
+<h2>Ingestion options</h2>
+<p>The table below lists the available ingestion options for <code class="docutils literal notranslate"><span class="pre">S4-L2-FCS-CMA</span></code> products.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>option name</p></th>
+<th class="head"><p>legal values</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>band</p></td>
+<td><p>NIR</p></td>
+<td><p>ingest the cloud mask in the UV/VIS (default) or NIR (band=NIR)</p></td>
 </tr>
 </tbody>
 </table>
@@ -357,76 +314,83 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>cloud_free_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_altitude_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/cma_cloud_free_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_pressure</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_type</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_classification[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/cma_cloud_free_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><strong>snow_ice_type</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>cloud_contaminated_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>description</em></p></td>
-<td><p>0: snow_free_land, 1: snow_ice</p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/cma_cloud_contaminated_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction[]</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/cma_cloud_contaminated_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>cloud_filled_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_precision[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/cma_cloud_filled_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height[]</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_height_precision[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/cma_cloud_filled_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo[]</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>desert_dust_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_albedo_precision[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/cma_desert_dust_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_C2H2O2_column_number_density</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/glyoxal_tropospheric_column[]</strong></p></td>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_C2H2O2_column_number_density_uncertainty_random</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/glyoxal_tropospheric_column_precision[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/cma_desert_dust_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>tropospheric_C2H2O2_column_number_density_uncertainty_systematic</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/glyoxal_tropospheric_column_trueness[]</strong></p></td>
+<tr class="row-even"><td rowspan="4"><p><strong>snow_ice_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>tropospheric_C2H2O2_column_number_density_amf</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_tropospheric_column_air_mass_factor[]</strong></p></td>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/cma_snow_ice_psf_mean[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/cma_snow_ice_psf_mean[]</strong></p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><p><strong>volcanic_ash_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/cma_volcanic_ash_psf_mean[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/cma_volcanic_ash_psf_mean[]</strong></p></td>
 </tr>
 </tbody>
 </table>
