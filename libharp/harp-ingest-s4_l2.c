@@ -921,15 +921,13 @@ static int read_pressure_bounds(void *user_data, harp_array data)
         return -1;
     }
 
-    if (read_dataset(info->input_data_cursor, "constant_a_interface", harp_type_float, num_layers + 1,
-                     coef_a) != 0)
+    if (read_dataset(info->input_data_cursor, "constant_a_interface", harp_type_float, num_layers + 1, coef_a) != 0)
     {
         free(coef_b.ptr);
         free(coef_a.ptr);
         return -1;
     }
-    if (read_dataset(info->input_data_cursor, "constant_b_interface", harp_type_float, num_layers + 1,
-                     coef_b) != 0)
+    if (read_dataset(info->input_data_cursor, "constant_b_interface", harp_type_float, num_layers + 1, coef_b) != 0)
     {
         free(coef_b.ptr);
         free(coef_a.ptr);
@@ -3135,7 +3133,8 @@ static void register_fdy_product(void)
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_HCHO_column_number_density_avk", harp_type_float, 2,
                                                    profile_dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
-                                                   NULL, read_results_formaldehyde_tropospheric_column_averaging_kernel);
+                                                   NULL,
+                                                   read_results_formaldehyde_tropospheric_column_averaging_kernel);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
@@ -3787,7 +3786,7 @@ static void register_so2_product(void)
 
     register_core_variables(product_definition, 1);
     register_additional_geolocation_variables(product_definition);
-    register_surface_variables(product_definition);  
+    register_surface_variables(product_definition);
     register_pressure_bounds_variable(product_definition);
 
     /* snow_ice_type */

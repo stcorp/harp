@@ -199,71 +199,83 @@
 <td></td>
 <td><p>surface type classification</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>snow_ice_type</strong></p></td>
+<tr class="row-odd"><td><p><strong>pressure_bounds</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>, 2}</p></td>
+<td><p>[Pa]</p></td>
+<td><p>pressure boundaries per profile layer</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>snow_ice_type</strong></p></td>
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>surface snow/ice type; enumeration values: snow_free_land (0), snow_ice (1)</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_fraction</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_fraction</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud fraction</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_fraction_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>standard error of cloud fraction</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_top_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>cloud top pressure</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>standard error of cloud top pressure</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_height</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>cloud height</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_height_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_height_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[m]</p></td>
 <td><p>standard error of cloud height</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_albedo</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>cloud albedo</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_albedo_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>standard error of cloud albedo</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>NO2_column_number_density</strong></p></td>
+<tr class="row-odd"><td><p><strong>NO2_column_number_density</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m2]</p></td>
 <td><p>mole content of nitrogen dioxide</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>NO2_column_number_density_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[mol/m2]</p></td>
 <td><p>standard error of  mole content of nitrogen dioxide</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>NO2_column_number_density_avk</strong></p></td>
+<td><p>float</p></td>
+<td><p>{<em>time</em>, <em>vertical</em>}</p></td>
+<td><p>[]</p></td>
+<td><p>averaging kernel for the mole content of nitrogen dioxide</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>stratospheric_NO2_column_number_density</strong></p></td>
 <td><p>float</p></td>
@@ -414,6 +426,13 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_classification[]</strong></p></td>
 </tr>
+<tr class="row-even"><td rowspan="2"><p><strong>pressure_bounds</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/constant_a_interface[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/constant_b_interface[], /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>description</em></p></td>
+<td><p>pressure bounds for layer k are derived as: (constant_a_interface[k] + constant_b_interface[k] * surface_pressure, constant_a_interface[k+1] + constant_b_interface[k+1] * surface_pressure)</p></td>
+</tr>
 <tr class="row-even"><td rowspan="2"><p><strong>snow_ice_type</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
@@ -475,6 +494,13 @@
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/nitrogen_dioxide_doas_total_column_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p><strong>NO2_column_number_density_avk</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><em>description</em></p></td>
+<td><p>most likely corresponds to the DOAS total column</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>stratospheric_NO2_column_number_density</strong></p></td>
 <td><p><em>path</em></p></td>
