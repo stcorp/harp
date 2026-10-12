@@ -247,6 +247,20 @@ static int init_dimensions(ingest_info *info)
             return -1;
         }
     }
+    else if (info->product_type == s4_type_fdy || info->product_type == s4_type_so2)
+    {
+        if (get_dimension_length(info, "SUPPORT_DATA/layer", &info->num_layers) != 0)
+        {
+            return -1;
+        }
+    }
+    else if (info->product_type == s4_type_no2 || info->product_type == s4_type_o3)
+    {
+        if (get_dimension_length(info, "layer", &info->num_layers) != 0)
+        {
+            return -1;
+        }
+    }
     else
     {
         info->num_layers = 0;
@@ -882,6 +896,153 @@ static int read_surface_pressure(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_pressure_bounds(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array coef_a;
+    harp_array coef_b;
+    long num_profiles = info->num_scanlines * info->num_pixels;
+    long num_layers = info->num_layers;
+    long i;
+
+    coef_a.ptr = malloc((num_layers + 1) * sizeof(float));
+    if (coef_a.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_layers + 1) * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    coef_b.ptr = malloc((num_layers + 1) * sizeof(float));
+    if (coef_b.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_layers + 1) * sizeof(float), __FILE__, __LINE__);
+        free(coef_a.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "constant_a_interface", harp_type_float, num_layers + 1,
+                     coef_a) != 0)
+    {
+        free(coef_b.ptr);
+        free(coef_a.ptr);
+        return -1;
+    }
+    if (read_dataset(info->input_data_cursor, "constant_b_interface", harp_type_float, num_layers + 1,
+                     coef_b) != 0)
+    {
+        free(coef_b.ptr);
+        free(coef_a.ptr);
+        return -1;
+    }
+    if (read_dataset(info->input_data_cursor, "surface_pressure", harp_type_float, num_profiles, data) != 0)
+    {
+        free(coef_b.ptr);
+        free(coef_a.ptr);
+        return -1;
+    }
+
+    for (i = num_profiles - 1; i >= 0; i--)
+    {
+        float *bounds = &data.float_data[i * num_layers * 2];
+        float surface_pressure = data.float_data[i];
+        long j;
+
+        for (j = num_layers - 1; j >= 0; j--)
+        {
+            bounds[j * 2 + 1] = coef_a.float_data[j + 1] + coef_b.float_data[j + 1] * surface_pressure;
+            bounds[j * 2] = coef_a.float_data[j] + coef_b.float_data[j] * surface_pressure;
+        }
+
+        /* clamp top-of-atmosphere for numerical stability */
+        if (bounds[num_layers * 2 - 1] < 1e-3f)
+        {
+            bounds[num_layers * 2 - 1] = 1e-3f;
+        }
+    }
+
+    free(coef_b.ptr);
+    free(coef_a.ptr);
+
+    return 0;
+}
+
+static int read_o3_pressure_bounds(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+    harp_array coef_a;
+    harp_array coef_b;
+    long num_profiles = info->num_scanlines * info->num_pixels;
+    long num_layers = info->num_layers;
+    long i;
+
+    /* O3 numbers do not follow the standard format
+     * here a = [1, 0, 0, ..., 0] and b = [0, 506, 253, 127, 63, 32, ..., 0.03]`
+     * only pressure[k] = a[k]*surface_pressure + b[k]*100 gives sensible numbers
+     * might be test data issue
+     */
+    coef_a.ptr = malloc((num_layers + 1) * sizeof(float));
+    if (coef_a.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_layers + 1) * sizeof(float), __FILE__, __LINE__);
+        return -1;
+    }
+    coef_b.ptr = malloc((num_layers + 1) * sizeof(float));
+    if (coef_b.ptr == NULL)
+    {
+        harp_set_error(HARP_ERROR_OUT_OF_MEMORY, "out of memory (could not allocate %lu bytes) (%s:%u)",
+                       (num_layers + 1) * sizeof(float), __FILE__, __LINE__);
+        free(coef_a.ptr);
+        return -1;
+    }
+
+    if (read_dataset(info->input_data_cursor, "constant_a_interface", harp_type_float, num_layers + 1, coef_a) != 0)
+    {
+        free(coef_b.ptr);
+        free(coef_a.ptr);
+        return -1;
+    }
+    if (read_dataset(info->input_data_cursor, "constant_b_interface", harp_type_float, num_layers + 1, coef_b) != 0)
+    {
+        free(coef_b.ptr);
+        free(coef_a.ptr);
+        return -1;
+    }
+    if (read_dataset(info->input_data_cursor, "surface_pressure", harp_type_float, num_profiles, data) != 0)
+    {
+        free(coef_b.ptr);
+        free(coef_a.ptr);
+        return -1;
+    }
+
+    for (i = num_profiles - 1; i >= 0; i--)
+    {
+        float *bounds = &data.float_data[i * num_layers * 2];
+        float surface_pressure = data.float_data[i];
+        long j;
+
+        for (j = num_layers - 1; j >= 0; j--)
+        {
+            bounds[j * 2 + 1] = coef_a.float_data[j + 1] * surface_pressure + coef_b.float_data[j + 1] * 100;
+            bounds[j * 2] = coef_a.float_data[j] * surface_pressure + coef_b.float_data[j] * 100;
+        }
+
+        /* guard against a future coefficient set that puts the top of atmosphere pressure at (or below) 0;
+         * clamp to a small positive value so log(pressure) stays finite for operations that work in
+         * log-pressure space */
+        if (bounds[num_layers * 2 - 1] < 1e-3f)
+        {
+            bounds[num_layers * 2 - 1] = 1e-3f;
+        }
+    }
+
+    free(coef_b.ptr);
+    free(coef_a.ptr);
+
+    return 0;
+}
+
 static int read_snow_ice_type(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -1252,12 +1413,28 @@ static int read_results_formaldehyde_tropospheric_air_mass_factor_trueness(void 
                         harp_type_float, info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_formaldehyde_tropospheric_column_averaging_kernel(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "formaldehyde_tropospheric_column_averaging_kernel",
+                        harp_type_float, info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
 static int read_results_glyoxal_tropospheric_column_air_mass_factor(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "glyoxal_tropospheric_column_air_mass_factor", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_no2_averaging_kernel(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
 }
 
 static int read_results_nitrogen_dioxide_stratospheric_air_mass_factor(void *user_data, harp_array data)
@@ -1276,12 +1453,28 @@ static int read_results_nitrogen_dioxide_tropospheric_air_mass_factor(void *user
                         info->num_scanlines * info->num_pixels, data);
 }
 
+static int read_results_o3_averaging_kernel(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
+}
+
 static int read_results_ozone_total_air_mass_factor(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "ozone_total_air_mass_factor", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_results_so2_averaging_kernel(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "averaging_kernel", harp_type_float,
+                        info->num_scanlines * info->num_pixels * info->num_layers, data);
 }
 
 static int read_results_ozone_effective_temperature(void *user_data, harp_array data)
@@ -1945,6 +2138,28 @@ static void register_surface_variables(harp_product_definition *product_definiti
                                                    dimension_type, NULL, description, NULL, NULL, read_surface_type);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_classification[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+}
+
+static void register_pressure_bounds_variable(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[3] =
+        { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
+    long bounds_dimension[3] = { -1, -1, 2 };
+
+    description = "pressure boundaries per profile layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
+                                                   dimension_type, bounds_dimension, description, "Pa", NULL,
+                                                   read_pressure_bounds);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/constant_a_interface[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/constant_b_interface[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure bounds for layer k are derived as: (constant_a_interface[k] + constant_b_interface[k] * "
+        "surface_pressure, constant_a_interface[k+1] + constant_b_interface[k+1] * surface_pressure)";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
 static void register_alh_product(void)
@@ -2750,6 +2965,7 @@ static void register_fdy_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    harp_dimension_type profile_dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
 
     module = harp_ingestion_register_module("S4-L2-HCH", "Sentinel-4", "MTG", "UVN-2-FDY",
                                             "Sentinel-4 Formaldehyde", ingestion_init, ingestion_done);
@@ -2759,6 +2975,7 @@ static void register_fdy_product(void)
     register_core_variables(product_definition, 1);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
+    register_pressure_bounds_variable(product_definition);
 
     /* snow_ice_type */
     description = "surface snow/ice type";
@@ -2911,6 +3128,16 @@ static void register_fdy_product(void)
                                                    read_results_formaldehyde_tropospheric_air_mass_factor_trueness);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_HCHO_column_number_density_avk */
+    description = "averaging kernel for the HCHO tropospheric column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_avk", harp_type_float, 2,
+                                                   profile_dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
+                                                   NULL, read_results_formaldehyde_tropospheric_column_averaging_kernel);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_averaging_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_gly_product(void)
@@ -3061,6 +3288,7 @@ static void register_no2_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    harp_dimension_type profile_dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
     const char *total_column_options[] = { "summed", "total" };
 
     module = harp_ingestion_register_module("S4-L2-NO2", "Sentinel-4", "MTG", "UVN-2-NO2",
@@ -3077,6 +3305,7 @@ static void register_no2_product(void)
     register_core_variables(product_definition, 1);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
+    register_pressure_bounds_variable(product_definition);
 
     /* snow_ice_type */
     description = "surface snow/ice type";
@@ -3183,6 +3412,16 @@ static void register_no2_product(void)
     path = "/PRODUCT/nitrogen_dioxide_doas_total_column_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
+    /* NO2_column_number_density_avk */
+    description = "averaging kernel for the mole content of nitrogen dioxide";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "NO2_column_number_density_avk",
+                                                   harp_type_float, 2, profile_dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_no2_averaging_kernel);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
+    description = "most likely corresponds to the DOAS total column";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
     /* stratospheric_NO2_column_number_density */
     description = "troposphere mole content of nitrogen dioxide";
     variable_definition =
@@ -3240,6 +3479,10 @@ static void register_o3_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    harp_dimension_type profile_dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
+    harp_dimension_type bounds_dimension_type[3] =
+        { harp_dimension_time, harp_dimension_vertical, harp_dimension_independent };
+    long bounds_dimension[3] = { -1, -1, 2 };
 
     module = harp_ingestion_register_module("S4-L2-OTO", "Sentinel-4", "MTG", "UVN-2-O3",
                                             "Sentinel-4 Ozone Total Column", ingestion_init, ingestion_done);
@@ -3406,6 +3649,29 @@ static void register_o3_product(void)
                                                    read_results_ozone_effective_temperature);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/ozone_effective_temperature[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* pressure_bounds */
+    description = "pressure boundaries per profile layer";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 3,
+                                                   bounds_dimension_type, bounds_dimension, description, "Pa", NULL,
+                                                   read_o3_pressure_bounds);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/constant_a_interface[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/constant_b_interface[], "
+        "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    description = "pressure bounds for layer k are derived as: (constant_a_interface[k] * surface_pressure + "
+        "constant_b_interface[k] * 100, constant_a_interface[k+1] * surface_pressure + "
+        "constant_b_interface[k+1] * 100); O3 does not use the standard hybrid sigma-pressure convention like other S4 products";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+
+    /* O3_column_number_density_avk */
+    description = "averaging kernel for the mole content of ozone";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_avk",
+                                                   harp_type_float, 2, profile_dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_o3_averaging_kernel);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_o3_tsc_product(void)
@@ -3501,6 +3767,7 @@ static void register_so2_product(void)
     harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
+    harp_dimension_type profile_dimension_type[2] = { harp_dimension_time, harp_dimension_vertical };
     const char *so2_column_options[] = { "1km", "7km", "15km" };
     const char *surface_albedo_option_values[1] = { "376" };
 
@@ -3520,7 +3787,8 @@ static void register_so2_product(void)
 
     register_core_variables(product_definition, 1);
     register_additional_geolocation_variables(product_definition);
-    register_surface_variables(product_definition);
+    register_surface_variables(product_definition);  
+    register_pressure_bounds_variable(product_definition);
 
     /* snow_ice_type */
     description = "surface snow/ice type";
@@ -3708,6 +3976,15 @@ static void register_so2_product(void)
     harp_variable_definition_add_mapping(variable_definition, "so2_column=7km", NULL, path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/sulfur_dioxide_total_air_mass_factor_15km_trueness[]";
     harp_variable_definition_add_mapping(variable_definition, "so2_column=15km", NULL, path, NULL);
+
+    /* SO2_column_number_density_avk */
+    description = "averaging kernel for the sulphur dioxide column density";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_avk",
+                                                   harp_type_float, 2, profile_dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_results_so2_averaging_kernel);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 int harp_ingestion_module_s4_l2_init(void)
