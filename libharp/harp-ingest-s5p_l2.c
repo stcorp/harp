@@ -7667,17 +7667,6 @@ static void register_o3_tcl_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, "(o3=ccd or o3 unset)", "processor version >= 02.00.00",
                                          path, NULL);
-
-    /* pressure_bounds */
-    description = "pressure range of the retrieved ozone";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "pressure_bounds", harp_type_float, 4,
-                                                   dimension_type, pressure_bounds_dimension, description, "Pa",
-                                                   include_o3_tcl_csa, read_o3_tcl_pressure_bounds);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_max[], "
-        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_pressure_min[]";
-    harp_variable_definition_add_mapping(variable_definition, "o3=csa", NULL, path, NULL);
-
 }
 
 static void register_o22cloud_subproduct(harp_ingestion_module *module)
