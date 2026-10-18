@@ -1,7 +1,11 @@
+1.31 2026-10-18
+~~~~~~~~~~~~~~~
+
 * Fixed wrong temperature unit in GEOMS-TE-SONDE-O3-003 ingestion.
 
 * Updates to product ingestions:
   - GEOMS TCCON: added support for template V7.
+  - S4 L2: various updates and fixes.
   - S5 L2: update for V5 format (and added ALH, AOD, CLA, FDY, and GLY).
   - S5P L2 NO2: added support for lower tropospheric column density.
   - S5P L2 O3 TCL: added support for revised quality flags in V03.00.00.
