@@ -102,6 +102,7 @@ typedef struct ingest_info_struct
     coda_product *product;
     int use_aerosol_pressure_not_clipped;
     int use_summed_total_column;
+    int use_lower_tropospheric_column;
     int use_radiance_cloud_fraction;
     int use_aer_lh_surface_albedo_772;
     int use_ch4_correction;     /* 0: none, 1: bias corrected, 2: bias and destriping corrected */
@@ -567,6 +568,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->product = product;
     info->use_aerosol_pressure_not_clipped = 0;
     info->use_summed_total_column = 1;
+    info->use_lower_tropospheric_column = 0;
     info->use_radiance_cloud_fraction = 0;
     info->use_aer_lh_surface_albedo_772 = 0;
     info->use_ch4_correction = 0;
@@ -622,6 +624,27 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         if (strcmp(option_value, "total") == 0)
         {
             info->use_summed_total_column = 0;
+        }
+    }
+    if (harp_ingestion_options_has_option(options, "tropospheric_column"))
+    {
+        if (harp_ingestion_options_get_option(options, "tropospheric_column", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        if (strcmp(option_value, "lower") == 0)
+        {
+            if (info->processor_version < 30000)
+            {
+                /* lower tropospheric column is only available with processor version >= 03.00.00 */
+                /* return an empty product if the columns are not available */
+                /* (i.e. just pick the first definition and leave num_times set to 0) */
+                *definition = *module->product_definition;
+                *user_data = info;
+                return 0;
+            }
+            info->use_lower_tropospheric_column = 1;
         }
     }
     if (harp_ingestion_options_has_option(options, "cloud_fraction"))
@@ -2081,6 +2104,12 @@ static int read_product_air_mass_factor_troposphere(void *user_data, harp_array 
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->use_lower_tropospheric_column)
+    {
+        return read_dataset(info->detailed_results_cursor, "air_mass_factor_lower_troposphere", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
     return read_dataset(info->product_cursor, "air_mass_factor_troposphere", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -2553,6 +2582,12 @@ static int read_product_nitrogendioxide_tropospheric_column(void *user_data, har
 {
     ingest_info *info = (ingest_info *)user_data;
 
+    if (info->use_lower_tropospheric_column)
+    {
+        return read_dataset(info->detailed_results_cursor, "nitrogendioxide_lower_tropospheric_column", harp_type_float,
+                            info->num_scanlines * info->num_pixels, data);
+    }
+
     return read_dataset(info->product_cursor, "nitrogendioxide_tropospheric_column", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -2560,6 +2595,12 @@ static int read_product_nitrogendioxide_tropospheric_column(void *user_data, har
 static int read_product_nitrogendioxide_tropospheric_column_precision(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
+
+    if (info->use_lower_tropospheric_column)
+    {
+        return read_dataset(info->detailed_results_cursor, "nitrogendioxide_lower_tropospheric_column_precision_kernel",
+                            harp_type_float, info->num_scanlines * info->num_pixels, data);
+    }
 
     return read_dataset(info->product_cursor, "nitrogendioxide_tropospheric_column_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
@@ -4335,7 +4376,7 @@ static int read_o3_tcl_ozone_tropospheric_mixing_ratio_flag(void *user_data, har
     ingest_info *info = (ingest_info *)user_data;
     int result;
 
-    if (info->use_o3_tcl_csa && info->processor_version<30000)
+    if (info->use_o3_tcl_csa && info->processor_version < 30000)
     {
         return read_dataset(info->product_cursor, "ozone_upper_tropospheric_mixing_ratio_flag", harp_type_int32,
                             info->num_latitudes * info->num_longitudes, data);
@@ -4343,7 +4384,7 @@ static int read_o3_tcl_ozone_tropospheric_mixing_ratio_flag(void *user_data, har
 
     /* we don't want the add_offset/scale_factor applied for the qa_value; we just want the raw 8bit value */
     coda_set_option_perform_conversions(0);
-    if (info->processor_version>=30000)
+    if (info->processor_version >= 30000)
     {
         if (info->use_o3_tcl_csa)
         {
@@ -4358,8 +4399,9 @@ static int read_o3_tcl_ozone_tropospheric_mixing_ratio_flag(void *user_data, har
     }
     else
     {
-        result = read_dataset(info->product_cursor, "qa_value", harp_type_int32, info->num_latitudes * info->num_longitudes,
-                              data);
+        result =
+            read_dataset(info->product_cursor, "qa_value", harp_type_int32, info->num_latitudes * info->num_longitudes,
+                         data);
     }
     coda_set_option_perform_conversions(1);
 
@@ -4529,11 +4571,23 @@ static int read_no2_column_tropospheric_avk(void *user_data, harp_array data)
                        info->num_scanlines * info->num_pixels * sizeof(int32_t), __FILE__, __LINE__);
         return -1;
     }
-    if (read_dataset(info->product_cursor, "tm5_tropopause_layer_index", harp_type_int32,
-                     info->num_scanlines * info->num_pixels, layer_data) != 0)
+    if (info->use_lower_tropospheric_column)
     {
-        free(layer_data.int32_data);
-        return -1;
+        if (read_dataset(info->detailed_results_cursor, "tm5_lower_troposphere_layer_index", harp_type_int32,
+                         info->num_scanlines * info->num_pixels, layer_data) != 0)
+        {
+            free(layer_data.int32_data);
+            return -1;
+        }
+    }
+    else
+    {
+        if (read_dataset(info->product_cursor, "tm5_tropopause_layer_index", harp_type_int32,
+                         info->num_scanlines * info->num_pixels, layer_data) != 0)
+        {
+            free(layer_data.int32_data);
+            return -1;
+        }
     }
 
     amf_data.float_data = malloc(info->num_scanlines * info->num_pixels * sizeof(float));
@@ -7551,8 +7605,7 @@ static void register_o3_tcl_product(void)
                                                    read_o3_tcl_ozone_tropospheric_mixing_ratio_flag);
     path = "/PRODUCT/qa_value[]";
     harp_variable_definition_add_mapping(variable_definition, "(o3=ccd or o3 unset)",
-                                         "processor version >= 01.00.00 and processor version < 03.00.00",
-                                         path, NULL);
+                                         "processor version >= 01.00.00 and processor version < 03.00.00", path, NULL);
     path = "/PRODUCT/qa_value_ccd[]";
     harp_variable_definition_add_mapping(variable_definition, "(o3=ccd or o3 unset)", "processor version >= 03.00.00",
                                          path, NULL);
@@ -7761,6 +7814,7 @@ static void register_no2_product(void)
 {
     const char *dataset_options[] = { "o22cld" };
     const char *total_column_options[] = { "summed", "total" };
+    const char *tropospheric_column_options[] = { "regular", "lower" };
     const char *cloud_fraction_options[] = { "radiance" };
     const char *path;
     const char *description;
@@ -7783,6 +7837,11 @@ static void register_no2_product(void)
                                    "nitrogendioxide_summed_total_column (which is the sum of the retrieved "
                                    "tropospheric and stratospheric columns); option values are 'summed' (default) and "
                                    "'total'", 2, total_column_options);
+
+    harp_ingestion_register_option(module, "tropospheric_column", "whether to ingest the regular tropospheric colum "
+                                   "and related averaging kernel, or the lower tropospheric one (introduces with "
+                                   "processor version 03.00.00); option values are 'regular' (default) and "
+                                   "'lower'", 2, tropospheric_column_options);
 
     harp_ingestion_register_option(module, "cloud_fraction", "whether to ingest the cloud fraction (default) or the "
                                    "radiance cloud fraction (cloud_fraction=radiance) for the NO2 data", 1,
@@ -7812,7 +7871,12 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_product_nitrogendioxide_tropospheric_column);
     path = "/PRODUCT/nitrogendioxide_tropospheric_column[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition,
+                                         "tropospheric_column=regular or tropospheric_column is unset", NULL, path,
+                                         NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_lower_tropospheric_column[]";
+    harp_variable_definition_add_mapping(variable_definition, "tropospheric_column=lower",
+                                         "processor version >= 03.00.00", path, NULL);
 
     /* tropospheric_NO2_column_number_density_uncertainty */
     description = "uncertainty of the tropospheric vertical column of NO2 (standard error)";
@@ -7822,7 +7886,12 @@ static void register_no2_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m^2",
                                                    NULL, read_product_nitrogendioxide_tropospheric_column_precision);
     path = "/PRODUCT/nitrogendioxide_tropospheric_column_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition,
+                                         "tropospheric_column=regular or tropospheric_column is unset", NULL, path,
+                                         NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_lower_tropospheric_column_precision_kernel[]";
+    harp_variable_definition_add_mapping(variable_definition, "tropospheric_column=lower",
+                                         "processor version >= 03.00.00", path, NULL);
 
     /* tropospheric_NO2_column_number_density_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
@@ -7835,14 +7904,20 @@ static void register_no2_product(void)
 
     /* tropospheric_NO2_column_number_density_amf */
     description = "tropospheric air mass factor, computed by integrating the altitude dependent air mass factor over "
-        "the atmospheric layers from the surface up to and including the layer with the tropopause";
+        "the atmospheric layers from the surface up to and including the last layer included for the tropospheric "
+        "column";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "tropospheric_NO2_column_number_density_amf",
                                                    harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_air_mass_factor_troposphere);
     path = "/PRODUCT/air_mass_factor_troposphere[]";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition,
+                                         "tropospheric_column=regular or tropospheric_column is unset", NULL, path,
+                                         NULL);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/air_mass_factor_lower_troposphere[]";
+    harp_variable_definition_add_mapping(variable_definition, "tropospheric_column=lower",
+                                         "processor version >= 03.00.00", path, NULL);
 
     /* tropospheric_NO2_column_number_density_avk */
     description = "averaging kernel for the tropospheric vertical column number density of NO2";
@@ -7854,7 +7929,18 @@ static void register_no2_product(void)
         "/PRODUCT/tm5_tropopause_layer_index[]";
     description = "averaging_kernel[layer] = if layer <= tm5_tropopause_layer_index then "
         "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_troposphere else 0";
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
+    harp_variable_definition_add_mapping(variable_definition,
+                                         "tropospheric_column=regular or tropospheric_column is unset", NULL, path,
+                                         NULL);
+    path =
+        "/PRODUCT/averaging_kernel[], /PRODUCT/air_mass_factor_total[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/air_mass_factor_lower_troposphere[], "
+        "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/tm5_lower_troposphere_layer_index[]";
+    description =
+        "averaging_kernel[layer] = if layer <= tm5_lower_troposphere_layer_index then "
+        "averaging_kernel[layer] * air_mass_factor_total / air_mass_factor_lower_troposphere else 0";
+    harp_variable_definition_add_mapping(variable_definition, "tropospheric_column=lower",
+                                         "processor version >= 03.00.00", path, NULL);
 
     /* NO2_column_number_density */
     description = "total vertical column of NO2";
