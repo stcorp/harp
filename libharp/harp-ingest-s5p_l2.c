@@ -4167,30 +4167,6 @@ static int read_o3_pr_wavelength(void *user_data, harp_array data)
     return 0;
 }
 
-static int read_o3_tcl_pressure_bounds(void *user_data, harp_array data)
-{
-    ingest_info *info = (ingest_info *)user_data;
-    harp_array buffer;
-    long dimension[2];
-
-    if (read_dataset(info->detailed_results_cursor, "cloud_top_pressure_max", harp_type_float,
-                     info->num_latitudes * info->num_longitudes, data) != 0)
-    {
-        return -1;
-    }
-    buffer.float_data = &data.float_data[info->num_latitudes * info->num_longitudes];
-    if (read_dataset(info->detailed_results_cursor, "cloud_top_pressure_min", harp_type_float,
-                     info->num_latitudes * info->num_longitudes, buffer) != 0)
-    {
-        return -1;
-    }
-
-    /* change {2,latxlon} dimension ordering to {latxlon,2} */
-    dimension[0] = 2;
-    dimension[1] = info->num_latitudes * info->num_longitudes;
-    return harp_array_transpose(harp_type_float, 2, dimension, NULL, data);
-}
-
 static int read_o3_tcl_time_value(void *user_data, const char *path, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
@@ -7504,7 +7480,6 @@ static void register_o3_tcl_product(void)
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[4] =
         { harp_dimension_time, harp_dimension_latitude, harp_dimension_longitude, harp_dimension_independent };
-    long pressure_bounds_dimension[4] = { -1, -1, -1, 2 };
 
     module = harp_ingestion_register_module("S5P_L2_O3_TCL", "Sentinel-5P", "Sentinel5P", "L2__O3_TCL",
                                             "Sentinel-5P L2 O3 tropospheric column", ingestion_init, ingestion_done);
