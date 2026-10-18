@@ -1937,7 +1937,8 @@ static int read_sif(void *user_data, harp_array data)
         }
     }
 
-    return read_dataset(info->product_cursor, variable_name, harp_type_float, info->num_scanlines * info->num_pixels, data);
+    return read_dataset(info->product_cursor, variable_name, harp_type_float, info->num_scanlines * info->num_pixels,
+                        data);
 }
 
 static int read_sif_error(void *user_data, harp_array data)
