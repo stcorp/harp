@@ -149,7 +149,7 @@
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+<td><p>processing error flag</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p>float</p></td>
@@ -217,17 +217,17 @@
 <td><p>[]</p></td>
 <td><p>standard error of cloud fraction</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>cloud top pressure</p></td>
+<td><p>pressure at the cloud optical centroid (ROCINN_CRB)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>standard error of cloud top pressure</p></td>
+<td><p>standard error of the pressure at the cloud optical centroid (ROCINN_CRB)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_height</strong></p></td>
 <td><p>float</p></td>
@@ -265,37 +265,43 @@
 <td><p>[m]</p></td>
 <td><p>standard error of height at center of aerosol layer</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_height_validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>aerosol_pressure</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>assumed layer pressure thickness</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
 <td><p>standard error of assumed layer pressure thickness</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>aerosol optical thickness</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>standard error of aerosol optical thickness</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
+<tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>surface albedo</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -380,7 +386,7 @@
 </tr>
 <tr class="row-odd"><td><p><strong>validity</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/qa_value</strong></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -429,11 +435,11 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_top_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_pressure_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_precision[]</strong></p></td>
 </tr>
@@ -461,33 +467,37 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_mid_height_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_pressure</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_height_validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/qa_value[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>aerosol_pressure</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_mid_pressure[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_pressure_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_mid_pressure_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>aerosol_optical_depth</strong></p></td>
+<tr class="row-odd"><td><p><strong>aerosol_optical_depth</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>aerosol_optical_depth_uncertainty</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/aerosol_optical_thickness_precision[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>surface_albedo</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>surface_albedo unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,0]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>surface_albedo=770</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[..,1]</strong></p></td>
 </tr>
 </tbody>

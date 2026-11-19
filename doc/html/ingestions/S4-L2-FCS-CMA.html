@@ -145,35 +145,35 @@
 <td><p>[degree_east]</p></td>
 <td><p>longitudes of pixel boundary</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>validity</strong></p></td>
-<td><p>int8</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td></td>
-<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
+<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>zenith angle of the Sun at the ground pixel location; angle measured away from the vertical</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>azimuth angle of the Sun at the ground pixel location; angle measured clockwise from North</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>viewing_zenith_angle</strong></p></td>
+<tr class="row-even"><td><p><strong>viewing_zenith_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>zenith angle of the satellite at the ground pixel location; angle measured away from the vertical</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>viewing_azimuth_angle</strong></p></td>
+<tr class="row-odd"><td><p><strong>viewing_azimuth_angle</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[degree]</p></td>
 <td><p>azimuth angle of the satellite at the ground pixel location; angle measured clockwise from North</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>processing error flag</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>cloud_free_fraction</strong></p></td>
 <td><p>float</p></td>
@@ -294,102 +294,111 @@
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>validity</strong></p></td>
-<td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/qa_value</strong></p></td>
-</tr>
-<tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
+<tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_zenith_angle[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>solar_azimuth_angle</strong></p></td>
+<tr class="row-even"><td><p><strong>solar_azimuth_angle</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/solar_azimuth_angle[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>viewing_zenith_angle</strong></p></td>
+<tr class="row-odd"><td><p><strong>viewing_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_zenith_angle[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>viewing_azimuth_angle</strong></p></td>
+<tr class="row-even"><td><p><strong>viewing_azimuth_angle</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/viewing_azimuth_angle[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>cloud_free_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>validity</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_free_fraction</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cma_cloud_free_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cma_cloud_free_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>cloud_contaminated_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_contaminated_fraction</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cma_cloud_contaminated_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cma_cloud_contaminated_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>cloud_filled_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_filled_fraction</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cma_cloud_filled_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cma_cloud_filled_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>desert_dust_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>desert_dust_fraction</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cma_desert_dust_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cma_desert_dust_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>snow_ice_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>snow_ice_fraction</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cma_snow_ice_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cma_snow_ice_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>volcanic_ash_fraction</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>volcanic_ash_fraction</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>band unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cma_volcanic_ash_psf_mean[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>band=NIR</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cma_volcanic_ash_psf_mean[]</strong></p></td>
 </tr>
 </tbody>

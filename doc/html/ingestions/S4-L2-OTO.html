@@ -149,7 +149,7 @@
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+<td><p>processing error flag</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p>float</p></td>
@@ -313,7 +313,13 @@
 <td><p>[]</p></td>
 <td><p>averaging kernel for the mole content of ozone</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>O3_column_number_density_validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -375,7 +381,7 @@
 </tr>
 <tr class="row-odd"><td><p><strong>validity</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/qa_value</strong></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -490,6 +496,10 @@
 <tr class="row-even"><td><p><strong>O3_column_number_density_avk</strong></p></td>
 <td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>O3_column_number_density_validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/qa_value[]</strong></p></td>
 </tr>
 </tbody>
 </table>

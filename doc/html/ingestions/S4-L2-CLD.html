@@ -233,13 +233,13 @@
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>cloud top pressure</p></td>
+<td><p>cloud top pressure; not available for model=CRB (ROCINN_CRB retrieves a cloud optical centroid pressure instead, which is not a cloud top pressure; see cloud_pressure in S4-L2-CLD-CRB)</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[Pa]</p></td>
-<td><p>standard error of cloud top pressure</p></td>
+<td><p>standard error of cloud top pressure; see cloud_top_pressure for the model=CRB caveat</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>surface_altitude</strong></p></td>
 <td><p>float</p></td>
@@ -277,29 +277,29 @@
 <td><p>[K]</p></td>
 <td><p>surface temperature</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>surface_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>cloud_type</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>cloud phase; enumeration values: cloud_free (0), water_cloud (1), ice_cloud (2)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>surface_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>surface albedo fitted from the CAL model</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>surface_albedo_uncertainty</strong></p></td>
+<tr class="row-even"><td><p><strong>surface_albedo_uncertainty</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>standard error of the surface albedo fitted from the CAL model</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>cloud_top_temperature</strong></p></td>
+<tr class="row-odd"><td><p><strong>cloud_top_temperature</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[K]</p></td>
 <td><p>cloud top temperature</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>cloud_type</strong></p></td>
-<td><p>int8</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td></td>
-<td><p>cloud phase; enumeration values: cloud_free (0), water_cloud (1), ice_cloud (2)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>cloud_fraction_validity</strong></p></td>
 <td><p>int8</p></td>
@@ -312,54 +312,6 @@
 <td><p>{<em>time</em>}</p></td>
 <td></td>
 <td><p>processing error flag</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_height_crb</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>atmospheric height at the level of cloud using the ROCINN CRB model</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>cloud_height_crb_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[m]</p></td>
-<td><p>standard error of the atmospheric height at the level of cloud using the ROCINN CRB model</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_albedo_crb</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>albedo of cloud using the ROCINN CRB model</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>cloud_albedo_crb_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>standard error of the albedo of cloud using the ROCINN CRB model</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>cloud_fraction_validity_crb</strong></p></td>
-<td><p>int8</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td></td>
-<td><p>continuous quality descriptor for the CRB model, varying between 0 (no data) and 100 (full quality data)</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>surface_albedo_crb</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>surface albedo fitted using the ROCINN CRB model</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>surface_albedo_crb_uncertainty</strong></p></td>
-<td><p>float</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td><p>[]</p></td>
-<td><p>standard error of the surface albedo fitted using the ROCINN CRB model</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>validity_crb</strong></p></td>
-<td><p>int8</p></td>
-<td><p>{<em>time</em>}</p></td>
-<td></td>
-<td><p>processing error flag for the CRB model</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>liquid_particle_optical_depth</strong></p></td>
 <td><p>float</p></td>
@@ -423,15 +375,16 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>band</p></td>
-<td><p>NIR</p></td>
-<td><p>ingest cloud properties in the UV/VIS (default) or NIR (band=NIR)</p></td>
+<td><p>UVVIS, NIR</p></td>
+<td><p>ingest cloud properties in the UV/VIS (default, or explicitly band=UVVIS) or NIR (band=NIR)</p></td>
 </tr>
 <tr class="row-odd"><td><p>model</p></td>
-<td><p>CRB, CMA+OCA</p></td>
-<td><p>cloud retrieval model to use: CAL (default), CRB (model=CRB), or CMA+OCA (model=CMA+OCA)</p></td>
+<td><p>CAL, CRB, CMA+OCA</p></td>
+<td><p>cloud retrieval model to use: CAL (default, or explicitly model=CAL), CRB (model=CRB), or CMA+OCA (model=CMA+OCA)</p></td>
 </tr>
 </tbody>
 </table>
+<p>This definition is only applicable when: model unset or model=CAL or model=CMA+OCA</p>
 </section>
 <section id="mapping-description">
 <h2>Mapping description</h2>
@@ -502,7 +455,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_base_height</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_base_height[]</strong></p></td>
@@ -515,7 +468,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_base_height_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_base_height_precision[]</strong></p></td>
@@ -528,7 +481,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_base_pressure</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_base_pressure[]</strong></p></td>
@@ -541,7 +494,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_base_pressure_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_base_pressure_precision[]</strong></p></td>
@@ -554,19 +507,19 @@
 </tr>
 <tr class="row-odd"><td rowspan="8"><p><strong>cloud_fraction</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset and model unset or model=CRB</p></td>
+<td><p>band unset or band=UVVIS and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_fraction[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model unset or model=CRB</p></td>
+<td><p>band=NIR and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cloud_fraction[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band unset and model=CMA+OCA</p></td>
+<td><p>band unset or band=UVVIS and model=CMA+OCA</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/cma_cloud_fraction_psf[]</strong></p></td>
@@ -577,46 +530,34 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/cma_cloud_fraction_psf[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="8"><p><strong>cloud_fraction_uncertainty</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_fraction_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset and model unset</p></td>
+<td><p>band unset or band=UVVIS and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_fraction_precision[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model unset</p></td>
+<td><p>band=NIR and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cloud_fraction_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band unset and model=CRB</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model=CRB</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]</strong></p></td>
-</tr>
 <tr class="row-odd"><td rowspan="8"><p><strong>cloud_optical_depth</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset and model unset or model=CRB</p></td>
+<td><p>band unset or band=UVVIS and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_optical_thickness[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model unset or model=CRB</p></td>
+<td><p>band=NIR and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cloud_optical_thickness[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band unset and model=CMA+OCA</p></td>
+<td><p>band unset or band=UVVIS and model=CMA+OCA</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_total_cot_psf[]</strong></p></td>
@@ -629,7 +570,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_optical_depth_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_optical_thickness_precision[]</strong></p></td>
@@ -642,7 +583,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_top_height</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_top_height[]</strong></p></td>
@@ -655,7 +596,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_top_height_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_top_height_precision[]</strong></p></td>
@@ -666,33 +607,21 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cloud_top_height_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="12"><p><strong>cloud_top_pressure</strong></p></td>
+<tr class="row-odd"><td rowspan="8"><p><strong>cloud_top_pressure</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset and model unset</p></td>
+<td><p>band unset or band=UVVIS and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_top_pressure[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model unset</p></td>
+<td><p>band=NIR and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cloud_top_pressure[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band unset and model=CRB</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model=CRB</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band unset and model=CMA+OCA</p></td>
+<td><p>band unset or band=UVVIS and model=CMA+OCA</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_total_ctp_psf[]</strong></p></td>
@@ -703,34 +632,22 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_total_ctp_psf[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="8"><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_top_pressure_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset and model unset</p></td>
+<td><p>band unset or band=UVVIS and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/cloud_top_pressure_precision[]</strong></p></td>
 </tr>
 <tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model unset</p></td>
+<td><p>band=NIR and model unset or model=CAL</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/cloud_top_pressure_precision[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band unset and model=CRB</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR and model=CRB</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]</strong></p></td>
-</tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>surface_altitude</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]</strong></p></td>
@@ -743,7 +660,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>surface_altitude_uncertainty</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]</strong></p></td>
@@ -756,7 +673,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>surface_pressure</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]</strong></p></td>
@@ -769,7 +686,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>surface_type</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_classification[]</strong></p></td>
@@ -782,7 +699,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="6"><p><strong>snow_ice_type</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]</strong></p></td>
@@ -801,7 +718,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>surface_temperature</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_temperature[]</strong></p></td>
@@ -812,48 +729,9 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_temperature[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo_uncertainty</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>cloud_top_temperature</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]</strong></p></td>
-</tr>
 <tr class="row-odd"><td rowspan="6"><p><strong>cloud_type</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]</strong></p></td>
@@ -870,9 +748,48 @@
 <tr class="row-even"><td><p><em>description</em></p></td>
 <td><p>0: cloud_free, 1: water_cloud, 2: ice_cloud</p></td>
 </tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset or band=UVVIS</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo_uncertainty</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset or band=UVVIS</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>cloud_top_temperature</strong></p></td>
+<td><p><em>condition</em></p></td>
+<td><p>band unset or band=UVVIS</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
+<td><p>band=NIR</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]</strong></p></td>
+</tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>cloud_fraction_validity</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/qa_value[]</strong></p></td>
@@ -885,7 +802,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>validity</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]</strong></p></td>
@@ -896,113 +813,9 @@
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]</strong></p></td>
 </tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>cloud_height_crb</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>cloud_height_crb_uncertainty</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>cloud_albedo_crb</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>cloud_albedo_crb_uncertainty</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>cloud_fraction_validity_crb</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo_crb</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>surface_albedo_crb_uncertainty</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb_precision[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td rowspan="4"><p><strong>validity_crb</strong></p></td>
-<td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors_crb[]</strong></p></td>
-</tr>
-<tr class="row-odd"><td><p><em>condition</em></p></td>
-<td><p>band=NIR</p></td>
-</tr>
-<tr class="row-even"><td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors_crb[]</strong></p></td>
-</tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>liquid_particle_optical_depth</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_liquid_cot_psf[]</strong></p></td>
@@ -1015,7 +828,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>liquid_particle_top_pressure</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_liquid_ctp_psf[]</strong></p></td>
@@ -1028,7 +841,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>ice_particle_optical_depth</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_ice_cot_psf[]</strong></p></td>
@@ -1041,7 +854,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>ice_particle_top_pressure</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_ice_ctp_psf[]</strong></p></td>
@@ -1054,7 +867,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>dust_aerosol_optical_depth</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_cot_psf[]</strong></p></td>
@@ -1067,7 +880,7 @@
 </tr>
 <tr class="row-odd"><td rowspan="4"><p><strong>dust_aerosol_top_pressure</strong></p></td>
 <td><p><em>condition</em></p></td>
-<td><p>band unset</p></td>
+<td><p>band unset or band=UVVIS</p></td>
 </tr>
 <tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_ctp_psf[]</strong></p></td>

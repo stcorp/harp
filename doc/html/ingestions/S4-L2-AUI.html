@@ -149,7 +149,7 @@
 <td><p>int8</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
-<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+<td><p>processing error flag</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p>float</p></td>
@@ -217,13 +217,19 @@
 <td><p>[]</p></td>
 <td><p>uncertainty of the aerosol index</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>scene_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index_validity</strong></p></td>
+<td><p>int8</p></td>
+<td><p>{<em>time</em>}</p></td>
+<td></td>
+<td><p>continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>scene_albedo</strong></p></td>
 <td><p>float</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td><p>[]</p></td>
 <td><p>scene albedo</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>index</strong></p></td>
+<tr class="row-even"><td><p><strong>index</strong></p></td>
 <td><p>int32</p></td>
 <td><p>{<em>time</em>}</p></td>
 <td></td>
@@ -250,7 +256,7 @@
 <tbody>
 <tr class="row-even"><td><p>wavelength_ratio</p></td>
 <td><p>354_388nm, 340_380nm</p></td>
-<td><p>ingest aerosol index retrieved at wavelengths 354/388 nm (default) or 354/388 nm (wavelength_ratio=340_380nm)</p></td>
+<td><p>ingest aerosol index retrieved at wavelengths 354/388 nm (default) or 340/380 nm (wavelength_ratio=340_380nm)</p></td>
 </tr>
 </tbody>
 </table>
@@ -308,7 +314,7 @@
 </tr>
 <tr class="row-odd"><td><p><strong>validity</strong></p></td>
 <td><p><em>path</em></p></td>
-<td><p><strong>/PRODUCT/qa_value</strong></p></td>
+<td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>solar_zenith_angle</strong></p></td>
 <td><p><em>path</em></p></td>
@@ -375,17 +381,21 @@
 <tr class="row-odd"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/aerosol_index_340_380_precision</strong></p></td>
 </tr>
-<tr class="row-even"><td rowspan="4"><p><strong>scene_albedo</strong></p></td>
+<tr class="row-even"><td><p><strong>absorbing_aerosol_index_validity</strong></p></td>
+<td><p><em>path</em></p></td>
+<td><p><strong>/PRODUCT/qa_value[]</strong></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p><strong>scene_albedo</strong></p></td>
 <td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=354_388nm or wavelength_ratio unset</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_albedo_388[]</strong></p></td>
 </tr>
-<tr class="row-even"><td><p><em>condition</em></p></td>
+<tr class="row-odd"><td><p><em>condition</em></p></td>
 <td><p>wavelength_ratio=340_380nm</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>path</em></p></td>
+<tr class="row-even"><td><p><em>path</em></p></td>
 <td><p><strong>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/scene_albedo_380[]</strong></p></td>
 </tr>
 </tbody>

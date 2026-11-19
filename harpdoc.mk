@@ -529,6 +529,7 @@ HARP_DOCFILES = \
 	doc/html/ingestions/S4-L2-ALH.html \
 	doc/html/ingestions/S4-L2-AUI.html \
 	doc/html/ingestions/S4-L2-CHO.html \
+	doc/html/ingestions/S4-L2-CLD-CRB.html \
 	doc/html/ingestions/S4-L2-CLD.html \
 	doc/html/ingestions/S4-L2-FCS-CMA.html \
 	doc/html/ingestions/S4-L2-HCH.html \
@@ -1710,6 +1711,8 @@ doc/html/ingestions/S4-L2-ALH.html:
 doc/html/ingestions/S4-L2-AUI.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S4-L2-CHO.html:
+	$(MAKE) harp_doc
+doc/html/ingestions/S4-L2-CLD-CRB.html:
 	$(MAKE) harp_doc
 doc/html/ingestions/S4-L2-CLD.html:
 	$(MAKE) harp_doc

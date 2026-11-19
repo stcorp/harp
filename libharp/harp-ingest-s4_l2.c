@@ -57,6 +57,7 @@ typedef enum s4_product_type_enum
 #define S4_NUM_PRODUCT_TYPES (((int)s4_type_so2) + 1)
 
 static const char *snow_ice_type_values[2] = { "snow_free_land", "snow_ice" };
+static const char *cloud_type_values[3] = { "cloud_free", "water_cloud", "ice_cloud" };
 
 typedef enum s4_wavelength_ratio_enum
 {
@@ -75,7 +76,7 @@ typedef struct ingest_info_struct
     int use_summed_total_column;
     /* so2 = 0: PBL (anthropogenic), 1: 1km box profile, 2: 7km bp, 3: 15km bpl/polluted */
     int so2_column_type;
-    /* cld_model = 0: CAL (default), 1: CRB, 2: CMA+OCA */
+    /* cld_model = 0: CAL (default), 1: CMA+OCA */
     int cld_model;
 
     s4_product_type product_type;
@@ -297,7 +298,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     info->use_alh_surface_albedo_770 = 0;
     info->use_so2_surface_albedo_376 = 0;
     info->use_nir = 0;
-    info->use_summed_total_column = 0;
+    info->use_summed_total_column = 1;
     info->so2_column_type = 0;
     info->cld_model = 0;
     info->num_scanlines = 0;
@@ -334,7 +335,12 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
     }
     if (harp_ingestion_options_has_option(options, "band"))
     {
-        info->use_nir = 1;
+        if (harp_ingestion_options_get_option(options, "band", &option_value) != 0)
+        {
+            ingestion_done(info);
+            return -1;
+        }
+        info->use_nir = (strcmp(option_value, "NIR") == 0);
     }
     if (harp_ingestion_options_has_option(options, "total_column"))
     {
@@ -346,6 +352,10 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         if (strcmp(option_value, "total") == 0)
         {
             info->use_summed_total_column = 0;
+        }
+        else
+        {
+            assert(strcmp(option_value, "summed") == 0);
         }
     }
     if (harp_ingestion_options_has_option(options, "so2_column"))
@@ -369,6 +379,7 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
             info->so2_column_type = 3;
         }
     }
+    *definition = *module->product_definition;
     if (harp_ingestion_options_has_option(options, "model"))
     {
         if (harp_ingestion_options_get_option(options, "model", &option_value) != 0)
@@ -378,16 +389,18 @@ static int ingestion_init(const harp_ingestion_module *module, coda_product *pro
         }
         if (strcmp(option_value, "CRB") == 0)
         {
+            /* use the second registered product, which is S4-L2-CLD-CRB */
+            *definition = module->product_definition[1];
+        }
+        else if (strcmp(option_value, "CMA+OCA") == 0)
+        {
             info->cld_model = 1;
         }
         else
         {
-            assert(strcmp(option_value, "CMA+OCA") == 0);
-            info->cld_model = 2;
+            assert(strcmp(option_value, "CAL") == 0);
         }
     }
-
-    *definition = *module->product_definition;
 
     if (init_cursors(info) != 0)
     {
@@ -778,12 +791,12 @@ static int read_product_cloud_fraction(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->cld_model == 2)
+    if (info->cld_model == 1)
     {
         return read_dataset(info->input_data_cursor, "cma_cloud_fraction_psf", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
     }
-    /* CAL and CRB share the same OCRA cloud fraction; CRB has no separate variant */
+    /* model=CRB is handled by the separate S4-L2-CLD-CRB product and never reaches this function */
     return read_dataset(info->product_cursor, "cloud_fraction", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -792,11 +805,6 @@ static int read_product_cloud_fraction_precision(void *user_data, harp_array dat
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->cld_model == 1)
-    {
-        return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb_precision", harp_type_float,
-                            info->num_scanlines * info->num_pixels, data);
-    }
     /* CMA+OCA has no precision/uncertainty for cma_cloud_fraction_psf; fall back to the CAL/default path */
     return read_dataset(info->product_cursor, "cloud_fraction_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
@@ -806,12 +814,12 @@ static int read_product_cloud_optical_thickness(void *user_data, harp_array data
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->cld_model == 2)
+    if (info->cld_model == 1)
     {
         return read_dataset(info->input_data_cursor, "oca_total_cot_psf", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
     }
-    /* CRB has no separate optical thickness variant; fall back to the CAL/default path */
+    /* model=CRB is handled by the separate S4-L2-CLD-CRB product and never reaches this function */
     return read_dataset(info->product_cursor, "cloud_optical_thickness", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
@@ -846,11 +854,6 @@ static int read_product_cloud_top_pressure(void *user_data, harp_array data)
 
     if (info->cld_model == 1)
     {
-        return read_dataset(info->detailed_results_cursor, "cloud_pressure_crb", harp_type_float,
-                            info->num_scanlines * info->num_pixels, data);
-    }
-    if (info->cld_model == 2)
-    {
         return read_dataset(info->input_data_cursor, "oca_total_ctp_psf", harp_type_float,
                             info->num_scanlines * info->num_pixels, data);
     }
@@ -862,11 +865,6 @@ static int read_product_cloud_top_pressure_precision(void *user_data, harp_array
 {
     ingest_info *info = (ingest_info *)user_data;
 
-    if (info->cld_model == 1)
-    {
-        return read_dataset(info->detailed_results_cursor, "cloud_pressure_crb_precision", harp_type_float,
-                            info->num_scanlines * info->num_pixels, data);
-    }
     /* CMA+OCA has no precision/uncertainty for oca_total_ctp_psf; fall back to the CAL/default path */
     return read_dataset(info->product_cursor, "cloud_top_pressure_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
@@ -1121,11 +1119,27 @@ static int read_viewing_azimuth_angle(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static int read_cld_validity(void *user_data, harp_array data)
+static int read_processing_errors(void *user_data, harp_array data)
 {
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "processing_errors", harp_type_int8,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cloud_fraction_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cloud_fraction_crb_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_fraction_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1142,6 +1156,22 @@ static int read_cloud_height_crb_precision(void *user_data, harp_array data)
     ingest_info *info = (ingest_info *)user_data;
 
     return read_dataset(info->detailed_results_cursor, "cloud_height_crb_precision", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cloud_pressure_crb(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_pressure_crb", harp_type_float,
+                        info->num_scanlines * info->num_pixels, data);
+}
+
+static int read_cloud_pressure_crb_precision(void *user_data, harp_array data)
+{
+    ingest_info *info = (ingest_info *)user_data;
+
+    return read_dataset(info->detailed_results_cursor, "cloud_pressure_crb_precision", harp_type_float,
                         info->num_scanlines * info->num_pixels, data);
 }
 
@@ -1956,7 +1986,7 @@ static int read_fcs_cma_volcanic_ash_fraction(void *user_data, harp_array data)
                         info->num_scanlines * info->num_pixels, data);
 }
 
-static void register_core_variables(harp_product_definition *product_definition, int include_validity)
+static void register_core_variables(harp_product_definition *product_definition)
 {
     const char *path;
     const char *description;
@@ -2038,15 +2068,6 @@ static void register_core_variables(harp_product_definition *product_definition,
     path = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    if (include_validity)
-    {
-        /* validity */
-        description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
-        variable_definition =
-            harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
-                                                       dimension_type, NULL, description, NULL, NULL, read_qa_value);
-        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/PRODUCT/qa_value", NULL);
-    }
 }
 
 static void register_additional_geolocation_variables(harp_product_definition *product_definition)
@@ -2160,6 +2181,105 @@ static void register_pressure_bounds_variable(harp_product_definition *product_d
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 }
 
+static void register_validity_variable(harp_product_definition *product_definition)
+{
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    description = "processing error flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1, dimension_type,
+                                                   NULL, description, NULL, NULL, read_processing_errors);
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL,
+                                         "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]", NULL);
+}
+
+static void register_cld_shared_variables(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    /* surface_altitude */
+    description = "surface altitude";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL, read_surface_altitude);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_altitude_uncertainty */
+    description = "standard error of surface altitude";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_uncertainty", harp_type_float,
+                                                   1, dimension_type, NULL, description, "m", NULL,
+                                                   read_surface_altitude_uncertainty);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_pressure */
+    description = "surface pressure";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_surface_pressure);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_type */
+    description = "surface type classification";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_type", harp_type_int32, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_surface_type);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_classification[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_classification[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* snow_ice_type */
+    description = "surface snow/ice type";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_snow_ice_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 2, snow_ice_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
+    description = "0: snow_free_land, 1: snow_ice";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, description);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, description);
+
+    /* surface_temperature */
+    description = "surface temperature";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "K", NULL,
+                                                   read_surface_temperature);
+    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_temperature[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_type */
+    description = "cloud phase";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_type", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_cloud_type);
+    harp_variable_definition_set_enumeration_values(variable_definition, 3, cloud_type_values);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
+    description = "0: cloud_free, 1: water_cloud, 2: ice_cloud";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, description);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, description);
+}
+
 static void register_alh_product(void)
 {
     const char *path;
@@ -2179,7 +2299,8 @@ static void register_alh_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-ALH", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
 
@@ -2211,19 +2332,19 @@ static void register_alh_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure */
-    description = "cloud top pressure";
+    /* cloud_pressure */
+    description = "pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure_uncertainty */
-    description = "standard error of cloud top pressure";
+    /* cloud_pressure_uncertainty */
+    description = "standard error of the pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa",
                                                    NULL, read_input_cloud_pressure_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_precision[]";
@@ -2281,6 +2402,14 @@ static void register_alh_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
                                                    read_product_aerosol_mid_height_precision);
     path = "/PRODUCT/aerosol_mid_height_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* aerosol_height_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "aerosol_height_validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL, read_qa_value);
+    path = "/PRODUCT/qa_value[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
     /* aerosol_pressure */
@@ -2345,13 +2474,14 @@ static void register_aui_product(void)
     module = harp_ingestion_register_module("S4-L2-AUI", "Sentinel-4", "MTG", "UVN-2-AUI",
                                             "Sentinel-4 L2 UV Aerosol Index", ingestion_init, ingestion_done);
 
-    description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default) or 354/388 nm "
+    description = "ingest aerosol index retrieved at wavelengths 354/388 nm (default) or 340/380 nm "
         "(wavelength_ratio=340_380nm)";
     harp_ingestion_register_option(module, "wavelength_ratio", description, 2, wavelength_ratio_option_values);
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-AUI", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
 
@@ -2387,6 +2517,15 @@ static void register_aui_product(void)
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL,
                                          "/PRODUCT/aerosol_index_340_380_precision", NULL);
 
+    /* absorbing_aerosol_index_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "absorbing_aerosol_index_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
     /* scene_albedo */
     description = "scene albedo";
     variable_definition =
@@ -2400,30 +2539,14 @@ static void register_aui_product(void)
     harp_variable_definition_add_mapping(variable_definition, "wavelength_ratio=340_380nm", NULL, path, NULL);
 }
 
-static void register_cld_product(void)
+static void register_cld_cal_variables(harp_product_definition *product_definition)
 {
     const char *path;
     const char *description;
-    harp_ingestion_module *module;
-    harp_product_definition *product_definition;
     harp_variable_definition *variable_definition;
     harp_dimension_type dimension_type[1] = { harp_dimension_time };
-    const char *band_option_values[1] = { "NIR" };
-    const char *model_option_values[2] = { "CRB", "CMA+OCA" };
-    const char *cloud_type_values[3] = { "cloud_free", "water_cloud", "ice_cloud" };
 
-    module = harp_ingestion_register_module("S4-L2-CLD", "Sentinel-4", "MTG", "UVN-2-CLD",
-                                            "Sentinel-4 L2 Cloud", ingestion_init, ingestion_done);
-
-    description = "ingest cloud properties in the UV/VIS (default) or NIR (band=NIR)";
-    harp_ingestion_register_option(module, "band", description, 1, band_option_values);
-
-    description = "cloud retrieval model to use: CAL (default), CRB (model=CRB), or CMA+OCA (model=CMA+OCA)";
-    harp_ingestion_register_option(module, "model", description, 2, model_option_values);
-
-    product_definition = harp_ingestion_register_product(module, "S4-L2-CLD", NULL, read_dimensions);
-
-    register_core_variables(product_definition, 0);
+    register_core_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
 
     /* cloud_base_height */
@@ -2433,7 +2556,7 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, "m", NULL,
                                                    read_product_cloud_base_height);
     path = "/PRODUCT/cloud_base_height[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_base_height[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2444,7 +2567,7 @@ static void register_cld_product(void)
                                                    1, dimension_type, NULL, description, "m", NULL,
                                                    read_product_cloud_base_height_precision);
     path = "/PRODUCT/cloud_base_height_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_base_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2455,7 +2578,7 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_product_cloud_base_pressure);
     path = "/PRODUCT/cloud_base_pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_base_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2466,7 +2589,7 @@ static void register_cld_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
                                                    read_product_cloud_base_pressure_precision);
     path = "/PRODUCT/cloud_base_pressure_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_base_pressure_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2477,11 +2600,12 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_cloud_fraction);
     path = "/PRODUCT/cloud_fraction[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model unset or model=CRB", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model unset or model=CAL",
+                                         path, NULL);
     path = "/PRODUCT_NIR/cloud_fraction[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset or model=CRB", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset or model=CAL", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cma_cloud_fraction_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model=CMA+OCA", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model=CMA+OCA", path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/cma_cloud_fraction_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model=CMA+OCA", path, NULL);
 
@@ -2492,13 +2616,10 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_cloud_fraction_precision);
     path = "/PRODUCT/cloud_fraction_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model unset", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model unset or model=CAL",
+                                         path, NULL);
     path = "/PRODUCT_NIR/cloud_fraction_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset", path, NULL);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model=CRB", path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model=CRB", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset or model=CAL", path, NULL);
 
     /* cloud_optical_depth */
     description = "cloud optical thickness";
@@ -2507,11 +2628,12 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_cloud_optical_thickness);
     path = "/PRODUCT/cloud_optical_thickness[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model unset or model=CRB", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model unset or model=CAL",
+                                         path, NULL);
     path = "/PRODUCT_NIR/cloud_optical_thickness[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset or model=CRB", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset or model=CAL", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_total_cot_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model=CMA+OCA", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model=CMA+OCA", path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_total_cot_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model=CMA+OCA", path, NULL);
 
@@ -2523,7 +2645,7 @@ static void register_cld_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_product_cloud_optical_thickness_precision);
     path = "/PRODUCT/cloud_optical_thickness_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_optical_thickness_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2534,7 +2656,7 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, "m", NULL,
                                                    read_product_cloud_top_height);
     path = "/PRODUCT/cloud_top_height[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_top_height[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2545,108 +2667,40 @@ static void register_cld_product(void)
                                                    1, dimension_type, NULL, description, "m", NULL,
                                                    read_product_cloud_top_height_precision);
     path = "/PRODUCT/cloud_top_height_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/cloud_top_height_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
     /* cloud_top_pressure */
-    description = "cloud top pressure";
+    description = "cloud top pressure; not available for model=CRB (ROCINN_CRB retrieves a cloud optical "
+        "centroid pressure instead, which is not a cloud top pressure; see cloud_pressure in S4-L2-CLD-CRB)";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_product_cloud_top_pressure);
     path = "/PRODUCT/cloud_top_pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model unset", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model unset or model=CAL",
+                                         path, NULL);
     path = "/PRODUCT_NIR/cloud_top_pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset", path, NULL);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model=CRB", path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model=CRB", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset or model=CAL", path, NULL);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_total_ctp_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model=CMA+OCA", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model=CMA+OCA", path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_total_ctp_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model=CMA+OCA", path, NULL);
 
     /* cloud_top_pressure_precision */
-    description = "standard error of cloud top pressure";
+    description = "standard error of cloud top pressure; see cloud_top_pressure for the model=CRB caveat";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
                                                    read_product_cloud_top_pressure_precision);
     path = "/PRODUCT/cloud_top_pressure_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model unset", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", "model unset or model=CAL",
+                                         path, NULL);
     path = "/PRODUCT_NIR/cloud_top_pressure_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset", path, NULL);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", "model=CRB", path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model=CRB", path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", "model unset or model=CAL", path, NULL);
 
-    /* surface_altitude */
-    description = "surface altitude";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL, read_surface_altitude);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_altitude[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* surface_altitude_uncertainty */
-    description = "standard error of surface altitude";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_altitude_uncertainty", harp_type_float,
-                                                   1, dimension_type, NULL, description, "m", NULL,
-                                                   read_surface_altitude_uncertainty);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_altitude_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* surface_pressure */
-    description = "surface pressure";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_pressure", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "Pa", NULL,
-                                                   read_surface_pressure);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_pressure[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* surface_type */
-    description = "surface type classification";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_type", harp_type_int32, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_surface_type);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_classification[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_classification[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* snow_ice_type */
-    description = "surface snow/ice type";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "snow_ice_type", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_snow_ice_type);
-    harp_variable_definition_set_enumeration_values(variable_definition, 2, snow_ice_type_values);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
-    description = "0: snow_free_land, 1: snow_ice";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, description);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/snow_ice_flag[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, description);
-
-    /* surface_temperature */
-    description = "surface temperature";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_temperature", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "K", NULL,
-                                                   read_surface_temperature);
-    path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_temperature[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/surface_temperature[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+    register_cld_shared_variables(product_definition);
 
     /* surface_albedo */
     description = "surface albedo fitted from the CAL model";
@@ -2655,7 +2709,7 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cld_surface_albedo);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2666,7 +2720,7 @@ static void register_cld_product(void)
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
                                                    read_cld_surface_albedo_uncertainty);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_precision[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2677,21 +2731,9 @@ static void register_cld_product(void)
                                                    dimension_type, NULL, description, "K", NULL,
                                                    read_cloud_top_temperature);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_top_temperature[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* cloud_type */
-    description = "cloud phase";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_type", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL, read_cloud_type);
-    harp_variable_definition_set_enumeration_values(variable_definition, 3, cloud_type_values);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
-    description = "0: cloud_free, 1: water_cloud, 2: ice_cloud";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, description);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_phase[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, description);
 
     /* cloud_fraction_validity */
     description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
@@ -2699,7 +2741,7 @@ static void register_cld_product(void)
         harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int8, 1,
                                                    dimension_type, NULL, description, NULL, NULL, read_qa_value);
     path = "/PRODUCT/qa_value[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/qa_value[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2707,97 +2749,10 @@ static void register_cld_product(void)
     description = "processing error flag";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1, dimension_type,
-                                                   NULL, description, NULL, NULL, read_cld_validity);
+                                                   NULL, description, NULL, NULL, read_processing_errors);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* cloud_height_crb */
-    description = "atmospheric height at the level of cloud using the ROCINN CRB model";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_crb", harp_type_float, 1,
-                                                   dimension_type, NULL, description, "m", NULL, read_cloud_height_crb);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* cloud_height_crb_uncertainty */
-    description = "standard error of the atmospheric height at the level of cloud using the ROCINN CRB model";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_crb_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
-                                                   read_cloud_height_crb_precision);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* cloud_albedo_crb */
-    description = "albedo of cloud using the ROCINN CRB model";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_crb", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_cloud_albedo_crb);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* cloud_albedo_crb_uncertainty */
-    description = "standard error of the albedo of cloud using the ROCINN CRB model";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_crb_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_albedo_crb_precision);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* cloud_fraction_validity_crb */
-    description = "continuous quality descriptor for the CRB model, varying between 0 (no data) and 100 (full "
-        "quality data)";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity_crb", harp_type_int8,
-                                                   1, dimension_type, NULL, description, NULL, NULL, read_qa_value_crb);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* surface_albedo_crb */
-    description = "surface albedo fitted using the ROCINN CRB model";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_crb", harp_type_float, 1,
-                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
-                                                   read_surface_albedo_crb);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* surface_albedo_crb_uncertainty */
-    description = "standard error of the surface albedo fitted using the ROCINN CRB model";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_crb_uncertainty",
-                                                   harp_type_float, 1, dimension_type, NULL, description,
-                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_surface_albedo_crb_precision);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb_precision[]";
-    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
-
-    /* validity_crb */
-    description = "processing error flag for the CRB model";
-    variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "validity_crb", harp_type_int8, 1,
-                                                   dimension_type, NULL, description, NULL, NULL,
-                                                   read_processing_errors_crb);
-    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors_crb[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
-    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors_crb[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
     /* liquid_particle_optical_depth */
@@ -2807,7 +2762,7 @@ static void register_cld_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_liquid_particle_optical_depth);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_liquid_cot_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_liquid_cot_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2818,7 +2773,7 @@ static void register_cld_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa", NULL,
                                                    read_liquid_particle_top_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_liquid_ctp_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_liquid_ctp_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2829,7 +2784,7 @@ static void register_cld_product(void)
                                                    1, dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS,
                                                    NULL, read_ice_particle_optical_depth);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_ice_cot_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_ice_cot_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2840,7 +2795,7 @@ static void register_cld_product(void)
                                                    1, dimension_type, NULL, description, "Pa", NULL,
                                                    read_ice_particle_top_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_ice_ctp_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_ice_ctp_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2851,7 +2806,7 @@ static void register_cld_product(void)
                                                    harp_type_float, 1, dimension_type, NULL, description,
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_dust_aerosol_optical_depth);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_cot_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_cot_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
@@ -2862,9 +2817,181 @@ static void register_cld_product(void)
                                                    1, dimension_type, NULL, description, "Pa", NULL,
                                                    read_dust_aerosol_top_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_ctp_psf[]";
-    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
     path = "/PRODUCT_NIR/SUPPORT_DATA/INPUT_DATA/oca_desert_dust_ctp_psf[]";
     harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+}
+
+static void register_cld_crb_variables(harp_product_definition *product_definition)
+{
+    const char *path;
+    const char *description;
+    harp_variable_definition *variable_definition;
+    harp_dimension_type dimension_type[1] = { harp_dimension_time };
+
+    register_core_variables(product_definition);
+    register_additional_geolocation_variables(product_definition);
+
+    register_cld_shared_variables(product_definition);
+
+    /* cloud_fraction */
+    description = "effective radiometric cloud fraction using the OCRA CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_fraction_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_fraction_uncertainty */
+    description = "standard error of the effective radiometric cloud fraction using the OCRA CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_fraction_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_fraction_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_fraction_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_fraction_validity", harp_type_int8,
+                                                   1, dimension_type, NULL, description, NULL, NULL, read_qa_value_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/qa_value_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_height */
+    description = "atmospheric height at the level of cloud using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "m", NULL, read_cloud_height_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_height_uncertainty */
+    description = "standard error of the atmospheric height at the level of cloud using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_height_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "m", NULL,
+                                                   read_cloud_height_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_height_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_pressure */
+    description = "pressure at the cloud optical centroid using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
+                                                   dimension_type, NULL, description, "Pa", NULL,
+                                                   read_cloud_pressure_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_pressure_uncertainty */
+    description = "standard error of the pressure at the cloud optical centroid using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description, "Pa",
+                                                   NULL, read_cloud_pressure_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_pressure_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_albedo */
+    description = "albedo of cloud using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_cloud_albedo_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* cloud_albedo_uncertainty */
+    description = "standard error of the albedo of cloud using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_cloud_albedo_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/cloud_albedo_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_albedo */
+    description = "surface albedo fitted using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo", harp_type_float, 1,
+                                                   dimension_type, NULL, description, HARP_UNIT_DIMENSIONLESS, NULL,
+                                                   read_surface_albedo_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* surface_albedo_uncertainty */
+    description = "standard error of the surface albedo fitted using the ROCINN CRB model";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "surface_albedo_uncertainty",
+                                                   harp_type_float, 1, dimension_type, NULL, description,
+                                                   HARP_UNIT_DIMENSIONLESS, NULL, read_surface_albedo_crb_precision);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/surface_albedo_crb_precision[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+
+    /* validity */
+    description = "processing error flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1,
+                                                   dimension_type, NULL, description, NULL, NULL,
+                                                   read_processing_errors_crb);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset or band=UVVIS", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors_crb[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
+}
+
+static void register_cld_product(void)
+{
+    const char *description;
+    harp_ingestion_module *module;
+    harp_product_definition *product_definition;
+    const char *band_option_values[2] = { "UVVIS", "NIR" };
+    const char *model_option_values[3] = { "CAL", "CRB", "CMA+OCA" };
+
+    module = harp_ingestion_register_module("S4-L2-CLD", "Sentinel-4", "MTG", "UVN-2-CLD",
+                                            "Sentinel-4 L2 Cloud", ingestion_init, ingestion_done);
+
+    description = "ingest cloud properties in the UV/VIS (default, or explicitly band=UVVIS) or NIR (band=NIR)";
+    harp_ingestion_register_option(module, "band", description, 2, band_option_values);
+
+    description = "cloud retrieval model to use: CAL (default, or explicitly model=CAL), CRB (model=CRB), or "
+        "CMA+OCA (model=CMA+OCA)";
+    harp_ingestion_register_option(module, "model", description, 3, model_option_values);
+
+    /* First product: CAL or CMA+OCA */
+    product_definition = harp_ingestion_register_product(module, "S4-L2-CLD", NULL, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "model unset or model=CAL or model=CMA+OCA");
+    register_cld_cal_variables(product_definition);
+
+    /* Second product: CRB */
+    product_definition = harp_ingestion_register_product(module, "S4-L2-CLD-CRB", NULL, read_dimensions);
+    harp_product_definition_add_mapping(product_definition, NULL, "model=CRB");
+    register_cld_crb_variables(product_definition);
 }
 
 static void register_fcs_cma_product(void)
@@ -2885,8 +3012,18 @@ static void register_fcs_cma_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-FCS-CMA", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
     register_additional_geolocation_variables(product_definition);
+
+    /* validity */
+    description = "processing error flag";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "validity", harp_type_int8, 1, dimension_type,
+                                                   NULL, description, NULL, NULL, read_processing_errors);
+    path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]";
+    harp_variable_definition_add_mapping(variable_definition, "band unset", NULL, path, NULL);
+    path = "/PRODUCT_NIR/SUPPORT_DATA/DETAILED_RESULTS/processing_errors[]";
+    harp_variable_definition_add_mapping(variable_definition, "band=NIR", NULL, path, NULL);
 
     /* cloud_free_fraction */
     description = "fraction of pixels classified as cloud free";
@@ -2970,7 +3107,8 @@ static void register_fdy_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-HCH", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
     register_pressure_bounds_variable(product_definition);
@@ -3003,19 +3141,19 @@ static void register_fdy_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure */
-    description = "cloud top pressure";
+    /* cloud_pressure */
+    description = "pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure_uncertainty */
-    description = "standard error of cloud top pressure";
+    /* cloud_pressure_uncertainty */
+    description = "standard error of the pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa",
                                                    NULL, read_input_cloud_pressure_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_precision[]";
@@ -3105,8 +3243,8 @@ static void register_fdy_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* formaldehyde_tropospheric_air_mass_factor_uncertainty_random */
-    description = "random error of HCHO tropospheric column density";
+    /* tropospheric_HCHO_column_number_density_amf_uncertainty_random */
+    description = "random error of tropospheric air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_HCHO_column_number_density_amf_uncertainty_random",
@@ -3116,8 +3254,8 @@ static void register_fdy_product(void)
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_air_mass_factor_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* formaldehyde_tropospheric_air_mass_factor_uncertainty_systematic */
-    description = "systematic error of HCHO tropospheric column density";
+    /* tropospheric_HCHO_column_number_density_amf_uncertainty_systematic */
+    description = "systematic error of tropospheric air mass factor";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "tropospheric_HCHO_column_number_density_amf_uncertainty_systematic",
@@ -3137,6 +3275,15 @@ static void register_fdy_product(void)
                                                    read_results_formaldehyde_tropospheric_column_averaging_kernel);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/formaldehyde_tropospheric_column_averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_HCHO_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_HCHO_column_number_density_validity", harp_type_int8,
+                                                   1, dimension_type, NULL, description, NULL, NULL, read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_gly_product(void)
@@ -3153,7 +3300,8 @@ static void register_gly_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-CHO", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
 
@@ -3185,19 +3333,19 @@ static void register_gly_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure */
-    description = "cloud top pressure";
+    /* cloud_pressure */
+    description = "pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure_uncertainty */
-    description = "standard error of cloud top pressure";
+    /* cloud_pressure_uncertainty */
+    description = "standard error of the pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa",
                                                    NULL, read_input_cloud_pressure_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_precision[]";
@@ -3277,6 +3425,16 @@ static void register_gly_product(void)
                                                    read_results_glyoxal_tropospheric_column_air_mass_factor);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/glyoxal_tropospheric_column_air_mass_factor[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_C2H2O2_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_C2H2O2_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_no2_product(void)
@@ -3301,7 +3459,8 @@ static void register_no2_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-NO2", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
     register_pressure_bounds_variable(product_definition);
@@ -3334,19 +3493,19 @@ static void register_no2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure */
-    description = "cloud top pressure";
+    /* cloud_pressure */
+    description = "pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure_uncertainty */
-    description = "standard error of cloud top pressure";
+    /* cloud_pressure_uncertainty */
+    description = "standard error of the pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa",
                                                    NULL, read_input_cloud_pressure_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_precision[]";
@@ -3401,7 +3560,7 @@ static void register_no2_product(void)
     harp_variable_definition_add_mapping(variable_definition, "total_column=total", NULL, path, NULL);
 
     /* NO2_column_number_density_uncertainty */
-    description = "standard error of  mole content of nitrogen dioxide";
+    description = "standard error of mole content of nitrogen dioxide";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition,
                                                    "NO2_column_number_density_uncertainty",
@@ -3422,7 +3581,7 @@ static void register_no2_product(void)
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, description);
 
     /* stratospheric_NO2_column_number_density */
-    description = "troposphere mole content of nitrogen dioxide";
+    description = "stratosphere mole content of nitrogen dioxide";
     variable_definition =
         harp_ingestion_register_variable_full_read(product_definition, "stratospheric_NO2_column_number_density",
                                                    harp_type_float, 1, dimension_type, NULL, description, "mol/m2",
@@ -3468,6 +3627,15 @@ static void register_no2_product(void)
                                                    read_results_nitrogen_dioxide_tropospheric_air_mass_factor);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogen_dioxide_tropospheric_air_mass_factor[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* tropospheric_NO2_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition,
+                                                   "tropospheric_NO2_column_number_density_validity", harp_type_int8,
+                                                   1, dimension_type, NULL, description, NULL, NULL, read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_o3_product(void)
@@ -3488,7 +3656,8 @@ static void register_o3_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-OTO", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
 
@@ -3671,6 +3840,15 @@ static void register_o3_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_results_o3_averaging_kernel);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_o3_tsc_product(void)
@@ -3689,7 +3867,8 @@ static void register_o3_tsc_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-OTR", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
 
@@ -3756,6 +3935,15 @@ static void register_o3_tsc_product(void)
                                                    NULL, read_product_ozone_subcolumn_precision);
     path = "/PRODUCT/ozone_subcolumn_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* O3_volume_mixing_ratio_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "O3_volume_mixing_ratio_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 static void register_so2_product(void)
@@ -3784,7 +3972,8 @@ static void register_so2_product(void)
 
     product_definition = harp_ingestion_register_product(module, "S4-L2-SO2", NULL, read_dimensions);
 
-    register_core_variables(product_definition, 1);
+    register_core_variables(product_definition);
+    register_validity_variable(product_definition);
     register_additional_geolocation_variables(product_definition);
     register_surface_variables(product_definition);
     register_pressure_bounds_variable(product_definition);
@@ -3817,19 +4006,19 @@ static void register_so2_product(void)
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_fraction_precision[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure */
-    description = "cloud top pressure";
+    /* cloud_pressure */
+    description = "pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure", harp_type_float, 1,
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure", harp_type_float, 1,
                                                    dimension_type, NULL, description, "Pa", NULL,
                                                    read_input_cloud_pressure);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 
-    /* cloud_top_pressure_uncertainty */
-    description = "standard error of cloud top pressure";
+    /* cloud_pressure_uncertainty */
+    description = "standard error of the pressure at the cloud optical centroid (ROCINN_CRB)";
     variable_definition =
-        harp_ingestion_register_variable_full_read(product_definition, "cloud_top_pressure_uncertainty",
+        harp_ingestion_register_variable_full_read(product_definition, "cloud_pressure_uncertainty",
                                                    harp_type_float, 1, dimension_type, NULL, description, "Pa",
                                                    NULL, read_input_cloud_pressure_precision);
     path = "/PRODUCT/SUPPORT_DATA/INPUT_DATA/cloud_pressure_precision[]";
@@ -3984,6 +4173,15 @@ static void register_so2_product(void)
                                                    HARP_UNIT_DIMENSIONLESS, NULL, read_results_so2_averaging_kernel);
     path = "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/averaging_kernel[]";
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
+
+    /* SO2_column_number_density_validity */
+    description = "continuous quality descriptor, varying between 0 (no data) and 100 (full quality data)";
+    variable_definition =
+        harp_ingestion_register_variable_full_read(product_definition, "SO2_column_number_density_validity",
+                                                   harp_type_int8, 1, dimension_type, NULL, description, NULL, NULL,
+                                                   read_qa_value);
+    path = "/PRODUCT/qa_value[]";
+    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, path, NULL);
 }
 
 int harp_ingestion_module_s4_l2_init(void)
@@ -3991,7 +4189,7 @@ int harp_ingestion_module_s4_l2_init(void)
     register_alh_product();
     register_aui_product();
     register_cld_product();
-    register_fcs_cma_product();
+    register_fcs_cma_product(); /* This product is not fully supported yet */
     register_fdy_product();
     register_gly_product();
     register_no2_product();
