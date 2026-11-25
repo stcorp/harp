@@ -809,7 +809,7 @@ static int init_product_definition(harp_ingestion_module *module, int version)
     /* sensor_altitude */
     description = "altitude of the sensor";
     variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
-                                                                     harp_type_float, 0, NULL, NULL, description, "m",
+                                                                     harp_type_float, 0, NULL, NULL, description, "km",
                                                                      NULL, read_instrument_altitude);
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);
 
