@@ -1400,11 +1400,23 @@ static int init_product_definition(harp_ingestion_module *module, ftir_gas gas, 
     harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/LONGITUDE.INSTRUMENT", NULL);
 
     /* sensor_altitude */
-    description = "altitude of the sensor";
-    variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
-                                                                     harp_type_double, 0, NULL, NULL, description, "km",
-                                                                     NULL, read_instrument_altitude);
-    harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);
+    /* the units of altitude depend on the version*/
+    if (version < 3)
+    {
+        description = "altitude of the sensor";
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
+                                                                         harp_type_double, 0, NULL, NULL, description,
+                                                                         "km", NULL, read_instrument_altitude);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);
+    }
+    else
+    {
+        description = "altitude of the sensor";
+        variable_definition = harp_ingestion_register_variable_full_read(product_definition, "sensor_altitude",
+                                                                         harp_type_double, 0, NULL, NULL, description,
+                                                                         "m", NULL, read_instrument_altitude);
+        harp_variable_definition_add_mapping(variable_definition, NULL, NULL, "/ALTITUDE.INSTRUMENT", NULL);
+    }
 
     /* datetime */
     description = "time of the measurement";
